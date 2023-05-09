@@ -1,9 +1,18 @@
-import React from "react";
-import './cardstyles.css';
+import React, { useState } from "react";
+import "./cardstyles.css";
 import CardRight from "./CardRight";
 import CardLeft from "./CardLeft";
+import AssetDetails from "./AssetDetails";
+
+import image from "./image.jpg";
 
 const CardLayout = () => {
+  const [modalOpen, setModalopen] = useState(false);
+
+  const handleModalopen = () => {
+    setModalopen(true);
+  };
+
   return (
     <div
       className="bg-primary-content"
@@ -13,7 +22,10 @@ const CardLayout = () => {
         height: "90vh",
       }}
     >
-      <div className="w-1/3 h-full rounded-xl p-2 overflow-y-auto bg-slate-300" id="style-7">
+      <div
+        className="w-1/3 h-full rounded-xl p-2 overflow-y-auto bg-slate-300"
+        id="style-7"
+      >
         <div style={{ display: "flex", flexDirection: "row" }}>
           <input
             type="text"
@@ -24,15 +36,29 @@ const CardLayout = () => {
             +Add
           </button>
         </div>
-
-        <CardLeft/>
-        <CardLeft/>
-        <CardLeft/>
-        <CardLeft/>
-        <CardLeft/>
+        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
+          <CardLeft />
+        </div>
+        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
+          <CardLeft />
+        </div>
+        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
+          <CardLeft />
+        </div>
+        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
+          <CardLeft />
+        </div>
+        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
+          <CardLeft />
+        </div>
       </div>
       <div className="w-2/3 mx-10">
-        <CardRight/>
+        {/* <CardRight /> */}
+        <AssetDetails
+          modalOpen={modalOpen}
+          setModalopen={setModalopen}
+          modalImage={image}
+        />
       </div>
     </div>
   );
