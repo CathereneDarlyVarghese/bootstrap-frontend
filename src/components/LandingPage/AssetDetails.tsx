@@ -1,8 +1,14 @@
 import React from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
 import DubeButton from "components/widgets/Button";
+import PendingOrders from "./PendingOrders";
 
-const AssetDetails = ({ modalOpen, setModalopen, modalImage }) => {
+const AssetDetails = ({
+  modalOpen,
+  setModalopen,
+  modalImage,
+  openWorkorderForm,
+}) => {
   const openModal = () => {
     modalOpen(true);
   };
@@ -78,14 +84,11 @@ const AssetDetails = ({ modalOpen, setModalopen, modalImage }) => {
               diam sodales odio eget nec nibh dolor. At sit commodo proin
               pretium senectus sed ipsum id. dolor sit amet consectetur
             </p>
-            <WorkorderButton title="Add Work Order" workPending={true} />
-            {/* <DubeButton
-              title={"Sign In"}
-              primary={true}
-              onClick={() => {
-                console.log("clicked");
-              }}
-            /> */}
+            <WorkorderButton
+              title="Add Work Order"
+              workPending={true}
+              onClick={openWorkorderForm}
+            />
           </div>
         </div>
       </div>

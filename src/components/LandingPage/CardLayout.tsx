@@ -5,12 +5,18 @@ import CardLeft from "./CardLeft";
 import AssetDetails from "./AssetDetails";
 
 import image from "./image.jpg";
+import WorkorderForm from "./WorkorderForm";
 
 const CardLayout = () => {
   const [modalOpen, setModalopen] = useState(false);
+  const [formOpen, setFormopen] = useState(false);
 
   const handleModalopen = () => {
     setModalopen(true);
+  };
+
+  const handleFormopen = () => {
+    setFormopen(true);
   };
 
   return (
@@ -58,8 +64,11 @@ const CardLayout = () => {
           modalOpen={modalOpen}
           setModalopen={setModalopen}
           modalImage={image}
+          openWorkorderForm={handleFormopen}
         />
       </div>
+
+      <WorkorderForm formOpen={formOpen} setFormopen={setFormopen} />
     </div>
   );
 };

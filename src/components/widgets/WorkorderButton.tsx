@@ -1,8 +1,14 @@
 import React from "react";
 
-const WorkorderButton = ({ title, workPending }) => {
+interface ButtonProps {
+  title: string;
+  primary: boolean;
+  onClick: () => void;
+}
+
+const WorkorderButton = ({ title, workPending, onClick }) => {
   return (
-    <button className="btn btn-primary gap-5 ml-auto">
+    <button onClick={onClick} className="btn btn-primary gap-5 ml-auto">
       {title}
       <div className={`${workPending ? "badge badge-error" : ""}`}>
         {workPending ? "pending" : ""}
