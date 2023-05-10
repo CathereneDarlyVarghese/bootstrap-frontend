@@ -90,6 +90,10 @@ const AssetDetails = ({
               onClick={openWorkorderForm}
             />
           </div>
+          <div className="my-4">
+            <h1 className="font-bold text-xl">Pending Orders</h1>
+            <PendingOrders />
+          </div>
         </div>
       </div>
     </>
