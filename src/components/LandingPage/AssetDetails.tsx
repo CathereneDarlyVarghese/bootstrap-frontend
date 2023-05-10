@@ -88,6 +88,8 @@ const AssetDetails = ({
               title="Add Work Order"
               workPending={true}
               onClick={openWorkorderForm}
+              buttonColor={"bg-blue-900"}
+              hoverColor={"hover:bg-blue-900"}
             />
           </div>
           <div className="my-4">

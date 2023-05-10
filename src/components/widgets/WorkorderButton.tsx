@@ -6,9 +6,18 @@ interface ButtonProps {
   onClick: () => void;
 }
 
-const WorkorderButton = ({ title, workPending, onClick }) => {
+const WorkorderButton = ({
+  title,
+  workPending,
+  onClick,
+  buttonColor,
+  hoverColor,
+}) => {
   return (
-    <button onClick={onClick} className="btn btn-primary gap-5 ml-auto">
+    <button
+      onClick={onClick}
+      className={`btn ${buttonColor} gap-5 ml-auto ${hoverColor} pr-1`}
+    >
       {title}
       <div className={`${workPending ? "badge badge-error" : ""}`}>
         {workPending ? "pending" : ""}

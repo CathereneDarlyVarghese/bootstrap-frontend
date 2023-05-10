@@ -1,3 +1,4 @@
+import WorkorderButton from "components/widgets/WorkorderButton";
 import React, { useState } from "react";
 
 const WorkorderForm = ({ formOpen, setFormopen }) => {
@@ -95,9 +96,13 @@ const WorkorderForm = ({ formOpen, setFormopen }) => {
               </label>
             </div>
             <div className="modal-action p-5 justify-start">
-              <button className="btn bg-blue-900" onClick={closeForm}>
-                Submit
-              </button>
+              <WorkorderButton
+                title="Submit"
+                workPending={false}
+                onClick={closeForm}
+                buttonColor={"bg-blue-900"}
+                hoverColor={"hover:bg-blue-900"}
+              />
             </div>
           </div>
         </form>
