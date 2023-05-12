@@ -45,7 +45,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box p-0 w-full" style={{ height: "80%" }}>
+        <div className="modal-box p-0 w-full">
           <form method="post" onSubmit={handleSubmit}>
             <div className="p-5 bg-blue-900 flex flex-row">
               <h3 className="font-bold text-white font-bold">Add Assets</h3>
@@ -81,6 +81,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 onChange={handleChange}
                 value={data.applianceType}
                 className="input input-bordered input-info w-full my-3"
+              />
+              <textarea
+                className="textarea textarea-bordered textarea-info"
+                placeholder="Description"
               />
               <label className="btn bg-blue-900 hover:bg-blue-900 w-full my-5">
                 {image ? image.name : "Select Image"}

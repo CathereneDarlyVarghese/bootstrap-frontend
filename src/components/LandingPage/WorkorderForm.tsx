@@ -84,6 +84,10 @@ const WorkorderForm = ({ formOpen, setFormopen }) => {
                 onChange={handleChange}
                 value={data.type}
               />
+              <textarea
+                className="textarea textarea-bordered textarea-info my-3"
+                placeholder="Description"
+              />
               <label className="btn bg-blue-900 hover:bg-blue-900 w-full">
                 {image ? image.name : "Select image"}
                 <input
