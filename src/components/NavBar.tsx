@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
-import DubeButton from "./widgets/Button";
-import { useNavigate } from "react-router-dom";
-import { Auth, Hub } from "aws-amplify";
-import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
- 
+import React, { useEffect, useState } from 'react';
+import DubeButton from './widgets/Button';
+import { useNavigate } from 'react-router-dom';
+import { Auth, Hub } from 'aws-amplify';
+import SignInWithGoogle from './GoogleSignIn/SignInWithGoogle';
+import { useAtom } from 'jotai';
+import { locationAtom, useSyncedAtom } from 'store/locationStore';
+
 const NavBar = () => {
-  const [location, setLocation] = useState("location");
+  const [location, setLocation] = useSyncedAtom(locationAtom);
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -18,23 +21,23 @@ const NavBar = () => {
     console.log(user);
     user &&
       window.localStorage.setItem(
-        "sessionToken",
+        'sessionToken',
         user.signInUserSession.accessToken.jwtToken
       );
-    Hub.listen("auth", ({ payload: { event, data } }) => {
+    Hub.listen('auth', ({ payload: { event, data } }) => {
       switch (event) {
-        case "signIn":
-        case "cognitoHostedUI":
+        case 'signIn':
+        case 'cognitoHostedUI':
           getUser().then((userData) => setUser(userData));
           break;
-        case "signOut":
+        case 'signOut':
           setUser(null);
           break;
-        case "signIn_failure":
+        case 'signIn_failure':
           console.log(data);
           break;
-        case "cognitoHostedUI_failure":
-          console.log("Sign in failure", data);
+        case 'cognitoHostedUI_failure':
+          console.log('Sign in failure', data);
           break;
       }
     });
@@ -47,13 +50,15 @@ const NavBar = () => {
       const userData = await Auth.currentAuthenticatedUser();
       return userData;
     } catch {
-      return console.log("Not signed in");
+      return console.log('Not signed in');
     }
   }
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">Bootstrap App</a>
+        <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
+          Dube
+        </a>
       </div>
       <div className="flex-none gap-5 pr-5">
         {/* Location Button */}
@@ -83,7 +88,7 @@ const NavBar = () => {
                 d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
               />
             </svg>
-            {location}
+            {location.locationName}
             <svg
               className="fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +107,10 @@ const NavBar = () => {
               <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
-                  setLocation("San Francisco");
+                  setLocation({
+                    locationName: 'San Fransisco',
+                    locationId: 'sf'
+                  });
                   setOpen(!open);
                 }}
               >
@@ -111,7 +119,10 @@ const NavBar = () => {
               <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
-                  setLocation("Singapore");
+                  setLocation({
+                    locationName: 'Singapore',
+                    locationId: 'sg'
+                  });
                   setOpen(!open);
                 }}
               >
@@ -121,7 +132,10 @@ const NavBar = () => {
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 // className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover:text-black border-primary-content flex-row justify-start"
                 onClick={() => {
-                  setLocation("India");
+                  setLocation({
+                    locationName: 'India',
+                    locationId: 'in'
+                  });
                   setOpen(!open);
                 }}
               >
@@ -130,7 +144,10 @@ const NavBar = () => {
               <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
-                  setLocation("China");
+                  setLocation({
+                    locationName: 'China',
+                    locationId: 'cn'
+                  });
                   setOpen(!open);
                 }}
               >
@@ -143,7 +160,7 @@ const NavBar = () => {
         {/* Location Button    */}
 
         <DubeButton
-          onClick={() => navigate("/scan")}
+          onClick={() => navigate('/scan')}
           title="Scan"
           primary={false}
         />
