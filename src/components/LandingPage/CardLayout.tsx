@@ -6,10 +6,14 @@ import AssetDetails from "./AssetDetails";
 
 import image from "./image.jpg";
 import WorkorderForm from "./WorkorderForm";
+import AddAssetForm from "./AddAssetForm";
 
 const CardLayout = () => {
   const [modalOpen, setModalopen] = useState(false);
   const [formOpen, setFormopen] = useState(false);
+
+  // state from AddAssetForm.tsx
+  const [addAssetOpen, setAddAssetOpen] = useState(false);
 
   const handleModalopen = () => {
     setModalopen(true);
@@ -17,6 +21,10 @@ const CardLayout = () => {
 
   const handleFormopen = () => {
     setFormopen(true);
+  };
+
+  const handleAddAssetOpen = () => {
+    setAddAssetOpen(true);
   };
 
   return (
@@ -38,7 +46,10 @@ const CardLayout = () => {
             placeholder="Search Appliance"
             className="input input-bordered w-4/5 ml-10 p-5 bg-neutral-content placeholder-blue-900 text-black border-blue-900"
           ></input>
-          <button className="btn w-1/5 mr-10 ml-5 text-sm text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none">
+          <button
+            className="btn w-1/5 mr-10 ml-5 text-sm text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            onClick={handleAddAssetOpen}
+          >
             +Add
           </button>
         </div>
@@ -69,6 +80,10 @@ const CardLayout = () => {
       </div>
 
       <WorkorderForm formOpen={formOpen} setFormopen={setFormopen} />
+      <AddAssetForm
+        addAssetOpen={addAssetOpen}
+        setAddAssetOpen={setAddAssetOpen}
+      />
     </div>
   );
 };
