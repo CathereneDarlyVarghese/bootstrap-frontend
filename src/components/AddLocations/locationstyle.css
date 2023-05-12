@@ -1,0 +1,17 @@
+.heading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 400px) {
+  .main-heading {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+}
