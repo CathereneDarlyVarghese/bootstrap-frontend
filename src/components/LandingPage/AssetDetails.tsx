@@ -3,12 +3,19 @@ import WorkorderButton from "components/widgets/WorkorderButton";
 import DubeButton from "components/widgets/Button";
 import PendingOrders from "./PendingOrders";
 
-import image from "./image.jpg";
-
-const AssetDetails = ({ cardImage, cardTitle, badgeText, DescriptionText }) => {
+const AssetDetails = ({
+  cardImage,
+  cardTitle,
+  badgeText,
+  DescriptionText,
+  openWorkorderForm,
+}) => {
   return (
     <>
-      <div className="card w-full  my-5 p-5 bg-primary-content h-full">
+      <div
+        className="card w-full my-5 p-5 bg-primary-content"
+        style={{ height: "100%" }}
+      >
         <figure className="rounded-none">
           <img
             src={cardImage}
@@ -16,30 +23,41 @@ const AssetDetails = ({ cardImage, cardTitle, badgeText, DescriptionText }) => {
             className="rounded-xl h-48 w-full"
           />
         </figure>
-        <div
-          className="card-body px-0 overflow-auto"
-          style={{ display: "flex", flexDirection: "row" }}
-        >
-          <h2 className="card-title w-2/3" style={{ color: "#232F3F" }}>
-            {cardTitle}
-          </h2>
-          <div className="badge ml-auto">{badgeText}</div>
+        <div className="card-body px-0 overflow-auto flex flex-col">
+          <div className="flex flex-row">
+            <h2 className="card-title w-2/3" style={{ color: "#232F3F" }}>
+              {cardTitle}
+            </h2>
+            <button className="btn btn-xs btn-primary ml-auto">
+              Download QR
+            </button>
+            <div className="badge ml-auto">{badgeText}</div>
+          </div>
+          <div>
+            <h3 className="text-black text-lg">Description:</h3>
+            <p>
+              {DescriptionText}
+              <p>{DescriptionText}</p>
+            </p>
+          </div>
+          <div className="card-actions">
+            <WorkorderButton
+              title="Add Work Order"
+              workPending={true}
+              onClick={openWorkorderForm}
+              buttonColor={"bg-blue-900"}
+              hoverColor={"hover:bg-blue-900"}
+            />
+          </div>
+          <h3 className="text-xl text-balck font-bold mt-5">Pending Orders</h3>
+          <div className="card overflow-auto h-64">
+            <PendingOrders />
+            <PendingOrders />
+            <PendingOrders />
+            <PendingOrders />
+            <PendingOrders />
+          </div>
         </div>
-        <div className="card-actions">
-          <h3 className="text-black">Description:</h3>
-          <p>
-            {DescriptionText}
-            <p>{DescriptionText}</p>
-          </p>
-        </div>
-      </div>
-      <h3 className="text-lg text-balck font-bold m-5">Pending Orders</h3>
-      <div className="card overflow-auto">
-        <PendingOrders />
-        <PendingOrders />
-        <PendingOrders />
-        <PendingOrders />
-        <PendingOrders />
       </div>
     </>
   );

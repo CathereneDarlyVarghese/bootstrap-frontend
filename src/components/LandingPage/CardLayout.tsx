@@ -46,7 +46,7 @@ const CardLayout = () => {
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
 
-  // To change card content
+  // To change right side card content
   const [details, setDetails] = useState(AssetDetailsObject1);
 
   const handleModalopen = () => {
@@ -67,11 +67,11 @@ const CardLayout = () => {
       style={{
         display: "flex",
         flexDirection: "row",
-        height: "90vh",
+        // height: "90vh",
       }}
     >
       <div
-        className="w-1/3 h-full rounded-xl p-2 overflow-y-auto bg-slate-300"
+        className="w-1/3 rounded-xl p-2 overflow-y-auto bg-slate-300"
         id="style-7"
       >
         <div style={{ display: "flex", flexDirection: "row" }}>
@@ -121,14 +121,11 @@ const CardLayout = () => {
       <div className="w-2/3 mx-10">
         {/* <CardRight /> */}
         <AssetDetails
+          openWorkorderForm={handleFormopen}
           cardImage={details.cardImage}
           cardTitle={details.cardTitle}
           badgeText={details.badgeText}
           DescriptionText={details.DescriptionText}
-          // modalOpen={modalOpen}
-          // setModalopen={setModalopen}
-          // modalImage={image}
-          // openWorkorderForm={handleFormopen}
         />
       </div>
 
