@@ -6,7 +6,7 @@ const PendingOrders = () => {
   return (
     //name, image, description, status, type
     <div
-      className="card border border-blue-900 shadow-xl w-full my-2"
+      className="card border border-blue-900 shadow-xl w-full my-5"
       style={{ height: "100%" }}
     >
       <div className="card-body flex flex-row">
