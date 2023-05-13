@@ -3,6 +3,16 @@ import WorkorderButton from "components/widgets/WorkorderButton";
 import DubeButton from "components/widgets/Button";
 import PendingOrders from "./PendingOrders";
 
+import image6 from "./Images/image6.jpeg";
+
+const workOrderStatus = {
+  pending: "pending",
+  open: "open",
+  closed: "closed",
+};
+const dummyText =
+  "Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque convallis diam sodales odio eget nec nibh dolor. Lorem ipsum dolor sit amet consectetur.";
+
 const AssetDetails = ({
   cardImage,
   cardTitle,
@@ -51,11 +61,36 @@ const AssetDetails = ({
           </div>
           <h3 className="text-xl text-balck font-bold mt-5">Pending Orders</h3>
           <div className="card overflow-auto h-64">
-            <PendingOrders />
-            <PendingOrders />
-            <PendingOrders />
-            <PendingOrders />
-            <PendingOrders />
+            <PendingOrders
+              assetName={"Asset Name"}
+              status={workOrderStatus.open}
+              description={dummyText}
+              pendingImage={image6}
+            />
+            <PendingOrders
+              assetName={"Asset Name"}
+              status={workOrderStatus.closed}
+              description={dummyText}
+              pendingImage={image6}
+            />
+            <PendingOrders
+              assetName={"Asset Name"}
+              status={workOrderStatus.pending}
+              description={dummyText}
+              pendingImage={image6}
+            />
+            <PendingOrders
+              assetName={"Asset Name"}
+              status={workOrderStatus.closed}
+              description={dummyText}
+              pendingImage={image6}
+            />
+            <PendingOrders
+              assetName={"Asset Name"}
+              status={workOrderStatus.open}
+              description={dummyText}
+              pendingImage={image6}
+            />
           </div>
         </div>
       </div>

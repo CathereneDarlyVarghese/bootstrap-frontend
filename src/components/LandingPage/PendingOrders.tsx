@@ -2,7 +2,7 @@ import React from "react";
 
 import image6 from "./Images/image6.jpeg";
 
-const PendingOrders = () => {
+const PendingOrders = ({ assetName, status, description, pendingImage }) => {
   return (
     //name, image, description, status, type
     <div
@@ -12,23 +12,33 @@ const PendingOrders = () => {
       <div className="card-body flex flex-row justify-between">
         <div className="w-9/12">
           <div className="flex flex-row justify-between card-title">
-            <h1 className="text-blue-900">Asset Name</h1>
+            <h1 className="text-blue-900">{assetName}</h1>
 
-            <div className="badge text-md">Pending</div>
+            <div
+              className={`badge text-md ${
+                status === "pending"
+                  ? "badge-primary"
+                  : status === "open"
+                  ? "badge-secondary"
+                  : "badge-success"
+              }`}
+            >
+              {status}
+            </div>
           </div>
           <div className="text-blue-900">
             <h3 className="text-lg font-bold">Type:</h3>
             <h3 className="text-lg font-bold">Description:</h3>
-            <p>
-              Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus
-              imperdiet etiam. Sed pellentesque convallis diam sodales odio eget
-              nec nibh dolor. Lorem ipsum dolor sit amet consectetur. Sed
-            </p>
+            <p>{description}</p>
           </div>
         </div>
         <div className="w-3/12">
           <figure>
-            <img src={image6} alt="an image" className="rounded-xl h-full" />
+            <img
+              src={pendingImage}
+              alt="an image"
+              className="rounded-xl h-full"
+            />
           </figure>
         </div>
       </div>
