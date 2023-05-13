@@ -69,6 +69,7 @@ const ListsLayout = (props: any) => {
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
   };
+  console.log(location.locationId);
   useEffect(() => {
     const data = window.localStorage.getItem('sessionToken');
     console.log(data);
