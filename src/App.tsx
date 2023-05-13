@@ -26,7 +26,11 @@ import Home from "components/AddLocations/Locationlist";
 import { useEffect, useState } from "react";
 import NavBar from "components/NavBar";
 
+<<<<<<< HEAD
 import ListsLayout from "components/LandingPage/ListsLayout";
+=======
+import CardLayout from "components/LandingPage/CardLayout";
+>>>>>>> d3ffcadd9dcc82071c5b694fe3d881761595c0ed
 
 Amplify.configure(awsConfig);
 
@@ -79,7 +83,11 @@ function AppContent() {
             <Route path="/add-documents" element={<AddDocuments />} />
             <Route path="/scan" element={<ScanInventory />} />
             {/* <Route path="/" element={<Home />} /> */}
+<<<<<<< HEAD
             <Route path="/" element={<ListsLayout searchType="Asset"/>} />
+=======
+            <Route path="/" element={<CardLayout />} />
+>>>>>>> d3ffcadd9dcc82071c5b694fe3d881761595c0ed
           </Routes>
         </div>
       </DynamicPage>

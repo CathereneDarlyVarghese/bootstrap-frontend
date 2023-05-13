@@ -47,7 +47,11 @@ const WorkorderForm = ({ formOpen, setFormopen }) => {
             <div className="bg-blue-900 p-5 m-0 flex flex-row">
               <div>
                 <h3 className="font-bold text-lg text-white flex justify-center">
+<<<<<<< HEAD
                   Add Work Order
+=======
+                  Add work order
+>>>>>>> d3ffcadd9dcc82071c5b694fe3d881761595c0ed
                 </h3>
               </div>
               <div className="ml-auto cursor-pointer" onClick={closeForm}>
@@ -84,10 +88,13 @@ const WorkorderForm = ({ formOpen, setFormopen }) => {
                 onChange={handleChange}
                 value={data.type}
               />
+<<<<<<< HEAD
               <textarea
                 className="textarea textarea-bordered textarea-info my-3"
                 placeholder="Description"
               />
+=======
+>>>>>>> d3ffcadd9dcc82071c5b694fe3d881761595c0ed
               <label className="btn bg-blue-900 hover:bg-blue-900 w-full">
                 {image ? image.name : "Select image"}
                 <input
