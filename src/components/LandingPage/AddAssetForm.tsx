@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
+const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
   const [location, setLocation] = useState("Location");
   const [dropdownOpen, setDropdownopen] = useState(false);
   const [image, setImage] = useState(null);
@@ -74,14 +76,23 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 value={data.applianceName}
                 className="input input-bordered input-info w-full my-3"
               />
-              <input
-                type="text"
-                id="type"
-                placeholder="Type"
-                onChange={handleChange}
-                value={data.applianceType}
-                className="input input-bordered input-info w-full my-3"
-              />
+              <div className="my-3 flex flex-row items-center">
+                <input
+                  type="radio"
+                  id="type"
+                  placeholder="Type"
+                  onChange={handleChange}
+                  value={data.applianceType}
+                  // className="input input-bordered input-info w-full my-3"
+                  className="radio radio-sm checked:bg-blue-900"
+                  style={{
+                    borderColor: "#0D47A1",
+                    // backgroundColor: "#0D47A1",
+                  }}
+                />
+                <span className="label-text text-lg mx-3">Appliance</span>
+              </div>
+
               <textarea
                 className="textarea textarea-bordered textarea-info"
                 placeholder="Description"
@@ -97,76 +108,26 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
               </label>
               {/* Location dropdown */}
-              <div className="dropdown">
-                <label
-                  tabIndex={0}
-                  className="btn w-48 bg-blue-900 hover:bg-blue-900"
-                  onClick={toggleDropDown}
-                >
-                  {location}
-                  <svg
-                    className="fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-                  </svg>
-                </label>
-                {dropdownOpen && (
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-                  >
-                    <li
-                      className="btn bg-transparent text-black border-none hover:bg-transparent normal-case  font-normal text-lg w-full flex-row justify-start"
-                      onClick={() => {
-                        setLocation("San Franciso");
-                        setDropdownopen(!dropdownOpen);
-                      }}
-                    >
-                      San Franciso
-                    </li>
-                    <li
-                      className="btn bg-transparent text-black border-none hover:bg-transparent normal-case font-normal text-lg w-full flex-row justify-start"
-                      onClick={() => {
-                        setLocation("Singapore");
-                        setDropdownopen(!dropdownOpen);
-                      }}
-                    >
-                      Singapore
-                    </li>
-                    <li
-                      className="btn bg-transparent text-black border-none hover:bg-transparent normal-case font-normal text-lg w-full flex-row justify-start"
-                      onClick={() => {
-                        setLocation("India");
-                        setDropdownopen(!dropdownOpen);
-                      }}
-                    >
-                      India
-                    </li>
-                    <li
-                      className="btn bg-transparent text-black border-none hover:bg-transparent normal-case  font-normal text-lg w-full flex-row justify-start"
-                      onClick={() => {
-                        setLocation("China");
-                        setDropdownopen(!dropdownOpen);
-                      }}
-                    >
-                      China
-                    </li>
-                  </ul>
-                )}
-              </div>
+              <select className="select select-bordered select-info w-full">
+                <option disabled selected>
+                  Location
+                </option>
+                <option>Singapore</option>
+                <option>San Franciso</option>
+                <option>India</option>
+                <option>China</option>
+              </select>
             </div>
-            <div className="modal-action p-5">
-              <WorkorderButton
-                title="Submit"
-                workPending={false}
-                onClick={handleSubmit}
-                buttonColor={"bg-blue-900"}
-                hoverColor={"hover:bg-blue-900"}
-              />
+            <div className="modal-action p-5 flex flex-row justify-center">
+              <div>
+                <WorkorderButton
+                  title="Submit"
+                  workPending={false}
+                  onClick={notific}
+                  buttonColor={"bg-blue-900"}
+                  hoverColor={"hover:bg-blue-900"}
+                />
+              </div>
             </div>
           </form>
         </div>

@@ -129,8 +129,17 @@ const CardLayout = () => {
         />
       </div>
 
-      <WorkorderForm formOpen={formOpen} setFormopen={setFormopen} />
+      <WorkorderForm
+        formOpen={formOpen}
+        setFormopen={setFormopen}
+        notific={() => {
+          console.log("button clicked");
+        }}
+      />
       <AddAssetForm
+        notific={() => {
+          console.log("button clicked");
+        }}
         addAssetOpen={addAssetOpen}
         setAddAssetOpen={setAddAssetOpen}
       />

@@ -3,7 +3,7 @@ import DubeButton from "./widgets/Button";
 import { useNavigate } from "react-router-dom";
 import { Auth, Hub } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
- 
+
 const NavBar = () => {
   const [location, setLocation] = useState("location");
   const [open, setOpen] = useState(false);
@@ -53,14 +53,16 @@ const NavBar = () => {
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">Bootstrap App</a>
+        <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
+          Bootstrap App
+        </a>
       </div>
       <div className="flex-none gap-5 pr-5">
         {/* Location Button */}
 
         <div className="dropdown dropdown-bottom">
           <label
-            className="btn-sm px-5 btn w-48 btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400"
+            className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400"
             tabIndex={0}
             onClick={toggleDropDown}
           >
