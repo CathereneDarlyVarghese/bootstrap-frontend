@@ -12,47 +12,31 @@ const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleDropDown = () => {
     setOpen(!open);
   };
 
   useEffect(() => {
-    console.log(user);
-    user &&
-      window.localStorage.setItem(
-        'sessionToken',
-        user.signInUserSession.accessToken.jwtToken
-      );
-    Hub.listen('auth', ({ payload: { event, data } }) => {
-      switch (event) {
-        case 'signIn':
-        case 'cognitoHostedUI':
-          getUser().then((userData) => setUser(userData));
-          break;
-        case 'signOut':
-          setUser(null);
-          break;
-        case 'signIn_failure':
-          console.log(data);
-          break;
-        case 'cognitoHostedUI_failure':
-          console.log('Sign in failure', data);
-          break;
+    const checkUser = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        console.log(userData);
+        setUser(userData);
+        window.localStorage.setItem(
+          'sessionToken',
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setIsLoading(false);
+      } catch {
+        console.log('Not signed in');
+        setIsLoading(false);
       }
-    });
+    };
+    checkUser();
+  }, []);
 
-    getUser().then((userData) => setUser(userData));
-  }, [!user]);
-
-  async function getUser() {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      return userData;
-    } catch {
-      return console.log('Not signed in');
-    }
-  }
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
