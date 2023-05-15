@@ -59,7 +59,7 @@ const AssetDetails = ({
               hoverColor={"hover:bg-blue-900"}
             />
           </div>
-          <h3 className="text-xl text-balck font-bold mt-5">Pending Orders</h3>
+          <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
           <div className="card overflow-auto h-64">
             <PendingOrders
               assetName={"Asset Name"}

@@ -121,11 +121,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
                   onChange={() => setData((curr) => ({ ...curr, type }))}
                 />
               ))}
-              <label className="btn bg-blue-900 hover:bg-blue-900 w-full my-5">
+              <label
+                htmlFor="file_input"
+                // className="btn bg-blue-900 hover:bg-blue-900 w-full my-5"
+              >
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="file-input file-input-bordered file-input-sm appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded  mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  // className="file-input file-input-bordered file-input-sm appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded  mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="file-input file-input-bordered border-info w-full my-3"
+                  style={{}}
                 />
               </label>
               {/* Location dropdown */}

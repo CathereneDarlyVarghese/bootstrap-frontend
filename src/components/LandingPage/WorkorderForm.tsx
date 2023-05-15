@@ -99,14 +99,16 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
                 />
               </label>
             </div>
-            <div className="modal-action p-5 justify-start">
-              <WorkorderButton
-                title="Submit"
-                workPending={false}
-                onClick={notific}
-                buttonColor={"bg-blue-900"}
-                hoverColor={"hover:bg-blue-900"}
-              />
+            <div className="modal-action p-5 flex flex-row justify-center">
+              <div>
+                <WorkorderButton
+                  title="Submit"
+                  workPending={false}
+                  onClick={notific}
+                  buttonColor={"bg-blue-900"}
+                  hoverColor={"hover:bg-blue-900"}
+                />
+              </div>
             </div>
           </div>
         </form>

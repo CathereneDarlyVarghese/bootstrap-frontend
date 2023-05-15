@@ -171,9 +171,7 @@ const ListsLayout = (props: any) => {
       <WorkorderForm
         formOpen={formOpen}
         setFormopen={setFormopen}
-        notific={() => {
-          console.log("notification");
-        }}
+        notific={showNotification}
       />
       <AddAssetForm
         notific={showNotification}
