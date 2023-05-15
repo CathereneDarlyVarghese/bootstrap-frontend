@@ -16,11 +16,7 @@ const CardRight = () => {
           Test Appliance two
         </h2>
         <button
-<<<<<<< HEAD
-          className="btn btn-xs bg-blue-800 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400"
-=======
           className="btn btn-xs btn-primary"
->>>>>>> d3ffcadd9dcc82071c5b694fe3d881761595c0ed
           style={{ marginLeft: "auto" }}
         >
           Appliances

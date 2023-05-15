@@ -1,13 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import useAssetTypeNames from "hooks/useAssetTypeNames";
+import { Asset } from "types";
+import { AssetTypes } from "enums";
+import { uploadFiletoS3 } from "utils";
+import { addInventory } from "services/apiServices";
+import { RadioButton } from "@ui5/webcomponents-react";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
-  const [location, setLocation] = useState("Location");
-  const [dropdownOpen, setDropdownopen] = useState(false);
-  const [image, setImage] = useState(null);
-  const [data, setData] = useState({ applianceName: "", applianceType: "" });
+  const navigate = useNavigate();
+  const assetTypeNames = useAssetTypeNames();
+  const [dropdownopen, setDropdownopen] = useState<boolean>(false);
+  const [token, settoken] = useState<string>("");
+  const [file, setFile] = useState<any>();
+  const [data, setData] = useState<Asset>({
+    organization: {
+      name: "testorg1",
+      id: "2",
+      members: [],
+    },
+    orgId: "2",
+    audit: {
+      createdAt: "test",
+      createdBy: "test",
+    },
+    id: "2",
+    name: "",
+    imageS3: "",
+    location: "sg",
+    workOrders: [],
+    type: AssetTypes.Appliances,
+  });
+  const handleSubmit = async () => {
+    console.log(data);
+    try {
+      const imageLocation = await uploadFiletoS3(file, "inventory");
+      console.log(imageLocation);
+      data.imageS3 = imageLocation.location;
+      await addInventory(token, data);
+    } catch (error) {
+      alert("something went wrong!");
+    }
+  };
+
+  useEffect(() => {
+    const data = window.localStorage.getItem("sessionToken");
+    settoken(data);
+  }, []);
 
   const openAddForm = () => {
     setAddAssetOpen(true);
@@ -17,25 +57,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
   };
 
   const toggleDropDown = () => {
-    setDropdownopen(!dropdownOpen);
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
+    setDropdownopen(!dropdownopen);
   };
 
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     setData({ ...data, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(data);
-    setData({ applianceName: "", applianceType: "" });
-    setAddAssetOpen(false);
   };
 
   return (
@@ -48,7 +76,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
       />
       <div className="modal">
         <div className="modal-box p-0 w-full">
-          <form method="post" onSubmit={handleSubmit}>
+          <form
+            method="post"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div className="p-5 bg-blue-900 flex flex-row">
               <h3 className="font-bold text-white font-bold">Add Assets</h3>
               <svg
@@ -71,63 +105,54 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
                 type="text"
                 id="name"
                 placeholder="Name"
-                onChange={handleChange}
-                // value={data.applianceName || ""}
-                value={data.applianceName}
+                onChange={(e) =>
+                  setData((curr) => ({ ...curr, name: e.target.value }))
+                }
+                value={data.name}
                 className="input input-bordered input-info w-full my-3"
               />
-              <div className="my-3 flex flex-row items-center">
-                <input
-                  type="radio"
-                  id="type"
-                  placeholder="Type"
-                  onChange={handleChange}
-                  value={data.applianceType}
-                  // className="input input-bordered input-info w-full my-3"
-                  className="radio radio-sm checked:bg-blue-900"
-                  style={{
-                    borderColor: "#0D47A1",
-                    // backgroundColor: "#0D47A1",
-                  }}
+              {[AssetTypes.Appliances].map((type) => (
+                <RadioButton
+                  key={type}
+                  name="type"
+                  text={assetTypeNames[type]}
+                  value={AssetTypes.Appliances}
+                  checked={type === data.type}
+                  onChange={() => setData((curr) => ({ ...curr, type }))}
                 />
-                <span className="label-text text-lg mx-3">Appliance</span>
-              </div>
-
-              <textarea
-                className="textarea textarea-bordered textarea-info"
-                placeholder="Description"
-              />
+              ))}
               <label className="btn bg-blue-900 hover:bg-blue-900 w-full my-5">
-                {image ? image.name : "Select Image"}
                 <input
                   type="file"
-                  placeholder="Name"
-                  className="hidden input input-bordered input-info w-full my-3"
-                  accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => setFile(e.target.files[0])}
+                  className="file-input file-input-bordered file-input-sm appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded  mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 />
               </label>
               {/* Location dropdown */}
-              <select className="select select-bordered select-info w-full">
-                <option disabled selected>
-                  Location
-                </option>
-                <option>Singapore</option>
-                <option>San Franciso</option>
-                <option>India</option>
-                <option>China</option>
-              </select>
-            </div>
-            <div className="modal-action p-5 flex flex-row justify-center">
-              <div>
-                <WorkorderButton
-                  title="Submit"
-                  workPending={false}
-                  onClick={notific}
-                  buttonColor={"bg-blue-900"}
-                  hoverColor={"hover:bg-blue-900"}
-                />
+              <div className="dropdown">
+                <select
+                  required
+                  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  id="grid-state"
+                  onChange={(e) => {
+                    setData((curr) => ({ ...curr, location: e.target.value }));
+                  }}
+                  value={data.location}
+                >
+                  <option value="sg">Singapore</option>
+                  <option>Location B</option>
+                  <option>Location C</option>
+                </select>
               </div>
+            </div>
+            <div className="modal-action p-5">
+              <WorkorderButton
+                title="Submit"
+                workPending={false}
+                onClick={handleSubmit}
+                buttonColor={"bg-blue-900"}
+                hoverColor={"hover:bg-blue-900"}
+              />
             </div>
           </form>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import "./cardstyles.css";
 import CardRight from "./CardRight";
@@ -7,10 +7,15 @@ import AssetDetails from "./AssetDetails";
 
 import WorkorderForm from "./WorkorderForm";
 import AddAssetForm from "./AddAssetForm";
-
+import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import image from "./image.jpg";
 import image2 from "./Images/image2.jpg";
 import image3 from "./Images/image.jpg";
+import { Asset } from "types";
+import { Auth } from "aws-amplify";
+import { getInventory } from "services/apiServices";
+import { useSearchParams } from "react-router-dom";
+import { useAtom } from "jotai";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,7 +50,10 @@ const AssetDetailsObject3 = {
 
 const ListsLayout = (props: any) => {
   const [modalOpen, setModalopen] = useState(false);
+  const [location, setLocation] = useSyncedAtom(locationAtom);
   const [formOpen, setFormopen] = useState(false);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [assetId, setAssetId] = useState<Asset["id"]>(null);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -70,6 +78,31 @@ const ListsLayout = (props: any) => {
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
   };
+  console.log(location.locationId);
+  useEffect(() => {
+    const data = window.localStorage.getItem("sessionToken");
+    console.log(data);
+    (async () => {
+      await Auth.currentAuthenticatedUser().then((user) => {
+        console.log(user.token);
+      });
+
+      const assetsData = await getInventory(data);
+      console.log(assetsData);
+      setAssets(assetsData);
+    })();
+  }, []);
+
+  const filteredAssets = useMemo(
+    //() => documents.filter((a) => a.location === location),
+    () => assets.filter((a) => a.location === location.locationId),
+    [assets, location]
+  );
+
+  const asset = useMemo(
+    () => assets.find((a) => a.id === assetId),
+    [assetId, location]
+  );
 
   return (
     <div
@@ -104,78 +137,43 @@ const ListsLayout = (props: any) => {
             {"+ Add " + props.searchType}
           </button>
         </div>
-
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setDetails(AssetDetailsObject1);
-          }}
-        >
-          <AssetCard
-            assetName="Dough Mixer"
-            assetType="Appliance"
-            assetAddress="Santacruz, Mumbai, Maharashtra, India - 400055"
-            imageLocation="https://images.pexels.com/photos/1450903/pexels-photo-1450903.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          />
-        </div>
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setDetails(AssetDetailsObject2);
-          }}
-        >
-          <AssetCard
-            assetName="Electric Iron"
-            assetType="Appliance"
-            assetAddress="Pollich Spur, West Gerardo, North Carolina, USA - 69209"
-            imageLocation="https://images.pexels.com/photos/53422/ironing-iron-press-clothing-53422.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          />
-        </div>
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setDetails(AssetDetailsObject3);
-          }}
-        >
-          <AssetCard
-            assetName="Dishwasher"
-            assetType="Appliance"
-            assetAddress="Taylor Stream, Poppystad, Powellhaven, UK - 690"
-            imageLocation="https://images.pexels.com/photos/3829549/pexels-photo-3829549.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          />
-        </div>
-        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
-          <AssetCard
-            assetName="Electric Kettle"
-            assetType="Appliance"
-            assetAddress="Gernot-Geisler-Straße, Flörsheim am Main, Bayern, Germany - 36"
-            imageLocation="https://images.pexels.com/photos/1921673/pexels-photo-1921673.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          />
-        </div>
-        <div style={{ cursor: "pointer" }} onClick={handleModalopen}>
-          <AssetCard
-            assetName="Microwave Oven"
-            assetType="Appliance"
-            assetAddress="36608 - شرورة ,الخبر ,طريق عبد السميع المنيف"
-            imageLocation="https://images.pexels.com/photos/8266851/pexels-photo-8266851.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          />
-        </div>
+        {filteredAssets.map((a) => (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setAssetId(a.id);
+            }}
+          >
+            <AssetCard
+              assetName={a.name}
+              assetType={a.type}
+              assetAddress={a.location}
+              imageLocation={a.imageS3}
+            />
+          </div>
+        ))}
       </div>
       <div className="w-2/3 mx-10">
         {/* <CardRight /> */}
-        <AssetDetails
-          openWorkorderForm={handleFormopen}
-          cardImage={details.cardImage}
-          cardTitle={details.cardTitle}
-          badgeText={details.badgeText}
-          DescriptionText={details.DescriptionText}
-        />
+        {asset ? (
+          <AssetDetails
+            openWorkorderForm={handleFormopen}
+            cardImage={asset.imageS3}
+            cardTitle={asset.name}
+            badgeText={asset.type}
+            DescriptionText={asset.name}
+          />
+        ) : (
+          "choose an asset"
+        )}
       </div>
 
       <WorkorderForm
         formOpen={formOpen}
         setFormopen={setFormopen}
-        notific={showNotification}
+        notific={() => {
+          console.log("notification");
+        }}
       />
       <AddAssetForm
         notific={showNotification}
