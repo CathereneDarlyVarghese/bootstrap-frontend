@@ -86,12 +86,13 @@ const ListsLayout = (props: any) => {
       await Auth.currentAuthenticatedUser().then((user) => {
         console.log(user.token);
       });
-
-      const assetsData = await getInventory(data);
-      console.log(assetsData);
-      setAssets(assetsData);
+      if (location.locationId) {
+        const assetsData = await getInventory(data);
+        console.log(assetsData);
+        setAssets(assetsData);
+      }
     })();
-  }, []);
+  }, [location]);
 
   const filteredAssets = useMemo(
     //() => documents.filter((a) => a.location === location),
