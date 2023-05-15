@@ -80,18 +80,20 @@ const ListsLayout = (props: any) => {
   };
   console.log(location.locationId);
   useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
-    console.log(data);
-    (async () => {
-      await Auth.currentAuthenticatedUser().then((user) => {
-        console.log(user.token);
-      });
-      if (location.locationId) {
-        const assetsData = await getInventory(data);
+    const init = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        console.log(userData);
+        const assetsData = await getInventory(
+          userData.signInUserSession.accessToken.jwtToken
+        );
         console.log(assetsData);
         setAssets(assetsData);
+      } catch {
+        console.log("Not signed in");
       }
-    })();
+    };
+    init();
   }, [location]);
 
   const filteredAssets = useMemo(
