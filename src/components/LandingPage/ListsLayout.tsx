@@ -167,7 +167,11 @@ const ListsLayout = (props: any) => {
             DescriptionText={asset.name}
           />
         ) : (
-          "choose an asset"
+          <div className="flex items-center h-screen justify-center">
+            <h1 className="font-bold text-3xl text-slate-400">
+              Choose an asset
+            </h1>
+          </div>
         )}
       </div>
 
@@ -177,7 +181,6 @@ const ListsLayout = (props: any) => {
         notific={showNotification}
       />
       <AddAssetForm
-        notific={showNotification}
         addAssetOpen={addAssetOpen}
         setAddAssetOpen={setAddAssetOpen}
       />

@@ -8,7 +8,7 @@ import { uploadFiletoS3 } from "utils";
 import { addInventory } from "services/apiServices";
 import { RadioButton } from "@ui5/webcomponents-react";
 
-const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
+const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const navigate = useNavigate();
   const assetTypeNames = useAssetTypeNames();
   const [dropdownopen, setDropdownopen] = useState<boolean>(false);
@@ -34,6 +34,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
   });
   const handleSubmit = async () => {
     console.log(data);
+    setAddAssetOpen(false);
     try {
       const imageLocation = await uploadFiletoS3(file, "inventory");
       console.log(imageLocation);
@@ -123,21 +124,20 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
               ))}
               <label
                 htmlFor="file_input"
-                // className="btn bg-blue-900 hover:bg-blue-900 w-full my-5"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  // className="file-input file-input-bordered file-input-sm appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded  mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  className="file-input file-input-bordered border-info w-full my-3"
+                  className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
                   style={{}}
                 />
               </label>
-              {/* Location dropdown */}
+              {/* Location select */}
               <div className="dropdown">
                 <select
                   required
-                  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block w-full bg-blue-900 border border-info text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-900 focus:text-white focus:border-gray-500 my-4"
                   id="grid-state"
                   onChange={(e) => {
                     setData((curr) => ({ ...curr, location: e.target.value }));
@@ -150,14 +150,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen, notific }) => {
                 </select>
               </div>
             </div>
-            <div className="modal-action p-5">
-              <WorkorderButton
-                title="Submit"
-                workPending={false}
-                onClick={handleSubmit}
-                buttonColor={"bg-blue-900"}
-                hoverColor={"hover:bg-blue-900"}
-              />
+            <div className="modal-action p-5 flex justify-center">
+              <div>
+                <WorkorderButton
+                  title="Submit"
+                  workPending={false}
+                  onClick={handleSubmit}
+                  buttonColor={"bg-blue-900"}
+                  hoverColor={"hover:bg-blue-900"}
+                />
+              </div>
             </div>
           </form>
         </div>

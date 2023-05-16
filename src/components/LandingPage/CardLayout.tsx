@@ -137,9 +137,9 @@ const CardLayout = () => {
         }}
       />
       <AddAssetForm
-        notific={() => {
-          console.log("button clicked");
-        }}
+        // notific={() => {
+        //   console.log("button clicked");
+        // }}
         addAssetOpen={addAssetOpen}
         setAddAssetOpen={setAddAssetOpen}
       />
