@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import "./cardstyles.css";
-import CardRight from "./CardRight";
+import CardRight from "./Bin/CardRight";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
 
 import WorkorderForm from "./WorkorderForm";
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import image from "./image.jpg";
+import image from "./Bin/image.jpg";
 import image2 from "./Images/image2.jpg";
 import image3 from "./Images/image.jpg";
 import { Asset } from "types";
@@ -109,7 +109,7 @@ const ListsLayout = (props: any) => {
 
   return (
     <div
-      className="bg-primary-content"
+      className="bg-primary-content h-full"
       style={{
         display: "flex",
         flexDirection: "row",
@@ -124,7 +124,7 @@ const ListsLayout = (props: any) => {
         closeOnClick
       />
       <div
-        className="w-1/3 rounded-xl p-2 overflow-y-auto bg-slate-300"
+        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto bg-slate-300"
         id="style-7"
       >
         <div style={{ display: "flex", flexDirection: "row" }}>
@@ -156,7 +156,10 @@ const ListsLayout = (props: any) => {
           </div>
         ))}
       </div>
-      <div className="w-2/3 mx-10">
+      <div
+        className="w-2/3 h-5/6 mx-10 rounded-xl p-2 overflow-y-auto bg-slate-300"
+        id="style-7"
+      >
         {/* <CardRight /> */}
         {asset ? (
           <AssetDetails
@@ -167,9 +170,9 @@ const ListsLayout = (props: any) => {
             DescriptionText={asset.name}
           />
         ) : (
-          <div className="flex items-center h-screen justify-center">
+          <div className="flex items-center h-fit my-52 mx-auto justify-center">
             <h1 className="font-bold text-3xl text-slate-400">
-              Choose an asset
+              Choose an Asset
             </h1>
           </div>
         )}

@@ -23,8 +23,8 @@ const AssetDetails = ({
   return (
     <>
       <div
-        className="card w-full my-5 p-5 bg-primary-content"
-        style={{ height: "100%" }}
+        className="w-full h-fit my-5 p-5 bg-slate-100 border-blue-900 rounded-xl"
+        // style={{ height: "100%" }}
       >
         <figure className="rounded-none">
           <img
@@ -33,15 +33,17 @@ const AssetDetails = ({
             className="rounded-xl h-48 w-full"
           />
         </figure>
-        <div className="card-body px-0 overflow-auto flex flex-col">
+        <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
           <div className="flex flex-row">
             <h2 className="card-title w-2/3" style={{ color: "#232F3F" }}>
               {cardTitle}
             </h2>
-            <button className="btn btn-xs bg-blue-800 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
+            <button className="btn btn-xs bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
               Download QR
             </button>
-            <div className="badge ml-auto">{badgeText}</div>
+            <div className="badge ml-auto uppercase bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400">
+              {badgeText}
+            </div>
           </div>
           <div>
             <h3 className="text-black text-lg">Description:</h3>
@@ -56,11 +58,11 @@ const AssetDetails = ({
               workPending={true}
               onClick={openWorkorderForm}
               buttonColor={"bg-blue-900"}
-              hoverColor={"hover:bg-blue-900"}
+              hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
             />
           </div>
           <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
-          <div className="card overflow-auto h-64">
+          <div className="card border overflow-auto h-fit px-5" id="style-7">
             <PendingOrders
               assetName={"Asset Name"}
               status={workOrderStatus.open}

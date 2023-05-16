@@ -15,7 +15,7 @@ const PendingOrders = ({ assetName, status, description, pendingImage }) => {
             <h1 className="text-blue-900">{assetName}</h1>
 
             <div
-              className={`badge text-md ${
+              className={`badge text-md uppercase ${
                 status === "pending"
                   ? "badge-primary"
                   : status === "open"

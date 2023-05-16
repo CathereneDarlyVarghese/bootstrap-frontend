@@ -129,7 +129,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
+                  className="block w-full text-lg text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
                   style={{}}
                 />
               </label>
