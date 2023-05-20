@@ -142,11 +142,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onChange={(e) => {
                     setData((curr) => ({ ...curr, location: e.target.value }));
                   }}
-                  value={data.location}
+                  // value={data.location}
+                  // placeholder="Select location"
                 >
-                  <option value="sg">Singapore</option>
-                  <option>Location B</option>
-                  <option>Location C</option>
+                  <option value="tsd">The Spiffy Dapper</option>
+                  <option value="mdb">MadDog Bistro & Bar</option>
                 </select>
               </div>
             </div>
