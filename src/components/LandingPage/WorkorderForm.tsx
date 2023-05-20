@@ -1,8 +1,14 @@
+import React, { useState, useEffect } from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
-import React, { useState } from "react";
+
+import { uploadFiletoS3 } from "utils";
+import { AssetTypes } from "enums";
+import { Asset } from "types";
+import { useNavigate } from "react-router-dom";
+import { addInventory } from "services/apiServices";
+import { toast } from "react-toastify";
 
 const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
-  const [data, setData] = useState({ name: "", type: "" });
   const [image, setImage] = useState(null);
 
   const handleImageChange = (event) => {
@@ -10,11 +16,62 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
     setImage(file);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ ...data });
-    setData({ name: "", type: "" });
+  const navigate = useNavigate();
+  const [token, settoken] = useState<string>("");
+  const [file, setFile] = useState<any>();
+  const [data, setData] = useState<Asset>({
+    organization: {
+      name: "testorg1",
+      id: "2",
+      members: [],
+    },
+    orgId: "2",
+    audit: {
+      createdAt: "test",
+      createdBy: "test",
+    },
+    id: "2",
+    name: "",
+    imageS3: "",
+    location: "tsd",
+    workOrders: [],
+    type: AssetTypes.Appliances,
+  });
+
+  const handleSubmit = async () => {
+    console.log(data);
+    try {
+      const imageLocation = await uploadFiletoS3(file, "inventory");
+      console.log(imageLocation);
+      data.imageS3 = imageLocation.location;
+      console.log("Location on submit ==>>", data.location);
+      await addInventory(token, data)
+        .then(() => {
+          toast.success("Asset Added Succesfully", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          navigate(`/location?name=${data.location}`); // Navigate to the page of the location
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } catch (error) {
+      alert("something went wrong!");
+    }
   };
+
+  useEffect(() => {
+    const data = window.localStorage.getItem("sessionToken");
+    settoken(data);
+  }, []);
+
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -39,8 +96,10 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
       />
       <div className="modal">
         <form
-          method="post"
-          onSubmit={handleSubmit}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
           className="w-4/12 max-w-5xl p-0"
         >
           <div className="modal-box p-0">
@@ -73,7 +132,9 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
                 name="name"
                 placeholder="Name"
                 className="input input-bordered input-info w-full my-3"
-                onChange={handleChange}
+                onChange={(e) =>
+                  setData((curr) => ({ ...curr, name: e.target.value }))
+                }
                 value={data.name}
               />
               <input
@@ -95,7 +156,7 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
                   placeholder="Image"
                   className="hidden w-full my-5"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
               </label>
             </div>

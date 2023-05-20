@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
 import DubeButton from "components/widgets/Button";
 import PendingOrders from "./PendingOrders";
@@ -19,6 +19,7 @@ const AssetDetails = ({
   badgeText,
   DescriptionText,
   openWorkorderForm,
+  pendingOrderDetails,
 }) => {
   return (
     <>
@@ -52,6 +53,7 @@ const AssetDetails = ({
               <p>{DescriptionText}</p>
             </p>
           </div>
+
           <div className="card-actions">
             <WorkorderButton
               title="Add Work Order"
@@ -61,12 +63,24 @@ const AssetDetails = ({
               hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
             />
           </div>
+
           <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
           <div className="card border overflow-auto h-fit px-5" id="style-7">
-            <PendingOrders
+            {pendingOrderDetails.map((wo) => (
+              <PendingOrders
+                assetName={wo.name}
+                status={wo.status}
+                description={wo.description}
+                pendingImage={wo.image}
+                orderType={wo.type}
+              />
+            ))}
+            {console.log(pendingOrderDetails)}
+
+            {/* <PendingOrders
               assetName={"Asset Name"}
-              status={workOrderStatus.open}
-              description={dummyText}
+              status={pendingOrderDetails.status}
+              description={pendingOrderDetails.name}
               pendingImage={image6}
             />
             <PendingOrders
@@ -92,7 +106,7 @@ const AssetDetails = ({
               status={workOrderStatus.open}
               description={dummyText}
               pendingImage={image6}
-            />
+            /> */}
           </div>
         </div>
       </div>

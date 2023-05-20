@@ -2,7 +2,13 @@ import React from "react";
 
 import image6 from "./Images/image6.jpeg";
 
-const PendingOrders = ({ assetName, status, description, pendingImage }) => {
+const PendingOrders = ({
+  assetName,
+  status,
+  description,
+  pendingImage,
+  orderType,
+}) => {
   return (
     //name, image, description, status, type
     <div
@@ -27,7 +33,7 @@ const PendingOrders = ({ assetName, status, description, pendingImage }) => {
             </div>
           </div>
           <div className="text-blue-900">
-            <h3 className="text-lg font-bold">Type:</h3>
+            <h3 className="text-lg font-bold">Type: {orderType}</h3>
             <h3 className="text-lg font-bold">Description:</h3>
             <p>{description}</p>
           </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import "./cardstyles.css";
-import CardRight from "./Bin/CardRight";
+// import CardRight from "./Bin/CardRight";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
 
@@ -163,6 +163,7 @@ const ListsLayout = (props: any) => {
         {/* <CardRight /> */}
         {asset ? (
           <AssetDetails
+            pendingOrderDetails={asset.workOrders}
             openWorkorderForm={handleFormopen}
             cardImage={asset.imageS3}
             cardTitle={asset.name}
