@@ -92,6 +92,30 @@ const NavBar = () => {
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
                   setLocation({
+                    locationName: "The Spiffy Dapper",
+                    locationId: "tsd",
+                  });
+                  setOpen(!open);
+                }}
+              >
+                The Spiffy Dapper
+              </li>
+              <li
+                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                onClick={() => {
+                  setLocation({
+                    locationName: "MadDog Bistro & Bar",
+                    locationId: "mdb",
+                  });
+                  setOpen(!open);
+                }}
+              >
+                MadDog Bistro & Bar
+              </li>
+              {/* <li
+                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                onClick={() => {
+                  setLocation({
                     locationName: "San Fransisco",
                     locationId: "sf",
                   });
@@ -99,8 +123,8 @@ const NavBar = () => {
                 }}
               >
                 San Franciso
-              </li>
-              <li
+              </li> */}
+              {/* <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
                   setLocation({
@@ -111,8 +135,8 @@ const NavBar = () => {
                 }}
               >
                 Singapore
-              </li>
-              <li
+              </li> */}
+              {/* <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 // className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover:text-black border-primary-content flex-row justify-start"
                 onClick={() => {
@@ -124,8 +148,8 @@ const NavBar = () => {
                 }}
               >
                 India
-              </li>
-              <li
+              </li> */}
+              {/* <li
                 className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                 onClick={() => {
                   setLocation({
@@ -136,7 +160,7 @@ const NavBar = () => {
                 }}
               >
                 China
-              </li>
+              </li> */}
             </ul>
           )}
         </div>
