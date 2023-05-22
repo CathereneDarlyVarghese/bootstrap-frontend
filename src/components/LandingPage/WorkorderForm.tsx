@@ -57,7 +57,7 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
             progress: undefined,
             theme: "light",
           });
-          navigate(`/location?name=${data.location}`); // Navigate to the page of the location
+          // navigate(`/location?name=${data.location}`); // Navigate to the page of the location
         })
         .catch((error) => {
           throw new Error(error);

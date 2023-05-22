@@ -41,7 +41,7 @@ const NavBar = () => {
     <div className="navbar bg-blue-900">
       <div className="flex-1">
         <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
-          Dube
+          Bootstrap App
         </a>
       </div>
       <div className="flex-none gap-5 pr-5">
@@ -112,55 +112,6 @@ const NavBar = () => {
               >
                 MadDog Bistro & Bar
               </li>
-              {/* <li
-                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                onClick={() => {
-                  setLocation({
-                    locationName: "San Fransisco",
-                    locationId: "sf",
-                  });
-                  setOpen(!open);
-                }}
-              >
-                San Franciso
-              </li> */}
-              {/* <li
-                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                onClick={() => {
-                  setLocation({
-                    locationName: "Singapore",
-                    locationId: "sg",
-                  });
-                  setOpen(!open);
-                }}
-              >
-                Singapore
-              </li> */}
-              {/* <li
-                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                // className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover:text-black border-primary-content flex-row justify-start"
-                onClick={() => {
-                  setLocation({
-                    locationName: "India",
-                    locationId: "in",
-                  });
-                  setOpen(!open);
-                }}
-              >
-                India
-              </li> */}
-              {/* <li
-                className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                onClick={() => {
-                  setLocation({
-                    locationName: "China",
-                    locationId: "cn",
-                  });
-                  setOpen(!open);
-                }}
-              >
-                China
-              </li> */}
             </ul>
           )}
         </div>

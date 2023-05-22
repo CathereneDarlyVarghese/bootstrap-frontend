@@ -7,6 +7,7 @@ import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
 import { addInventory } from "services/apiServices";
 import { RadioButton } from "@ui5/webcomponents-react";
+import { toast } from "react-toastify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const navigate = useNavigate();
@@ -39,9 +40,25 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       const imageLocation = await uploadFiletoS3(file, "inventory");
       console.log(imageLocation);
       data.imageS3 = imageLocation.location;
-      await addInventory(token, data);
+      await addInventory(token, data)
+        .then(() => {
+          toast.success("Asset Added Succesfully (Please Refresh)", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          // navigate(`/location?name=${data.location}`); // Navigate to the page of the location
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
     } catch (error) {
-      alert("something went wrong!");
+      alert("Something went wrong!");
     }
   };
 
@@ -143,8 +160,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     setData((curr) => ({ ...curr, location: e.target.value }));
                   }}
                   // value={data.location}
-                  // placeholder="Select location"
                 >
+                  <option value="" disabled selected hidden>
+                    Select Location
+                  </option>
                   <option value="tsd">The Spiffy Dapper</option>
                   <option value="mdb">MadDog Bistro & Bar</option>
                 </select>
@@ -155,7 +174,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <WorkorderButton
                   title="Submit"
                   workPending={false}
-                  onClick={handleSubmit}
+                  onClick={() => {
+                    console.log("Asset Submitted");
+                  }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}
                 />
