@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import WorkorderButton from "components/widgets/WorkorderButton";
+import WorkOrderButton from "components/widgets/WorkOrderButton";
 import DubeButton from "components/widgets/Button";
 import PendingOrders from "./PendingOrders";
 
@@ -18,7 +18,7 @@ const AssetDetails = ({
   cardTitle,
   badgeText,
   DescriptionText,
-  openWorkorderForm,
+  openWorkOrderForm,
   pendingOrderDetails,
 }) => {
   return (
@@ -55,10 +55,10 @@ const AssetDetails = ({
           </div>
 
           <div className="card-actions">
-            <WorkorderButton
-              title="Add Work Order"
+            <WorkOrderButton
+              title="Add Work Orders"
               workPending={true}
-              onClick={openWorkorderForm}
+              onClick={openWorkOrderForm}
               buttonColor={"bg-blue-900"}
               hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
             />
@@ -122,7 +122,7 @@ export default AssetDetails;
 //   modalOpen,
 //   setModalopen,
 //   modalImage,
-//   openWorkorderForm,
+//   openWorkOrderForm,
 // }) => {
 //   const openModal = () => {
 //     modalOpen(true);
@@ -200,10 +200,10 @@ export default AssetDetails;
 //               diam sodales odio eget nec nibh dolor. At sit commodo proin
 //               pretium senectus sed ipsum id. dolor sit amet consectetur
 //             </p>
-//             <WorkorderButton
+//             <WorkOrderButton
 //               title="Add Work Order"
 //               workPending={true}
-//               onClick={openWorkorderForm}
+//               onClick={openWorkOrderForm}
 //               buttonColor={"bg-blue-900"}
 //               hoverColor={"hover:bg-blue-900"}
 //             />

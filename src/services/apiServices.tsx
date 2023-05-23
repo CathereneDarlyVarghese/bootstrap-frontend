@@ -101,6 +101,27 @@ export async function addWorkOrder(
   }
 }
 
+export async function deleteInventory(
+  accessToken: string,
+  id: string
+): Promise<void> {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  try {
+    const url = `${process.env.REACT_APP_BASE_URL}/protected/inventory/${id}`;
+    await axios.delete(url, config);
+    console.log(`Deleted inventory with id: ${id}`);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function updateWorkOrderStatus(
   accessToken: string,
   inventoryId: string,

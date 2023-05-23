@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";
-import WorkorderButton from "components/widgets/WorkorderButton";
+import WorkorderButton from "components/widgets/WorkOrderButton";
 import { useNavigate } from "react-router-dom";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
 import { Asset } from "types";
@@ -34,7 +33,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     workOrders: [],
     type: AssetTypes.Appliances,
   });
-
   const handleSubmit = async () => {
     console.log(data);
     setAddAssetOpen(false);
@@ -54,15 +52,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             progress: undefined,
             theme: "light",
           });
-          data.name = "";
-          data.imageS3 = null;
           // navigate(`/location?name=${data.location}`); // Navigate to the page of the location
         })
         .catch((error) => {
           throw new Error(error);
         });
     } catch (error) {
-      alert("Something went wrong! Please fill all the fields");
+      alert("Something went wrong!");
     }
   };
 
@@ -106,7 +102,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             }}
           >
             <div className="p-5 bg-blue-900 flex flex-row">
-              <h3 className="font-bold text-white font-bold">Add Assets</h3>
+              <h3 className="font-bold text-white">Add Assets</h3>
               <svg
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +121,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             <div className="flex flex-col p-5">
               <input
                 type="text"
-                required
                 id="name"
                 placeholder="Name"
                 onChange={(e) =>
@@ -150,7 +145,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               >
                 <input
                   type="file"
-                  required
                   onChange={(e) => setFile(e.target.files[0])}
                   className="block w-full text-lg text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
                   style={{}}

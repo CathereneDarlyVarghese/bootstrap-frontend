@@ -40,7 +40,7 @@ const NavBar = () => {
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
+        <a onClick={() => {navigate("/home")}} className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
           Bootstrap App
         </a>
       </div>
@@ -134,17 +134,6 @@ const NavBar = () => {
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li>
-                <a className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100">
-                  Profile
-                  <span className="badge bg-blue-800 border-none">New</span>
-                </a>
-              </li>
-              <li>
-                <a className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100">
-                  Settings
-                </a>
-              </li>
               <li>
                 <a
                   className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"

@@ -25,8 +25,12 @@ import awsConfig from "aws-exports";
 import Home from "components/AddLocations/Locationlist";
 import { useEffect, useState } from "react";
 import NavBar from "components/NavBar";
+import { ToastContainer } from "react-toastify";
 
 import ListsLayout from "components/LandingPage/ListsLayout";
+import LoginPage from "components/LoginPage/LoginPage";
+import { RedirectFunction } from "react-router-dom";
+import AddWorkOrder from "components/AddWorkOrder/AddWorkOrder";
 
 Amplify.configure(awsConfig);
 
@@ -79,7 +83,8 @@ function AppContent() {
             <Route path="/add-documents" element={<AddDocuments />} />
             <Route path="/scan" element={<ScanInventory />} />
             {/* <Route path="/" element={<Home />} /> */}
-            <Route path="/" element={<ListsLayout searchType="Asset" />} />
+            <Route path="/home" element={<ListsLayout searchType="Asset" />} />
+            <Route path="/add-workorder" element={<AddWorkOrder />} />
           </Routes>
         </div>
       </DynamicPage>
@@ -90,7 +95,22 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/*" element={<AppContent />} />
+      </Routes>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Router>
   );
 }
