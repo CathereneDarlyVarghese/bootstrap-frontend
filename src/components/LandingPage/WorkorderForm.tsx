@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import WorkorderButton from "components/widgets/WorkorderButton";
 
 import { uploadFiletoS3 } from "utils";
 import { AssetTypes } from "enums";
 import { Asset } from "types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
+import { addWorkOrder } from "services/apiServices";
+import { WorkOrder } from "types";
+import { WorkOrderStatuses, WorkOrderTypes } from "../../enums";
 
 const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
   const [image, setImage] = useState(null);
@@ -17,51 +20,37 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
-  const [data, setData] = useState<Asset>({
-    organization: {
-      name: "testorg1",
-      id: "2",
-      members: [],
-    },
-    orgId: "2",
-    audit: {
-      createdAt: "test",
-      createdBy: "test",
-    },
-    id: "2",
+  const [inventoryId, setInventoryId] = useState<string | undefined>("");
+
+  const [data, setData] = useState<WorkOrder>({
+    Id: "",
     name: "",
-    imageS3: "",
-    location: "tsd",
-    workOrders: [],
-    type: AssetTypes.Appliances,
+    image: "",
+    description: "",
+    type: WorkOrderTypes.Appliances,
+    status: WorkOrderStatuses.Open,
   });
 
   const handleSubmit = async () => {
     console.log(data);
     try {
-      const imageLocation = await uploadFiletoS3(file, "inventory");
-      console.log(imageLocation);
-      data.imageS3 = imageLocation.location;
-      console.log("Location on submit ==>>", data.location);
-      await addInventory(token, data)
-        .then(() => {
-          toast.success("Asset Added Succesfully", {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          // navigate(`/location?name=${data.location}`); // Navigate to the page of the location
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      const imageLocation = await uploadFiletoS3(file, "work-order");
+      console.log("Image Location ==>>", imageLocation);
+      data.image = imageLocation.location;
+      await addWorkOrder(token, inventoryId, data);
+      toast.success("Work Order added Successfuly", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       alert("something went wrong!");
     }
@@ -70,7 +59,10 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
-  }, []);
+    const assetId = location.state?.assetId as string;
+    setInventoryId(assetId); // set inventoryId from location state
+    console.log("assetId ==>>", assetId); // log the assetId
+  }, [location.state]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -129,7 +121,7 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
             <div className="flex flex-col p-5">
               <input
                 type="text"
-                name="name"
+                required
                 placeholder="Name"
                 className="input input-bordered input-info w-full my-3"
                 onChange={(e) =>
@@ -137,26 +129,48 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
                 }
                 value={data.name}
               />
-              <input
+              {/* <input
                 type="text"
                 name="type"
                 placeholder="Type"
                 className="input input-bordered input-info w-full my-5"
                 onChange={handleChange}
                 value={data.type}
+              /> */}
+              {/* <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Type
+              </label> */}
+              <input
+                required
+                onChange={(e) =>
+                  setData((curr) => ({
+                    ...curr,
+                    type: e.target.value as WorkOrderTypes,
+                  }))
+                }
+                value={data.type}
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 my-5"
+                type="text"
               />
               <textarea
+                onChange={(e) =>
+                  setData((curr) => ({ ...curr, description: e.target.value }))
+                }
+                required
                 className="textarea textarea-bordered textarea-info my-3"
                 placeholder="Description"
+                value={data.description}
               />
-              <label className="btn bg-blue-900 hover:bg-blue-900 w-full">
-                {image ? image.name : "Select image"}
+              <label
+                htmlFor="file_input"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 <input
                   type="file"
-                  placeholder="Image"
-                  className="hidden w-full my-5"
-                  accept="image/*"
+                  required
                   onChange={(e) => setFile(e.target.files[0])}
+                  className="block w-full text-lg text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
+                  style={{}}
                 />
               </label>
             </div>
@@ -165,7 +179,9 @@ const WorkorderForm = ({ formOpen, setFormopen, notific }) => {
                 <WorkorderButton
                   title="Submit"
                   workPending={false}
-                  onClick={notific}
+                  onClick={() => {
+                    console.log("Submit button clicked");
+                  }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}
                 />

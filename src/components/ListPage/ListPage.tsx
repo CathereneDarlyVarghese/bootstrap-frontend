@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FC, useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   AvatarSize,
@@ -17,188 +17,40 @@ import {
   Title,
   Toolbar,
   ToolbarSpacer,
-  ToolbarDesign
-} from '@ui5/webcomponents-react'; // loads ui5-button wrapped in a ui5-webcomponents-react component
-import { Asset, WorkOrder } from 'types';
-import { AssetTypes, WorkOrderStatuses, WorkOrderTypes } from 'enums';
-import useAssetTypeNames from 'hooks/useAssetTypeNames';
-import WorkOrderBadge from 'components/WorkOrderBadge';
-import { getInventory } from 'services/apiServices';
-import { Auth } from 'aws-amplify';
-import { useSearchParams } from 'react-router-dom';
-
-const documents: Asset[] = [
-  {
-    orgId: '1',
-    id: 'A1',
-    name: 'Asset 1',
-    location: 'Location A',
-    organization: {
-      id: '1',
-      name: 'Organization 1',
-      members: [
-        { id: '1', name: 'Member 1', orgId: 'A1', cognitoId: 'A1' },
-        { id: '2', name: 'Member 2', orgId: 'A1', cognitoId: 'A1' }
-      ]
-    },
-    audit: {
-      createdAt: '2023-01-01',
-      createdBy: 'Member 1'
-    },
-    workOrders: [
-      {
-        id: '1',
-        name: 'WorkOrder 1',
-        image: 'https://example.com/workorder1.jpg',
-        description: 'WorkOrder 1 Description',
-        type: WorkOrderTypes.Appliances,
-        status: WorkOrderStatuses.Closed
-      }
-    ],
-    type: AssetTypes.Appliances,
-    imageS3: 'https://example.com/image1.jpg'
-  },
-  {
-    orgId: '1',
-    id: 'A2',
-    name: 'Asset 2',
-    location: 'Location B',
-    organization: {
-      id: '1',
-      name: 'Organization 1',
-      members: [
-        { id: '1', name: 'Member 1', orgId: 'A2', cognitoId: 'A2' },
-        { id: '2', name: 'Member 2', orgId: 'A2', cognitoId: 'A2' }
-      ]
-    },
-    audit: {
-      createdAt: '2023-01-15',
-      createdBy: 'Member 2'
-    },
-    workOrders: [],
-    type: AssetTypes.Appliances,
-    imageS3: 'https://example.com/image2.jpg'
-  },
-  {
-    orgId: '2',
-    id: 'A3',
-    name: 'Asset 3',
-    location: 'Location A',
-    organization: {
-      id: '2',
-      name: 'Organization 2',
-      members: [
-        { id: '3', name: 'Member 3', orgId: 'A3', cognitoId: 'A3' },
-        { id: '4', name: 'Member 4', orgId: 'A3', cognitoId: 'A3' }
-      ]
-    },
-    audit: {
-      createdAt: '2023-02-01',
-      createdBy: 'Member 3'
-    },
-    workOrders: [
-      {
-        id: '2',
-        name: 'WorkOrder 2',
-        image: 'https://example.com/workorder2.jpg',
-        description: 'WorkOrder 2 Description',
-        type: WorkOrderTypes.Appliances,
-        status: WorkOrderStatuses.Open
-      }
-    ],
-    type: AssetTypes.Appliances,
-    imageS3: 'https://example.com/image3.jpg'
-  },
-  {
-    orgId: '2',
-    id: 'A4',
-    name: 'Asset 4',
-    location: 'Location C',
-    organization: {
-      id: '2',
-      name: 'Organization 2',
-      members: [
-        { id: '3', name: 'Member 3', orgId: 'A4', cognitoId: 'A4' },
-        { id: '4', name: 'Member 4', orgId: 'A4', cognitoId: 'A4' }
-      ]
-    },
-    audit: {
-      createdAt: '2023-02-15',
-      createdBy: 'Member 4'
-    },
-    workOrders: [
-      {
-        id: '3',
-        name: 'WorkOrder 3',
-        image: 'https://example.com/workorder3.jpg',
-        description: 'WorkOrder 3 Description',
-        type: WorkOrderTypes.Appliances,
-        status: WorkOrderStatuses.Closed
-      }
-    ],
-    type: AssetTypes.Appliances,
-    imageS3: 'https://example.com/image4.jpg'
-  },
-  {
-    orgId: '2',
-    id: 'A5',
-    name: 'Asset 5',
-    location: 'Location D',
-    organization: {
-      id: '2',
-      name: 'Organization 2',
-      members: [
-        { id: '3', name: 'Member 3', orgId: 'A5', cognitoId: 'A5' },
-        { id: '4', name: 'Member 4', orgId: 'A5', cognitoId: 'A5' }
-      ]
-    },
-    audit: {
-      createdAt: '2023-03-01',
-      createdBy: 'Member 3'
-    },
-    workOrders: [
-      {
-        id: '4',
-        name: 'WorkOrder 4',
-        image: 'https://example.com/workorder4.jpg',
-        description: 'WorkOrder 4 Description',
-        type: WorkOrderTypes.Appliances,
-        status: WorkOrderStatuses.Open
-      },
-      {
-        id: '5',
-        name: 'WorkOrder 5',
-        image: 'https://example.com/workorder5.jpg',
-        description: 'WorkOrder 5 Description',
-        type: WorkOrderTypes.Appliances,
-        status: WorkOrderStatuses.Closed
-      }
-    ],
-    type: AssetTypes.Appliances,
-    imageS3: 'https://example.com/image5.jpg'
-  }
-];
-
-const specificLocation = 'sg';
+  ToolbarDesign,
+  TitleLevel,
+} from "@ui5/webcomponents-react"; // loads ui5-button wrapped in a ui5-webcomponents-react component
+import { Asset, WorkOrder } from "types";
+import { AssetTypes, WorkOrderStatuses, WorkOrderTypes } from "enums";
+import useAssetTypeNames from "hooks/useAssetTypeNames";
+import WorkOrderBadge from "components/WorkOrderBadge";
+import { getInventory, updateWorkOrderStatus } from "services/apiServices";
+import { Auth } from "aws-amplify";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import QRCode from "components/qrCode";
 
 interface ListPageProps {}
 
 const ListPage: FC<ListPageProps> = () => {
   const assetNames = useAssetTypeNames();
   const [assets, setAssets] = useState<Asset[]>([]);
-
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [assetId, setAssetId] = useState<Asset['id']>(null);
-  const [woId, setWoId] = useState<WorkOrder['id']>(null);
+  const [assetId, setAssetId] = useState<Asset["id"]>(null);
+  const [woId, setWoId] = useState<WorkOrder["Id"]>(null);
+
+  // useEffect(() => {
+  //   // console.log("Asset id changed ==>>", assetId);
+  // }, [assetId]);
 
   useEffect(() => {
-    const data = window.localStorage.getItem('sessionToken');
-    console.log(data);
+    // Retrieve session token from local storage
+    const data = window.localStorage.getItem("sessionToken");
+    setAccessToken(data);
     (async () => {
-      await Auth.currentAuthenticatedUser().then((user) => {
-        console.log(user.token);
-      });
+      await Auth.currentAuthenticatedUser().then((user) => {});
 
       const assetsData = await getInventory(data);
       console.log(assetsData);
@@ -208,12 +60,13 @@ const ListPage: FC<ListPageProps> = () => {
 
   const asset = useMemo(() => assets.find((a) => a.id === assetId), [assetId]);
   const workOrder = useMemo(
-    () => asset && asset.workOrders.find((wo) => wo.id === woId),
+    () => asset && asset.workOrders.find((wo) => wo.Id === woId),
     [asset, woId]
   );
 
+  // console.log("unfiltered assets ==>>", assets);
   const [searchParams] = useSearchParams();
-  const location = searchParams.get('name');
+  const location = searchParams.get("name");
 
   const filteredAssets = useMemo(
     //() => documents.filter((a) => a.location === location),
@@ -221,7 +74,9 @@ const ListPage: FC<ListPageProps> = () => {
     [assets]
   );
 
-  console.log('fiteredAssets ==>>', filteredAssets);
+  console.log("fiteredAssets ==>>", filteredAssets);
+
+  // console.log("Selected workOrder ==>>", workOrder);
 
   const layout = useMemo(() => {
     if (workOrder) return FCLLayout.ThreeColumnsEndExpanded;
@@ -242,7 +97,7 @@ const ListPage: FC<ListPageProps> = () => {
                 <ToolbarSpacer />
                 <Button
                   className="btn mr-6 btn-sm"
-                  onClick={() => navigate('/add')}
+                  onClick={() => navigate("/add")}
                 >
                   Add
                 </Button>
@@ -268,7 +123,7 @@ const ListPage: FC<ListPageProps> = () => {
                 <ToolbarSpacer />
                 <Button
                   className="btn mr-6 btn-sm"
-                  onClick={() => navigate('/add-documents')}
+                  onClick={() => navigate("/add-documents")}
                 >
                   Add
                 </Button>
@@ -276,7 +131,7 @@ const ListPage: FC<ListPageProps> = () => {
             }
             onItemClick={(e) => setAssetId(e.detail.item.dataset.aid)}
           >
-            {documents
+            {/* {documents
               .filter((a) => a.location === specificLocation)
               .map((a) => (
                 <StandardListItem
@@ -287,7 +142,7 @@ const ListPage: FC<ListPageProps> = () => {
                 >
                   {a.name}
                 </StandardListItem>
-              ))}
+              ))} */}
           </List>
         </>
       }
@@ -303,40 +158,69 @@ const ListPage: FC<ListPageProps> = () => {
                 onClick={() => setAssetId(null)}
               />
             </Toolbar>
-            <Toolbar style={{ height: '200px' }}>
+            <Toolbar style={{ height: "200px" }}>
               <Avatar
                 icon="video"
                 size={AvatarSize.XL}
-                style={{ marginLeft: '12px' }}
+                style={{ marginLeft: "12px" }}
               >
                 {asset.imageS3 && <img src={asset.imageS3} alt="" />}
               </Avatar>
               <FlexBox
                 direction={FlexBoxDirection.Column}
-                style={{ marginLeft: '6px' }}
+                style={{ marginLeft: "6px" }}
               >
                 <FlexBox>
                   <Label>Name:</Label>
-                  <Text style={{ marginLeft: '2px' }}>{asset.name}</Text>
+                  <Text style={{ marginLeft: "2px" }}>{asset.name}</Text>
                 </FlexBox>
                 <FlexBox>
-                  <Label>Genre:</Label>
-                  <Text style={{ marginLeft: '2px' }}>
+                  <Label>Type:</Label>
+                  <Text style={{ marginLeft: "2px" }}>
                     {assetNames[asset.type]}
                   </Text>
                 </FlexBox>
               </FlexBox>
             </Toolbar>
             <List
-              headerText="Work Orders"
-              onItemClick={(e) => setWoId(e.detail.item.dataset.woid)}
+              header={
+                <Toolbar design={ToolbarDesign.Transparent}>
+                  <Title>Work Orders</Title>
+                  <ToolbarSpacer />
+                  <QRCode
+                    url={`https://old-cell-1004.on.fleek.co/components/AssetDetails?assetId=${encodeURIComponent(
+                      assetId
+                    )}`}
+                  />
+
+                  <Link
+                    to={`/components/AssetDetails?assetId=${encodeURIComponent(
+                      assetId
+                    )}`}
+                  >
+                    <Button className="btn mr-6 btn-sm">Asset Details</Button>
+                  </Link>
+                  <Button
+                    className="btn mr-6 btn-sm"
+                    onClick={() =>
+                      navigate("/add-workorder", { state: { assetId } })
+                    }
+                  >
+                    Add
+                  </Button>
+                </Toolbar>
+              }
             >
               {asset.workOrders.map((wo) => (
                 <StandardListItem
-                  key={wo.id}
+                  key={wo.Id}
                   description={wo.description}
-                  data-woid={wo.id}
-                  selected={woId === wo.id}
+                  selected={woId === wo.Id}
+                  onClick={() => {
+                    setWoId(wo.Id);
+                    console.log("Clicked workOrder id ==>>", woId, wo.Id);
+                    console.log("WorkOrder Array ==", asset.workOrders);
+                  }}
                 >
                   {wo.name}
                   <WorkOrderBadge workOrder={wo} />
@@ -349,9 +233,50 @@ const ListPage: FC<ListPageProps> = () => {
       endColumn={
         workOrder && (
           <>
-            <Toolbar design={ToolbarDesign.Solid}>
-              <Title>{workOrder.name}</Title>
+            <Toolbar
+              design={ToolbarDesign.Solid}
+              style={{ backgroundColor: "#f5f5f5" }}
+            >
+              <Title level={TitleLevel.H2} style={{ color: "#0a6ed1" }}>
+                {workOrder.name}
+              </Title>
               <WorkOrderBadge workOrder={workOrder} />
+              <ToolbarSpacer />
+              <Card>
+                {workOrder.status === WorkOrderStatuses.Open && (
+                  <Button
+                    className="btn mr-6 btn-sm"
+                    onClick={async () => {
+                      if (
+                        window.confirm(
+                          "Are you sure to mark this work order as done"
+                        )
+                      ) {
+                        await updateWorkOrderStatus(
+                          accessToken, // Replace with your accessToken
+                          assetId, // Replace with your inventoryId
+                          workOrder.Id,
+                          WorkOrderStatuses.Closed
+                        );
+                        toast.success("Successfully marked as Done", {
+                          position: "bottom-left",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                        // You might want to refetch the work order here to ensure the UI is up-to-date
+                        // setWorkOrder(updatedWorkOrder);
+                      }
+                    }}
+                  >
+                    Mark as Done
+                  </Button>
+                )}
+              </Card>
               <ToolbarSpacer />
               <Button
                 icon="decline"
@@ -359,8 +284,26 @@ const ListPage: FC<ListPageProps> = () => {
                 onClick={() => setWoId(null)}
               />
             </Toolbar>
-            <Card>
-              <Text style={{ padding: 16 }}>{workOrder.description}</Text>
+            <Card
+              style={{
+                margin: "1rem",
+                borderRadius: "12px",
+                boxShadow: "0px 4px 20px 0px rgba(0,0,0,0.15)",
+              }}
+            >
+              {workOrder.image && (
+                <img
+                  src={workOrder.image}
+                  alt=""
+                  style={{ width: "100%", borderRadius: "12px 12px 0 0" }}
+                />
+              )}
+              <Text style={{ padding: "1rem", lineHeight: "1.6" }}>
+                <strong>Type:</strong> {workOrder.type}
+              </Text>
+              <Text style={{ padding: "1rem", lineHeight: "1.6" }}>
+                <strong>Work Order Description:</strong> {workOrder.description}
+              </Text>
             </Card>
           </>
         )

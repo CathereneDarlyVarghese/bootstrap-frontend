@@ -30,7 +30,7 @@ export interface Audit {
 }
 
 export interface WorkOrder {
-  id: string;
+  Id: string;
   name: string;
   image: string;
   description: string;
