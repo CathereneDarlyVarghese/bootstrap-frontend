@@ -13,6 +13,8 @@ import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import SearchIcon from "../../icons/circle2017.png";
+
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [formOpen, setFormOpen] = useState(false);
@@ -81,20 +83,30 @@ const ListsLayout = (props: any) => {
         newestOnTop={false}
         closeOnClick
       />
-      <div
-        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto bg-slate-300"
-        id="style-7"
-      >
-        <div style={{ display: "flex", flexDirection: "row" }}>
+      <div className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto" id="style-7">
+        <div
+          style={{ display: "flex", flexDirection: "row" }}
+          className="items-center justify-center "
+        >
           {/* Search input field */}
-          <input
-            type="text"
-            placeholder={"Search " + props.searchType}
-            className="input input-bordered w-4/5 ml-10 p-5 bg-neutral-content placeholder-blue-900 text-black border-blue-900"
-          ></input>
+          <div className="flex flex-row items-center bg-gray-100 rounded-xl">
+            <button>
+              <img
+                src={SearchIcon}
+                className="h-fit justify-center items-center ml-1"
+              />
+            </button>
+
+            <input
+              type="text"
+              placeholder={"Search " + props.searchType}
+              className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 border-none"
+            />
+          </div>
+
           {/* Add asset button */}
           <button
-            className="btn w-20 h-fit mr-10 ml-5 text-sm text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            className="btn w-fit h-fit mr-5 ml-3 text-xs text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
             {"+ Add " + props.searchType}

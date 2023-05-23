@@ -1,82 +1,75 @@
-/* .hide-scrollbar {
+.hide-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
-} */
+}
 
-/* .hide-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar {
   width: 0px;
-  background: transparent;
-} */
-
-header
-{
-	font-family: 'Lobster', cursive;
-	text-align: center;
-	font-size: 25px;	
+  background-color: transparent;
+  display: none;
 }
 
-#info
-{
-	font-size: 18px;
-	color: #555;
-	text-align: center;
-	margin-bottom: 25px;
+header {
+  font-family: "Lobster", cursive;
+  text-align: center;
+  font-size: 25px;
 }
 
-a{
-	color: #074E8C;
+#info {
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-.scrollbar
-{
-	margin-left: 30px;
-	float: left;
-	height: 300px;
-	width: 65px;
-	background: #F5F5F5;
-	overflow-y: scroll;
-	margin-bottom: 25px;
+a {
+  color: #074e8c;
 }
 
-.force-overflow
-{
-	min-height: 450px;
+.scrollbar {
+  margin-left: 30px;
+  float: left;
+  height: 300px;
+  width: 65px;
+  background: #fff;
+  overflow-y: scroll;
+  margin-bottom: 25px;
 }
 
-#wrapper
-{
-	text-align: center;
-	width: 500px;
-	margin: auto;
+.force-overflow {
+  min-height: 450px;
 }
 
-/*
- *  STYLE 7
- */
+#wrapper {
+  text-align: center;
+  width: 500px;
+  margin: auto;
+}
 
- #style-7::-webkit-scrollbar-track
- {
+/* STYLE 7 */
+
+#style-7::-webkit-scrollbar-track {
   overflow: overlay;
-   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-   background-color: transparent;
-   border-radius: 10px;
-   margin: 5px;
- }
- 
- #style-7::-webkit-scrollbar
- {
-   width: 10px;
-   background-color: transparent;
- }
- 
- #style-7::-webkit-scrollbar-thumb
- {
-   border-radius: 10px;
-   background-image: -webkit-gradient(linear,
-                      left bottom,
-                      left top,
-                      color-stop(0.44, rgb(122,153,217)),
-                      color-stop(0.72, rgb(73,125,189)),
-                      color-stop(0.86, rgb(28,58,148)));
- }
+  -webkit-box-shadow: inset 0 0 6px rgb(255, 255, 255);
+  background-color: transparent;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+#style-7::-webkit-scrollbar {
+  width: 10px;
+  background-color: transparent;
+}
+
+#style-7::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.44, rgb(255 255 255)),
+    color-stop(0.72, rgb(255 255 255)),
+    color-stop(0.86, rgb(255 255 255))
+  );
+}
