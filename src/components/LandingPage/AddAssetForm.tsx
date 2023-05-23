@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import WorkorderButton from "components/widgets/WorkOrderButton";
+import WorkOrderButton from "components/widgets/WorkOrderButton";
 import { useNavigate } from "react-router-dom";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
 import { Asset } from "types";
@@ -171,7 +171,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             </div>
             <div className="modal-action p-5 flex justify-center">
               <div>
-                <WorkorderButton
+                <WorkOrderButton
                   title="Submit"
                   workPending={false}
                   onClick={() => {

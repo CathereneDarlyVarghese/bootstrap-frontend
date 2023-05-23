@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 
-const WorkorderForm = ({ formOpen, setFormOpen, notific }) => {
+const WorkOrderForm = ({ formOpen, setFormOpen, notific }) => {
   const [image, setImage] = useState(null);
 
   const handleImageChange = (event) => {
@@ -178,4 +178,4 @@ const WorkorderForm = ({ formOpen, setFormOpen, notific }) => {
   );
 };
 
-export default WorkorderForm;
+export default WorkOrderForm;
