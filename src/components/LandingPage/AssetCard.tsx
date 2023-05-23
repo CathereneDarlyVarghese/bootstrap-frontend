@@ -6,7 +6,7 @@ import PinIcon from "components/widgets/PinIcon";
 const AssetCard = (props: any) => {
   return (
     <div
-      className="flex flex-row justify-between card card-side border border-blue-900 w-auto my-2 mx-2 p-5 bg-slate-100 max-h-48 overflow-y-auto"
+      className="flex flex-row justify-between card card-side border border-blue-700 w-auto my-2 p-5 bg-slate-100 max-h-40 overflow-y-auto"
       id="style-7"
     >
       <figure>
@@ -21,11 +21,11 @@ const AssetCard = (props: any) => {
         id="style-7"
       >
         <div className="flex flex-row-reverse">
-          <button className="btn btn-xs btn-primary w-20 bg-blue-900 border-white hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none">
+          <button className="badge text-blue-700 font-bold mr-auto bg-gray-200 border-white border-none hover:bg-gray-200 uppercase">
             {props.assetType}
           </button>
         </div>
-        <h1 className="flex flex-row-reverse text-blue-900 text-lg font-bold">
+        <h1 className="flex ml-2 text-blue-900 text-lg font-bold">
           {props.assetName}
         </h1>
         <div className="flex flex-row items-start">

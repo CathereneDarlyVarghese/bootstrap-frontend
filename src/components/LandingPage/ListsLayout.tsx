@@ -131,10 +131,10 @@ const ListsLayout = (props: any) => {
           <input
             type="text"
             placeholder={"Search " + props.searchType}
-            className="input input-bordered w-4/5 ml-10 p-5 bg-neutral-content placeholder-blue-900 text-black border-blue-900"
+            className="input input-bordered w-4/5 p-5 bg-neutral-content placeholder-blue-900 text-blue-900 border-blue-900 placeholder-blue-700"
           ></input>
           <button
-            className="btn w-20 h-fit mr-10 ml-5 text-sm text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            className="btn w-fit h-fit ml-5 text-sm text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
             {"+ Add " + props.searchType}
