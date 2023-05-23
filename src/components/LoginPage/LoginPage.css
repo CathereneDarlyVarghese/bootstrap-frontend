@@ -1,0 +1,16 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-page h1 {
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+.login-page p {
+  margin-bottom: 40px;
+}
