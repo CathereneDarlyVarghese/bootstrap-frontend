@@ -89,7 +89,7 @@ const ListsLayout = (props: any) => {
       >
         <div
           style={{ display: "flex", flexDirection: "row" }}
-          className="items-center justify-center "
+          className="items-center justify-center"
         >
           {/* Search input field */}
           <div className="flex flex-row items-center bg-gray-100 rounded-xl w-full">
@@ -110,7 +110,7 @@ const ListsLayout = (props: any) => {
 
           {/* Add asset button */}
           <button
-            className="btn w-28 h-fit mr-5 ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
             {/* {"+ Add " + props.searchType} */}+ Add
