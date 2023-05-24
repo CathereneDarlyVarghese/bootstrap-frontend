@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import PinIcon from "components/widgets/PinIcon";
-import MapIcon from "../../icons/XMLID_214_.svg";
+import MapIcon from "../../icons/mapIcon.svg";
 
 const AssetCard = (props: any) => {
   return (
