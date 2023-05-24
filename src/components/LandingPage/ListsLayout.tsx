@@ -99,17 +99,18 @@ const ListsLayout = (props: any) => {
 
             <input
               type="text"
-              placeholder={"Search " + props.searchType}
-              className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 border-none"
+              // placeholder={"Search " + props.searchType}
+              placeholder="Search Appliance"
+              className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 text-sm border-none font-sans"
             />
           </div>
 
           {/* Add asset button */}
           <button
-            className="btn w-fit h-fit mr-5 ml-3 text-xs text-lowercase bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            className="btn w-fit h-fit mr-5 ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
-            {"+ Add " + props.searchType}
+            {/* {"+ Add " + props.searchType} */}+ Add
           </button>
         </div>
         {/* Render filtered asset cards */}

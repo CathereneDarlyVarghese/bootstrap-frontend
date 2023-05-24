@@ -10,11 +10,11 @@ const AssetCard = (props: any) => {
       className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar"
       // id="style-7"
     >
-      <figure>
+      <figure className="rounded-xl">
         <img
           src={props.imageLocation}
           alt={props.imagePlaceholder}
-          className="rounded-xl h-32"
+          className="h-32"
         />
       </figure>
       <div
@@ -26,13 +26,13 @@ const AssetCard = (props: any) => {
             {props.assetType}
           </button>
         </div>
-        <h1 className="flex ml-2 text-blue-900 text-lg font-bold">
+        <h1 className="flex ml-2 text-gray-800 text-lg font-bold font-sans">
           {props.assetName}
         </h1>
         <div className="flex flex-row items-center">
           <img src={MapIcon} className="h-6 mr-3 ml-2" />
           {/* <PinIcon /> */}
-          <p className="text-sm text-start /*truncate*/">
+          <p className="text-sm text-start text-gray-500 /*truncate*/">
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
