@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
-const WorkOrderForm = ({ formOpen, setFormOpen, notific }) => {
-  const [image, setImage] = useState(null);
 interface AddWorkOrderProps {assetId: Asset["id"]}
 
 const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {

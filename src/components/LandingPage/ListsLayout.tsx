@@ -4,7 +4,6 @@ import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
 
-import WorkOrderForm from "./WorkOrderForm";
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { Asset } from "types";
@@ -12,26 +11,23 @@ import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import WorkOrderForm from "./WorkOrderForm";
 
 import SearchIcon from "../../icons/circle2017.png";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
-  const [formOpen, setFormOpen] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetId, setAssetId] = useState<Asset["id"]>(null);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
 
-  //Show submit notification
-  const showNotification = () => {
-    toast.success("Submitted", { theme: "dark" });
-    setFormOpen(false);
-  };
+  // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
-  const handleFormopen = () => {
-    setFormOpen(true);
+  const handleAddWorkOrder = () => {
+    setShowWorkOrderForm(true);
   };
 
   const handleAddAssetOpen = () => {
@@ -45,7 +41,7 @@ const ListsLayout = (props: any) => {
     const init = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        console.log(userData);
+        console.log("User Data: ", userData);
         const assetsData = await getInventory(
           userData.signInUserSession.accessToken.jwtToken
         );
@@ -140,8 +136,8 @@ const ListsLayout = (props: any) => {
         {/* Render asset details */}
         {asset ? (
           <AssetDetails
+            assetId={assetId}
             pendingOrderDetails={asset.workOrders}
-            openWorkOrderForm={handleFormopen}
             cardImage={asset.imageS3}
             cardTitle={asset.name}
             badgeText={asset.type}
@@ -157,11 +153,8 @@ const ListsLayout = (props: any) => {
       </div>
 
       {/* Render work order form */}
-      <WorkOrderForm
-        formOpen={formOpen}
-        setFormOpen={setFormOpen}
-        notific={showNotification}
-      />
+      {/* <WorkOrderForm /> */}
+      {showWorkOrderForm ? <WorkOrderForm assetId={assetId}/> : ""}
       {/* Render add asset form */}
       <AddAssetForm
         addAssetOpen={addAssetOpen}

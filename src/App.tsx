@@ -30,7 +30,7 @@ import { ToastContainer } from "react-toastify";
 import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
 import { RedirectFunction } from "react-router-dom";
-import AddWorkOrder from "components/AddWorkOrder/AddWorkOrder";
+import WorkOrderForm from "components/LandingPage/WorkOrderForm";
 
 Amplify.configure(awsConfig);
 
@@ -84,7 +84,7 @@ function AppContent() {
             <Route path="/scan" element={<ScanInventory />} />
             {/* <Route path="/" element={<Home />} /> */}
             <Route path="/home" element={<ListsLayout searchType="Asset" />} />
-            <Route path="/add-workorder" element={<AddWorkOrder />} />
+            {/* <Route path="/add-workorder" element={<WorkOrderForm formOpen={true} setFormOpen={true} notific={true} />} /> */}
           </Routes>
         </div>
       </DynamicPage>
