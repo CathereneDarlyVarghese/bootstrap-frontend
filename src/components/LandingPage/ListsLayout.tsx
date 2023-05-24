@@ -83,7 +83,10 @@ const ListsLayout = (props: any) => {
         newestOnTop={false}
         closeOnClick
       />
-      <div className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto" id="style-7">
+      <div
+        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full"
+        id="style-7"
+      >
         <div
           style={{ display: "flex", flexDirection: "row" }}
           className="items-center justify-center "
@@ -107,7 +110,7 @@ const ListsLayout = (props: any) => {
 
           {/* Add asset button */}
           <button
-            className="btn w-fit h-fit mr-5 ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            className="btn w-28 h-fit mr-5 ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
             {/* {"+ Add " + props.searchType} */}+ Add
@@ -131,7 +134,7 @@ const ListsLayout = (props: any) => {
         ))}
       </div>
       <div
-        className="w-2/3 h-5/6 mx-10 rounded-xl p-2 overflow-y-auto bg-slate-300"
+        className="w-2/3 h-5/6 mx-10 rounded-xl p-2 overflow-y-auto bg-slate-300 lg:hidden"
         id="style-7"
       >
         {/* Render asset details */}
