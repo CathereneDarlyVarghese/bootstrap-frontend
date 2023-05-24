@@ -89,11 +89,11 @@ const ListsLayout = (props: any) => {
           className="items-center justify-center "
         >
           {/* Search input field */}
-          <div className="flex flex-row items-center bg-gray-100 rounded-xl">
+          <div className="flex flex-row items-center bg-gray-100 rounded-xl w-full">
             <button>
               <img
                 src={SearchIcon}
-                className="h-fit justify-center items-center ml-1"
+                className="h-fit justify-center items-center ml-3"
               />
             </button>
 

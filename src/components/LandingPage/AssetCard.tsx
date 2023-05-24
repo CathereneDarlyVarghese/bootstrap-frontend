@@ -22,7 +22,7 @@ const AssetCard = (props: any) => {
         id="style-7"
       >
         <div className="flex flex-row-reverse">
-          <button className="badge w-20 bg-gray-200 text-blue-700 font-bold capitalize border-white border-none p-3 mr-auto ml-1">
+          <button className="badge w-20 bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none p-3 mr-auto ml-1">
             {props.assetType}
           </button>
         </div>
