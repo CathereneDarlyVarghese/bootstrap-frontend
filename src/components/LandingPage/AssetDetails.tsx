@@ -4,6 +4,8 @@ import DubeButton from "components/widgets/Button";
 import PendingOrders from "./PendingOrders";
 
 import image6 from "./Images/image6.jpeg";
+import closeIcon from "../../icons/closeIcon.svg";
+import Add from "../../icons/Add.png";
 
 const workOrderStatus = {
   pending: "pending",
@@ -16,55 +18,79 @@ const dummyText =
 const AssetDetails = ({
   cardImage,
   cardTitle,
-  badgeText,
+  assetType,
   DescriptionText,
   openWorkOrderForm,
   pendingOrderDetails,
 }) => {
   return (
     <>
-      <div
-        className="w-full h-fit my-5 p-5 bg-slate-100 border-blue-900 rounded-xl"
-        // style={{ height: "100%" }}
-      >
+      <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
+        <div className="flex flex-row">
+          <h1 className="font-sans font-bold text-xl capitalize">
+            {assetType}
+          </h1>
+          <button className="ml-auto">
+            <img src={closeIcon} />
+          </button>
+        </div>
         <figure className="rounded-none">
           <img
             src={cardImage}
             alt="an image"
-            className="rounded-xl h-48 object-cover mx-auto"
+            className="rounded-xl h-48 w-fit object-cover mx-auto"
           />
         </figure>
         <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
           <div className="flex flex-row">
-            <h2 className="card-title w-2/3" style={{ color: "#232F3F" }}>
+            <h2
+              className="flex text-gray-800 text-xl font-semibold font-sans tracking-wide xl:text-sm w-2/3"
+              style={{ wordSpacing: 3 }}
+            >
               {cardTitle}
             </h2>
+
+            {/* QR Code Button
             <button className="btn btn-xs bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
               Download QR
+            </button> */}
+
+            <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none ml-auto p-4 text-md xl:text-xs">
+              {assetType}
             </button>
-            <div className="badge ml-auto uppercase bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400">
-              {badgeText}
-            </div>
           </div>
           <div>
-            <h3 className="text-black text-lg">Description:</h3>
-            <p>
-              {DescriptionText}
-              <p>{DescriptionText}</p>
-            </p>
+            <h3 className="text-blue-900 font-sans font-semibold  text-md">
+              More Information:
+            </h3>
+            <p>{DescriptionText}</p>
           </div>
 
-          <div className="card-actions">
+          <div className="card-actions flex flex-row ml-auto">
             <WorkOrderButton
-              title="Add Work Orders"
-              workPending={true}
-              onClick={openWorkOrderForm}
+              title="Delete Work Orders"
+              workPending={false}
+              onClick={() => {
+                console.log("Delete button clicked");
+              }}
               buttonColor={"bg-blue-900"}
-              hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
+              // hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
+              hoverColor={"hover:bg-blue-900"}
+            />
+            <WorkOrderButton
+              // title="+ Add Work Orders"
+              title={<img src={Add} style={{ color: "#fff" }} />}
+              workPending={false}
+              onClick={openWorkOrderForm}
+              buttonColor={"bg-transparent border-none"}
+              // hoverColor={"hover:bg-gradient-to-r from-blue-600 to-blue-400"}
+              hoverColor={"hover:bg-transparent"}
             />
           </div>
 
-          <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
+          {/* Pending Orders List */}
+
+          {/* <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
           <div className="card border overflow-auto h-fit px-5" id="style-7">
             {pendingOrderDetails.map((wo) => (
               <PendingOrders
@@ -76,38 +102,8 @@ const AssetDetails = ({
               />
             ))}
             {console.log(pendingOrderDetails)}
-
-            {/* <PendingOrders
-              assetName={"Asset Name"}
-              status={pendingOrderDetails.status}
-              description={pendingOrderDetails.name}
-              pendingImage={image6}
-            />
-            <PendingOrders
-              assetName={"Asset Name"}
-              status={workOrderStatus.closed}
-              description={dummyText}
-              pendingImage={image6}
-            />
-            <PendingOrders
-              assetName={"Asset Name"}
-              status={workOrderStatus.pending}
-              description={dummyText}
-              pendingImage={image6}
-            />
-            <PendingOrders
-              assetName={"Asset Name"}
-              status={workOrderStatus.closed}
-              description={dummyText}
-              pendingImage={image6}
-            />
-            <PendingOrders
-              assetName={"Asset Name"}
-              status={workOrderStatus.open}
-              description={dummyText}
-              pendingImage={image6}
-            /> */}
-          </div>
+          </div> */}
+          {/* Pending Orders List */}
         </div>
       </div>
     </>
