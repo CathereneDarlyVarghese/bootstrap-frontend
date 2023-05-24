@@ -2,18 +2,19 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import PinIcon from "components/widgets/PinIcon";
+import MapIcon from "../../icons/mapIcon.svg";
 
 const AssetCard = (props: any) => {
   return (
     <div
-      className="flex flex-row justify-between card card-side border border-blue-900 w-auto my-2 mx-2 p-5 bg-slate-100 max-h-48 overflow-y-auto"
-      id="style-7"
+      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar"
+      // id="style-7"
     >
-      <figure>
+      <figure className="rounded-xl">
         <img
           src={props.imageLocation}
           alt={props.imagePlaceholder}
-          className="rounded-xl h-32"
+          className="h-32 w-32"
         />
       </figure>
       <div
@@ -21,16 +22,20 @@ const AssetCard = (props: any) => {
         id="style-7"
       >
         <div className="flex flex-row-reverse">
-          <button className="btn btn-xs btn-primary w-20 bg-blue-900 border-white hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none">
+          <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4 text-md xl:text-xs">
             {props.assetType}
           </button>
         </div>
-        <h1 className="flex flex-row-reverse text-blue-900 text-lg font-bold">
+        <h1
+          className="flex ml-2 text-gray-800 text-lg font-semibold font-sans tracking-wide xl:text-sm"
+          style={{ wordSpacing: 3 }}
+        >
           {props.assetName}
         </h1>
-        <div className="flex flex-row items-start">
-          <PinIcon />
-          <p className="text-sm text-start /*truncate*/">
+        <div className="flex flex-row items-center">
+          <img src={MapIcon} className="h-6 mr-3 ml-2" />
+          {/* <PinIcon /> */}
+          <p className="text-sm text-start text-gray-500 font-sans font-light tracking-wider xl:text-xs /*truncate*/">
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
