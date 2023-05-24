@@ -14,7 +14,7 @@ const AssetCard = (props: any) => {
         <img
           src={props.imageLocation}
           alt={props.imagePlaceholder}
-          className="h-32"
+          className="h-32 w-32"
         />
       </figure>
       <div
@@ -22,17 +22,20 @@ const AssetCard = (props: any) => {
         id="style-7"
       >
         <div className="flex flex-row-reverse">
-          <button className="badge w-20 bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none p-3 mr-auto ml-1">
+          <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4">
             {props.assetType}
           </button>
         </div>
-        <h1 className="flex ml-2 text-gray-800 text-lg font-bold font-sans">
+        <h1
+          className="flex ml-2 text-gray-800 text-lg font-semibold font-sans tracking-wide"
+          style={{ wordSpacing: 3 }}
+        >
           {props.assetName}
         </h1>
         <div className="flex flex-row items-center">
           <img src={MapIcon} className="h-6 mr-3 ml-2" />
           {/* <PinIcon /> */}
-          <p className="text-sm text-start text-gray-500 /*truncate*/">
+          <p className="text-sm text-start text-gray-500 font-sans font-light tracking-wider /*truncate*/">
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
