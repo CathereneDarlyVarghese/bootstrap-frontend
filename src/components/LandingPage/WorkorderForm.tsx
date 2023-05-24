@@ -1,7 +1,9 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { uploadFiletoS3 } from "utils";
 import { WorkOrderTypes, WorkOrderStatuses } from "enums";
 import { Asset, WorkOrder } from "types";
+import { useNavigate } from "react-router-dom";
 import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
@@ -9,6 +11,8 @@ interface AddWorkOrderProps {assetId: Asset["id"]}
 
 const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
   let assetId = props.assetId;
+  const navigate = useNavigate(); 
+  const location = useLocation();
 
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
@@ -34,7 +38,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
 
       await addWorkOrder(token, inventoryId, data)
         .then(() => {
-          toast.success("Work Order Added Successfuly", {
+          toast.success("Work Order added Successfuly", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -49,7 +53,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
           throw new Error(error);
         });
     } catch (error) {
-      alert("Something went wrong!");
+      alert("something went wrong!");
     }
   };
 
@@ -57,8 +61,9 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
     assetId =  props.assetId as string;
-    setInventoryId(assetId);
-    console.log("assetId WO ==>>", assetId);
+    // console.log("location.state?.assetId ==>>", location.state?.assetId)
+    setInventoryId(assetId); // set inventoryId from location state
+    console.log("assetId WO ==>>", assetId); // log the assetId
   }, [assetId]);
 
   return (

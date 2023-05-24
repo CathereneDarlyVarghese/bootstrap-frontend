@@ -1,53 +1,44 @@
-import React, { useState, useEffect } from "react";
-import WorkOrderButton from "components/widgets/WorkOrderButton";
-
+import { FC, useState, useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { uploadFiletoS3 } from "utils";
-import { AssetTypes } from "enums";
-import { Asset } from "types";
+import { WorkOrderTypes, WorkOrderStatuses } from "enums";
+import { Asset, WorkOrder } from "types";
 import { useNavigate } from "react-router-dom";
-import { addInventory } from "services/apiServices";
+import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
-const WorkorderForm = ({ formOpen, setFormOpen, notific }) => {
-  const [image, setImage] = useState(null);
+interface AddWorkOrderProps {assetId: Asset["id"]}
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
-  };
+const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
+  let assetId = props.assetId;
+  const navigate = useNavigate(); 
+  const location = useLocation();
 
-  const navigate = useNavigate();
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
-  const [data, setData] = useState<Asset>({
-    organization: {
-      name: "testorg1",
-      id: "2",
-      members: [],
-    },
-    orgId: "2",
-    audit: {
-      createdAt: "test",
-      createdBy: "test",
-    },
-    id: "2",
+  const [inventoryId, setInventoryId] = useState<string | undefined>("");
+  const [data, setData] = useState<WorkOrder>({
+    Id: "",
     name: "",
-    imageS3: "",
-    location: "tsd",
-    workOrders: [],
-    type: AssetTypes.Appliances,
+    image: "",
+    description: "",
+    type: WorkOrderTypes.Appliances,
+    status: WorkOrderStatuses.Open,
   });
 
   const handleSubmit = async () => {
     console.log(data);
     try {
-      const imageLocation = await uploadFiletoS3(file, "inventory");
-      console.log(imageLocation);
-      data.imageS3 = imageLocation.location;
-      console.log("Location on submit ==>>", data.location);
-      await addInventory(token, data)
+      const imageLocation = await uploadFiletoS3(file, "work-order");
+      console.log("Image Location ==>>", imageLocation);
+
+      data.image = imageLocation.location;
+
+      console.log("Location on submit ==>>", data.image);
+
+      await addWorkOrder(token, inventoryId, data)
         .then(() => {
-          toast.success("Asset Added Succesfully", {
+          toast.success("Work Order added Successfuly", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -57,7 +48,6 @@ const WorkorderForm = ({ formOpen, setFormOpen, notific }) => {
             progress: undefined,
             theme: "light",
           });
-          navigate(`/location?name=${data.location}`); // Navigate to the page of the location
         })
         .catch((error) => {
           throw new Error(error);
@@ -70,112 +60,90 @@ const WorkorderForm = ({ formOpen, setFormOpen, notific }) => {
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
-  }, []);
-
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setData({ ...data, [name]: value });
-  };
-
-  const closeForm = () => {
-    setFormOpen(false);
-  };
-  const openForm = () => {
-    setFormOpen(true);
-  };
+    assetId =  props.assetId as string;
+    // console.log("location.state?.assetId ==>>", location.state?.assetId)
+    setInventoryId(assetId); // set inventoryId from location state
+    console.log("assetId WO ==>>", assetId); // log the assetId
+  }, [assetId]);
 
   return (
-    <>
-      <input
-        type="checkbox"
-        id="my-modal-4"
-        checked={formOpen}
-        onChange={formOpen ? openForm : closeForm}
-        className="modal-toggle"
-      />
+    <div className="flex justify-end">
+      <label
+        htmlFor="my-modal-3"
+        className="btn w-fit bg-blue-900 border-none text-slate-200 hover:bg-gradient-to-r from-blue-600 to-blue-400 hover:text-white"
+      >
+        Add Work Order
+      </label>
+      <input type="checkbox" id="my-modal-3" className="modal-toggle" />
       <div className="modal">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-          className="w-4/12 max-w-5xl p-0"
-        >
-          <div className="modal-box p-0">
-            <div className="bg-blue-900 p-5 m-0 flex flex-row">
-              <div>
-                <h3 className="font-bold text-lg text-white flex justify-center">
-                  Add Work Order
-                </h3>
-              </div>
-              <div className="ml-auto cursor-pointer" onClick={closeForm}>
-                <svg
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  strokeWidth="1.5"
-                  className="w-6 h-6 text-white"
-                >
-                  <path
-                    d="M18 6L6 18M6 6l12 12"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </div>
-            </div>
+        <div className="modal-box relative w-1/4 h-5/6 py-16">
+          <label
+            htmlFor="my-modal-3"
+            className="btn btn-sm btn-circle absolute right-2 top-2 bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400"
+          >
+            ✕
+          </label>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="flex flex-col space-y-8"
+          >
+            <input
+              required
+              onChange={(e) =>
+                setData((curr) => ({ ...curr, name: e.target.value }))
+              }
+              value={data.name}
+              type="text"
+              placeholder="Work Order Name"
+              className="input input-bordered w-full max-w-xs"
+            />
 
-            <div className="flex flex-col p-5">
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                className="input input-bordered input-info w-full my-3"
-                onChange={(e) =>
-                  setData((curr) => ({ ...curr, name: e.target.value }))
-                }
-                value={data.name}
-              />
-              <input
-                type="text"
-                name="type"
-                placeholder="Type"
-                className="input input-bordered input-info w-full my-5"
-                onChange={handleChange}
-                value={data.type}
-              />
-              <textarea
-                className="textarea textarea-bordered textarea-info my-3"
-                placeholder="Description"
-              />
-              <label className="btn bg-blue-900 hover:bg-blue-900 w-full">
-                {image ? image.name : "Select image"}
-                <input
-                  type="file"
-                  placeholder="Image"
-                  className="hidden w-full my-5"
-                  accept="image/*"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-              </label>
-            </div>
-            <div className="modal-action p-5 flex flex-row justify-center">
-              <div>
-                <WorkOrderButton
-                  title="Submit"
-                  workPending={false}
-                  onClick={notific}
-                  buttonColor={"bg-blue-900"}
-                  hoverColor={"hover:bg-blue-900"}
-                />
-              </div>
-            </div>
-          </div>
-        </form>
+            <textarea
+              required
+              onChange={(e) =>
+                setData((curr) => ({ ...curr, description: e.target.value }))
+              }
+              value={data.description}
+              placeholder="Description"
+              className="input input-bordered w-full max-w-xs"
+            />
+
+            <input
+              required
+              onChange={(e) =>
+                setData((curr) => ({
+                  ...curr,
+                  type: e.target.value as WorkOrderTypes,
+                }))
+              }
+              value={data.type}
+              type="text"
+              placeholder="Work Order Name"
+              className="input input-bordered w-full max-w-xs"
+            />
+
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="file-input w-full max-w-xs"
+            />
+
+            <input
+              onClick={() => {
+                console.log(data);
+              }}
+              type="submit"
+              value="Submit"
+              className="btn w-fit mx-auto bg-blue-900 border-none text-slate-200 hover:bg-gradient-to-r from-blue-600 to-blue-400 hover:text-white"
+            />
+          </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default WorkorderForm;
+export default WorkOrderForm;

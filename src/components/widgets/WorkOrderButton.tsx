@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick: () => void;
 }
 
-const WorkorderButton = ({
+const WorkOrderButton = ({
   title,
   workPending,
   onClick,
@@ -26,4 +26,4 @@ const WorkorderButton = ({
   );
 };
 
-export default WorkorderButton;
+export default WorkOrderButton;
