@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-import { useNavigate } from "react-router-dom";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
 import { Asset } from "types";
 import { AssetTypes } from "enums";
@@ -10,9 +9,10 @@ import { RadioButton } from "@ui5/webcomponents-react";
 import { toast } from "react-toastify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
-  const navigate = useNavigate();
+  // Custom hook to fetch asset type names
   const assetTypeNames = useAssetTypeNames();
-  const [dropdownopen, setDropdownopen] = useState<boolean>(false);
+
+  // State variables
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
   const [data, setData] = useState<Asset>({
@@ -33,16 +33,21 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     workOrders: [],
     type: AssetTypes.Appliances,
   });
+
+  // Function to handle form submission
   const handleSubmit = async () => {
     console.log(data);
     setAddAssetOpen(false);
     try {
+      // Upload file to S3 bucket
       const imageLocation = await uploadFiletoS3(file, "inventory");
       console.log(imageLocation);
       data.imageS3 = imageLocation.location;
+      
+      // Add inventory using the API service
       await addInventory(token, data)
         .then(() => {
-          toast.success("Asset Added Succesfully (Please Refresh)", {
+          toast.success("Asset Added Successfully", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -62,30 +67,20 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     }
   };
 
+  // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
   }, []);
 
-  const openAddForm = () => {
-    setAddAssetOpen(true);
-  };
+  // Function to close the add asset form
   const closeAddForm = () => {
     setAddAssetOpen(false);
   };
 
-  const toggleDropDown = () => {
-    setDropdownopen(!dropdownopen);
-  };
-
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setData({ ...data, [name]: value });
-  };
-
   return (
     <>
+      {/* Checkbox for modal toggle */}
       <input
         type="checkbox"
         checked={addAssetOpen}
@@ -101,6 +96,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               handleSubmit();
             }}
           >
+            {/* Modal header */}
             <div className="p-5 bg-blue-900 flex flex-row">
               <h3 className="font-bold text-white">Add Assets</h3>
               <svg
@@ -118,7 +114,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
               </svg>
             </div>
+
             <div className="flex flex-col p-5">
+              {/* Input field for asset name */}
               <input
                 type="text"
                 id="name"
@@ -129,6 +127,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 value={data.name}
                 className="input input-bordered input-info w-full my-3"
               />
+
+              {/* Radio button for asset type */}
               {[AssetTypes.Appliances].map((type) => (
                 <RadioButton
                   key={type}
@@ -139,6 +139,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onChange={() => setData((curr) => ({ ...curr, type }))}
                 />
               ))}
+
+              {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -150,7 +152,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   style={{}}
                 />
               </label>
-              {/* Location select */}
+
+              {/* Dropdown for selecting location */}
               <div className="dropdown">
                 <select
                   required
@@ -159,7 +162,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onChange={(e) => {
                     setData((curr) => ({ ...curr, location: e.target.value }));
                   }}
-                  // value={data.location}
                 >
                   <option value="" disabled selected hidden>
                     Select Location
@@ -169,8 +171,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </select>
               </div>
             </div>
+
+            {/* Modal action */}
             <div className="modal-action p-5 flex justify-center">
               <div>
+                {/* WorkOrderButton component */}
                 <WorkOrderButton
                   title="Submit"
                   workPending={false}

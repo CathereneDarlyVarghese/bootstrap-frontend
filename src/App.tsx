@@ -30,7 +30,7 @@ import { ToastContainer } from "react-toastify";
 import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
 import { RedirectFunction } from "react-router-dom";
-import AddWorkOrder from "components/AddWorkOrder/AddWorkOrder";
+import WorkOrderForm from "components/LandingPage/WorkOrderForm1";
 
 Amplify.configure(awsConfig);
 
