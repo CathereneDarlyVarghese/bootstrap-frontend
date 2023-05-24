@@ -1,5 +1,5 @@
 import PendingOrders from "./PendingOrders";
-import WorkOrderForm from "./WorkOrderForm";
+import WorkOrderForm from "./WorkOrderForm1";
 
 const AssetDetails = ({
   assetId,

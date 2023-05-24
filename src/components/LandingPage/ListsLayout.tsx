@@ -11,7 +11,7 @@ import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import WorkOrderForm from "./WorkOrderForm";
+import WorkOrderForm from "./WorkOrderForm1";
 
 import SearchIcon from "../../icons/circle2017.png";
 
