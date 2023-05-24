@@ -75,7 +75,7 @@ export async function addInventory(
 
 export async function addWorkOrder(
   accessToken: string,
-  inventoryId: string,
+  inventoryId: string,  //Inventory Id is same as Asset Id
   workOrderData: WorkOrder
 ): Promise<WorkOrder> {
   const config = {
