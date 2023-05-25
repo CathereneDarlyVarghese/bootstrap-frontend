@@ -27,6 +27,11 @@ const WorkOrderDetails = () => {
           pellentesque convallis diam sodales odio eget nec nibh dolor. At sit
           commodo proin pretium senectus sed ipsum id.
         </p>
+        <div className="absolute bottom-16 right-6 mr-5 ">
+          <a href="/home" className="text-blue-700">
+            Go to assets
+          </a>
+        </div>
       </div>
     </div>
   );
