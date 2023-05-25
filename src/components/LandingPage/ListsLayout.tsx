@@ -19,6 +19,8 @@ const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetId, setAssetId] = useState<Asset["id"]>(null);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [forceRefresh, setForceRefresh] = useState(false);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -34,25 +36,28 @@ const ListsLayout = (props: any) => {
     setAddAssetOpen(true);
   };
 
-  console.log(location.locationId);
+  const refreshAssets = () => {
+    setForceRefresh((prev) => !prev); // Toggle the forceRefresh state to trigger refresh
+  };
 
   useEffect(() => {
     // Fetch assets data on location change
     const init = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
+        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
         console.log("User Data: ", userData);
         const assetsData = await getInventory(
           userData.signInUserSession.accessToken.jwtToken
         );
-        console.log(assetsData);
+        console.log("Sessions Token ==>>", sessionToken);
         setAssets(assetsData);
       } catch {
         console.log("Not signed in");
       }
     };
     init();
-  }, [location]);
+  }, [location, forceRefresh]);
 
   // Filter assets based on current location
   const filteredAssets = useMemo(
@@ -142,6 +147,8 @@ const ListsLayout = (props: any) => {
             cardTitle={asset.name}
             assetType={asset.type}
             DescriptionText={asset.name}
+            sessionToken={sessionToken}
+            refreshAssets={refreshAssets}
           />
         ) : (
           <div className="flex items-center h-fit my-52 mx-auto justify-center">

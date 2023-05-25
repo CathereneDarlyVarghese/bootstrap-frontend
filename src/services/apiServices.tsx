@@ -113,7 +113,7 @@ export async function deleteInventory(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/inventory/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
     await axios.delete(url, config);
     console.log(`Deleted inventory with id: ${id}`);
   } catch (err) {
