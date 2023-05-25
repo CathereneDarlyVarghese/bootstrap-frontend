@@ -3,7 +3,7 @@ import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
 import deleteIcon from "../../icons/deleteIcon.svg";
 
-import { MdDeleteForever } from "react-icons/md";
+import { AiOutlineDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
@@ -100,7 +100,7 @@ const AssetDetails: React.FC<
         </div>
         <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
           <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
-            <p>Go to Workorders</p>
+            <p className="font-sans text-blue-700">Go to Workorders</p>
           </Link>
           <WorkOrderForm assetId={assetId} />
           <button
@@ -140,7 +140,10 @@ const AssetDetails: React.FC<
               }
             }}
           >
-            <MdDeleteForever style={{ fontSize: 40 }} />
+            <AiOutlineDelete
+              className="text-slate-800"
+              style={{ fontSize: 45 }}
+            />
           </button>
         </div>
       </div>
