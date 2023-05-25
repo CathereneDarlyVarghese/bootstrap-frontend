@@ -3,6 +3,8 @@ import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
 import deleteIcon from "../../icons/deleteIcon.svg";
 
+import { MdDeleteForever } from "react-icons/md";
+
 const AssetDetails = ({
   assetId,
   cardImage,
@@ -18,9 +20,7 @@ const AssetDetails = ({
           <h1 className="font-sans font-bold text-xl capitalize">
             {cardTitle}
           </h1>
-          <button className="ml-3">
-            <img src={deleteIcon} />
-          </button>
+
           <button className="ml-auto">
             <img src={closeIcon} />
           </button>
@@ -73,7 +73,9 @@ const AssetDetails = ({
         </div>
         <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
           <WorkOrderForm assetId={assetId} />
-          <h1 className="font-semibold text-blue-900 mr-2">Add Work Order</h1>
+          <button className="mr-5">
+            <MdDeleteForever style={{ fontSize: 40 }} />
+          </button>
         </div>
       </div>
     </>

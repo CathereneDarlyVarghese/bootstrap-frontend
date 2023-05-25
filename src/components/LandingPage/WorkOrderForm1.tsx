@@ -8,6 +8,7 @@ import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
 import AddIcon from "../../icons/AddIcon.png";
+import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
   assetId: Asset["id"];
@@ -74,9 +75,11 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
     <div className="flex justify-end">
       <label
         htmlFor="my-modal-3"
-        className="btn w-fit bg-transparent border-none text-slate-200 hover:bg-transparent hover:text-white"
+        className="btn w-fit bg-transparent border-none text-black hover:bg-transparent"
       >
-        <img src={AddIcon} className="h-10" />
+        {/* <img src={AddIcon} className="h-10" /> */}
+        <MdAddCircle style={{ fontSize: 40 }} />
+
         {/* Add Work Order */}
       </label>
       <input type="checkbox" id="my-modal-3" className="modal-toggle" />
