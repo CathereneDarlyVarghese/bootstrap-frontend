@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AssetCard from "../LandingPage/AssetCard";
 import AssetDetails from "../LandingPage/AssetDetails";
 import AddAssetForm from "../LandingPage/AddAssetForm";
@@ -6,8 +6,29 @@ import AddAssetForm from "../LandingPage/AddAssetForm";
 import SearchIcon from "../../icons/circle2017.png";
 import WorkOrderCard from "./WorkOrderCard";
 import WorkOrderDetails from "./WorkOrderDetails";
+import { useSearchParams } from "react-router-dom";
+import { getAsset } from "services/apiServices";
 
 const WorkOrdersPage = (props: any) => {
+  const [asset, setAsset] = useState(null);
+  const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
+  const [searchParams] = useSearchParams();
+  const assetId = searchParams.get("assetId");
+
+  useEffect(() => {
+    (async () => {
+      if (assetId) {
+        const sessionToken = window.localStorage.getItem("sessionToken"); // retrieve your access token
+        if (sessionToken) {
+          const fetchedAsset = await getAsset(sessionToken, assetId);
+          setAsset(fetchedAsset);
+        }
+      } else {
+        console.error("Asset ID is not provided");
+      }
+    })();
+  }, [assetId]);
+
   return (
     <div
       className="bg-primary-content h-full"
@@ -54,41 +75,18 @@ const WorkOrdersPage = (props: any) => {
           </button>
         </div>
         {/* Render filtered asset cards */}
-        <div style={{ cursor: "pointer" }}>
-          <WorkOrderCard
-            WorkOrderStatus="closed"
-            WorkOrderName="First Work Order"
-            WorkOrderDescription="Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque "
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <WorkOrderCard
-            WorkOrderStatus="open"
-            WorkOrderName="First Work Order"
-            WorkOrderDescription="Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque "
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <WorkOrderCard
-            WorkOrderStatus="pending"
-            WorkOrderName="First Work Order"
-            WorkOrderDescription="Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque "
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <WorkOrderCard
-            WorkOrderStatus="closed"
-            WorkOrderName="First Work Order"
-            WorkOrderDescription="Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque "
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <WorkOrderCard
-            WorkOrderStatus="open"
-            WorkOrderName="First Work Order"
-            WorkOrderDescription="Lorem ipsum dolor sit amet consectetur. Sed convallis lorem purus imperdiet etiam. Sed pellentesque "
-          />
-        </div>
+        {asset?.workOrders.map((workOrder) => (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectedWorkOrder(workOrder)}
+          >
+            <WorkOrderCard
+              WorkOrderStatus={workOrder.status}
+              WorkOrderName={workOrder.name}
+              WorkOrderDescription={workOrder.description}
+            />
+          </div>
+        ))}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
@@ -103,7 +101,9 @@ const WorkOrdersPage = (props: any) => {
           assetType="test"
           DescriptionText="test"
         /> */}
-        <WorkOrderDetails />
+        {selectedWorkOrder && (
+          <WorkOrderDetails workOrder={selectedWorkOrder} />
+        )}
 
         {/* <div className="flex items-center h-fit my-52 mx-auto justify-center">
           <h1 className="font-bold text-3xl text-slate-400">Choose an Asset</h1>

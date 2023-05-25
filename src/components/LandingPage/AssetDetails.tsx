@@ -4,17 +4,37 @@ import closeIcon from "../../icons/closeIcon.svg";
 import deleteIcon from "../../icons/deleteIcon.svg";
 
 import { MdDeleteForever } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { deleteInventory } from "services/apiServices";
+import { toast } from "react-toastify";
+import { AssetTypes } from "enums";
+import { WorkOrder } from "types";
 
-const AssetDetails = ({
+interface AssetDetailsProps {
+  sessionToken: string | null;
+  assetId: string | null;
+  cardTitle: string | null;
+  cardImage: string | null;
+  assetType: AssetTypes;
+  DescriptionText: string | null;
+  pendingOrderDetails: WorkOrder[];
+}
+
+const AssetDetails: React.FC<
+  AssetDetailsProps & { refreshAssets: () => void }
+> = ({
   assetId,
   cardImage,
   cardTitle,
   assetType,
   DescriptionText,
   pendingOrderDetails,
+  sessionToken,
+  refreshAssets,
 }) => {
   return (
     <>
+      {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
         <div className="flex flex-row">
           <h1 className="font-sans font-bold text-xl capitalize">
@@ -72,8 +92,47 @@ const AssetDetails = ({
           </div> */}
         </div>
         <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
+          <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
+            <p>Go to Workorders</p>
+          </Link>
           <WorkOrderForm assetId={assetId} />
-          <button className="mr-5">
+          <button
+            className="mr-5"
+            onClick={async () => {
+              if (
+                window.confirm("Are you sure you want to delete this asset?")
+              ) {
+                console.log("Asset ID ==>> ", assetId);
+                await deleteInventory(sessionToken, assetId)
+                  .then(() => {
+                    toast("Deleted successfully", {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                    });
+                    refreshAssets();
+                  })
+                  .catch((error) => {
+                    console.error("Error deleting inventory:", error);
+                    toast("Oops, Something went wrong", {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                    });
+                  });
+              }
+            }}
+          >
             <MdDeleteForever style={{ fontSize: 40 }} />
           </button>
         </div>
