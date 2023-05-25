@@ -7,11 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
-interface AddWorkOrderProps {assetId: Asset["id"]}
+import AddIcon from "../../icons/AddIcon.png";
+import { MdAddCircle } from "react-icons/md";
+
+interface AddWorkOrderProps {
+  assetId: Asset["id"];
+}
 
 const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
   let assetId = props.assetId;
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [token, settoken] = useState<string>("");
@@ -60,7 +65,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
-    assetId =  props.assetId as string;
+    assetId = props.assetId as string;
     // console.log("location.state?.assetId ==>>", location.state?.assetId)
     setInventoryId(assetId); // set inventoryId from location state
     console.log("assetId WO ==>>", assetId); // log the assetId
@@ -70,9 +75,12 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
     <div className="flex justify-end">
       <label
         htmlFor="my-modal-3"
-        className="btn w-fit bg-blue-900 border-none text-slate-200 hover:bg-gradient-to-r from-blue-600 to-blue-400 hover:text-white"
+        className="btn w-fit bg-transparent border-none text-black hover:bg-transparent"
       >
-        Add Work Order
+        {/* <img src={AddIcon} className="h-10" /> */}
+        <MdAddCircle style={{ fontSize: 40 }} />
+
+        {/* Add Work Order */}
       </label>
       <input type="checkbox" id="my-modal-3" className="modal-toggle" />
       <div className="modal">

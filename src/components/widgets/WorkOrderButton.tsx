@@ -16,7 +16,7 @@ const WorkOrderButton = ({
   return (
     <button
       onClick={onClick}
-      className={`btn ${buttonColor} gap-5 ml-auto ${hoverColor} pr-1`}
+      className={`btn ${buttonColor} gap-5 ml-auto ${hoverColor} pr-1 capitalize`}
     >
       {title}
       <div className={`${workPending ? "badge badge-error" : ""}`}>

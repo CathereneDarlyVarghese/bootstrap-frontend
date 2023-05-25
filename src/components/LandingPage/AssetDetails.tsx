@@ -1,50 +1,62 @@
 import PendingOrders from "./PendingOrders";
 import WorkOrderForm from "./WorkOrderForm1";
+import closeIcon from "../../icons/closeIcon.svg";
+import deleteIcon from "../../icons/deleteIcon.svg";
+
+import { MdDeleteForever } from "react-icons/md";
 
 const AssetDetails = ({
   assetId,
   cardImage,
   cardTitle,
-  badgeText,
+  assetType,
   DescriptionText,
   pendingOrderDetails,
 }) => {
   return (
     <>
-      <div
-        className="w-full h-fit my-5 p-5 bg-slate-100 border-blue-900 rounded-xl"
-        // style={{ height: "100%" }}
-      >
+      <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
+        <div className="flex flex-row">
+          <h1 className="font-sans font-bold text-xl capitalize">
+            {cardTitle}
+          </h1>
+
+          <button className="ml-auto">
+            <img src={closeIcon} />
+          </button>
+        </div>
         <figure className="rounded-none">
           <img
             src={cardImage}
             alt="an image"
-            className="rounded-xl h-48 object-cover mx-auto"
+            className="rounded-xl h-48 w-fit object-cover mx-auto"
           />
         </figure>
         <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
           <div className="flex flex-row">
-            <h2 className="card-title w-2/3" style={{ color: "#232F3F" }}>
-              {cardTitle}
+            <h2
+              className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm w-2/3"
+              style={{ wordSpacing: 3 }}
+            >
+              More Information:
             </h2>
+
+            {/* QR Code Button
             <button className="btn btn-xs bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
               Download QR
+            </button> */}
+
+            <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none ml-auto p-4 text-md xl:text-xs">
+              {assetType}
             </button>
-            <div className="badge ml-auto uppercase bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400">
-              {badgeText}
-            </div>
           </div>
           <div>
-            <h3 className="text-black text-lg">Description:</h3>
-            <p>
-              {DescriptionText}
-              <p>{DescriptionText}</p>
-            </p>
+            <p>{DescriptionText}</p>
           </div>
 
-          <WorkOrderForm assetId={assetId} />
+          {/* Pending Orders List */}
 
-          <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
+          {/* <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
           <div className="card border overflow-auto h-fit px-5" id="style-7">
             {pendingOrderDetails.map((wo) => (
               <PendingOrders
@@ -57,7 +69,13 @@ const AssetDetails = ({
             ))}
             {console.log("pendingOrderDetails")}
             {console.log(pendingOrderDetails)}
-          </div>
+          </div> */}
+        </div>
+        <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
+          <WorkOrderForm assetId={assetId} />
+          <button className="mr-5">
+            <MdDeleteForever style={{ fontSize: 40 }} />
+          </button>
         </div>
       </div>
     </>

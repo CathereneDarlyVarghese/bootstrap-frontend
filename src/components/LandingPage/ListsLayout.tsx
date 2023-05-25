@@ -130,7 +130,7 @@ const ListsLayout = (props: any) => {
         ))}
       </div>
       <div
-        className="w-2/3 h-5/6 mx-10 rounded-xl p-2 overflow-y-auto bg-slate-300 lg:hidden"
+        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
         id="style-7"
       >
         {/* Render asset details */}
@@ -140,7 +140,7 @@ const ListsLayout = (props: any) => {
             pendingOrderDetails={asset.workOrders}
             cardImage={asset.imageS3}
             cardTitle={asset.name}
-            badgeText={asset.type}
+            assetType={asset.type}
             DescriptionText={asset.name}
           />
         ) : (
@@ -154,7 +154,7 @@ const ListsLayout = (props: any) => {
 
       {/* Render work order form */}
       {/* <WorkOrderForm /> */}
-      {showWorkOrderForm ? <WorkOrderForm assetId={assetId}/> : ""}
+      {showWorkOrderForm ? <WorkOrderForm assetId={assetId} /> : ""}
       {/* Render add asset form */}
       <AddAssetForm
         addAssetOpen={addAssetOpen}
