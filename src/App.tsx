@@ -54,10 +54,7 @@ function AppContent() {
           <Route path="/scan" element={<ScanInventory />} />
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<ListsLayout searchType="Asset" />} />
-          <Route
-            path="/work-orders"
-            element={<WorkOrdersPage searchType="Asset" />}
-          />
+          <Route path="/work-orders" element={<WorkOrdersPage />} />
 
           {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
         </Routes>
