@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
-import AddIcon from "../../icons/AddIcon.png";
+import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
@@ -75,10 +75,10 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
     <div className="flex justify-end">
       <label
         htmlFor="my-modal-3"
-        className="btn w-fit bg-transparent border-none text-black hover:bg-transparent"
+        className="btn w-fit bg-transparent text-slate-800 border-none hover:bg-transparent"
       >
         {/* <img src={AddIcon} className="h-10" /> */}
-        <MdAddCircle style={{ fontSize: 40 }} />
+        <AiOutlineFileAdd style={{ fontSize: 40 }} />
 
         {/* Add Work Order */}
       </label>
