@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DubeButton from "./widgets/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Auth, Hub } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { useAtom } from "jotai";
@@ -18,9 +18,23 @@ const NavBar = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const routePage = useLocation();
+
   const toggleDropDown = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    if (routePage.pathname === "/home") {
+      document.querySelector(".asset-tab").classList.add("border-b-white");
+      document
+        .querySelector(".workorder-tab")
+        .classList.remove("border-b-white");
+    } else if (routePage.pathname === "/work-orders") {
+      document.querySelector(".asset-tab").classList.remove("border-b-white");
+      document.querySelector(".workorder-tab").classList.add("border-b-white");
+    }
+  }, [routePage]);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -56,7 +70,26 @@ const NavBar = () => {
           {/* <h1>ootstrap</h1> */}
           {/* Bootstrap */}
         </a>
+        <div className="tabs">
+          <a
+            className="tab text-white border border-transparent border-b-white asset-tab"
+            onClick={() => {
+              navigate("/home");
+            }}
+          >
+            Assets
+          </a>
+          <a
+            className="tab text-white border border-transparent workorder-tab"
+            onClick={() => {
+              navigate("/work-orders");
+            }}
+          >
+            Work Orders
+          </a>
+        </div>
       </div>
+
       <div className="flex-none gap-5 pr-5">
         {/* Location Button */}
 
@@ -65,13 +98,13 @@ const NavBar = () => {
             navigate("/scan");
           }}
         />
-        <DubeButton
+        {/* <DubeButton
           title="Scan"
           onClick={() => {
             navigate("/scan");
           }}
           primary={false}
-        />
+        /> */}
         <div className="dropdown dropdown-bottom">
           <label
             className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400"
