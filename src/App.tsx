@@ -31,6 +31,7 @@ import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
 import { RedirectFunction } from "react-router-dom";
 import WorkOrderForm from "components/LandingPage/WorkOrderForm1";
+import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
 
 Amplify.configure(awsConfig);
 
@@ -53,7 +54,12 @@ function AppContent() {
           <Route path="/scan" element={<ScanInventory />} />
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<ListsLayout searchType="Asset" />} />
-          <Route path="/add-workorder" element={<AddWorkOrder />} />
+          <Route
+            path="/work-orders"
+            element={<WorkOrdersPage searchType="Asset" />}
+          />
+
+          {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
         </Routes>
       </div>
       {/* </DynamicPage> */}

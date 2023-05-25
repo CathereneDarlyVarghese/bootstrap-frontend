@@ -1,0 +1,33 @@
+import React from "react";
+
+const WorkOrderCard = ({
+  WorkOrderName,
+  WorkOrderStatus,
+  WorkOrderDescription,
+}) => {
+  return (
+    <div className="card max-h-40 p-5 hover:border hover:border-blue-900">
+      <div className="flex flex-col">
+        <button
+          className={`badge capitalize ${
+            WorkOrderStatus === "open"
+              ? "badge-secondary"
+              : WorkOrderStatus === "closed"
+              ? "badge-success"
+              : "badge-primary"
+          }`}
+        >
+          {WorkOrderStatus}
+        </button>
+        <h1 className="text-lg font-semibold font-sans my-2">
+          {WorkOrderName}
+        </h1>
+        <p className="font-sans font-light text-sm text-gray-500">
+          {WorkOrderDescription}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default WorkOrderCard;

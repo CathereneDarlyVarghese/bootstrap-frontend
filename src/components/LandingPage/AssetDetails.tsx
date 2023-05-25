@@ -53,8 +53,6 @@ const AssetDetails = ({
             <p>{DescriptionText}</p>
           </div>
 
-          <WorkOrderForm assetId={assetId} />
-
           {/* Pending Orders List */}
 
           {/* <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
@@ -71,6 +69,10 @@ const AssetDetails = ({
             {console.log("pendingOrderDetails")}
             {console.log(pendingOrderDetails)}
           </div> */}
+        </div>
+        <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
+          <WorkOrderForm assetId={assetId} />
+          <h1 className="font-semibold text-blue-900 mr-2">Add Work Order</h1>
         </div>
       </div>
     </>
