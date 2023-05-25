@@ -4,6 +4,7 @@ import closeIcon from "../../icons/closeIcon.svg";
 import deleteIcon from "../../icons/deleteIcon.svg";
 
 import { MdDeleteForever } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const AssetDetails = ({
   assetId,
@@ -72,6 +73,9 @@ const AssetDetails = ({
           </div> */}
         </div>
         <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
+          <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
+            <p>Go to Workorders</p>
+          </Link>
           <WorkOrderForm assetId={assetId} />
           <button className="mr-5">
             <MdDeleteForever style={{ fontSize: 40 }} />
