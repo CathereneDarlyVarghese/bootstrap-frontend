@@ -6,6 +6,10 @@ import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { useAtom } from "jotai";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
 
+import B from "../icons/B.svg";
+import ootstrap from "../icons/ootstrap.svg";
+import ScanButton from "./widgets/ScanButton";
+
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
 
@@ -40,13 +44,34 @@ const NavBar = () => {
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
-        <a onClick={() => {navigate("/home")}} className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
-          Bootstrap App
+        <a
+          onClick={() => {
+            navigate("/home");
+          }}
+          className="btn btn-ghost normal-case text-xl text-slate-100"
+        >
+          <img src={B} />
+          <img src={ootstrap} />
+
+          {/* <h1>ootstrap</h1> */}
+          {/* Bootstrap */}
         </a>
       </div>
       <div className="flex-none gap-5 pr-5">
         {/* Location Button */}
 
+        <ScanButton
+          onClick={() => {
+            navigate("/scan");
+          }}
+        />
+        <DubeButton
+          title="Scan"
+          onClick={() => {
+            navigate("/scan");
+          }}
+          primary={false}
+        />
         <div className="dropdown dropdown-bottom">
           <label
             className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400"
@@ -118,11 +143,6 @@ const NavBar = () => {
 
         {/* Location Button    */}
 
-        <DubeButton
-          onClick={() => navigate("/scan")}
-          title="Scan"
-          primary={false}
-        />
         {user ? (
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
