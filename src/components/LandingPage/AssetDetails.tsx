@@ -1,6 +1,7 @@
 import PendingOrders from "./PendingOrders";
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
+import deleteIcon from "../../icons/deleteIcon.svg";
 
 const AssetDetails = ({
   assetId,
@@ -15,8 +16,11 @@ const AssetDetails = ({
       <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
         <div className="flex flex-row">
           <h1 className="font-sans font-bold text-xl capitalize">
-            {assetType}
+            {cardTitle}
           </h1>
+          <button className="ml-3">
+            <img src={deleteIcon} />
+          </button>
           <button className="ml-auto">
             <img src={closeIcon} />
           </button>
@@ -31,10 +35,10 @@ const AssetDetails = ({
         <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
           <div className="flex flex-row">
             <h2
-              className="flex text-gray-800 text-xl font-semibold font-sans tracking-wide xl:text-sm w-2/3"
+              className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm w-2/3"
               style={{ wordSpacing: 3 }}
             >
-              {cardTitle}
+              More Information:
             </h2>
 
             {/* QR Code Button
@@ -47,9 +51,6 @@ const AssetDetails = ({
             </button>
           </div>
           <div>
-            <h3 className="text-blue-900 font-sans font-semibold  text-md">
-              More Information:
-            </h3>
             <p>{DescriptionText}</p>
           </div>
 

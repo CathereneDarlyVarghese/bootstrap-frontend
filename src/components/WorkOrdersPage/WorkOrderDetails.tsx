@@ -10,13 +10,7 @@ const WorkOrderDetails = () => {
         <h1 className="font-sans font-bold text-xl capitalize">
           First Work Order
         </h1>
-        <button>
-          <img
-            src={deleteIcon}
-            className="h-6 ml-5"
-            style={{ color: "#fff" }}
-          />
-        </button>
+
         <button className="ml-auto">
           <img src={closeIcon} />
         </button>
