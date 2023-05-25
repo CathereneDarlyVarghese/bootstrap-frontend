@@ -6,7 +6,7 @@ const WorkOrderCard = ({
   WorkOrderDescription,
 }) => {
   return (
-    <div className="card max-h-40 p-5 bg-gray-100 my-3 hover:border hover:border-blue-900">
+    <div className="card max-h-40 p-5 my-3 bg-slate-100 hover:border hover:border-blue-900">
       <div className="flex flex-col">
         <button
           className={`badge capitalize ${

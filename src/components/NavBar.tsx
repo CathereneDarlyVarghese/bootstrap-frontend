@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import DubeButton from "./widgets/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Auth, Hub } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { useAtom } from "jotai";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
+
+import B from "../icons/B.svg";
+import ootstrap from "../icons/ootstrap.svg";
+import ScanButton from "./widgets/ScanButton";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -14,9 +19,23 @@ const NavBar = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const routePage = useLocation();
+
   const toggleDropDown = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    if (routePage.pathname === "/home") {
+      document.querySelector(".asset-tab").classList.add("border-b-white");
+      document
+        .querySelector(".workorder-tab")
+        .classList.remove("border-b-white");
+    } else if (routePage.pathname === "/work-orders") {
+      document.querySelector(".asset-tab").classList.remove("border-b-white");
+      document.querySelector(".workorder-tab").classList.add("border-b-white");
+    }
+  }, [routePage]);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -40,16 +59,50 @@ const NavBar = () => {
   return (
     <div className="navbar bg-blue-900">
       <div className="flex-1">
-        <a onClick={() => {navigate("/home")}} className="btn btn-ghost normal-case text-xl text-slate-100 hover:bg-gradient-to-r from-blue-800 to-blue-400">
-          Bootstrap App
+        <a
+          onClick={() => {
+            navigate("/home");
+          }}
+          className="btn btn-ghost normal-case text-xl text-slate-100"
+        >
+          <img src={B} />
+          <img src={ootstrap} />
+
+          {/* <h1>ootstrap</h1> */}
+          {/* Bootstrap */}
         </a>
+        <div className="tabs ml-10 lg:hidden">
+          <a
+            className="tab text-white border border-transparent border-b-white font-sans mx-3 asset-tab"
+            onClick={() => {
+              navigate("/home");
+            }}
+          >
+            Assets
+          </a>
+          <a
+            className="tab text-white border border-transparent font-sans workorder-tab"
+            onClick={() => {
+              navigate("/work-orders");
+            }}
+          >
+            Work Orders
+          </a>
+        </div>
       </div>
-      <div className="flex-none gap-5 pr-5">
+
+      <div className="flex-none gap-5 md:gap-2">
         {/* Location Button */}
 
-        <div className="dropdown dropdown-bottom">
+        <ScanButton
+          onClick={() => {
+            navigate("/scan");
+          }}
+        />
+
+        <div className="dropdown dropdown-bottom dropdown-end">
           <label
-            className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400"
+            className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400 md:px-3"
             tabIndex={0}
             onClick={toggleDropDown}
           >
@@ -72,7 +125,7 @@ const NavBar = () => {
                 d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
               />
             </svg>
-            {location.locationName}
+            <div className="md:hidden">{location.locationName}</div>
             <svg
               className="fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -118,22 +171,38 @@ const NavBar = () => {
 
         {/* Location Button    */}
 
-        <DubeButton
-          onClick={() => navigate("/scan")}
-          title="Scan"
-          primary={false}
-        />
         {user ? (
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              <div>
+                <img
+                  className="rounded-full md:hidden 2xl:block "
+                  src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                />
+                <GiHamburgerMenu className="text-xl text-white md:block 2xl:hidden" />
               </div>
+              <div></div>
             </label>
             <ul
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
+              <li>
+                <a
+                  href="/home"
+                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                >
+                  Assets
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/work-orders"
+                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                >
+                  Work Orders
+                </a>
+              </li>
               <li>
                 <a
                   className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
@@ -147,9 +216,14 @@ const NavBar = () => {
             </ul>
           </div>
         ) : (
-          <SignInWithGoogle />
+          <div className="">
+            <SignInWithGoogle />
+          </div>
         )}
       </div>
+      {/* <div className="md:block 2xl:hidden">
+        <h1 className="text-white">MD screen</h1>
+      </div> */}
     </div>
   );
 };
