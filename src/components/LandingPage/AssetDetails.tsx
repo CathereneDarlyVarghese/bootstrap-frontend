@@ -18,6 +18,7 @@ interface AssetDetailsProps {
   assetType: AssetTypes;
   DescriptionText: string | null;
   pendingOrderDetails: WorkOrder[];
+  setAssetId: (id: string | null) => void;
 }
 
 const AssetDetails: React.FC<
@@ -31,6 +32,7 @@ const AssetDetails: React.FC<
   pendingOrderDetails,
   sessionToken,
   refreshAssets,
+  setAssetId,
 }) => {
   return (
     <>
@@ -41,7 +43,12 @@ const AssetDetails: React.FC<
             {cardTitle}
           </h1>
 
-          <button className="ml-auto">
+          <button
+            className="ml-auto"
+            onClick={() => {
+              setAssetId(null);
+            }}
+          >
             <img src={closeIcon} />
           </button>
         </div>

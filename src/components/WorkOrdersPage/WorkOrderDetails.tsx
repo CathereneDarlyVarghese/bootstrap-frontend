@@ -6,9 +6,13 @@ import { WorkOrder } from "types";
 
 interface WorkOrderDetailsProps {
   workOrder: WorkOrder;
+  setSelectedWorkOrder: (id: string | null) => void;
 }
 
-const WorkOrderDetails: React.FC<WorkOrderDetailsProps> = ({ workOrder }) => {
+const WorkOrderDetails: React.FC<WorkOrderDetailsProps> = ({
+  workOrder,
+  setSelectedWorkOrder,
+}) => {
   return (
     <div className="h-5/6 mx-4 mt-2 p-5 bg-white rounded-xl">
       <div className="flex flex-row">
@@ -16,7 +20,12 @@ const WorkOrderDetails: React.FC<WorkOrderDetailsProps> = ({ workOrder }) => {
           {workOrder.name}
         </h1>
 
-        <button className="ml-auto">
+        <button
+          className="ml-auto"
+          onClick={() => {
+            setSelectedWorkOrder(null);
+          }}
+        >
           <img src={closeIcon} />
         </button>
       </div>

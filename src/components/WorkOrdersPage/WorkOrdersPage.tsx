@@ -102,7 +102,10 @@ const WorkOrdersPage = (props: any) => {
           DescriptionText="test"
         /> */}
         {selectedWorkOrder && (
-          <WorkOrderDetails workOrder={selectedWorkOrder} />
+          <WorkOrderDetails
+            workOrder={selectedWorkOrder}
+            setSelectedWorkOrder={setSelectedWorkOrder}
+          />
         )}
 
         {/* <div className="flex items-center h-fit my-52 mx-auto justify-center">
