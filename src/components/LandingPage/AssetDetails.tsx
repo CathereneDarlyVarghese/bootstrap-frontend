@@ -40,7 +40,7 @@ const AssetDetails: React.FC<
     <>
       {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
-        <div className="flex flex-row items-center gap-5">
+        <div className="flex flex-row items-center gap-5 mb-3">
           <h1 className="font-sans font-bold text-xl capitalize">
             {cardTitle}
           </h1>
@@ -136,7 +136,7 @@ const AssetDetails: React.FC<
               throw new Error("Function not implemented.");
             }}
           />
-          <button
+          {/* <button
             className="mr-5"
             onClick={async () => {
               if (
@@ -177,7 +177,7 @@ const AssetDetails: React.FC<
               className="text-slate-800"
               style={{ fontSize: 45 }}
             />
-          </button>
+          </button> */}
         </div>
       </div>
     </>
