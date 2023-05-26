@@ -16,10 +16,6 @@ const WorkOrdersPage = (props: any) => {
   const [searchTerm, setSearchTerm] = useState(""); // new state for search term
 
   useEffect(() => {
-    console.log("Search term is: ", searchTerm); // log search term
-  }, [searchTerm]);
-
-  useEffect(() => {
     (async () => {
       if (assetId) {
         const sessionToken = window.localStorage.getItem("sessionToken");
