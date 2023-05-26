@@ -102,7 +102,12 @@ const AssetDetails: React.FC<
           <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
             <p className="font-sans text-blue-700">Go to Workorders</p>
           </Link>
-          <WorkOrderForm assetId={assetId} />
+          <WorkOrderForm
+            assetId1={assetId}
+            closeModal={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
           <button
             className="mr-5"
             onClick={async () => {

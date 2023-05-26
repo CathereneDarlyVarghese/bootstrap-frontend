@@ -11,11 +11,12 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
-  assetId: Asset["id"];
+  assetId1: Asset["id"];
+  closeModal: () => void;
 }
 
-const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
-  let assetId = props.assetId;
+const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
+  let assetId = assetId1;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,7 +41,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
       data.image = imageLocation.location;
 
       console.log("Location on submit ==>>", data.image);
-
+      closeModal();
       await addWorkOrder(token, inventoryId, data)
         .then(() => {
           toast.success("Work Order added Successfuly", {
@@ -65,7 +66,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
-    assetId = props.assetId as string;
+    assetId = assetId1 as string;
     // console.log("location.state?.assetId ==>>", location.state?.assetId)
     setInventoryId(assetId); // set inventoryId from location state
     console.log("assetId WO ==>>", assetId); // log the assetId

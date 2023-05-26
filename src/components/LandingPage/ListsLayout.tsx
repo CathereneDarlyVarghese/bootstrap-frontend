@@ -21,6 +21,7 @@ const ListsLayout = (props: any) => {
   const [assetId, setAssetId] = useState<Asset["id"]>(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -103,9 +104,9 @@ const ListsLayout = (props: any) => {
 
             <input
               type="text"
-              // placeholder={"Search " + props.searchType}
               placeholder="Search Appliance"
               className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 text-sm border-none font-sans"
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -118,21 +119,27 @@ const ListsLayout = (props: any) => {
           </button>
         </div>
         {/* Render filtered asset cards */}
-        {filteredAssets.map((a) => (
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setAssetId(a.id);
-            }}
-          >
-            <AssetCard
-              assetName={a.name}
-              assetType={a.type}
-              assetAddress={a.location}
-              imageLocation={a.imageS3}
-            />
-          </div>
-        ))}
+        {filteredAssets
+          .filter(
+            (a) =>
+              a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              a.type.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((a) => (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setAssetId(a.id);
+              }}
+            >
+              <AssetCard
+                assetName={a.name}
+                assetType={a.type}
+                assetAddress={a.location}
+                imageLocation={a.imageS3}
+              />
+            </div>
+          ))}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
@@ -162,7 +169,16 @@ const ListsLayout = (props: any) => {
 
       {/* Render work order form */}
       {/* <WorkOrderForm /> */}
-      {showWorkOrderForm ? <WorkOrderForm assetId={assetId} /> : ""}
+      {showWorkOrderForm ? (
+        <WorkOrderForm
+          assetId1={assetId}
+          closeModal={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+      ) : (
+        ""
+      )}
       {/* Render add asset form */}
       <AddAssetForm
         addAssetOpen={addAssetOpen}
