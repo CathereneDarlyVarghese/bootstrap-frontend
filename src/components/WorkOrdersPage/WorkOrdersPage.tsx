@@ -60,15 +60,9 @@ const WorkOrdersPage = (props: any) => {
             + Add
           </button>
         </div>
-        {asset?.workOrders
-          .filter(
-            (workOrder) =>
-              workOrder.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              workOrder.description
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-          )
-          .map((workOrder) => (
+        {/* Render filtered asset cards */}
+        {asset ? (
+          asset.workOrders.map((workOrder) => (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => setSelectedWorkOrder(workOrder)}
@@ -79,17 +73,39 @@ const WorkOrdersPage = (props: any) => {
                 WorkOrderDescription={workOrder.description}
               />
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="flex justify-center items-center h-5/6">
+            <h1 className="text-lg text-slate-400 font-sans font-semibold">
+              No Work Orders
+            </h1>
+          </div>
+        )}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
         id="style-7"
       >
-        {selectedWorkOrder && (
+        {/* Render asset details */}
+        {/* <AssetDetails
+          assetId="test"
+          pendingOrderDetails="test"
+          cardImage="test"
+          cardTitle="test"
+          assetType="test"
+          DescriptionText="test"
+        /> */}
+        {selectedWorkOrder ? (
           <WorkOrderDetails
             workOrder={selectedWorkOrder}
             setSelectedWorkOrder={setSelectedWorkOrder}
           />
+        ) : (
+          <div className="flex justify-center items-center h-5/6">
+            <h1 className="text-3xl text-slate-400 font-sans font-semibold">
+              Choose Work Order
+            </h1>
+          </div>
         )}
       </div>
     </div>

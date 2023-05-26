@@ -4,6 +4,8 @@ import closeIcon from "../../icons/closeIcon.svg";
 import deleteIcon from "../../icons/deleteIcon.svg";
 
 import { AiOutlineDelete } from "react-icons/ai";
+import { FiEdit3 } from "react-icons/fi";
+import { BsQrCode } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
@@ -38,11 +40,54 @@ const AssetDetails: React.FC<
     <>
       {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
-        <div className="flex flex-row">
+        <div className="flex flex-row items-center gap-5">
           <h1 className="font-sans font-bold text-xl capitalize">
             {cardTitle}
           </h1>
-
+          <button>
+            <FiEdit3 className="text-xl" />
+          </button>
+          <button
+            onClick={async () => {
+              if (
+                window.confirm("Are you sure you want to delete this asset?")
+              ) {
+                console.log("Asset ID ==>> ", assetId);
+                await deleteInventory(sessionToken, assetId)
+                  .then(() => {
+                    toast("Deleted successfully", {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                    });
+                    refreshAssets();
+                  })
+                  .catch((error) => {
+                    console.error("Error deleting inventory:", error);
+                    toast("Oops, Something went wrong", {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                    });
+                  });
+              }
+            }}
+          >
+            <AiOutlineDelete className="text-2xl" />
+          </button>
+          <button>
+            <BsQrCode className="text-xl" />
+          </button>
           <button
             className="ml-auto"
             onClick={() => {
@@ -80,23 +125,6 @@ const AssetDetails: React.FC<
           <div>
             <p>{DescriptionText}</p>
           </div>
-
-          {/* Pending Orders List */}
-
-          {/* <h3 className="text-xl text-balck font-bold mt-5">Work Orders</h3>
-          <div className="card border overflow-auto h-fit px-5" id="style-7">
-            {pendingOrderDetails.map((wo) => (
-              <PendingOrders
-                assetName={wo.name}
-                status={wo.status}
-                description={wo.description}
-                pendingImage={wo.image}
-                orderType={wo.type}
-              />
-            ))}
-            {console.log("pendingOrderDetails")}
-            {console.log(pendingOrderDetails)}
-          </div> */}
         </div>
         <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
           <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
