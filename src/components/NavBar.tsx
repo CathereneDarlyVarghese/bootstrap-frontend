@@ -29,11 +29,23 @@ const NavBar = () => {
     if (routePage.pathname === "/home") {
       document.querySelector(".asset-tab").classList.add("border-b-white");
       document
+        .querySelector(".documents-tab")
+        .classList.remove("border-b-white");
+      document
         .querySelector(".workorder-tab")
         .classList.remove("border-b-white");
     } else if (routePage.pathname === "/work-orders") {
       document.querySelector(".asset-tab").classList.remove("border-b-white");
+      document
+        .querySelector(".documents-tab")
+        .classList.remove("border-b-white");
       document.querySelector(".workorder-tab").classList.add("border-b-white");
+    } else if (routePage.pathname === "/documents") {
+      document.querySelector(".asset-tab").classList.remove("border-b-white");
+      document
+        .querySelector(".workorder-tab")
+        .classList.remove("border-b-white");
+      document.querySelector(".documents-tab").classList.add("border-b-white");
     }
   }, [routePage]);
 
@@ -80,6 +92,7 @@ const NavBar = () => {
           >
             Assets
           </a>
+
           <a
             className="tab text-white border border-transparent font-sans workorder-tab"
             onClick={() => {
@@ -87,6 +100,14 @@ const NavBar = () => {
             }}
           >
             Work Orders
+          </a>
+          <a
+            className="tab text-white border border-transparent font-sans documents-tab"
+            onClick={() => {
+              navigate("/documents");
+            }}
+          >
+            Documents
           </a>
         </div>
       </div>
@@ -190,7 +211,7 @@ const NavBar = () => {
               <li>
                 <a
                   href="/home"
-                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
                 >
                   Assets
                 </a>
@@ -198,7 +219,7 @@ const NavBar = () => {
               <li>
                 <a
                   href="/work-orders"
-                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
                 >
                   Work Orders
                 </a>

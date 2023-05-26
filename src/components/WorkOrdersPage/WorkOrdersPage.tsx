@@ -75,18 +75,26 @@ const WorkOrdersPage = (props: any) => {
           </button>
         </div>
         {/* Render filtered asset cards */}
-        {asset?.workOrders.map((workOrder) => (
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => setSelectedWorkOrder(workOrder)}
-          >
-            <WorkOrderCard
-              WorkOrderStatus={workOrder.status}
-              WorkOrderName={workOrder.name}
-              WorkOrderDescription={workOrder.description}
-            />
+        {asset ? (
+          asset.workOrders.map((workOrder) => (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelectedWorkOrder(workOrder)}
+            >
+              <WorkOrderCard
+                WorkOrderStatus={workOrder.status}
+                WorkOrderName={workOrder.name}
+                WorkOrderDescription={workOrder.description}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center h-5/6">
+            <h1 className="text-lg text-slate-400 font-sans font-semibold">
+              No Work Orders
+            </h1>
           </div>
-        ))}
+        )}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
@@ -101,11 +109,17 @@ const WorkOrdersPage = (props: any) => {
           assetType="test"
           DescriptionText="test"
         /> */}
-        {selectedWorkOrder && (
+        {selectedWorkOrder ? (
           <WorkOrderDetails
             workOrder={selectedWorkOrder}
             setSelectedWorkOrder={setSelectedWorkOrder}
           />
+        ) : (
+          <div className="flex justify-center items-center h-5/6">
+            <h1 className="text-3xl text-slate-400 font-sans font-semibold">
+              Choose Work Order
+            </h1>
+          </div>
         )}
 
         {/* <div className="flex items-center h-fit my-52 mx-auto justify-center">
