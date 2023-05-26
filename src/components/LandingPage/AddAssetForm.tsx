@@ -43,7 +43,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       const imageLocation = await uploadFiletoS3(file, "inventory");
       console.log(imageLocation);
       data.imageS3 = imageLocation.location;
-      
+
       // Add inventory using the API service
       await addInventory(token, data)
         .then(() => {
@@ -88,7 +88,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box p-0 w-full">
+        <div className="modal-box p-0 w-full sm:mx-2">
           <form
             method="post"
             onSubmit={(e) => {
@@ -97,14 +97,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             }}
           >
             {/* Modal header */}
-            <div className="p-5 bg-blue-900 flex flex-row">
-              <h3 className="font-bold text-white">Add Assets</h3>
+            <div className="p-5 bg-white flex flex-row">
+              <h3 className="font-sans font-bold text-lg text-blue-800">
+                Add Assets
+              </h3>
               <svg
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 strokeWidth="1.5"
-                className="w-6 h-6 text-white ml-auto cursor-pointer"
+                className="w-6 h-6 text-blue-800 ml-auto cursor-pointer"
                 onClick={closeAddForm}
               >
                 <path
@@ -117,48 +119,61 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
             <div className="flex flex-col p-5">
               {/* Input field for asset name */}
+              <label className="font-sans font-semibold text-black text-sm">
+                Name of Assets
+              </label>
               <input
                 type="text"
                 id="name"
-                placeholder="Name"
+                placeholder="Enter Asset Name"
                 onChange={(e) =>
                   setData((curr) => ({ ...curr, name: e.target.value }))
                 }
                 value={data.name}
-                className="input input-bordered input-info w-full my-3"
+                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
-
-              {/* Radio button for asset type */}
-              {[AssetTypes.Appliances].map((type) => (
-                <RadioButton
-                  key={type}
-                  name="type"
-                  text={assetTypeNames[type]}
-                  value={AssetTypes.Appliances}
-                  checked={type === data.type}
-                  onChange={() => setData((curr) => ({ ...curr, type }))}
-                />
-              ))}
+              <label className="font-sans font-semibold text-sm text-black">
+                Description
+              </label>
+              <input
+                type="text"
+                id="desciption"
+                placeholder="Enter Description"
+                onChange={(e) =>
+                  setData((curr) => ({ ...curr, name: e.target.value }))
+                }
+                value={data.name}
+                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+              />
+              <label className="font-sans font-semibold text-sm text-black">
+                Asset Type
+              </label>
+              <select className="select select-sm my-3 w-full">
+                <option selected>Appliance</option>
+              </select>
 
               {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="font-sans font-semibold text-sm text-black"
               >
-                <input
-                  type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  className="block w-full text-lg text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:border-info dark:placeholder-white file:bg-blue-900 file:text-white my-3"
-                  style={{}}
-                />
+                Add Image
               </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="block w-full text-sm text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
+                style={{}}
+              />
 
               {/* Dropdown for selecting location */}
-              <div className="dropdown">
+              <div className="dropdown flex flex-col">
+                <label className="font-sans font-semibold text-sm text-black">
+                  Select location
+                </label>
                 <select
                   required
-                  className="block w-full bg-blue-900 border border-info text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-900 focus:text-white focus:border-gray-500 my-4"
-                  id="grid-state"
+                  className="select select-sm my-3 2xl:w-full md:w-fit"
                   onChange={(e) => {
                     setData((curr) => ({ ...curr, location: e.target.value }));
                   }}
@@ -170,10 +185,22 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <option value="mdb">MadDog Bistro & Bar</option>
                 </select>
               </div>
+
+              {/* Radio button for asset type */}
+              {/* {[AssetTypes.Appliances].map((type) => (
+                <RadioButton
+                  key={type}
+                  name="type"
+                  text={assetTypeNames[type]}
+                  value={AssetTypes.Appliances}
+                  checked={type === data.type}
+                  onChange={() => setData((curr) => ({ ...curr, type }))}
+                />
+              ))} */}
             </div>
 
             {/* Modal action */}
-            <div className="modal-action p-5 flex justify-center">
+            <div className="modal-action m-0 p-5 flex justify-center">
               <div>
                 {/* WorkOrderButton component */}
                 <WorkOrderButton

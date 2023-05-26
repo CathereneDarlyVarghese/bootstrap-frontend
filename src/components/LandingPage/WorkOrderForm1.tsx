@@ -11,11 +11,12 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
-  assetId: Asset["id"];
+  assetId1: Asset["id"];
+  closeModal: () => void;
 }
 
-const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
-  let assetId = props.assetId;
+const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
+  let assetId = assetId1;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,7 +41,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
       data.image = imageLocation.location;
 
       console.log("Location on submit ==>>", data.image);
-
+      closeModal();
       await addWorkOrder(token, inventoryId, data)
         .then(() => {
           toast.success("Work Order added Successfuly", {
@@ -65,7 +66,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
-    assetId = props.assetId as string;
+    assetId = assetId1 as string;
     // console.log("location.state?.assetId ==>>", location.state?.assetId)
     setInventoryId(assetId); // set inventoryId from location state
     console.log("assetId WO ==>>", assetId); // log the assetId
@@ -77,27 +78,35 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
         htmlFor="my-modal-3"
         className="btn w-fit bg-transparent text-slate-800 border-none hover:bg-transparent"
       >
-        {/* <img src={AddIcon} className="h-10" /> */}
         <AiOutlineFileAdd style={{ fontSize: 40 }} />
 
         {/* Add Work Order */}
       </label>
       <input type="checkbox" id="my-modal-3" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box relative w-1/4 h-5/6 py-16">
-          <label
-            htmlFor="my-modal-3"
-            className="btn btn-sm btn-circle absolute right-2 top-2 bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400"
-          >
-            ✕
-          </label>
+        <div className="modal-box relative p-5 h-fit px-5">
+          <div className="flex flex-row mb-5">
+            <h1 className="font-sans font-bold text-lg text-blue-800">
+              Add Work Order
+            </h1>
+            <label
+              htmlFor="my-modal-3"
+              className="btn btn-sm btn-circle ml-auto bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400"
+            >
+              ✕
+            </label>
+          </div>
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
             }}
-            className="flex flex-col space-y-8"
+            className="flex flex-col"
           >
+            <label className="font-sans font-semibold text-black text-sm">
+              Work Order Name
+            </label>
             <input
               required
               onChange={(e) =>
@@ -106,9 +115,11 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
               value={data.name}
               type="text"
               placeholder="Work Order Name"
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full my-3"
             />
-
+            <label className="font-sans font-semibold text-black text-sm">
+              Description
+            </label>
             <textarea
               required
               onChange={(e) =>
@@ -116,9 +127,11 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
               }
               value={data.description}
               placeholder="Description"
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full my-3"
             />
-
+            <label className="font-sans font-semibold text-black text-sm">
+              Asset Type
+            </label>
             <input
               required
               onChange={(e) =>
@@ -130,13 +143,15 @@ const WorkOrderForm: FC<AddWorkOrderProps> = (props) => {
               value={data.type}
               type="text"
               placeholder="Work Order Name"
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full my-3"
             />
-
+            <label className="font-sans font-semibold text-black text-sm">
+              Add Image
+            </label>
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
-              className="file-input w-full max-w-xs"
+              className="block w-full text-sm text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
             />
 
             <input
