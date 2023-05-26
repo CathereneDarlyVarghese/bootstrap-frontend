@@ -14,6 +14,7 @@ const WorkOrdersPage = (props: any) => {
   const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get("assetId");
+  const [searchTerm, setSearchTerm] = useState(""); // new state for search term
 
   useEffect(() => {
     (async () => {
