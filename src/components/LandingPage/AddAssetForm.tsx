@@ -148,43 +148,17 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <label className="font-sans font-semibold text-sm text-black">
                 Asset Type
               </label>
-              <select className="select select-sm my-3 w-full">
-                <option selected>Appliance</option>
-              </select>
-
-              {/* File input for uploading an image */}
-              <label
-                htmlFor="file_input"
-                className="font-sans font-semibold text-sm text-black"
-              >
-                Add Image
-              </label>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                className="block w-full text-sm text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
-                style={{}}
-              />
-
-              {/* Dropdown for selecting location */}
-              <div className="dropdown flex flex-col">
-                <label className="font-sans font-semibold text-sm text-black">
-                  Select location
-                </label>
-                <select
-                  required
-                  className="select select-sm my-3 2xl:w-full md:w-fit"
-                  onChange={(e) => {
-                    setData((curr) => ({ ...curr, location: e.target.value }));
-                  }}
-                >
-                  <option value="" disabled selected hidden>
-                    Select Location
+              <select className="select select-sm my-3 w-full border border-slate-300">
+                {[AssetTypes.Appliances].map((type) => (
+                  <option
+                    selected
+                    value={AssetTypes.Appliances}
+                    onChange={() => setData((curr) => ({ ...curr, type }))}
+                  >
+                    {assetTypeNames[type]}
                   </option>
-                  <option value="tsd">The Spiffy Dapper</option>
-                  <option value="mdb">MadDog Bistro & Bar</option>
-                </select>
-              </div>
+                ))}
+              </select>
 
               {/* Radio button for asset type */}
               {/* {[AssetTypes.Appliances].map((type) => (
@@ -197,6 +171,40 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onChange={() => setData((curr) => ({ ...curr, type }))}
                 />
               ))} */}
+
+              {/* File input for uploading an image */}
+              <label
+                htmlFor="file_input"
+                className="font-sans font-semibold text-sm text-black"
+              >
+                Add Image
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
+                style={{}}
+              />
+
+              {/* Dropdown for selecting location */}
+              <div className="dropdown flex flex-col">
+                <label className="font-sans font-semibold text-sm text-black">
+                  Select location
+                </label>
+                <select
+                  required
+                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                  onChange={(e) => {
+                    setData((curr) => ({ ...curr, location: e.target.value }));
+                  }}
+                >
+                  <option value="" disabled selected hidden>
+                    Select Location
+                  </option>
+                  <option value="tsd">The Spiffy Dapper</option>
+                  <option value="mdb">MadDog Bistro & Bar</option>
+                </select>
+              </div>
             </div>
 
             {/* Modal action */}
