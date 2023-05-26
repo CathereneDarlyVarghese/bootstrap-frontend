@@ -37,7 +37,9 @@ const ListsLayout = (props: any) => {
   };
 
   const refreshAssets = () => {
-    setForceRefresh((prev) => !prev); // Toggle the forceRefresh state to trigger refresh
+    setForceRefresh((prev) => !prev);
+    setAssetId(null);
+    // Toggle the forceRefresh state to trigger refresh
   };
 
   useEffect(() => {
