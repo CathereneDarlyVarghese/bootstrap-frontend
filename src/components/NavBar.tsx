@@ -121,7 +121,7 @@ const NavBar = () => {
           }}
         />
 
-        <div className="dropdown dropdown-bottom dropdown-end md:hidden">
+        <div className="dropdown dropdown-bottom dropdown-end">
           <label
             className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400 md:px-3"
             tabIndex={0}
@@ -235,7 +235,7 @@ const NavBar = () => {
                   Scan
                 </button>
               </li>
-              <li id="dropdown-2">
+              {/* <li id="dropdown-2">
                 <button
                   className="md:flex 2xl:hidden btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                   onClick={() => {
@@ -277,7 +277,7 @@ const NavBar = () => {
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li> */}
               <li>
                 <a
                   className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
