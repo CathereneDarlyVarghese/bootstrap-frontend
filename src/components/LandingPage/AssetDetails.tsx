@@ -13,14 +13,16 @@ import { AssetTypes } from "enums";
 import { WorkOrder } from "types";
 
 interface AssetDetailsProps {
-  sessionToken: string | null;
+  // sessionToken: string | null;
   assetId: string | null;
   cardTitle: string | null;
   cardImage: string | null;
-  assetType: AssetTypes;
+  // assetType: AssetTypes;
+  assetType: string | null;
   DescriptionText: string | null;
-  pendingOrderDetails: WorkOrder[];
+  // pendingOrderDetails: WorkOrder[];
   setAssetId: (id: string | null) => void;
+  closeAsset: () => void;
 }
 
 const AssetDetails: React.FC<
@@ -31,70 +33,93 @@ const AssetDetails: React.FC<
   cardTitle,
   assetType,
   DescriptionText,
-  pendingOrderDetails,
-  sessionToken,
   refreshAssets,
   setAssetId,
+  closeAsset,
 }) => {
   return (
     <>
-      {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
-      <div className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl">
-        <div className="flex flex-row items-center gap-5 mb-3">
-          <h1 className="font-sans font-bold text-xl capitalize">
-            {cardTitle}
-          </h1>
-          <button>
-            <FiEdit3 className="text-xl" />
-          </button>
+      {/* {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)} */}
+      <div
+        className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl overflow-y-auto"
+        id="style-7"
+      >
+        <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3">
+          <div className="flex flex-col">
+            <button
+              className="ml-auto 2xl:hidden lg:block"
+              onClick={() => {
+                setAssetId(null);
+              }}
+            >
+              <img src={closeIcon} onClick={closeAsset} />
+            </button>
+            <h1 className="font-sans font-bold text-xl lg:text-lg capitalize my-auto mx-auto">
+              {cardTitle}
+            </h1>
+          </div>
+
+          <div className="flex flex-row justify-center items-center">
+            <button className="mx-3">
+              <FiEdit3 className="text-xl" />
+            </button>
+            <button
+              className="mx-3"
+              // onClick={async () => {
+              //   if (
+              //     window.confirm("Are you sure you want to delete this asset?")
+              //   ) {
+              //     console.log("Asset ID ==>> ", assetId);
+              //     await deleteInventory(sessionToken, assetId)
+              //       .then(() => {
+              //         toast("Deleted successfully", {
+              //           position: "bottom-right",
+              //           autoClose: 5000,
+              //           hideProgressBar: false,
+              //           closeOnClick: true,
+              //           pauseOnHover: true,
+              //           draggable: true,
+              //           progress: undefined,
+              //           theme: "light",
+              //         });
+              //         refreshAssets();
+              //       })
+              //       .catch((error) => {
+              //         console.error("Error deleting inventory:", error);
+              //         toast("Oops, Something went wrong", {
+              //           position: "bottom-right",
+              //           autoClose: 5000,
+              //           hideProgressBar: false,
+              //           closeOnClick: true,
+              //           pauseOnHover: true,
+              //           draggable: true,
+              //           progress: undefined,
+              //           theme: "light",
+              //         });
+              //       });
+              //   }
+              // }}
+            >
+              <AiOutlineDelete className="text-2xl mx-3" />
+            </button>
+            <button className="mx-3">
+              <BsQrCode className="text-xl" />
+            </button>
+
+            <WorkOrderForm
+              assetId1={assetId}
+              closeModal={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          </div>
           <button
-            onClick={async () => {
-              if (
-                window.confirm("Are you sure you want to delete this asset?")
-              ) {
-                console.log("Asset ID ==>> ", assetId);
-                await deleteInventory(sessionToken, assetId)
-                  .then(() => {
-                    toast("Deleted successfully", {
-                      position: "bottom-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                    });
-                    refreshAssets();
-                  })
-                  .catch((error) => {
-                    console.error("Error deleting inventory:", error);
-                    toast("Oops, Something went wrong", {
-                      position: "bottom-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                    });
-                  });
-              }
-            }}
-          >
-            <AiOutlineDelete className="text-2xl" />
-          </button>
-          <button>
-            <BsQrCode className="text-xl" />
-          </button>
-          <button
-            className="ml-auto"
+            className="ml-auto 2xl:block lg:hidden"
             onClick={() => {
               setAssetId(null);
             }}
           >
-            <img src={closeIcon} />
+            <img src={closeIcon} onClick={closeAsset} />
           </button>
         </div>
         <figure className="rounded-none">
@@ -105,9 +130,9 @@ const AssetDetails: React.FC<
           />
         </figure>
         <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
-          <div className="flex flex-row">
+          <div className="flex 2xl:flex-row lg:flex-col">
             <h2
-              className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm w-2/3"
+              className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm"
               style={{ wordSpacing: 3 }}
             >
               More Information:
@@ -117,25 +142,40 @@ const AssetDetails: React.FC<
             <button className="btn btn-xs bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
               Download QR
             </button> */}
-
-            <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none ml-auto p-4 text-md xl:text-xs">
-              {assetType}
-            </button>
+            <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto">
+              <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                {assetType}
+              </button>
+              <button className="badge badge-success text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                Active
+              </button>
+              <button className="badge badge-success text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                Warranty
+              </button>
+            </div>
           </div>
           <div>
-            <p>{DescriptionText}</p>
+            <p className="text-black font-sans my-1 text-sm">
+              {DescriptionText}
+            </p>
+            <p className="text-black font-sans my-1 text-sm">Placement: </p>
+            <p className="text-black font-sans my-1 text-sm">Purchase Price:</p>
+            <p className="text-black font-sans my-1 text-sm">Current Value: </p>
+            <p className="text-black font-sans my-1 text-sm">Warranty Upto: </p>
+            <p className="text-black font-sans my-1 text-sm">Vendor:</p>
+            <p className="text-black font-sans my-1 text-sm">
+              Service done by:
+            </p>
+            <p className="text-black font-sans my-1 text-sm">Notes:</p>
           </div>
         </div>
-        <div className="absolute bottom-14 right-6 flex flex-row items-center p-2">
+        <div className="flex flex-row items-center p-2 justify-end">
           <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
-            <p className="font-sans text-blue-700">Go to Workorders</p>
+            <p className="font-sans text-blue-700 underline italic">
+              {"workorders=>"}
+            </p>
           </Link>
-          <WorkOrderForm
-            assetId1={assetId}
-            closeModal={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+
           {/* <button
             className="mr-5"
             onClick={async () => {

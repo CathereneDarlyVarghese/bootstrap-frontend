@@ -112,7 +112,7 @@ const NavBar = () => {
         </div>
       </div>
 
-      <div className="flex-none gap-5 md:gap-2">
+      <div className="flex-none gap-5 md:gap-2 ">
         {/* Location Button */}
 
         <ScanButton
@@ -121,7 +121,7 @@ const NavBar = () => {
           }}
         />
 
-        <div className="dropdown dropdown-bottom dropdown-end">
+        <div className="dropdown dropdown-bottom dropdown-end md:hidden">
           <label
             className="btn-sm px-5 btn w-fill btn-primary rounded-lg font-semibold focus:outline-none bg-blue-800 border-none hover:bg-gradient-to-r from-blue-800 to-blue-400 md:px-3"
             tabIndex={0}
@@ -242,9 +242,6 @@ const NavBar = () => {
           </div>
         )}
       </div>
-      {/* <div className="md:block 2xl:hidden">
-        <h1 className="text-white">MD screen</h1>
-      </div> */}
     </div>
   );
 };
