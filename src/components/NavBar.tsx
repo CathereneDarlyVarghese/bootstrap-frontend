@@ -225,6 +225,60 @@ const NavBar = () => {
                 </a>
               </li>
               <li>
+                <button
+                  onClick={() => {
+                    navigate("/scan");
+                  }}
+                  // href="/work-orders"
+                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
+                >
+                  Scan
+                </button>
+              </li>
+              <li id="dropdown-2">
+                <button
+                  className="md:flex 2xl:hidden btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                  onClick={() => {
+                    document
+                      .querySelector("#dropdown-2 .location-dropdown")
+                      .classList.remove("hidden");
+                  }}
+                >
+                  Location
+                </button>
+                <div className="dropdown dropdown-left bg-primary-content hover:bg-primary-content hidden location-dropdown md:flex 2xl:hidden">
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 sm:w-32"
+                  >
+                    <li
+                      className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                      onClick={() => {
+                        setLocation({
+                          locationName: "The Spiffy Dapper",
+                          locationId: "tsd",
+                        });
+                        setOpen(!open);
+                      }}
+                    >
+                      The Spiffy Dapper
+                    </li>
+                    <li
+                      className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                      onClick={() => {
+                        setLocation({
+                          locationName: "MadDog Bistro & Bar",
+                          locationId: "mdb",
+                        });
+                        setOpen(!open);
+                      }}
+                    >
+                      MadDog Bistro and Bar
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li>
                 <a
                   className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                   onClick={() => {

@@ -59,7 +59,7 @@ const AssetDetails: React.FC<
             </h1>
           </div>
 
-          <div className="flex flex-row justify-center items-center">
+          <div className="flex flex-row justify-center items-center mx-auto">
             <button className="mx-3">
               <FiEdit3 className="text-xl" />
             </button>
