@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AssetCard from "../LandingPage/AssetCard";
-import AssetDetails from "../LandingPage/AssetDetails";
-import AddAssetForm from "../LandingPage/AddAssetForm";
 import SearchIcon from "../../icons/circle2017.png";
 import WorkOrderCard from "./WorkOrderCard";
 import WorkOrderDetails from "./WorkOrderDetails";
@@ -86,15 +83,6 @@ const WorkOrdersPage = (props: any) => {
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
         id="style-7"
       >
-        {/* Render asset details */}
-        {/* <AssetDetails
-          assetId="test"
-          pendingOrderDetails="test"
-          cardImage="test"
-          cardTitle="test"
-          assetType="test"
-          DescriptionText="test"
-        /> */}
         {selectedWorkOrder ? (
           <WorkOrderDetails
             workOrder={selectedWorkOrder}

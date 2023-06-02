@@ -8,7 +8,6 @@ import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
   assetId1: Asset["id"];
@@ -67,7 +66,6 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
     assetId = assetId1 as string;
-    // console.log("location.state?.assetId ==>>", location.state?.assetId)
     setInventoryId(assetId); // set inventoryId from location state
     console.log("assetId WO ==>>", assetId); // log the assetId
   }, [assetId]);

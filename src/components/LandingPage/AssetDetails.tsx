@@ -1,7 +1,5 @@
-import PendingOrders from "./PendingOrders";
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
-import deleteIcon from "../../icons/deleteIcon.svg";
 
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
@@ -13,7 +11,7 @@ import { AssetTypes } from "enums";
 import { WorkOrder } from "types";
 
 interface AssetDetailsProps {
-  // sessionToken: string | null;
+  sessionToken: string | null;
   assetId: string | null;
   cardTitle: string | null;
   cardImage: string | null;
@@ -33,13 +31,14 @@ const AssetDetails: React.FC<
   cardTitle,
   assetType,
   DescriptionText,
+  sessionToken,
   refreshAssets,
   setAssetId,
   closeAsset,
 }) => {
   return (
     <>
-      {/* {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)} */}
+      {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div
         className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl overflow-y-auto"
         id="style-7"
@@ -65,40 +64,40 @@ const AssetDetails: React.FC<
             </button>
             <button
               className="mx-3"
-              // onClick={async () => {
-              //   if (
-              //     window.confirm("Are you sure you want to delete this asset?")
-              //   ) {
-              //     console.log("Asset ID ==>> ", assetId);
-              //     await deleteInventory(sessionToken, assetId)
-              //       .then(() => {
-              //         toast("Deleted successfully", {
-              //           position: "bottom-right",
-              //           autoClose: 5000,
-              //           hideProgressBar: false,
-              //           closeOnClick: true,
-              //           pauseOnHover: true,
-              //           draggable: true,
-              //           progress: undefined,
-              //           theme: "light",
-              //         });
-              //         refreshAssets();
-              //       })
-              //       .catch((error) => {
-              //         console.error("Error deleting inventory:", error);
-              //         toast("Oops, Something went wrong", {
-              //           position: "bottom-right",
-              //           autoClose: 5000,
-              //           hideProgressBar: false,
-              //           closeOnClick: true,
-              //           pauseOnHover: true,
-              //           draggable: true,
-              //           progress: undefined,
-              //           theme: "light",
-              //         });
-              //       });
-              //   }
-              // }}
+              onClick={async () => {
+                if (
+                  window.confirm("Are you sure you want to delete this asset?")
+                ) {
+                  console.log("Asset ID ==>> ", assetId);
+                  await deleteInventory(sessionToken, assetId)
+                    .then(() => {
+                      toast("Deleted successfully", {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                      });
+                      refreshAssets();
+                    })
+                    .catch((error) => {
+                      console.error("Error deleting inventory:", error);
+                      toast("Oops, Something went wrong", {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                      });
+                    });
+                }
+              }}
             >
               <AiOutlineDelete className="text-2xl mx-3" />
             </button>
@@ -138,10 +137,6 @@ const AssetDetails: React.FC<
               More Information:
             </h2>
 
-            {/* QR Code Button
-            <button className="btn btn-xs bg-blue-900 border-none hover:bg-gradient-to-r from-blue-600 to-blue-400  ml-auto">
-              Download QR
-            </button> */}
             <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto">
               <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
                 {assetType}
@@ -175,49 +170,6 @@ const AssetDetails: React.FC<
               {"workorders=>"}
             </p>
           </Link>
-
-          {/* <button
-            className="mr-5"
-            onClick={async () => {
-              if (
-                window.confirm("Are you sure you want to delete this asset?")
-              ) {
-                console.log("Asset ID ==>> ", assetId);
-                await deleteInventory(sessionToken, assetId)
-                  .then(() => {
-                    toast("Deleted successfully", {
-                      position: "bottom-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                    });
-                    refreshAssets();
-                  })
-                  .catch((error) => {
-                    console.error("Error deleting inventory:", error);
-                    toast("Oops, Something went wrong", {
-                      position: "bottom-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                    });
-                  });
-              }
-            }}
-          >
-            <AiOutlineDelete
-              className="text-slate-800"
-              style={{ fontSize: 45 }}
-            />
-          </button> */}
         </div>
       </div>
     </>

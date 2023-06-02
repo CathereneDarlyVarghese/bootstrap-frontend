@@ -1,4 +1,3 @@
-import React from "react";
 import { AiOutlineScan } from "react-icons/ai";
 
 const ScanButton = ({ onClick }) => {

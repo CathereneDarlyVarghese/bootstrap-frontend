@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import PinIcon from "components/widgets/PinIcon";
 import MapIcon from "../../icons/mapIcon.svg";
 
 const AssetCard = (props: any) => {
   return (
-    <div
-      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar"
-      // id="style-7"
-    >
+    <div className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar">
       <figure className="rounded-xl">
         <img
           src={props.imageLocation}

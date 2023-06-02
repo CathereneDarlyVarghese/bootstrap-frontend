@@ -5,7 +5,6 @@ import { Asset } from "types";
 import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
 import { addInventory } from "services/apiServices";
-import { RadioButton } from "@ui5/webcomponents-react";
 import { toast } from "react-toastify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
@@ -57,7 +56,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             progress: undefined,
             theme: "light",
           });
-          // navigate(`/location?name=${data.location}`); // Navigate to the page of the location
         })
         .catch((error) => {
           throw new Error(error);
@@ -151,6 +149,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <select className="select select-sm my-3 w-full border border-slate-300">
                 {[AssetTypes.Appliances].map((type) => (
                   <option
+                    key={type}
                     selected
                     value={AssetTypes.Appliances}
                     onChange={() => setData((curr) => ({ ...curr, type }))}
@@ -159,18 +158,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </option>
                 ))}
               </select>
-
-              {/* Radio button for asset type */}
-              {/* {[AssetTypes.Appliances].map((type) => (
-                <RadioButton
-                  key={type}
-                  name="type"
-                  text={assetTypeNames[type]}
-                  value={AssetTypes.Appliances}
-                  checked={type === data.type}
-                  onChange={() => setData((curr) => ({ ...curr, type }))}
-                />
-              ))} */}
 
               {/* File input for uploading an image */}
               <label

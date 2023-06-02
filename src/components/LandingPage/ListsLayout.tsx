@@ -130,7 +130,7 @@ const ListsLayout = (props: any) => {
             className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
-            {/* {"+ Add " + props.searchType} */}+ Add
+            + Add
           </button>
         </div>
         {/* Render filtered asset cards */}
@@ -229,7 +229,7 @@ const ListsLayout = (props: any) => {
               cardTitle={asset.name}
               assetType={asset.type}
               DescriptionText={asset.name}
-              // sessionToken={sessionToken}
+              sessionToken={sessionToken}
               refreshAssets={refreshAssets}
               setAssetId={setAssetId}
             />
@@ -257,7 +257,7 @@ const ListsLayout = (props: any) => {
           cardTitle="test Asset Details"
           assetType="Appliances"
           DescriptionText="Description of Asset"
-          // sessionToken={sessionToken}
+          sessionToken={sessionToken}
           refreshAssets={refreshAssets}
           setAssetId={setAssetId}
         />
