@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import jwt from "jwt-decode";
-import { Amplify, Auth, Hub } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 
 export const SignInWithGoogle1 = () => {
   const [user, setUser] = useState(null);

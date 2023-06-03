@@ -1,8 +1,6 @@
 import React from "react";
 
 import closeIcon from "../../icons/closeIcon.svg";
-import deleteIcon from "../../icons/deleteIcon.svg";
-import { MdOutlineDone } from "react-icons/md";
 import { WorkOrder } from "types";
 
 interface WorkOrderDetailsProps {

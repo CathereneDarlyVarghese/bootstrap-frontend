@@ -8,7 +8,6 @@ import { addWorkOrder } from "services/apiServices";
 import { toast } from "react-toastify";
 
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { MdAddCircle } from "react-icons/md";
 
 interface AddWorkOrderProps {
   assetId1: Asset["id"];
@@ -67,7 +66,6 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
     const data = window.localStorage.getItem("sessionToken");
     settoken(data);
     assetId = assetId1 as string;
-    // console.log("location.state?.assetId ==>>", location.state?.assetId)
     setInventoryId(assetId); // set inventoryId from location state
     console.log("assetId WO ==>>", assetId); // log the assetId
   }, [assetId]);
@@ -76,9 +74,9 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
     <div className="flex justify-end">
       <label
         htmlFor="my-modal-3"
-        className="btn w-fit bg-transparent text-slate-800 border-none hover:bg-transparent"
+        className="btn w-fit mx-3 bg-transparent text-slate-800 border-none hover:bg-transparent"
       >
-        <AiOutlineFileAdd style={{ fontSize: 30 }} />
+        <AiOutlineFileAdd style={{ fontSize: 25 }} />
 
         {/* Add Work Order */}
       </label>
@@ -151,7 +149,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
-              className="block w-full text-sm text-white border border-gray-300 rounded-lg cursor-pointer bg-blue-900 dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
+              className="block w-full text-sm text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
             />
 
             <input

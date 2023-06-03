@@ -15,6 +15,9 @@ import WorkOrderForm from "./WorkOrderForm1";
 
 import SearchIcon from "../../icons/circle2017.png";
 
+//sample image for ui testing
+import testImage from "./testImage.png";
+
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -41,6 +44,15 @@ const ListsLayout = (props: any) => {
     setForceRefresh((prev) => !prev);
     setAssetId(null);
     // Toggle the forceRefresh state to trigger refresh
+  };
+
+  // function to remove class for UI
+  const removeClass = (selectClass, removeClass) => {
+    document.querySelector(selectClass).classList.remove(removeClass);
+  };
+  //function to add class for UI
+  const addClass = (selectClass, addClass) => {
+    document.querySelector(selectClass).classList.add(addClass);
   };
 
   useEffect(() => {
@@ -78,6 +90,7 @@ const ListsLayout = (props: any) => {
     <div
       className="bg-primary-content h-full"
       style={{ display: "flex", flexDirection: "row" }}
+      id="parent-element"
     >
       {/* Removed comments above the ToastContainer */}
       <ToastContainer
@@ -88,7 +101,7 @@ const ListsLayout = (props: any) => {
         closeOnClick
       />
       <div
-        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full"
+        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full asset-card"
         id="style-7"
       >
         <div
@@ -117,7 +130,7 @@ const ListsLayout = (props: any) => {
             className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
             onClick={handleAddAssetOpen}
           >
-            {/* {"+ Add " + props.searchType} */}+ Add
+            + Add
           </button>
         </div>
         {/* Render filtered asset cards */}
@@ -132,6 +145,9 @@ const ListsLayout = (props: any) => {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setAssetId(a.id);
+                removeClass("#parent-element .asset-details-card", "lg:hidden");
+                addClass("#parent-element .asset-details-card", "lg:w-full");
+                addClass("#parent-element .asset-card", "lg:hidden");
               }}
             >
               <AssetCard
@@ -142,31 +158,109 @@ const ListsLayout = (props: any) => {
               />
             </div>
           ))}
+
+        {/* Temporary Asset Details */}
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            removeClass("#parent-element .asset-details-card", "lg:hidden");
+            addClass("#parent-element .asset-details-card", "lg:w-full");
+            addClass("#parent-element .asset-card", "lg:hidden");
+          }}
+        >
+          <AssetCard
+            assetName="Test Asset1"
+            assetType="Appliances"
+            assetAddress="The Spiffy Dapper"
+            imageLocation={testImage}
+          />
+        </div>
+        <div style={{ cursor: "pointer" }}>
+          <AssetCard
+            assetName="Test Asset2"
+            assetType="Appliances"
+            assetAddress="The Spiffy Dapper"
+            imageLocation={testImage}
+          />
+        </div>
+        <div style={{ cursor: "pointer" }}>
+          <AssetCard
+            assetName="Test Asset3"
+            assetType="Appliances"
+            assetAddress="The Spiffy Dapper"
+            imageLocation={testImage}
+          />
+        </div>
+        <div style={{ cursor: "pointer" }}>
+          <AssetCard
+            assetName="Test Asset4"
+            assetType="Appliances"
+            assetAddress="The Spiffy Dapper"
+            imageLocation={testImage}
+          />
+        </div>
+        <div style={{ cursor: "pointer" }}>
+          <AssetCard
+            assetName="Test Asset5"
+            assetType="Appliances"
+            assetAddress="The Spiffy Dapper"
+            imageLocation={testImage}
+          />
+        </div>
+
+        {/* Temporary Asset Details */}
       </div>
       <div
-        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
+        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card"
         id="style-7"
       >
         {/* Render asset details */}
-        {asset ? (
-          <AssetDetails
-            assetId={assetId}
-            pendingOrderDetails={asset.workOrders}
-            cardImage={asset.imageS3}
-            cardTitle={asset.name}
-            assetType={asset.type}
-            DescriptionText={asset.name}
-            sessionToken={sessionToken}
-            refreshAssets={refreshAssets}
-            setAssetId={setAssetId}
-          />
-        ) : (
-          <div className="flex items-center h-fit my-52 mx-auto justify-center">
-            <h1 className="font-bold text-3xl text-slate-400">
-              Choose an Asset
-            </h1>
-          </div>
-        )}
+        {
+          asset && (
+            <AssetDetails
+              closeAsset={() => {
+                removeClass("#parent-element .asset-details-card", "lg:hidden");
+                addClass("#parent-element .asset-details-card", "w-full");
+                addClass("#parent-element .asset-card", "lg:hidden");
+              }}
+              assetId={assetId}
+              // pendingOrderDetails={asset.workOrders}
+              cardImage={asset.imageS3}
+              cardTitle={asset.name}
+              assetType={asset.type}
+              DescriptionText={asset.name}
+              sessionToken={sessionToken}
+              refreshAssets={refreshAssets}
+              setAssetId={setAssetId}
+            />
+          )
+          // : (
+          //   <div className="flex items-center h-fit my-52 mx-auto justify-center">
+          //     <h1 className="font-bold text-3xl text-slate-400">
+          //       Choose an Asset
+          //     </h1>
+          //   </div>
+          // )
+        }
+
+        {/* Temporary AssetDetails for ui testing */}
+
+        <AssetDetails
+          closeAsset={() => {
+            addClass("#parent-element .asset-details-card", "lg:hidden");
+            removeClass("#parent-element .asset-details-card", "w-full");
+            removeClass("#parent-element .asset-card", "lg:hidden");
+          }}
+          assetId="1234"
+          // pendingOrderDetails={asset.workOrders}
+          cardImage={testImage}
+          cardTitle="test Asset Details"
+          assetType="Appliances"
+          DescriptionText="Description of Asset"
+          sessionToken={sessionToken}
+          refreshAssets={refreshAssets}
+          setAssetId={setAssetId}
+        />
       </div>
 
       {/* Render work order form */}

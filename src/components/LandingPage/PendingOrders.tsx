@@ -1,7 +1,5 @@
 import React from "react";
 
-import image6 from "./Images/image6.jpeg";
-
 const PendingOrders = ({
   assetName,
   status,
@@ -10,7 +8,6 @@ const PendingOrders = ({
   orderType,
 }) => {
   return (
-    //name, image, description, status, type
     <div
       className="card border border-blue-900 bg-slate-100 shadow-xl w-full my-5"
       style={{ height: "100%" }}
