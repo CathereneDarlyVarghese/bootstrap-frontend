@@ -1,5 +1,6 @@
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
@@ -9,6 +10,8 @@ import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { AssetTypes } from "enums";
 import { WorkOrder } from "types";
+
+import { AiOutlineCalendar } from "react-icons/ai";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -36,6 +39,8 @@ const AssetDetails: React.FC<
   setAssetId,
   closeAsset,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <>
       {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
@@ -137,14 +142,15 @@ const AssetDetails: React.FC<
               More Information:
             </h2>
 
-            <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto">
+            <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
               <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
                 {assetType}
               </button>
-              <button className="badge badge-success text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+              <button className="badge bg-green-400 text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
                 Active
               </button>
-              <button className="badge badge-success text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+              <button className="badge bg-green-400 text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                <AiOutlineCalendar className="mr-3 text-xl" />
                 Warranty
               </button>
             </div>
@@ -164,12 +170,36 @@ const AssetDetails: React.FC<
             <p className="text-black font-sans my-1 text-sm">Notes:</p>
           </div>
         </div>
-        <div className="flex flex-row items-center p-2 justify-end">
-          <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
+        <div className="flex flex-row items-center p-2 justify-around">
+          {/* <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
             <p className="font-sans text-blue-700 underline italic">
               {"workorders=>"}
             </p>
-          </Link>
+          </Link> */}
+          <button
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            onClick={() => {
+              navigate("/documents");
+            }}
+          >
+            Documents
+          </button>
+          <button
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            onClick={() => {
+              navigate("/work-orders");
+            }}
+          >
+            Maintenance
+          </button>
+          <button
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            onClick={() => {
+              navigate("/status-checks");
+            }}
+          >
+            Status Checks
+          </button>
         </div>
       </div>
     </>

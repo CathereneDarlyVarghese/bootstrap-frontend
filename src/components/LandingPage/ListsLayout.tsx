@@ -155,6 +155,8 @@ const ListsLayout = (props: any) => {
                 assetType={a.type}
                 assetAddress={a.location}
                 imageLocation={a.imageS3}
+                imagePlaceholder="img"
+                status={a.type}
               />
             </div>
           ))}
@@ -171,8 +173,10 @@ const ListsLayout = (props: any) => {
           <AssetCard
             assetName="Test Asset1"
             assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
+            assetAddress="tsd"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="expire_soon"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -181,6 +185,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -189,6 +195,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="expired"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -197,6 +205,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -205,6 +215,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
 

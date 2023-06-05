@@ -74,7 +74,7 @@ const WorkOrdersPage = (props: any) => {
         ) : (
           <div className="flex justify-center items-center h-5/6">
             <h1 className="text-lg text-slate-400 font-sans font-semibold">
-              No Work Orders
+              No Maintenance Orders
             </h1>
           </div>
         )}
@@ -91,7 +91,7 @@ const WorkOrdersPage = (props: any) => {
         ) : (
           <div className="flex justify-center items-center h-5/6">
             <h1 className="text-3xl text-slate-400 font-sans font-semibold">
-              Choose Work Order
+              Choose an Order
             </h1>
           </div>
         )}
