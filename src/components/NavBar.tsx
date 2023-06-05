@@ -24,27 +24,35 @@ const NavBar = () => {
     setOpen(!open);
   };
 
+  //function to add and remove class for UI
+  const addClass = (selectClass, addClass) => {
+    document.querySelector(selectClass).classList.add(addClass);
+  };
+  const removeClass = (selectClass, removeClass) => {
+    document.querySelector(selectClass).classList.remove(removeClass);
+  };
+
   useEffect(() => {
     if (routePage.pathname === "/home") {
-      document.querySelector(".asset-tab").classList.add("border-b-white");
-      document
-        .querySelector(".documents-tab")
-        .classList.remove("border-b-white");
-      document
-        .querySelector(".workorder-tab")
-        .classList.remove("border-b-white");
+      addClass(".asset-tab", "border-b-white");
+      removeClass(".documents-tab", "border-b-white");
+      removeClass(".workorder-tab", "border-b-white");
+      removeClass(".status-tab", "border-b-white");
     } else if (routePage.pathname === "/work-orders") {
-      document.querySelector(".asset-tab").classList.remove("border-b-white");
-      document
-        .querySelector(".documents-tab")
-        .classList.remove("border-b-white");
-      document.querySelector(".workorder-tab").classList.add("border-b-white");
+      addClass(".workorder-tab", "border-b-white");
+      removeClass(".asset-tab", "border-b-white");
+      removeClass(".documents-tab", "border-b-white");
+      removeClass(".status-tab", "border-b-white");
     } else if (routePage.pathname === "/documents") {
-      document.querySelector(".asset-tab").classList.remove("border-b-white");
-      document
-        .querySelector(".workorder-tab")
-        .classList.remove("border-b-white");
-      document.querySelector(".documents-tab").classList.add("border-b-white");
+      addClass(".documents-tab", "border-b-white");
+      removeClass(".workorder-tab", "border-b-white");
+      removeClass(".asset-tab", "border-b-white");
+      removeClass(".status-tab", "border-b-white");
+    } else if (routePage.pathname === "/status-checks") {
+      addClass(".status-tab", "border-b-white");
+      removeClass(".documents-tab", "border-b-white");
+      removeClass(".workorder-tab", "border-b-white");
+      removeClass(".asset-tab", "border-b-white");
     }
   }, [routePage]);
 
@@ -98,7 +106,7 @@ const NavBar = () => {
               navigate("/work-orders");
             }}
           >
-            Work Orders
+            Maintenance
           </a>
           <a
             className="tab text-white border border-transparent font-sans documents-tab"
@@ -107,6 +115,14 @@ const NavBar = () => {
             }}
           >
             Documents
+          </a>
+          <a
+            className="tab text-white border border-transparent font-sans status-tab"
+            onClick={() => {
+              navigate("/status-checks");
+            }}
+          >
+            Status
           </a>
         </div>
       </div>
@@ -221,20 +237,10 @@ const NavBar = () => {
                   href="/work-orders"
                   className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
                 >
-                  Work Orders
+                  Maintenance
                 </a>
               </li>
-              <li>
-                <button
-                  onClick={() => {
-                    navigate("/scan");
-                  }}
-                  // href="/work-orders"
-                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
-                >
-                  Scan
-                </button>
-              </li>
+
               {/* <li id="dropdown-2">
                 <button
                   className="md:flex 2xl:hidden btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"

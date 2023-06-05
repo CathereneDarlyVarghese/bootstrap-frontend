@@ -21,6 +21,7 @@ import LoginPage from "components/LoginPage/LoginPage";
 import { RedirectFunction } from "react-router-dom";
 import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
 import TempDocPage from "components/DocumentsPage/TempDocPage";
+import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 
 Amplify.configure(awsConfig);
 
@@ -38,6 +39,7 @@ function AppContent() {
           <Route path="/home" element={<ListsLayout searchType="Asset" />} />
           <Route path="/work-orders" element={<WorkOrdersPage />} />
           <Route path="/documents" element={<TempDocPage />} />
+          <Route path="/status-checks" element={<StatusChecksPage />} />
 
           {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
         </Routes>

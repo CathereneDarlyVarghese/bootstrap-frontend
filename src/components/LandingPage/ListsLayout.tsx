@@ -86,6 +86,11 @@ const ListsLayout = (props: any) => {
     [assetId, location]
   );
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    console.log(event.target.value);
+  };
+
   return (
     <div
       className="bg-primary-content h-full"
@@ -121,7 +126,7 @@ const ListsLayout = (props: any) => {
               type="text"
               placeholder="Search Appliance"
               className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 text-sm border-none font-sans"
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
             />
           </div>
 
@@ -155,6 +160,8 @@ const ListsLayout = (props: any) => {
                 assetType={a.type}
                 assetAddress={a.location}
                 imageLocation={a.imageS3}
+                imagePlaceholder="img"
+                status={a.type}
               />
             </div>
           ))}
@@ -171,8 +178,10 @@ const ListsLayout = (props: any) => {
           <AssetCard
             assetName="Test Asset1"
             assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
+            assetAddress="tsd"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="expire_soon"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -181,6 +190,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -189,6 +200,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="expired"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -197,6 +210,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
         <div style={{ cursor: "pointer" }}>
@@ -205,6 +220,8 @@ const ListsLayout = (props: any) => {
             assetType="Appliances"
             assetAddress="The Spiffy Dapper"
             imageLocation={testImage}
+            imagePlaceholder="img"
+            status="valid"
           />
         </div>
 
