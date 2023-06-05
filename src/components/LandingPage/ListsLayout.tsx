@@ -86,11 +86,6 @@ const ListsLayout = (props: any) => {
     [assetId, location]
   );
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    console.log(event.target.value);
-  };
-
   return (
     <div
       className="bg-primary-content h-full"
@@ -126,7 +121,7 @@ const ListsLayout = (props: any) => {
               type="text"
               placeholder="Search Appliance"
               className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 text-sm border-none font-sans"
-              onChange={handleSearchChange}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
