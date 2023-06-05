@@ -113,12 +113,13 @@ const NavBar = () => {
 
       <div className="flex-none gap-5 md:gap-2 ">
         {/* Location Button */}
-
-        <ScanButton
-          onClick={() => {
-            navigate("/scan");
-          }}
-        />
+        {user && (
+          <ScanButton
+            onClick={() => {
+              navigate("/scan");
+            }}
+          />
+        )}
 
         <div className="dropdown dropdown-bottom dropdown-end">
           <label
