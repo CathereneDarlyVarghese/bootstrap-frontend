@@ -31,15 +31,6 @@ const StatusCard: React.FC<StatusCardProps> = (props) => {
           >
             {props.assetName}
           </h1>
-          {props.status === "valid" ? (
-            <div>
-              <BsFillCheckCircleFill className="text-2xl text-green-600" />
-            </div>
-          ) : status === "expire_soon" ? (
-            <AiFillExclamationCircle className="text-2xl text-yellow-600" />
-          ) : (
-            <BsFillXCircleFill className="text-2xl text-red-700" />
-          )}
         </div>
 
         <div className="flex flex-row items-center">

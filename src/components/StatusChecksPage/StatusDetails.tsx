@@ -157,9 +157,6 @@ const StatusDetails: React.FC<
           </div>
           <div>
             <p className="text-blue-900 font-semibold font-sans my-1 text-sm">
-              {DescriptionText}
-            </p>
-            <p className="text-blue-900 font-semibold font-sans my-1 text-sm">
               Modified By:
             </p>
             <p className="text-blue-900 font-semibold font-sans my-1 text-sm">
