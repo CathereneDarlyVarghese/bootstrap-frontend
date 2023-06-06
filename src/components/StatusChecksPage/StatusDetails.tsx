@@ -62,61 +62,6 @@ const StatusDetails: React.FC<
               {cardTitle}
             </h1>
           </div>
-
-          {/* <div className="flex flex-row justify-center items-center mx-auto">
-            <button className="mx-3">
-              <FiEdit3 className="text-xl" />
-            </button>
-            <button
-              className="mx-3"
-              onClick={async () => {
-                if (
-                  window.confirm("Are you sure you want to delete this asset?")
-                ) {
-                  console.log("Asset ID ==>> ", assetId);
-                  await deleteInventory(sessionToken, assetId)
-                    .then(() => {
-                      toast("Deleted successfully", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                      });
-                      refreshAssets();
-                    })
-                    .catch((error) => {
-                      console.error("Error deleting inventory:", error);
-                      toast("Oops, Something went wrong", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                      });
-                    });
-                }
-              }}
-            >
-              <AiOutlineDelete className="text-2xl mx-3" />
-            </button>
-            <button className="mx-3">
-              <BsQrCode className="text-xl" />
-            </button>
-
-            <WorkOrderForm
-              assetId1={assetId}
-              closeModal={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
-          </div> */}
           <button
             className="ml-auto 2xl:block lg:hidden"
             onClick={() => {
@@ -146,13 +91,6 @@ const StatusDetails: React.FC<
               <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
                 {assetType}
               </button>
-              {/* <button className="badge bg-green-400 text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
-                Active
-              </button>
-              <button className="badge bg-green-400 text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
-                <AiOutlineCalendar className="mr-3 text-xl" />
-                Warranty
-              </button> */}
             </div>
           </div>
           <div>
@@ -166,33 +104,6 @@ const StatusDetails: React.FC<
               Notes:
             </p>
           </div>
-        </div>
-
-        <div className="flex flex-row items-center p-2 justify-around mt-auto">
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
-            onClick={() => {
-              navigate("/documents");
-            }}
-          >
-            Documents
-          </button>
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
-            onClick={() => {
-              navigate("/work-orders");
-            }}
-          >
-            Maintenance
-          </button>
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
-            onClick={() => {
-              navigate("/status-checks");
-            }}
-          >
-            Status Checks
-          </button>
         </div>
       </div>
     </>
