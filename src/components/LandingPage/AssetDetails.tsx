@@ -170,14 +170,9 @@ const AssetDetails: React.FC<
             <p className="text-black font-sans my-1 text-sm">Notes:</p>
           </div>
         </div>
-        <div className="flex flex-row items-center p-2 justify-around">
-          {/* <Link to={`/work-orders?assetId=${encodeURIComponent(assetId)}`}>
-            <p className="font-sans text-blue-700 underline italic">
-              {"workorders=>"}
-            </p>
-          </Link> */}
+        <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
           <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
             onClick={() => {
               navigate("/documents");
             }}
@@ -185,7 +180,7 @@ const AssetDetails: React.FC<
             Documents
           </button>
           <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
             onClick={() => {
               navigate("/work-orders");
             }}
@@ -193,7 +188,7 @@ const AssetDetails: React.FC<
             Maintenance
           </button>
           <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize"
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
             onClick={() => {
               navigate("/status-checks");
             }}
