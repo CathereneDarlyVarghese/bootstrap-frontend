@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
+import AddStatusForm from "./AddStatusForm";
 import "../LandingPage/cardstyles.css";
 
 import SearchIcon from "../../icons/circle2017.png";
@@ -25,12 +26,12 @@ const StatusChecksPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // state from AddAssetForm.tsx
-  const [addAssetOpen, setAddAssetOpen] = useState(false);
+  const [addFormOpen, setAddFormOpen] = useState(false);
 
   // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
 
   const handleAddAssetOpen = () => {
-    setAddAssetOpen(true);
+    setAddFormOpen(true);
   };
 
   const refreshAssets = () => {
@@ -86,7 +87,10 @@ const StatusChecksPage = () => {
             />
           </div>
 
-          <button className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none">
+          <button
+            className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+            onClick={() => setAddFormOpen(true)}
+          >
             + Add
           </button>
         </div>
@@ -198,6 +202,10 @@ const StatusChecksPage = () => {
           setAssetId={setAssetId}
         />
       </div>
+      <AddStatusForm
+        addFormOpen={addFormOpen}
+        setAddFormOpen={setAddFormOpen}
+      />
     </div>
   );
 };
