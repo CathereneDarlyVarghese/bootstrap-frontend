@@ -151,7 +151,7 @@ const AssetDetails: React.FC<
               </button>
               <button className="badge bg-green-400 text-white font-semibold font-sans capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
                 <AiOutlineCalendar className="mr-3 text-xl" />
-                Warranty
+                10/07/23
               </button>
             </div>
           </div>
