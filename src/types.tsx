@@ -39,32 +39,68 @@ export interface WorkOrder {
 }
 
 export interface Asset {
-  orgId: string;
-  id: string;
-  name: string;
-  location: string;
-  organization: Organization;
-  audit: Audit;
-  workOrders: WorkOrder[];
-  type: AssetTypes;
-  imageS3: string;
+  asset_id: string;
+  asset_name?: string;
+  asset_type_id?: string;
+  asset_notes?: string;
+  asset_location?: string;
+  asset_placement?: string;
+  asset_section?: string;
+  asset_status?: boolean;
+  asset_finance_purchase?: number;
+  asset_finance_current_value?: number;
+  modified_date?: Date;
+  modified_by?: string;
+  org_id?: string;
+  status_check_enabled?: boolean;
+  images_id?: string;
+  status_check_interval: number;
 }
 
-export interface Documentation {
-  id: string;
-  name: string;
-  description: string;
-  type: string;
-  startdate: any;
-  enddate: any;
-  file: any;
-  user: string;
-  notes: string;
+export interface Document {
+  document_id: string;
+  document_name: string;
+  document_description: string;
+  document_type_id: string;
+  start_date: Date;
+  end_date: Date;
+  file_id: string;
+  document_notes: string;
+  modified_by: string;
+  modified_date: Date;
+  org_id: string;
+}
+
+export interface AssetCheck {
+  uptime_check_id: string;
+  asset_id: string;
+  status_check: string;
+  file_id: string;
+  uptime_notes: string;
+  modified_by: string;
+  modified_date: Date;
 }
 
 export interface Location {
-  id: string;
-  name: string;
-  description: string;
-  notes: string;
+  location_id: string;
+  location_name: string;
+  org_id?: string;
+}
+
+export interface AssetPlacement {
+  placement_id: string;
+  placement_name: string;
+  section_id: string;
+  location_id: string;
+}
+
+export interface AssetSection {
+  section_id: string;
+  section_name: string;
+  location_id: string;
+}
+
+export interface File {
+  file_id: string;
+  file_array: string[];
 }
