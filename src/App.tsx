@@ -5,10 +5,9 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-import AddInventory from "components/AddInventory";
+// import AddInventory from "components/AddInventory";
 import ScanInventory from "components/ScanInventory";
 import SignInWithGoogleTest from "components/GoogleSignIn/SignInWithGoogle";
-import AddDocuments from "components/AddDocuments";
 //import AddLocations from 'components/AddLocations';
 import { Amplify, Auth, Hub } from "aws-amplify";
 
@@ -32,8 +31,6 @@ function AppContent() {
 
       <div className="h-screen">
         <Routes>
-          <Route path="/add" element={<AddInventory />} />
-          <Route path="/add-documents" element={<AddDocuments />} />
           <Route path="/scan" element={<ScanInventory />} />
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<ListsLayout searchType="Asset" />} />

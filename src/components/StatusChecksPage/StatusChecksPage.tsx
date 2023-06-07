@@ -20,7 +20,7 @@ import testImage from "../LandingPage/testImage.png";
 
 const StatusChecksPage = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [assetId, setAssetId] = useState<Asset["id"]>(null);
+  const [assetId, setAssetId] = useState<Asset["asset_id"]>(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");

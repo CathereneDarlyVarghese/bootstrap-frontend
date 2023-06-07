@@ -14,55 +14,58 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // State variables
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
-  const [data, setData] = useState<Asset>({
-    organization: {
-      name: "testorg1",
-      id: "2",
-      members: [],
-    },
-    orgId: "2",
-    audit: {
-      createdAt: "test",
-      createdBy: "test",
-    },
-    id: "2",
-    name: "",
-    imageS3: "",
-    location: "sg",
-    workOrders: [],
-    type: AssetTypes.Appliances,
-  });
+  // const [data, setData] = useState<Asset>({
+  //   organization: {
+  //     name: "testorg1",
+  //     id: "2",
+  //     members: [],
+  //   },
+  //   orgId: "2",
+  //   audit: {
+  //     createdAt: "test",
+  //     createdBy: "test",
+  //   },
+  //   id: "2",
+  //   name: "",
+  //   imageS3: "",
+  //   location: "sg",
+  //   workOrders: [],
+  //   type: AssetTypes.Appliances,
+  // });
 
   // Function to handle form submission
-  const handleSubmit = async () => {
-    console.log(data);
-    setAddAssetOpen(false);
-    try {
-      // Upload file to S3 bucket
-      const imageLocation = await uploadFiletoS3(file, "inventory");
-      console.log(imageLocation);
-      data.imageS3 = imageLocation.location;
+  // const handleSubmit = async () => {
+  //   console.log(data);
+  //   setAddAssetOpen(false);
+  //   try {
+  //     const imageLocation = await uploadFiletoS3(file, "inventory");
+  //     console.log(imageLocation);
+  //     data.imageS3 = imageLocation.location;
 
-      // Add inventory using the API service
-      await addInventory(token, data)
-        .then(() => {
-          toast.success("Asset Added Successfully", {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-    } catch (error) {
-      alert("Something went wrong!");
-    }
+  //     await addInventory(token, data)
+  //       .then(() => {
+  //         toast.success("Asset Added Successfully", {
+  //           position: "bottom-left",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //           theme: "light",
+  //         });
+  //       })
+  //       .catch((error) => {
+  //         throw new Error(error);
+  //       });
+  //   } catch (error) {
+  //     alert("Something went wrong!");
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setAddAssetOpen(false);
   };
 
   // useEffect hook to retrieve the session token from localStorage
@@ -91,7 +94,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             method="post"
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit();
             }}
           >
             {/* Modal header */}
@@ -124,10 +126,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 type="text"
                 id="name"
                 placeholder="Enter Asset Name"
-                onChange={(e) =>
-                  setData((curr) => ({ ...curr, name: e.target.value }))
-                }
-                value={data.name}
+                // onChange={(e) =>
+                //   setData((curr) => ({ ...curr, name: e.target.value }))
+                // }
+                // value={data.name}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
               <label className="font-sans font-semibold text-sm text-black">
@@ -137,10 +139,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 type="text"
                 id="desciption"
                 placeholder="Enter Description"
-                onChange={(e) =>
-                  setData((curr) => ({ ...curr, name: e.target.value }))
-                }
-                value={data.name}
+                // onChange={(e) =>
+                //   setData((curr) => ({ ...curr, name: e.target.value }))
+                // }
+                // value={data.name}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
               <label className="font-sans font-semibold text-sm text-black">
@@ -152,7 +154,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     key={type}
                     selected
                     value={AssetTypes.Appliances}
-                    onChange={() => setData((curr) => ({ ...curr, type }))}
+                    // onChange={() => setData((curr) => ({ ...curr, type }))}
                   >
                     {assetTypeNames[type]}
                   </option>
@@ -181,9 +183,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <select
                   required
                   className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                  onChange={(e) => {
-                    setData((curr) => ({ ...curr, location: e.target.value }));
-                  }}
+                  // onChange={(e) => {
+                  //   setData((curr) => ({ ...curr, location: e.target.value }));
+                  // }}
                 >
                   <option value="" disabled selected hidden>
                     Select Location
