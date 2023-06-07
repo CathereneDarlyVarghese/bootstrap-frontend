@@ -20,6 +20,7 @@ const WorkOrderCard = ({
           {WorkOrderStatus}
         </button>
         <h1 className="text-lg font-semibold font-sans my-2">
+          Test Work Order
           {WorkOrderName}
         </h1>
         <p className="font-sans font-light text-sm text-gray-500">
