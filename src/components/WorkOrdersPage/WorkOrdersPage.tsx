@@ -26,6 +26,14 @@ const WorkOrdersPage = (props: any) => {
     })();
   }, [assetId]);
 
+  //function to add and remove class for UI
+  const addClass = (selectClass, addClass) => {
+    document.querySelector(selectClass).classList.add(addClass);
+  };
+  const removeClass = (selectClass, removeClass) => {
+    document.querySelector(selectClass).classList.remove(removeClass);
+  };
+
   return (
     <div
       className="bg-primary-content h-full"
@@ -58,7 +66,7 @@ const WorkOrdersPage = (props: any) => {
           </button>
         </div>
         {/* Render filtered asset cards */}
-        {asset ? (
+        {/* {asset ? (
           asset.workOrders.map((workOrder) => (
             <div
               style={{ cursor: "pointer" }}
@@ -77,13 +85,72 @@ const WorkOrdersPage = (props: any) => {
               No Maintenance Orders
             </h1>
           </div>
-        )}
+        )} */}
+
+        {/* sample data for ui testing */}
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            addClass("#style-8", "lg:w-full");
+            addClass("#style-7", "lg:hidden");
+            removeClass("#style-8", "lg:hidden");
+          }}
+        >
+          <WorkOrderCard
+            WorkOrderStatus="closed"
+            WorkOrderName="First Work Order"
+            WorkOrderDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dolor ex, mattis quis hendrerit id, pellentesque vel quam. Vivamus fringilla"
+          />
+        </div>
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            addClass("#style-8", "lg:w-full");
+            addClass("#style-7", "lg:hidden");
+            removeClass("#style-8", "lg:hidden");
+          }}
+        >
+          <WorkOrderCard
+            WorkOrderStatus="closed"
+            WorkOrderName="Second Work Order"
+            WorkOrderDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dolor ex, mattis quis hendrerit id, pellentesque vel quam. Vivamus fringilla"
+          />
+        </div>
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            addClass("#style-8", "lg:w-full");
+            addClass("#style-7", "lg:hidden");
+            removeClass("#style-8", "lg:hidden");
+          }}
+        >
+          <WorkOrderCard
+            WorkOrderStatus="closed"
+            WorkOrderName="Third Work Order"
+            WorkOrderDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dolor ex, mattis quis hendrerit id, pellentesque vel quam. Vivamus fringilla"
+          />
+        </div>
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            addClass("#style-8", "lg:w-full");
+            addClass("#style-7", "lg:hidden");
+            removeClass("#style-8", "lg:hidden");
+          }}
+        >
+          <WorkOrderCard
+            WorkOrderStatus="closed"
+            WorkOrderName="Third Work Order"
+            WorkOrderDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dolor ex, mattis quis hendrerit id, pellentesque vel quam. Vivamus fringilla"
+          />
+        </div>
+        {/* sample data for ui testing */}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden"
-        id="style-7"
+        id="style-8"
       >
-        {selectedWorkOrder ? (
+        {/* {selectedWorkOrder ? (
           <WorkOrderDetails
             workOrder={selectedWorkOrder}
             setSelectedWorkOrder={setSelectedWorkOrder}
@@ -94,7 +161,16 @@ const WorkOrdersPage = (props: any) => {
               Choose an Order
             </h1>
           </div>
-        )}
+        )} */}
+        <WorkOrderDetails
+          closeAsset={() => {
+            addClass("#style-8", "lg:hidden");
+            removeClass("#style-8", "w-full");
+            removeClass("#style-7", "lg:hidden");
+          }}
+          workOrder={selectedWorkOrder}
+          setSelectedWorkOrder={setSelectedWorkOrder}
+        />
       </div>
     </div>
   );

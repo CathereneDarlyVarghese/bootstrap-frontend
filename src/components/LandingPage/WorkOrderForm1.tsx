@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { AiOutlineFileAdd } from "react-icons/ai";
 
 interface AddWorkOrderProps {
-  assetId1: Asset["id"];
+  assetId1: Asset["asset_id"];
   closeModal: () => void;
 }
 

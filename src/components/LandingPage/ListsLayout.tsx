@@ -21,7 +21,7 @@ import testImage from "./testImage.png";
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [assetId, setAssetId] = useState<Asset["id"]>(null);
+  const [assetId, setAssetId] = useState(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,7 +42,7 @@ const ListsLayout = (props: any) => {
 
   const refreshAssets = () => {
     setForceRefresh((prev) => !prev);
-    setAssetId(null);
+    // setAssetId(null);
     // Toggle the forceRefresh state to trigger refresh
   };
 
@@ -75,16 +75,16 @@ const ListsLayout = (props: any) => {
   }, [location, forceRefresh]);
 
   // Filter assets based on current location
-  const filteredAssets = useMemo(
-    () => assets.filter((a) => a.location === location.locationId),
-    [assets, location]
-  );
+  // const filteredAssets = useMemo(
+  //   () => assets.filter((a) => a.location === location.locationId),
+  //   [assets, location]
+  // );
 
   // Get the selected asset based on assetId
-  const asset = useMemo(
-    () => assets.find((a) => a.id === assetId),
-    [assetId, location]
-  );
+  // const asset = useMemo(
+  //   () => assets.find((a) => a.id === assetId),
+  //   [assetId, location]
+  // );
 
   return (
     <div
@@ -134,7 +134,7 @@ const ListsLayout = (props: any) => {
           </button>
         </div>
         {/* Render filtered asset cards */}
-        {filteredAssets
+        {/* {filteredAssets
           .filter(
             (a) =>
               a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,7 +159,7 @@ const ListsLayout = (props: any) => {
                 status={a.type}
               />
             </div>
-          ))}
+          ))} */}
 
         {/* Temporary Asset Details */}
         <div
@@ -227,8 +227,8 @@ const ListsLayout = (props: any) => {
         id="style-7"
       >
         {/* Render asset details */}
-        {
-          asset && (
+        {/* {
+          asset ? (
             <AssetDetails
               closeAsset={() => {
                 removeClass("#parent-element .asset-details-card", "lg:hidden");
@@ -246,14 +246,14 @@ const ListsLayout = (props: any) => {
               setAssetId={setAssetId}
             />
           )
-          // : (
-          //   <div className="flex items-center h-fit my-52 mx-auto justify-center">
-          //     <h1 className="font-bold text-3xl text-slate-400">
-          //       Choose an Asset
-          //     </h1>
-          //   </div>
-          // )
-        }
+          : (
+            <div className="flex items-center h-fit my-52 mx-auto justify-center">
+              <h1 className="font-bold text-3xl text-slate-400">
+                Choose an Asset
+              </h1>
+            </div>
+          )
+        } */}
 
         {/* Temporary AssetDetails for ui testing */}
 
@@ -271,7 +271,7 @@ const ListsLayout = (props: any) => {
           DescriptionText="Description of Asset"
           sessionToken={sessionToken}
           refreshAssets={refreshAssets}
-          setAssetId={setAssetId}
+          setAssetId={assetId}
         />
       </div>
 
