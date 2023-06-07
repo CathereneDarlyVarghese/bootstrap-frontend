@@ -45,87 +45,92 @@ const AssetDetails: React.FC<
     <>
       {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div
-        className="h-5/6 mx-4 mt-2 p-5 bg-white border-blue-900 rounded-xl overflow-y-auto"
+        className="h-5/6 mx-4 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
         id="style-7"
       >
-        <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3">
-          <div className="flex flex-col">
+        <div className="sticky top-0">
+          <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white">
+            <div className="flex flex-col">
+              <button
+                className="ml-auto 2xl:hidden lg:block md:mt-2"
+                onClick={() => {
+                  setAssetId(null);
+                }}
+              >
+                <img src={closeIcon} onClick={closeAsset} />
+              </button>
+              <h1 className="font-sans font-bold text-xl lg:text-lg capitalize my-auto mx-auto">
+                {cardTitle}
+              </h1>
+            </div>
+
+            <div className="flex flex-row justify-center items-center mx-auto">
+              <button className="mx-3">
+                <FiEdit3 className="text-xl" />
+              </button>
+              <button
+                className="mx-3"
+                onClick={async () => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this asset?"
+                    )
+                  ) {
+                    console.log("Asset ID ==>> ", assetId);
+                    await deleteInventory(sessionToken, assetId)
+                      .then(() => {
+                        toast("Deleted successfully", {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                        refreshAssets();
+                      })
+                      .catch((error) => {
+                        console.error("Error deleting inventory:", error);
+                        toast("Oops, Something went wrong", {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                      });
+                  }
+                }}
+              >
+                <AiOutlineDelete className="text-2xl mx-3" />
+              </button>
+              <button className="mx-3">
+                <BsQrCode className="text-xl" />
+              </button>
+
+              <WorkOrderForm
+                assetId1={assetId}
+                closeModal={function (): void {
+                  throw new Error("Function not implemented.");
+                }}
+              />
+            </div>
             <button
-              className="ml-auto 2xl:hidden lg:block"
+              className="ml-auto 2xl:block lg:hidden"
               onClick={() => {
                 setAssetId(null);
               }}
             >
               <img src={closeIcon} onClick={closeAsset} />
             </button>
-            <h1 className="font-sans font-bold text-xl lg:text-lg capitalize my-auto mx-auto">
-              {cardTitle}
-            </h1>
           </div>
-
-          <div className="flex flex-row justify-center items-center mx-auto">
-            <button className="mx-3">
-              <FiEdit3 className="text-xl" />
-            </button>
-            <button
-              className="mx-3"
-              onClick={async () => {
-                if (
-                  window.confirm("Are you sure you want to delete this asset?")
-                ) {
-                  console.log("Asset ID ==>> ", assetId);
-                  await deleteInventory(sessionToken, assetId)
-                    .then(() => {
-                      toast("Deleted successfully", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                      });
-                      refreshAssets();
-                    })
-                    .catch((error) => {
-                      console.error("Error deleting inventory:", error);
-                      toast("Oops, Something went wrong", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                      });
-                    });
-                }
-              }}
-            >
-              <AiOutlineDelete className="text-2xl mx-3" />
-            </button>
-            <button className="mx-3">
-              <BsQrCode className="text-xl" />
-            </button>
-
-            <WorkOrderForm
-              assetId1={assetId}
-              closeModal={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
-          </div>
-          <button
-            className="ml-auto 2xl:block lg:hidden"
-            onClick={() => {
-              setAssetId(null);
-            }}
-          >
-            <img src={closeIcon} onClick={closeAsset} />
-          </button>
         </div>
+
         <figure className="rounded-none">
           <img
             src={cardImage}
@@ -143,14 +148,14 @@ const AssetDetails: React.FC<
             </h2>
 
             <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-              <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+              <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
                 {assetType}
               </button>
-              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
                 Active
               </button>
-              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
-                <AiOutlineCalendar className="mr-3 text-xl" />
+              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
+                <AiOutlineCalendar className="mr-3 text-xl xs:text-lg" />
                 10/07/23
               </button>
             </div>
