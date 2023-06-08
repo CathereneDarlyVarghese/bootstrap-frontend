@@ -6,7 +6,7 @@ import AssetDetails from "./AssetDetails";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset } from "types";
+import { Asset, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,10 +17,12 @@ import SearchIcon from "../../icons/circle2017.png";
 
 //sample image for ui testing
 import testImage from "./testImage.png";
+import { getAllAssets } from "services/assetServices";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
   const [assetId, setAssetId] = useState(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
@@ -55,24 +57,42 @@ const ListsLayout = (props: any) => {
     document.querySelector(selectClass).classList.add(addClass);
   };
 
+  // useEffect(() => {
+  //   // Fetch assets data on location change
+  //   const init = async () => {
+  //     try {
+  //       const userData = await Auth.currentAuthenticatedUser();
+  //       setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+  //       console.log("User Data: ", userData);
+  //       const assetsData = await getInventory(
+  //         userData.signInUserSession.accessToken.jwtToken
+  //       );
+  //       console.log("Sessions Token ==>>", sessionToken);
+  //       setAssets(assetsData);
+  //     } catch {
+  //       console.log("Not signed in");
+  //     }
+  //   };
+  //   init();
+  // }, [location, forceRefresh]);
+
   useEffect(() => {
-    // Fetch assets data on location change
-    const init = async () => {
+    const fetchAssets = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-        console.log("User Data: ", userData);
-        const assetsData = await getInventory(
+        const assetsData = await getAllAssets(
           userData.signInUserSession.accessToken.jwtToken
         );
-        console.log("Sessions Token ==>>", sessionToken);
-        setAssets(assetsData);
-      } catch {
-        console.log("Not signed in");
+        setIncomingAssets(assetsData);
+        console.log("The fetched assets ==>>", assetsData);
+      } catch (error) {
+        console.log(error);
       }
     };
-    init();
-  }, [location, forceRefresh]);
+
+    fetchAssets();
+  }, []);
 
   // Filter assets based on current location
   // const filteredAssets = useMemo(
@@ -170,16 +190,29 @@ const ListsLayout = (props: any) => {
             addClass("#parent-element .asset-card", "lg:hidden");
           }}
         >
-          <AssetCard
-            assetName="Test Asset1"
-            assetType="Appliances"
-            assetAddress="tsd"
-            imageLocation={testImage}
-            imagePlaceholder="img"
-            status="expire_soon"
-          />
+          {/* Render asset cards */}
+          {incomingAssets.map((asset) => (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setAssetId(asset.asset_id);
+                removeClass("#parent-element .asset-details-card", "lg:hidden");
+                addClass("#parent-element .asset-details-card", "lg:w-full");
+                addClass("#parent-element .asset-card", "lg:hidden");
+              }}
+            >
+              <AssetCard
+                assetName={asset.asset_name}
+                assetType={asset.asset_type}
+                assetAddress={asset.location_name}
+                imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
+                status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
+                imagePlaceholder="img" // Add the appropriate image placeholder value
+              />
+            </div>
+          ))}
         </div>
-        <div style={{ cursor: "pointer" }}>
+        {/* <div style={{ cursor: "pointer" }}>
           <AssetCard
             assetName="Test Asset2"
             assetType="Appliances"
@@ -218,7 +251,7 @@ const ListsLayout = (props: any) => {
             imagePlaceholder="img"
             status="valid"
           />
-        </div>
+        </div> */}
 
         {/* Temporary Asset Details */}
       </div>
