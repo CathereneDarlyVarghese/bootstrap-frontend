@@ -27,6 +27,8 @@ const ListsLayout = (props: any) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -55,6 +57,16 @@ const ListsLayout = (props: any) => {
   //function to add class for UI
   const addClass = (selectClass, addClass) => {
     document.querySelector(selectClass).classList.add(addClass);
+  };
+
+  const filterAssets = (searchTerm: string) => {
+    const filtered = incomingAssets.filter(
+      (asset) =>
+        asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.asset_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.location_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAssets(filtered);
   };
 
   // useEffect(() => {
@@ -195,6 +207,7 @@ const ListsLayout = (props: any) => {
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
+                setSelectedAsset(asset);
                 setAssetId(asset.asset_id);
                 removeClass("#parent-element .asset-details-card", "lg:hidden");
                 addClass("#parent-element .asset-details-card", "lg:w-full");
@@ -288,29 +301,38 @@ const ListsLayout = (props: any) => {
           )
         } */}
 
-        {/* Temporary AssetDetails for ui testing */}
-
-        <AssetDetails
-          closeAsset={() => {
-            addClass("#parent-element .asset-details-card", "lg:hidden");
-            removeClass("#parent-element .asset-details-card", "w-full");
-            removeClass("#parent-element .asset-card", "lg:hidden");
-          }}
-          assetId="1234"
-          // pendingOrderDetails={asset.workOrders}
-          cardImage={testImage}
-          cardTitle="test Asset Details"
-          assetType="Appliances"
-          DescriptionText="Description of Asset"
-          sessionToken={sessionToken}
-          refreshAssets={refreshAssets}
-          setAssetId={assetId}
-        />
+        {selectedAsset ? (
+          <AssetDetails
+            closeAsset={() => {
+              addClass("#parent-element .asset-details-card", "lg:hidden");
+              removeClass("#parent-element .asset-details-card", "w-full");
+              removeClass("#parent-element .asset-card", "lg:hidden");
+            }}
+            assetId={selectedAsset.asset_id}
+            cardImage={selectedAsset.images_array[0]}
+            cardTitle={selectedAsset.asset_name}
+            assetType={selectedAsset.asset_type}
+            notes={selectedAsset.asset_notes}
+            sectionName={selectedAsset.section_name}
+            placementName={selectedAsset.placement_name}
+            purchasePrice={selectedAsset.asset_finance_purchase}
+            currentValue={selectedAsset.asset_finance_current_value}
+            sessionToken={sessionToken}
+            refreshAssets={refreshAssets}
+            setAssetId={setSelectedAsset}
+          />
+        ) : (
+          <div className="flex items-center h-fit my-52 mx-auto justify-center">
+            <h1 className="font-bold text-3xl text-slate-400">
+              Choose an Asset
+            </h1>
+          </div>
+        )}
       </div>
 
       {/* Render work order form */}
       {/* <WorkOrderForm /> */}
-      {showWorkOrderForm ? (
+      {/* {showWorkOrderForm ? (
         <WorkOrderForm
           assetId1={assetId}
           closeModal={function (): void {
@@ -319,7 +341,7 @@ const ListsLayout = (props: any) => {
         />
       ) : (
         ""
-      )}
+      )} */}
       {/* Render add asset form */}
       <AddAssetForm
         addAssetOpen={addAssetOpen}
