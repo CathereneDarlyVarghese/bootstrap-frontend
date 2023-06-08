@@ -46,7 +46,7 @@ export interface Asset {
   asset_location?: string;
   asset_placement?: string;
   asset_section?: string;
-  asset_status?: boolean;
+  asset_status?: string;
   asset_finance_purchase?: number;
   asset_finance_current_value?: number;
   modified_date?: Date;
@@ -55,6 +55,22 @@ export interface Asset {
   status_check_enabled?: boolean;
   images_id?: string;
   status_check_interval: number;
+}
+
+export interface IncomingAsset {
+  asset_id: string;
+  asset_name: string;
+  asset_type: string;
+  asset_notes: string;
+  location_name: string;
+  placement_name: string;
+  section_name: string;
+  asset_status: string;
+  asset_finance_purchase: string;
+  asset_finance_current_value: string;
+  modified_date: string;
+  modified_by: string;
+  images_array: string;
 }
 
 export interface Document {
