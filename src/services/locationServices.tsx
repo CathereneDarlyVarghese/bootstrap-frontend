@@ -13,7 +13,7 @@ export async function createAssetLocation(
   };
 
   const response = await axios.post<Location>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location`,
+    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
     JSON.stringify(locationData),
     config
   );
@@ -49,7 +49,7 @@ export async function getAllAssetLocations(
   };
 
   const response = await axios.get<Location[]>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location`,
+    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
     config
   );
   return response.data;

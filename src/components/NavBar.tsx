@@ -4,6 +4,7 @@ import { Auth, Hub } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { useAtom } from "jotai";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
+import { getAllAssetLocations } from "../services/locationServices";
 
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
@@ -13,12 +14,15 @@ import AddLocationForm from "./AddLocationForm";
 
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
+  const [locations, setLocations] = useState(null);
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
+
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
 
   const routePage = useLocation();
 
@@ -77,8 +81,46 @@ const NavBar = () => {
     checkUser();
   }, []);
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+        const locationData = await getAllAssetLocations(
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setLocations(locationData);
+        console.log("locations fetched", locationData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchLocations = async () => {
+  //     try {
+  //       const userData = await Auth.currentAuthenticatedUser();
+  //       const token = userData.signInUserSession.accessToken.jwtToken;
+  //       setSessionToken(token);
+
+  //       const locationData = await getAllAssetLocations(token);
+
+  //       console.log("session token is", token);
+  //       console.log("locations fetched");
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchLocations();
+  // }, []);
+
   return (
     <>
+      {/* {console.log("locations fetched")} */}
       <div className="navbar bg-blue-900">
         <div className="flex-1">
           <a
@@ -181,30 +223,21 @@ const NavBar = () => {
                 tabIndex={0}
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <li
-                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                  onClick={() => {
-                    setLocation({
-                      locationName: "The Spiffy Dapper",
-                      locationId: "tsd",
-                    });
-                    setOpen(!open);
-                  }}
-                >
-                  The Spiffy Dapper
-                </li>
-                <li
-                  className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                  onClick={() => {
-                    setLocation({
-                      locationName: "MadDog Bistro & Bar",
-                      locationId: "mdb",
-                    });
-                    setOpen(!open);
-                  }}
-                >
-                  MadDog Bistro & Bar
-                </li>
+                {locations.map((item) => (
+                  <li
+                    key={item.location_id}
+                    className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
+                    onClick={() => {
+                      setLocation({
+                        locationName: item.location_name,
+                        locationId: item.location_id,
+                      });
+                      setOpen(!open);
+                    }}
+                  >
+                    {item.location_name}
+                  </li>
+                ))}
               </ul>
             )}
           </div>

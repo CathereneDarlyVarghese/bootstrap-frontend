@@ -11,7 +11,7 @@ export const getAssetSections = async (
   accessToken: string
 ): Promise<AssetSection[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetSection = async (
   assetSection: AssetSection
 ): Promise<AssetSection> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
     assetSection,
     {
       headers: {
