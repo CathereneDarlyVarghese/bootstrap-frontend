@@ -17,70 +17,46 @@ import { getAllAssetLocations } from "services/locationServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { getAssetSections } from "services/assetSectionServices";
 
-const location_id = "";
-
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
   const assetTypeNames = useAssetTypeNames();
 
   // State variables
-  const [token, settoken] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<any>();
-  const [assetTypes, setAssetTypes] = useState<AssetType[]>();
-  const [locations, setLocations] = useState<AssetLocation[]>();
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>();
-  const [assetSections, setAssetSections] = useState<AssetSection[]>();
+  const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
+  const [locations, setLocations] = useState<AssetLocation[]>([]);
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
+  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
+  const [filteredPlacements, setFilteredPlacements] = useState<
+    AssetPlacement[]
+  >([]);
 
-  // const [data, setData] = useState<Asset>({
-  //   organization: {
-  //     name: "testorg1",
-  //     id: "2",
-  //     members: [],
-  //   },
-  //   orgId: "2",
-  //   audit: {
-  //     createdAt: "test",
-  //     createdBy: "test",
-  //   },
-  //   id: "2",
-  //   name: "",
-  //   imageS3: "",
-  //   location: "sg",
-  //   workOrders: [],
-  //   type: AssetTypes.Appliances,
-  // });
+  const handleLocationChange = (locationId: string) => {
+    setSelectedLocation(locationId);
+    // Filter sections based on the selected location
+    const sections = assetSections.filter(
+      (section) => section.location_id === locationId
+    );
+    setFilteredSections(sections);
+    // Reset selected section and filtered placements
+    setSelectedSection("");
+    setFilteredPlacements([]);
+  };
 
-  // Function to handle form submission
-  // const handleSubmit = async () => {
-  //   console.log(data);
-  //   setAddAssetOpen(false);
-  //   try {
-  //     const imageLocation = await uploadFiletoS3(file, "inventory");
-  //     console.log(imageLocation);
-  //     data.imageS3 = imageLocation.location;
+  const handleSectionChange = (sectionId: string) => {
+    setSelectedSection(sectionId);
+    // Filter placements based on the selected section
+    const placements = assetPlacements.filter(
+      (placement) => placement.section_id === sectionId
+    );
+    setFilteredPlacements(placements);
+  };
 
-  //     await addInventory(token, data)
-  //       .then(() => {
-  //         toast.success("Asset Added Successfully", {
-  //           position: "bottom-left",
-  //           autoClose: 5000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         throw new Error(error);
-  //       });
-  //   } catch (error) {
-  //     alert("Something went wrong!");
-  //   }
-  // };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddAssetOpen(false);
   };
@@ -88,7 +64,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
-    settoken(data);
+    setToken(data);
   }, []);
 
   useEffect(() => {
@@ -119,6 +95,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
     fetchData();
   }, []);
+
   // Function to close the add asset form
   const closeAddForm = () => {
     setAddAssetOpen(false);
@@ -135,12 +112,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       />
       <div className="modal">
         <div className="modal-box p-0 w-full sm:mx-2">
-          <form
-            method="post"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
             <div className="p-5 bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
@@ -171,12 +143,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 type="text"
                 id="name"
                 placeholder="Enter Asset Name"
-                // onChange={(e) =>
-                //   setData((curr) => ({ ...curr, name: e.target.value }))
-                // }
-                // value={data.name}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
+
+              {/* Input field for description */}
               <label className="font-sans font-semibold text-sm text-black">
                 Description
               </label>
@@ -184,24 +154,18 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 type="text"
                 id="desciption"
                 placeholder="Enter Description"
-                // onChange={(e) =>
-                //   setData((curr) => ({ ...curr, name: e.target.value }))
-                // }
-                // value={data.name}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
+
+              {/* Dropdown for asset type */}
               <label className="font-sans font-semibold text-sm text-black">
                 Asset Type
               </label>
               <select className="select select-sm my-3 w-full border border-slate-300">
-                {[AssetTypes.Appliances].map((type) => (
-                  <option
-                    key={type}
-                    selected
-                    value={AssetTypes.Appliances}
-                    // onChange={() => setData((curr) => ({ ...curr, type }))}
-                  >
-                    {assetTypeNames[type]}
+                {/* Map through the asset types */}
+                {assetTypes.map((type) => (
+                  <option key={type.asset_type_id} value={type.asset_type_id}>
+                    {type.asset_type}
                   </option>
                 ))}
               </select>
@@ -217,7 +181,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 type="file"
                 onChange={(e) => setFile(e.target.files[0])}
                 className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
-                style={{}}
               />
 
               {/* Dropdown for selecting location */}
@@ -228,17 +191,116 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <select
                   required
                   className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                  // onChange={(e) => {
-                  //   setData((curr) => ({ ...curr, location: e.target.value }));
-                  // }}
+                  onChange={(e) => handleLocationChange(e.target.value)}
+                  value={selectedLocation}
                 >
-                  <option value="" disabled selected hidden>
+                  <option value="" disabled hidden>
                     Select Location
                   </option>
-                  <option value="tsd">The Spiffy Dapper</option>
-                  <option value="mdb">MadDog Bistro & Bar</option>
+                  {locations.map((location) => (
+                    <option
+                      key={location.location_id}
+                      value={location.location_id}
+                    >
+                      {location.location_name}
+                    </option>
+                  ))}
                 </select>
               </div>
+
+              {/* Dropdown for selecting section */}
+              <div className="dropdown flex flex-col">
+                <label className="font-sans font-semibold text-sm text-black">
+                  Select section
+                </label>
+                <select
+                  required
+                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                  onChange={(e) => handleSectionChange(e.target.value)}
+                  value={selectedSection}
+                >
+                  <option value="" disabled hidden>
+                    Select Section
+                  </option>
+                  {filteredSections.map((section) => (
+                    <option key={section.section_id} value={section.section_id}>
+                      {section.section_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Dropdown for selecting placement */}
+              <div className="dropdown flex flex-col">
+                <label className="font-sans font-semibold text-sm text-black">
+                  Select placement
+                </label>
+                <select
+                  required
+                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                >
+                  <option value="" disabled hidden>
+                    Select Placement
+                  </option>
+                  {filteredPlacements.map((placement) => (
+                    <option
+                      key={placement.placement_id}
+                      value={placement.placement_id}
+                    >
+                      {placement.placement_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Toggle for status check enabled */}
+              <div className="flex items-center">
+                <label
+                  htmlFor="status_check_enabled"
+                  className="font-sans font-semibold text-sm text-black mr-2"
+                >
+                  Enable Status Check
+                </label>
+                <input
+                  type="checkbox"
+                  id="status_check_enabled"
+                  className="form-checkbox text-blue-600"
+                />
+              </div>
+
+              {/* Input field for status check interval */}
+              <label className="font-sans font-semibold text-sm text-black">
+                Status Check Interval (in days)
+              </label>
+              <input
+                type="number"
+                id="status_check_interval"
+                placeholder="Enter Status Check Interval"
+                min="1"
+                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+              />
+
+              {/* Input field for finance purchase */}
+              <label className="font-sans font-semibold text-sm text-black">
+                Finance Purchase
+              </label>
+              <input
+                type="number"
+                id="finance_purchase"
+                placeholder="Enter Finance Purchase"
+                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+              />
+
+              {/* Input field for finance current value */}
+              <label className="font-sans font-semibold text-sm text-black">
+                Finance Current Value
+              </label>
+              <input
+                type="number"
+                id="finance_current_value"
+                placeholder="Enter Finance Current Value"
+                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+              />
             </div>
 
             {/* Modal action */}
