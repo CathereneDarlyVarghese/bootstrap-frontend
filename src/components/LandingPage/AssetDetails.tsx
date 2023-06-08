@@ -45,7 +45,7 @@ const AssetDetails: React.FC<
     <>
       {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div
-        className="h-5/6 mx-4 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
+        className="h-5/6 mx-4 mt-2 p-5 pb-10 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
         id="style-7"
       >
         <div className="sticky top-0">

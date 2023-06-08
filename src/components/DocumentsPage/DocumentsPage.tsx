@@ -20,7 +20,7 @@ const DocumentsPage = () => {
             +Add
           </button>
         </div>
-        <div>
+        <div className="mb-20">
           <DocumentsCard />
           <DocumentsCard />
           <DocumentsCard />
