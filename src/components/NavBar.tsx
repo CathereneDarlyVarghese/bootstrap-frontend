@@ -99,25 +99,6 @@ const NavBar = () => {
     fetchLocations();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchLocations = async () => {
-  //     try {
-  //       const userData = await Auth.currentAuthenticatedUser();
-  //       const token = userData.signInUserSession.accessToken.jwtToken;
-  //       setSessionToken(token);
-
-  //       const locationData = await getAllAssetLocations(token);
-
-  //       console.log("session token is", token);
-  //       console.log("locations fetched");
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchLocations();
-  // }, []);
-
   return (
     <>
       {/* {console.log("locations fetched")} */}
