@@ -20,7 +20,7 @@ export async function createFile(
   };
 
   const response = await axios.post<File>(
-    `${BASE_URL}/protected/file`,
+    `${BASE_URL}/protected/file/`,
     JSON.stringify(fileData),
     config
   );
@@ -54,7 +54,7 @@ export async function getAllFiles(accessToken: string): Promise<File[]> {
   };
 
   const response = await axios.get<File[]>(
-    `${BASE_URL}/protected/file`,
+    `${BASE_URL}/protected/file/`,
     config
   );
   return response.data;
