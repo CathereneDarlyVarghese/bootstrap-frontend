@@ -89,7 +89,6 @@ const DocumentsPage = () => {
               />
             </div>
           ))}
-          ;
         </div>
       </div>
       <div>
