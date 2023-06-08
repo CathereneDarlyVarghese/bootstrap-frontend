@@ -11,7 +11,7 @@ export const getAssetPlacements = async (
   accessToken: string
 ): Promise<AssetPlacement[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetPlacement = async (
   assetPlacement: AssetPlacement
 ): Promise<AssetPlacement> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
     assetPlacement,
     {
       headers: {

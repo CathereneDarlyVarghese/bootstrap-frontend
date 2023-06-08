@@ -11,7 +11,7 @@ export const getAssetChecks = async (
   accessToken: string
 ): Promise<AssetCheck[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-check`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetCheck = async (
   assetCheck: AssetCheck
 ): Promise<AssetCheck> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-check`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
     assetCheck,
     {
       headers: {

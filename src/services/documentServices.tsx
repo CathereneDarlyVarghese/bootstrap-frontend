@@ -18,7 +18,7 @@ export async function createDocument(
   };
 
   const response = await axios.post<Document>(
-    `${process.env.REACT_APP_BASE_URL}/protected/document`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     JSON.stringify(documentData),
     config
   );
@@ -54,7 +54,7 @@ export async function getAllDocuments(
   };
 
   const response = await axios.get<Document[]>(
-    `${process.env.REACT_APP_BASE_URL}/protected/document`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     config
   );
   return response.data;
