@@ -97,7 +97,7 @@ export interface AssetCheck {
   modified_date: Date;
 }
 
-export interface Location {
+export interface AssetLocation {
   location_id: string;
   location_name: string;
   org_id?: string;
@@ -119,4 +119,9 @@ export interface AssetSection {
 export interface File {
   file_id: string;
   file_array: string[];
+}
+
+export interface AssetType {
+  asset_type_id: string;
+  asset_type: string;
 }

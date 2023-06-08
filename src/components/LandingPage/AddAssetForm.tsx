@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
-import { Asset } from "types";
+import {
+  Asset,
+  AssetLocation,
+  AssetPlacement,
+  AssetSection,
+  AssetType,
+} from "types";
 import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
 import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
+import { getAllAssetTypes } from "services/assetTypeServices";
+import { getAllAssetLocations } from "services/locationServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
+import { getAssetSections } from "services/assetSectionServices";
+
+const location_id = "";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -14,6 +26,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // State variables
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
+  const [assetTypes, setAssetTypes] = useState<AssetType[]>();
+  const [locations, setLocations] = useState<AssetLocation[]>();
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>();
+  const [assetSections, setAssetSections] = useState<AssetSection[]>();
+
   // const [data, setData] = useState<Asset>({
   //   organization: {
   //     name: "testorg1",
@@ -74,6 +91,34 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     settoken(data);
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("sessionToken");
+
+        const [types, locations, placements, sections] = await Promise.all([
+          getAllAssetTypes(accessToken),
+          getAllAssetLocations(accessToken),
+          getAssetPlacements(accessToken),
+          getAssetSections(accessToken),
+        ]);
+
+        setAssetTypes(types);
+        setLocations(locations);
+        setAssetPlacements(placements);
+        setAssetSections(sections);
+
+        console.log("Asset Types:", types);
+        console.log("Asset Locations:", locations);
+        console.log("Asset Placements:", placements);
+        console.log("Asset Sections:", sections);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   // Function to close the add asset form
   const closeAddForm = () => {
     setAddAssetOpen(false);
