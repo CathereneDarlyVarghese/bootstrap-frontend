@@ -173,19 +173,19 @@ const AssetDetails: React.FC<
               </h2>
 
               <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-                <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
                   {assetType}
                 </button>
                 <button
-                  className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] ${getStatusColor(
+                  className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2 ${getStatusColor(
                     selectedAsset1?.asset_status
                   )}`}
                 >
                   {getStatusText(selectedAsset1?.asset_status)}
                 </button>
 
-                <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
-                  <AiOutlineCalendar className="mr-3 text-xl" />
+                <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
+                  <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
                   10/07/23
                 </button>
               </div>
