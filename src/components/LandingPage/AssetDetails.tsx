@@ -9,6 +9,7 @@ import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { StatusTypes } from "enums";
 import { Asset, IncomingAsset } from "types";
+import { deleteAsset } from "services/assetServices";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -99,7 +100,7 @@ const AssetDetails: React.FC<
                 window.confirm("Are you sure you want to delete this asset?")
               ) {
                 console.log("Asset ID ==>> ", assetId);
-                await deleteInventory(sessionToken, assetId)
+                await deleteAsset(sessionToken, assetId)
                   .then(() => {
                     toast("Deleted successfully", {
                       position: "bottom-right",
