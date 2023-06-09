@@ -320,6 +320,7 @@ const ListsLayout = (props: any) => {
             sessionToken={sessionToken}
             refreshAssets={refreshAssets}
             setAssetId={setSelectedAsset}
+            selectedAsset1={selectedAsset}
           />
         ) : (
           <div className="flex items-center h-fit my-52 mx-auto justify-center">

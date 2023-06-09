@@ -7,6 +7,9 @@ import { BsQrCode } from "react-icons/bs";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
+import { StatusTypes } from "enums";
+import { Asset, IncomingAsset } from "types";
+import { deleteAsset } from "services/assetServices";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -21,6 +24,7 @@ interface AssetDetailsProps {
   assetType: string | null;
   setAssetId: (id: string | null) => void;
   closeAsset: () => void;
+  selectedAsset1: IncomingAsset | null;
 }
 
 const AssetDetails: React.FC<
@@ -39,8 +43,33 @@ const AssetDetails: React.FC<
   purchasePrice,
   currentValue,
   notes,
+  selectedAsset1,
 }) => {
   const navigate = useNavigate();
+
+  const getStatusText = (status: string | null) => {
+    switch (status) {
+      case StatusTypes.ACTIVE:
+        return "Active";
+      case StatusTypes.INACTIVE:
+        return "Inactive";
+      case StatusTypes.MAINTENANCE:
+        return "Maintenance";
+      default:
+        return "";
+    }
+  };
+
+  const getStatusColor = (status: string | undefined): string => {
+    if (status === StatusTypes.ACTIVE) {
+      return "bg-green-400";
+    } else if (status === StatusTypes.INACTIVE) {
+      return "bg-red-400";
+    } else if (status === StatusTypes.MAINTENANCE) {
+      return "bg-yellow-400";
+    }
+    return "bg-gray-400";
+  };
 
   return (
     <div
@@ -71,7 +100,7 @@ const AssetDetails: React.FC<
                 window.confirm("Are you sure you want to delete this asset?")
               ) {
                 console.log("Asset ID ==>> ", assetId);
-                await deleteInventory(sessionToken, assetId)
+                await deleteAsset(sessionToken, assetId)
                   .then(() => {
                     toast("Deleted successfully", {
                       position: "bottom-right",
@@ -141,9 +170,14 @@ const AssetDetails: React.FC<
             <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
               {assetType}
             </button>
-            <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
-              Active
+            <button
+              className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] ${getStatusColor(
+                selectedAsset1?.asset_status
+              )}`}
+            >
+              {getStatusText(selectedAsset1?.asset_status)}
             </button>
+
             <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
               <AiOutlineCalendar className="mr-3 text-xl" />
               10/07/23
