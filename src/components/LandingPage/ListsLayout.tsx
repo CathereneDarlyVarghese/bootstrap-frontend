@@ -120,7 +120,7 @@ const ListsLayout = (props: any) => {
 
   return (
     <div
-      className="bg-primary-content h-full"
+      className="bg-primary-content h-full "
       style={{ display: "flex", flexDirection: "row" }}
       id="parent-element"
     >
@@ -269,7 +269,7 @@ const ListsLayout = (props: any) => {
         {/* Temporary Asset Details */}
       </div>
       <div
-        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card"
+        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card md:pb-14"
         id="style-7"
       >
         {/* Render asset details */}
