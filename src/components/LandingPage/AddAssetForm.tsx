@@ -10,12 +10,14 @@ import {
 } from "types";
 import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
-import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { getAllAssetLocations } from "services/locationServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { getAssetSections } from "services/assetSectionServices";
+import { createFile } from "services/fileServices";
+import { createAsset } from "services/assetServices";
+import useStatusTypeNames from "hooks/useStatusTypes";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -23,7 +25,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // State variables
   const [token, setToken] = useState<string>("");
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<File>();
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
@@ -34,6 +36,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
   >([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+
+  const statusTypeNames = useStatusTypeNames();
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedStatus(event.target.value);
+  };
 
   const handleLocationChange = (locationId: string) => {
     setSelectedLocation(locationId);
@@ -56,9 +65,76 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setFilteredPlacements(placements);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAddAssetOpen(false);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Step 1: Upload the file to S3 bucket
+    const imageLocation = await uploadFiletoS3(file, "inventory");
+    console.log(imageLocation);
+
+    // Step 2: Create a file in the backend
+    const createdFile = await createFile(token, {
+      file_id: "",
+      file_array: [imageLocation.location],
+    });
+    console.log("return from createFile==>>", createdFile);
+    const fileId = String(createdFile);
+
+    // Step 3: Prepare the asset data
+    const formData = new FormData(event.target);
+
+    //
+    console.log("Name from form ==>>", formData.get("name"));
+
+    const assetData = {
+      asset_id: null,
+      asset_name: formData.get("name") as string,
+      asset_type_id: formData.get("type") as string,
+      asset_notes: formData.get("notes") as string,
+      asset_location: selectedLocation,
+      asset_placement: formData.get("placement") as string,
+      asset_section: selectedSection,
+      asset_status: selectedStatus,
+      asset_finance_purchase: parseFloat(
+        formData.get("finance_purchase") as string
+      ),
+      asset_finance_current_value: parseFloat(
+        formData.get("finance_current_value") as string
+      ),
+      images_id: fileId,
+      status_check_interval: parseInt(
+        formData.get("status_check_interval") as string
+      ),
+    };
+
+    // Step 4: Create the asset in the backend
+    try {
+      const createdAsset = await createAsset(token, assetData);
+      console.log("Created Asset:", createdAsset);
+      toast.success("Asset Added Successfully", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setAddAssetOpen(false);
+    } catch (error) {
+      console.error("Failed to create asset:", error);
+      toast.error("Failed to create asset", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   // useEffect hook to retrieve the session token from localStorage
@@ -141,7 +217,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </label>
               <input
                 type="text"
-                id="name"
+                name="name"
                 placeholder="Enter Asset Name"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
@@ -152,7 +228,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </label>
               <input
                 type="text"
-                id="desciption"
+                name="notes"
                 placeholder="Enter Description"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
@@ -161,7 +237,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <label className="font-sans font-semibold text-sm text-black">
                 Asset Type
               </label>
-              <select className="select select-sm my-3 w-full border border-slate-300">
+              <select
+                name="type"
+                className="select select-sm my-3 w-full border border-slate-300"
+              >
                 {/* Map through the asset types */}
                 {assetTypes.map((type) => (
                   <option key={type.asset_type_id} value={type.asset_type_id}>
@@ -182,6 +261,29 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 onChange={(e) => setFile(e.target.files[0])}
                 className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
               />
+
+              {/* Dropdown for selecting asset status */}
+              <label className="font-sans font-semibold text-sm text-black">
+                Asset Status
+              </label>
+              <select
+                required
+                name="status"
+                className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                value={selectedStatus}
+                onChange={handleStatusChange}
+              >
+                <option value="" disabled hidden>
+                  Select Asset Status
+                </option>
+                {Object.entries(statusTypeNames).map(
+                  ([statusId, statusName]) => (
+                    <option key={statusId} value={statusId}>
+                      {statusName}
+                    </option>
+                  )
+                )}
+              </select>
 
               {/* Dropdown for selecting location */}
               <div className="dropdown flex flex-col">
@@ -237,6 +339,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </label>
                 <select
                   required
+                  name="placement"
                   className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
                 >
                   <option value="" disabled hidden>
@@ -274,7 +377,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </label>
               <input
                 type="number"
-                id="status_check_interval"
+                name="status_check_interval"
                 placeholder="Enter Status Check Interval"
                 min="1"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
@@ -286,7 +389,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </label>
               <input
                 type="number"
-                id="finance_purchase"
+                name="finance_purchase"
                 placeholder="Enter Finance Purchase"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
@@ -297,7 +400,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </label>
               <input
                 type="number"
-                id="finance_current_value"
+                name="finance_current_value"
                 placeholder="Enter Finance Current Value"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
