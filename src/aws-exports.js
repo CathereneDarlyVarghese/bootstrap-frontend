@@ -19,8 +19,8 @@ const awsConfig = {
       "aws.cognito.signin.user.admin",
     ],
 
-    redirectSignIn: "http://localhost:3000",
-    redirectSignOut: "http://localhost:3000",
+    redirectSignIn: process.env.REACT_APP_REDIRECT_URL,
+    redirectSignOut: process.env.REACT_APP_REDIRECT_URL,
     responseType: "token",
   },
 
