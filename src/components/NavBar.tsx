@@ -49,7 +49,7 @@ const NavBar = () => {
       removeClass(".asset-tab", "border-b-white");
       removeClass(".documents-tab", "border-b-white");
       removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/documents") {
+    } else if (routePage.pathname === "/document/location") {
       addClass(".documents-tab", "border-b-white");
       removeClass(".workorder-tab", "border-b-white");
       removeClass(".asset-tab", "border-b-white");
@@ -137,7 +137,7 @@ const NavBar = () => {
             <a
               className="tab text-white border border-transparent font-sans documents-tab"
               onClick={() => {
-                navigate("/documents");
+                navigate("/document/location");
               }}
             >
               Documents
@@ -259,7 +259,7 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    href="/documents"
+                    href="/document/location"
                     className="btn bg-primary-content text-slate-400 hover:bg-primary-content hover:border-primary-content hover: border-primary-content hover: flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100 2xl:hidden lg:flex"
                   >
                     Documents
