@@ -1,29 +1,30 @@
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
-import { useNavigate, useLocation } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { AiOutlineCalendar } from "react-icons/ai";
 import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
-import { AssetTypes } from "enums";
-import { WorkOrder } from "types";
-
-import { AiOutlineCalendar } from "react-icons/ai";
+import { StatusTypes } from "enums";
+import { Asset, IncomingAsset } from "types";
+import { deleteAsset } from "services/assetServices";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
   assetId: string | null;
   cardTitle: string | null;
   cardImage: string | null;
-  // assetType: AssetTypes;
+  sectionName: string | null;
+  placementName: string | null;
+  purchasePrice: string | null;
+  currentValue: string | null;
+  notes: string | null;
   assetType: string | null;
-  DescriptionText: string | null;
-  // pendingOrderDetails: WorkOrder[];
   setAssetId: (id: string | null) => void;
   closeAsset: () => void;
+  selectedAsset1: IncomingAsset | null;
 }
 
 const AssetDetails: React.FC<
@@ -33,17 +34,45 @@ const AssetDetails: React.FC<
   cardImage,
   cardTitle,
   assetType,
-  DescriptionText,
   sessionToken,
   refreshAssets,
   setAssetId,
   closeAsset,
+  sectionName,
+  placementName,
+  purchasePrice,
+  currentValue,
+  notes,
+  selectedAsset1,
 }) => {
   const navigate = useNavigate();
 
+  const getStatusText = (status: string | null) => {
+    switch (status) {
+      case StatusTypes.ACTIVE:
+        return "Active";
+      case StatusTypes.INACTIVE:
+        return "Inactive";
+      case StatusTypes.MAINTENANCE:
+        return "Maintenance";
+      default:
+        return "";
+    }
+  };
+
+  const getStatusColor = (status: string | undefined): string => {
+    if (status === StatusTypes.ACTIVE) {
+      return "bg-green-400";
+    } else if (status === StatusTypes.INACTIVE) {
+      return "bg-red-400";
+    } else if (status === StatusTypes.MAINTENANCE) {
+      return "bg-yellow-400";
+    }
+    return "bg-gray-400";
+  };
+
   return (
     <>
-      {console.log("SessionsToken FRom AssetDetails ==>> ", sessionToken)}
       <div
         className="h-5/6 mx-4 mt-2 p-5 pb-10 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
         id="style-7"
@@ -77,7 +106,7 @@ const AssetDetails: React.FC<
                     )
                   ) {
                     console.log("Asset ID ==>> ", assetId);
-                    await deleteInventory(sessionToken, assetId)
+                    await deleteAsset(sessionToken, assetId)
                       .then(() => {
                         toast("Deleted successfully", {
                           position: "bottom-right",
@@ -115,91 +144,90 @@ const AssetDetails: React.FC<
 
               <WorkOrderForm
                 assetId1={assetId}
-                closeModal={function (): void {
+                closeModal={() => {
                   throw new Error("Function not implemented.");
                 }}
               />
             </div>
             <button
               className="ml-auto 2xl:block lg:hidden"
-              onClick={() => {
-                setAssetId(null);
-              }}
+              onClick={() => setAssetId(null)}
             >
               <img src={closeIcon} onClick={closeAsset} />
             </button>
           </div>
-        </div>
+          <figure className="rounded-none">
+            <img
+              src={cardImage}
+              alt="an image"
+              className="rounded-xl h-48 w-fit object-cover mx-auto"
+            />
+          </figure>
+          <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
+            <div className="flex 2xl:flex-row lg:flex-col">
+              <h2
+                className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm"
+                style={{ wordSpacing: 3 }}
+              >
+                More Information:
+              </h2>
 
-        <figure className="rounded-none">
-          <img
-            src={cardImage}
-            alt="an image"
-            className="rounded-xl h-48 w-fit object-cover mx-auto"
-          />
-        </figure>
-        <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
-          <div className="flex 2xl:flex-row lg:flex-col">
-            <h2
-              className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm"
-              style={{ wordSpacing: 3 }}
-            >
-              More Information:
-            </h2>
+              <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
+                <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                  {assetType}
+                </button>
+                <button
+                  className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] ${getStatusColor(
+                    selectedAsset1?.asset_status
+                  )}`}
+                >
+                  {getStatusText(selectedAsset1?.asset_status)}
+                </button>
 
-            <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-              <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
-                {assetType}
-              </button>
-              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
-                Active
-              </button>
-              <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px] xs:text-[9px] xs:p-3">
-                <AiOutlineCalendar className="mr-3 text-xl xs:text-lg" />
-                10/07/23
-              </button>
+                <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[10px]">
+                  <AiOutlineCalendar className="mr-3 text-xl" />
+                  10/07/23
+                </button>
+              </div>
+            </div>
+            <div>
+              <p className="text-black font-sans my-1 text-sm">
+                Section: {sectionName}
+              </p>
+              <p className="text-black font-sans my-1 text-sm">
+                Placement: {placementName}
+              </p>
+              <p className="text-black font-sans my-1 text-sm">
+                Purchase Price: {purchasePrice}
+              </p>
+              <p className="text-black font-sans my-1 text-sm">
+                Current Value: {currentValue}
+              </p>
+              <p className="text-black font-sans my-1 text-sm">
+                Notes: {notes}
+              </p>
             </div>
           </div>
-          <div>
-            <p className="text-black font-sans my-1 text-sm">
-              {DescriptionText}
-            </p>
-            <p className="text-black font-sans my-1 text-sm">Placement: </p>
-            <p className="text-black font-sans my-1 text-sm">Purchase Price:</p>
-            <p className="text-black font-sans my-1 text-sm">Current Value: </p>
-            <p className="text-black font-sans my-1 text-sm">Warranty Upto: </p>
-            <p className="text-black font-sans my-1 text-sm">Vendor:</p>
-            <p className="text-black font-sans my-1 text-sm">
-              Service done by:
-            </p>
-            <p className="text-black font-sans my-1 text-sm">Notes:</p>
+          <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
+            <button
+              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
+              onClick={() => navigate("/documents")}
+            >
+              Documents
+            </button>
+            <button
+              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
+              onClick={() => navigate("/work-orders")}
+            >
+              Maintenance
+            </button>
+            <button
+              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
+              onClick={() => navigate("/status-checks")}
+            >
+              Status Checks
+            </button>
           </div>
-        </div>
-        <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-            onClick={() => {
-              navigate("/documents");
-            }}
-          >
-            Documents
-          </button>
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-            onClick={() => {
-              navigate("/work-orders");
-            }}
-          >
-            Maintenance
-          </button>
-          <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-            onClick={() => {
-              navigate("/status-checks");
-            }}
-          >
-            Status Checks
-          </button>
         </div>
       </div>
     </>

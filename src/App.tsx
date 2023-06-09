@@ -33,7 +33,7 @@ function AppContent() {
         <Routes>
           <Route path="/scan" element={<ScanInventory />} />
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path="/home" element={<ListsLayout searchType="Asset" />} />
+          <Route path="/home" element={<ListsLayout />} />
           <Route path="/work-orders" element={<WorkOrdersPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/status-checks" element={<StatusChecksPage />} />

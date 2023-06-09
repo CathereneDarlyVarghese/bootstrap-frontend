@@ -46,7 +46,7 @@ export interface Asset {
   asset_location?: string;
   asset_placement?: string;
   asset_section?: string;
-  asset_status?: boolean;
+  asset_status?: string;
   asset_finance_purchase?: number;
   asset_finance_current_value?: number;
   modified_date?: Date;
@@ -57,11 +57,42 @@ export interface Asset {
   status_check_interval: number;
 }
 
+export interface IncomingAsset {
+  asset_id: string;
+  asset_name: string;
+  asset_type: string;
+  asset_notes: string;
+  location_name: string;
+  placement_name: string;
+  section_name: string;
+  asset_status: string;
+  asset_finance_purchase: string;
+  asset_finance_current_value: string;
+  modified_date: string;
+  modified_by: string;
+  images_array: string;
+}
+
 export interface Document {
   document_id: string;
   document_name: string;
   document_description: string;
   document_type_id: string;
+  start_date: Date;
+  end_date: Date;
+  file_id: string;
+  document_notes: string;
+  modified_by: string;
+  modified_date: Date;
+  org_id: string;
+}
+
+export interface IncomingDocument {
+  document_id: string;
+  document_name: string;
+  document_description: string;
+  document_type_id: string;
+  document_type: string;
   start_date: Date;
   end_date: Date;
   file_id: string;
@@ -81,7 +112,7 @@ export interface AssetCheck {
   modified_date: Date;
 }
 
-export interface Location {
+export interface AssetLocation {
   location_id: string;
   location_name: string;
   org_id?: string;
@@ -103,4 +134,9 @@ export interface AssetSection {
 export interface File {
   file_id: string;
   file_array: string[];
+}
+
+export interface AssetType {
+  asset_type_id: string;
+  asset_type: string;
 }

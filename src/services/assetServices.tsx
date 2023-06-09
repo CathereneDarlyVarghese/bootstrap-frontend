@@ -1,12 +1,14 @@
 import axios from "axios";
-import { Asset } from "types"; // ensure the Asset type is defined
+import { Asset, IncomingAsset } from "types"; // ensure the Asset type is defined
 
 type Props = {
   accessToken: string;
   data?: Asset;
 };
 
-export async function getAllAssets(accessToken: string): Promise<Asset[]> {
+export async function getAllAssets(
+  accessToken: string
+): Promise<IncomingAsset[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -15,8 +17,8 @@ export async function getAllAssets(accessToken: string): Promise<Asset[]> {
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset`;
-    const response = await axios.get<Asset[]>(url, config);
+    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+    const response = await axios.get<IncomingAsset[]>(url, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -27,7 +29,7 @@ export async function getAllAssets(accessToken: string): Promise<Asset[]> {
 export async function getAsset(
   accessToken: string,
   id: string
-): Promise<Asset | null> {
+): Promise<IncomingAsset | null> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -37,7 +39,7 @@ export async function getAsset(
 
   try {
     const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.get<Asset>(url, config);
+    const response = await axios.get<IncomingAsset>(url, config);
     console.log(response);
     return response.data;
   } catch (err) {
@@ -60,7 +62,7 @@ export async function createAsset(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset`;
+    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
     const response = await axios.post<Asset>(
       url,
       JSON.stringify(assetData),

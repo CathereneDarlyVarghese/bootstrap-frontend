@@ -1,9 +1,9 @@
 import axios from "axios";
-import { Document } from "../types"; // Import the Document interface
+import { Document, IncomingDocument } from "../types"; // Import the Document interface
 
 type Props = {
   accessToken: string;
-  data?: Document;
+  data?: IncomingDocument;
 };
 
 export async function createDocument(
@@ -18,7 +18,7 @@ export async function createDocument(
   };
 
   const response = await axios.post<Document>(
-    `${process.env.REACT_APP_BASE_URL}/protected/document`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     JSON.stringify(documentData),
     config
   );
@@ -28,7 +28,7 @@ export async function createDocument(
 export async function getDocumentById(
   accessToken: string,
   id: string
-): Promise<Document> {
+): Promise<IncomingDocument> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -36,7 +36,7 @@ export async function getDocumentById(
     },
   };
 
-  const response = await axios.get<Document>(
+  const response = await axios.get<IncomingDocument>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
     config
   );
@@ -45,7 +45,7 @@ export async function getDocumentById(
 
 export async function getAllDocuments(
   accessToken: string
-): Promise<Document[]> {
+): Promise<IncomingDocument[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -53,8 +53,8 @@ export async function getAllDocuments(
     },
   };
 
-  const response = await axios.get<Document[]>(
-    `${process.env.REACT_APP_BASE_URL}/protected/document`,
+  const response = await axios.get<IncomingDocument[]>(
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     config
   );
   return response.data;

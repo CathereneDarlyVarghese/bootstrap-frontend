@@ -1,10 +1,10 @@
 import axios from "axios";
-import { Location } from "../types"; // Import the Location interface
+import { AssetLocation } from "../types"; // Import the Location interface
 
 export async function createAssetLocation(
   accessToken: string,
-  locationData: Location
-): Promise<Location> {
+  locationData: AssetLocation
+): Promise<AssetLocation> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -12,8 +12,8 @@ export async function createAssetLocation(
     },
   };
 
-  const response = await axios.post<Location>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location`,
+  const response = await axios.post<AssetLocation>(
+    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
     JSON.stringify(locationData),
     config
   );
@@ -23,7 +23,7 @@ export async function createAssetLocation(
 export async function getAssetLocationById(
   accessToken: string,
   id: string
-): Promise<Location> {
+): Promise<AssetLocation> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -31,7 +31,7 @@ export async function getAssetLocationById(
     },
   };
 
-  const response = await axios.get<Location>(
+  const response = await axios.get<AssetLocation>(
     `${process.env.REACT_APP_BASE_URL}/protected/location/${id}`,
     config
   );
@@ -40,7 +40,7 @@ export async function getAssetLocationById(
 
 export async function getAllAssetLocations(
   accessToken: string
-): Promise<Location[]> {
+): Promise<AssetLocation[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -48,8 +48,8 @@ export async function getAllAssetLocations(
     },
   };
 
-  const response = await axios.get<Location[]>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location`,
+  const response = await axios.get<AssetLocation[]>(
+    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
     config
   );
   return response.data;
@@ -58,8 +58,8 @@ export async function getAllAssetLocations(
 export async function updateAssetLocation(
   accessToken: string,
   id: string,
-  updatedData: Location
-): Promise<Location> {
+  updatedData: AssetLocation
+): Promise<AssetLocation> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -67,7 +67,7 @@ export async function updateAssetLocation(
     },
   };
 
-  const response = await axios.put<Location>(
+  const response = await axios.put<AssetLocation>(
     `${process.env.REACT_APP_BASE_URL}/protected/location/${id}`,
     JSON.stringify(updatedData),
     config

@@ -1,17 +1,12 @@
 import axios from "axios";
-import { File } from "../types"; // Import the File interface
+import { AssetType } from "../types"; // Import the AssetType interface
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
-type Props = {
-  accessToken: string;
-  data?: File;
-};
-
-export async function createFile(
+export async function createAssetType(
   accessToken: string,
-  fileData: File
-): Promise<File> {
+  assetType: AssetType
+): Promise<AssetType> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -19,18 +14,18 @@ export async function createFile(
     },
   };
 
-  const response = await axios.post<File>(
-    `${BASE_URL}/protected/file/`,
-    JSON.stringify(fileData),
+  const response = await axios.post<AssetType>(
+    `${BASE_URL}/protected/asset-type/`,
+    JSON.stringify(assetType),
     config
   );
   return response.data;
 }
 
-export async function getFileById(
+export async function getAssetTypeById(
   accessToken: string,
   id: string
-): Promise<File> {
+): Promise<AssetType> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -38,14 +33,16 @@ export async function getFileById(
     },
   };
 
-  const response = await axios.get<File>(
-    `${BASE_URL}/protected/file/${id}`,
+  const response = await axios.get<AssetType>(
+    `${BASE_URL}/protected/asset-type/${id}`,
     config
   );
   return response.data;
 }
 
-export async function getAllFiles(accessToken: string): Promise<File[]> {
+export async function getAllAssetTypes(
+  accessToken: string
+): Promise<AssetType[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -53,18 +50,18 @@ export async function getAllFiles(accessToken: string): Promise<File[]> {
     },
   };
 
-  const response = await axios.get<File[]>(
-    `${BASE_URL}/protected/file/`,
+  const response = await axios.get<AssetType[]>(
+    `${BASE_URL}/protected/asset-type/`,
     config
   );
   return response.data;
 }
 
-export async function updateFile(
+export async function updateAssetType(
   accessToken: string,
   id: string,
-  updatedData: File
-): Promise<File> {
+  updatedAssetType: AssetType
+): Promise<AssetType> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -72,15 +69,15 @@ export async function updateFile(
     },
   };
 
-  const response = await axios.put<File>(
-    `${BASE_URL}/protected/file/${id}`,
-    JSON.stringify(updatedData),
+  const response = await axios.put<AssetType>(
+    `${BASE_URL}/protected/asset-type/${id}`,
+    JSON.stringify(updatedAssetType),
     config
   );
   return response.data;
 }
 
-export async function deleteFile(
+export async function deleteAssetType(
   accessToken: string,
   id: string
 ): Promise<void> {
@@ -91,5 +88,5 @@ export async function deleteFile(
     },
   };
 
-  await axios.delete(`${BASE_URL}/protected/file/${id}`, config);
+  await axios.delete(`${BASE_URL}/protected/asset-types/${id}`, config);
 }

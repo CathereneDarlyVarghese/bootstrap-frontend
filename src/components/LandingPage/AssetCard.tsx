@@ -5,6 +5,7 @@ import MapIcon from "../../icons/mapIcon.svg";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
+import { StatusTypes } from "enums";
 
 let status = "expire_soon";
 
@@ -18,6 +19,18 @@ type AssetCardProps = {
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
+  const getStatusText = (status: string | null) => {
+    switch (status) {
+      case StatusTypes.ACTIVE:
+        return "Active";
+      case StatusTypes.INACTIVE:
+        return "Inactive";
+      case StatusTypes.MAINTENANCE:
+        return "Maintenance";
+      default:
+        return "";
+    }
+  };
   return (
     <div className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar">
       <figure className="rounded-xl">
@@ -35,19 +48,21 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4 text-md xl:text-xs">
             {props.assetType}
           </button>
-          {props.status === "valid" ? (
-            <div>
+          {props.status === StatusTypes.ACTIVE ? (
+            <>
               <BsFillCheckCircleFill className="text-2xl text-green-600" />
-            </div>
-          ) : status === "expire_soon" ? (
-            <AiFillExclamationCircle className="text-2xl text-yellow-600" />
+            </>
+          ) : props.status === StatusTypes.MAINTENANCE ? (
+            <>
+              <AiFillExclamationCircle className="text-2xl text-yellow-600" />
+            </>
           ) : (
-            <BsFillXCircleFill className="text-2xl text-red-700" />
+            <>
+              <BsFillXCircleFill className="text-2xl text-red-700" />
+            </>
           )}
-          {/* <AiFillExclamationCircle className="text-2xl text-yellow-600" /> */}
-          {/* <BsFillCheckCircleFill className="text-2xl text-green-600" /> */}
-          {/* <BsFillXCircleFill className="text-2xl text-red-700" /> */}
         </div>
+
         <h1
           className="flex ml-2 text-gray-800 text-lg font-semibold font-sans tracking-wide xl:text-sm"
           style={{ wordSpacing: 3 }}
