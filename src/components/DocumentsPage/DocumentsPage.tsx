@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
+import { locationAtom, useSyncedAtom } from "store/locationStore";
 import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
-import { getAllDocuments } from "services/documentServices";
+import { getDocumentsByLocationIdOnly } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
 
 const testDescription =
@@ -13,7 +14,7 @@ const testNotes =
 
 const DocumentsPage = () => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-
+  const [location, setLocation] = useSyncedAtom(locationAtom);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
@@ -21,15 +22,20 @@ const DocumentsPage = () => {
   const [documentId, setDocumentId] = useState(null);
   // const [selectedDocument, setSelectedDocument] = useState(null);
 
+  const selectedLocation = location.toString();
+  console.log("The selected location (1) ==>>", location.locationId);
+
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-        const documentsData = await getAllDocuments(
-          userData.signInUserSession.accessToken.jwtToken
+        const documentsData = await getDocumentsByLocationIdOnly(
+          userData.signInUserSession.accessToken.jwtToken, 
+          location.locationId
         );
         setIncomingDocuments(documentsData);
+        console.log("The selected location (2) ==>>", selectedLocation);
         console.log("The fetched documents ==>>", documentsData);
       } catch (error) {
         console.log(error);
@@ -37,7 +43,7 @@ const DocumentsPage = () => {
     };
 
     fetchDocuments();
-  }, []);
+  }, [location]);
 
   // function to remove class for UI
   const removeClass = (selectClass, removeClass) => {
@@ -85,7 +91,8 @@ const DocumentsPage = () => {
                 documentNotes={document.document_notes}
                 fileStatus="File Uploaded"
                 documentStatus="active"
-                fileName={document.file_id}
+                // FIX THIS - For now we are only displaying one file name
+                fileName={document.file_array[0]}
               />
             </div>
           ))}

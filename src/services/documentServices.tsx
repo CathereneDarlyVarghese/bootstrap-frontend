@@ -25,10 +25,10 @@ export async function createDocument(
   return response.data;
 }
 
-export async function getDocumentById(
+export async function getDocumentsByLocationIdOnly(
   accessToken: string,
   id: string
-): Promise<IncomingDocument> {
+): Promise<IncomingDocument[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -36,8 +36,8 @@ export async function getDocumentById(
     },
   };
 
-  const response = await axios.get<IncomingDocument>(
-    `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
+  const response = await axios.get<IncomingDocument[]>(
+    `${process.env.REACT_APP_BASE_URL}/protected/document/location/${id}`,
     config
   );
   return response.data;
