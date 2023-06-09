@@ -87,6 +87,21 @@ export interface Document {
   org_id: string;
 }
 
+export interface IncomingDocument {
+  document_id: string;
+  document_name: string;
+  document_description: string;
+  document_type_id: string;
+  document_type: string;
+  start_date: Date;
+  end_date: Date;
+  file_id: string;
+  document_notes: string;
+  modified_by: string;
+  modified_date: Date;
+  org_id: string;
+}
+
 export interface AssetCheck {
   uptime_check_id: string;
   asset_id: string;
