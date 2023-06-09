@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
-import { locationAtom, useSyncedAtom } from "store/locationStore";
 import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
-
-const testDescription =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque feugiat quam et fringilla dictum. Nunc facilisis vitae augue a";
-
-const testNotes =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque feugiat quam et fringilla dictum. Nunc facilisis vitae augue a fermentum. Quisque vel feugiat diam. Cras commodo elementum euismod. Suspendisse eleifend nulla elementum nulla cursus malesuada. Cras dapibus ipsum vitae venenatis scelerisque. Pellentesque dictum ";
 
 const AssetDocumentsPage = () => {
   const location = useLocation();
@@ -19,15 +12,12 @@ const AssetDocumentsPage = () => {
   const selectedAssetID = JSON.parse(searchParams.get("selectedAssetID"));
 
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-//   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
   >([]); //This is because the fetched documents are a mixture from documents and document_types tables
   const [documentId, setDocumentId] = useState(null);
-  // const [selectedDocument, setSelectedDocument] = useState(null);
 
-//   const selectedLocation = location.toString();
   console.log("The selected asset ID (1) ==>>", selectedAssetID);
 
   useEffect(() => {
@@ -48,7 +38,7 @@ const AssetDocumentsPage = () => {
     };
 
     fetchDocuments();
-  }, [location]);
+  }, [selectedAssetID]);
 
   // function to remove class for UI
   const removeClass = (selectClass, removeClass) => {
