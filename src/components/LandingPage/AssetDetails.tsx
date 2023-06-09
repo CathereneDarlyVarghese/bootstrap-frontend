@@ -1,6 +1,6 @@
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
@@ -46,6 +46,7 @@ const AssetDetails: React.FC<
   selectedAsset1,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const getStatusText = (status: string | null) => {
     switch (status) {
@@ -211,7 +212,16 @@ const AssetDetails: React.FC<
           <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-              onClick={() => navigate("/documents")}
+              onClick={() => {
+                navigate(
+                  `/document/asset?selectedAssetID=${encodeURIComponent(
+                    JSON.stringify(selectedAsset1.asset_id)
+                  )}`,
+                  {
+                    state: { from: location.pathname },
+                  }
+                );
+              }}
             >
               Documents
             </button>
