@@ -8,7 +8,7 @@ type LocationType = {
 
 export const locationAtom = atom<LocationType>({
   locationName: "The Spiffy Dapper",
-  locationId: "tsd",
+  locationId: "4d064c86-9ba7-47fb-bdaa-ac84769dd2df",
 });
 
 export const useSyncedAtom = (atom: PrimitiveAtom<LocationType>) => {
