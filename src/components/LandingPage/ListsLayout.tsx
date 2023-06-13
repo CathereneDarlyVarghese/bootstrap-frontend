@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useRef } from "react";
 import PropTypes from "prop-types";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
@@ -19,6 +20,7 @@ import SearchIcon from "../../icons/circle2017.png";
 import testImage from "./testImage.png";
 import { getAllAssets } from "services/assetServices";
 
+
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -36,6 +38,11 @@ const ListsLayout = (props: any) => {
   // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
   const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
+  const [activeTab, setActiveTab] = useState(0);
+  //sample array for pillblock nav tabs
+  const tabs = ["VIP Lounge", "Bar area", "Kitchen area", "Stag area", "Lounge", "Restroom"]
+  const [scroll, setScroll] = useState(false);
+
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
   };
@@ -50,14 +57,40 @@ const ListsLayout = (props: any) => {
     // Toggle the forceRefresh state to trigger refresh
   };
 
-  // function to remove class for UI
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
-  //function to add class for UI
+  // function to add and remove class for UI
   const addClass = (selectClass, addClass) => {
     document.querySelector(selectClass).classList.add(addClass);
   };
+
+  const removeClass = (selectClass, removeClass) => {
+    document.querySelector(selectClass).classList.remove(removeClass);
+  };
+
+
+
+  //button to scroll pill navigation
+  const scrollLeft = () => {
+    setScroll(true);
+    if (scroll) {
+      document.getElementById("scrollFirst").scrollIntoView({
+        inline: "start",
+        behavior: "smooth",
+        block: "nearest"
+      })
+    }
+  }
+
+  const scrollRight = () => {
+    setScroll(true);
+    if (scroll) {
+      document.getElementById("scrollLast").scrollIntoView({
+        inline: "start",
+        behavior: "smooth",
+        block: "nearest"
+      })
+    }
+  }
+
 
   const filterAssets = (searchTerm: string) => {
     const filtered = incomingAssets.filter(
@@ -164,6 +197,48 @@ const ListsLayout = (props: any) => {
           >
             + Add
           </button>
+
+        </div>
+        <div>
+          <div className="tabs flex flex-row items-center" id="container" style={{ width: "100%", display: "flex", flexDirection: "row" }}>
+            <button className="btn btn-sm rounded-2xl md:hidden bg-blue-900 border-none hover:bg-blue-800 justify-center" id="scrollButton" onClick={scrollLeft}>{"<"}</button>
+            <div className="overflow-x-auto flex-grow" id="style-7" style={{ width: "80%" }}>
+              <ul className="flex flex-row">
+
+                {tabs.map((item, index) => (
+                  <li>
+                    <button className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index ? "text-blue-900 border-b-blue-800 hover:border-b-blue-800 font-bold" : "text-gray-500 font-normal"} normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                      id={`${index === tabs.length - 1 ? "scrollLast" : index === 0 ? "scrollFirst" : ""}`}
+
+                      onClick={() => {
+                        setActiveTab(index)
+                      }}>
+                      {item}
+                    </button>
+                  </li>
+
+                ))}
+                {/* <li>
+                  <button className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === 0 ? "text-blue-900 border-b-blue-800 hover:border-b-blue-800 font-bold" : "text-gray-500 font-normal"} normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                    id="scrollLast">
+                    test
+                  </button>
+                </li> */}
+
+              </ul>
+            </div>
+            <button className="btn btn-sm rounded-2xl md:hidden bg-blue-900 border-none hover:bg-blue-800" id="scrollButton" onClick={scrollRight}>{">"}</button>
+
+
+          </div>
+          <div className="px-2">
+            <select className="select select-sm md:select-xs mb-3 md:mt-2 border border-slate-300 w-full">
+              <option>Front Bar</option>
+              <option>Left Corner</option>
+              <option>Right Corner</option>
+              <option>Ceiling</option>
+            </select>
+          </div>
         </div>
         {/* Render filtered asset cards */}
         {/* {filteredAssets
@@ -193,7 +268,6 @@ const ListsLayout = (props: any) => {
             </div>
           ))} */}
 
-        {/* Temporary Asset Details */}
         <div
           style={{ cursor: "pointer" }}
           onClick={() => {
