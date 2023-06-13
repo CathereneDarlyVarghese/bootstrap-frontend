@@ -187,8 +187,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="p-2 pb-24" >
-        <div className="p-0 w-full sm:mx-2 bg-white rounded-2xl">
+      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32" >
+        <div className="p-0 sm:mx-2 bg-white rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
             <div className="p-5 bg-white flex flex-row rounded-xl">

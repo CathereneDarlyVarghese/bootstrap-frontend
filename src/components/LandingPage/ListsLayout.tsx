@@ -306,7 +306,7 @@ const ListsLayout = (props: any) => {
         </div>
       </div>
       <div
-        className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card md:pb-14"
+        className="w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 lg:bg-white lg:hidden asset-details-card md:pb-14"
         id="style-7"
       >
 

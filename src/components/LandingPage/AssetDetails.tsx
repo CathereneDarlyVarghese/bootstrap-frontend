@@ -75,10 +75,11 @@ const AssetDetails: React.FC<
     return (
       <>
         <div
-          className="h-5/6 mx-4 mt-2 p-5 pb-10 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
+          className="h-5/6 mx-4 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
           id="style-7"
         >
-          <div className="sticky top-0">
+          <div className="sticky top-0 z-50">
+            {/* stay on top */}
             <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white">
               <div className="flex flex-col">
                 <button
@@ -157,6 +158,7 @@ const AssetDetails: React.FC<
                 <img src={closeIcon} onClick={closeAsset} />
               </button>
             </div>
+            {/* stay on top */}
             <figure className="rounded-none">
               <img
                 src={cardImage}
