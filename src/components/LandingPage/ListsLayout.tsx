@@ -193,7 +193,12 @@ const ListsLayout = (props: any) => {
           {/* Add asset button */}
           <button
             className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
-            onClick={handleAddAssetOpen}
+            onClick={() => {
+              handleAddAssetOpen();
+              removeClass("#parent-element .asset-details-card", "lg:hidden");
+              addClass("#parent-element .asset-details-card", "lg:w-full");
+              addClass("#parent-element .asset-card", "lg:hidden");
+            }}
           >
             + Add
           </button>
@@ -304,34 +309,57 @@ const ListsLayout = (props: any) => {
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card md:pb-14"
         id="style-7"
       >
+
         {/* Render asset details */}
         {selectedAsset ? (
-          <AssetDetails
-            closeAsset={() => {
-              addClass("#parent-element .asset-details-card", "lg:hidden");
-              removeClass("#parent-element .asset-details-card", "w-full");
-              removeClass("#parent-element .asset-card", "lg:hidden");
-            }}
-            assetId={selectedAsset.asset_id}
-            cardImage={selectedAsset.images_array[0]}
-            cardTitle={selectedAsset.asset_name}
-            assetType={selectedAsset.asset_type}
-            notes={selectedAsset.asset_notes}
-            sectionName={selectedAsset.section_name}
-            placementName={selectedAsset.placement_name}
-            purchasePrice={selectedAsset.asset_finance_purchase}
-            currentValue={selectedAsset.asset_finance_current_value}
-            sessionToken={sessionToken}
-            refreshAssets={refreshAssets}
-            setAssetId={setSelectedAsset}
-            selectedAsset1={selectedAsset}
-          />
+          <>
+            {addAssetOpen ? (
+              <AddAssetForm
+                addAssetOpen={addAssetOpen}
+                setAddAssetOpen={setAddAssetOpen}
+              />
+            ) : (
+              <AssetDetails
+                closeAsset={() => {
+                  addClass("#parent-element .asset-details-card", "lg:hidden");
+                  removeClass("#parent-element .asset-details-card", "w-full");
+                  removeClass("#parent-element .asset-card", "lg:hidden");
+                }}
+                assetId={selectedAsset.asset_id}
+                cardImage={selectedAsset.images_array[0]}
+                cardTitle={selectedAsset.asset_name}
+                assetType={selectedAsset.asset_type}
+                notes={selectedAsset.asset_notes}
+                sectionName={selectedAsset.section_name}
+                placementName={selectedAsset.placement_name}
+                purchasePrice={selectedAsset.asset_finance_purchase}
+                currentValue={selectedAsset.asset_finance_current_value}
+                sessionToken={sessionToken}
+                refreshAssets={refreshAssets}
+                setAssetId={setSelectedAsset}
+                selectedAsset1={selectedAsset}
+              />
+            )}
+          </>
         ) : (
-          <div className="flex items-center h-fit my-52 mx-auto justify-center">
-            <h1 className="font-bold text-3xl text-slate-400">
-              Choose an Asset
-            </h1>
-          </div>
+          addAssetOpen ? (
+            <AddAssetForm
+              addAssetOpen={addAssetOpen}
+              setAddAssetOpen={() => {
+                setAddAssetOpen(prev => !prev);
+                addClass("#parent-element .asset-details-card", "lg:hidden");
+                removeClass("#parent-element .asset-details-card", "w-full");
+                removeClass("#parent-element .asset-card", "lg:hidden");
+              }}
+            />
+          ) : (
+            <div className="flex items-center h-fit my-52 mx-auto justify-center">
+              <h1 className="font-bold text-3xl text-slate-400">
+                Choose an Asset
+              </h1>
+            </div>
+          )
+
         )}
       </div>
 
@@ -348,10 +376,7 @@ const ListsLayout = (props: any) => {
         ""
       )} */}
       {/* Render add asset form */}
-      <AddAssetForm
-        addAssetOpen={addAssetOpen}
-        setAddAssetOpen={setAddAssetOpen}
-      />
+
     </div>
   );
 };
