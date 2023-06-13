@@ -299,82 +299,12 @@ const ListsLayout = (props: any) => {
             </div>
           ))}
         </div>
-        {/* <div style={{ cursor: "pointer" }}>
-          <AssetCard
-            assetName="Test Asset2"
-            assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
-            imageLocation={testImage}
-            imagePlaceholder="img"
-            status="valid"
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <AssetCard
-            assetName="Test Asset3"
-            assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
-            imageLocation={testImage}
-            imagePlaceholder="img"
-            status="expired"
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <AssetCard
-            assetName="Test Asset4"
-            assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
-            imageLocation={testImage}
-            imagePlaceholder="img"
-            status="valid"
-          />
-        </div>
-        <div style={{ cursor: "pointer" }}>
-          <AssetCard
-            assetName="Test Asset5"
-            assetType="Appliances"
-            assetAddress="The Spiffy Dapper"
-            imageLocation={testImage}
-            imagePlaceholder="img"
-            status="valid"
-          />
-        </div> */}
-
-        {/* Temporary Asset Details */}
       </div>
       <div
         className="w-2/3 h-6/6 p-2 overflow-y-auto bg-gray-200 lg:hidden asset-details-card md:pb-14"
         id="style-7"
       >
         {/* Render asset details */}
-        {/* {
-          asset ? (
-            <AssetDetails
-              closeAsset={() => {
-                removeClass("#parent-element .asset-details-card", "lg:hidden");
-                addClass("#parent-element .asset-details-card", "w-full");
-                addClass("#parent-element .asset-card", "lg:hidden");
-              }}
-              assetId={assetId}
-              // pendingOrderDetails={asset.workOrders}
-              cardImage={asset.imageS3}
-              cardTitle={asset.name}
-              assetType={asset.type}
-              DescriptionText={asset.name}
-              sessionToken={sessionToken}
-              refreshAssets={refreshAssets}
-              setAssetId={setAssetId}
-            />
-          )
-          : (
-            <div className="flex items-center h-fit my-52 mx-auto justify-center">
-              <h1 className="font-bold text-3xl text-slate-400">
-                Choose an Asset
-              </h1>
-            </div>
-          )
-        } */}
-
         {selectedAsset ? (
           <AssetDetails
             closeAsset={() => {
