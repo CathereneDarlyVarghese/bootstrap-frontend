@@ -49,7 +49,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
                 <input
                   type="text"
                   id="name"
-                  placeholder="Enter Audit Title"
+                  placeholder="Location Name"
                   required
                   className="input input-bordered input-sm text-sm w-full my-3 font-sans"
                 />

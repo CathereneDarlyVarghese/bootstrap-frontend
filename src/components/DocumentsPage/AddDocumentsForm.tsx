@@ -20,6 +20,23 @@ const AddDocumentsForm = ({
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
 
+  const [formData, setFormData] = useState({
+    document_name: "",
+    document_description: "",
+    document_type_id: "",
+    start_date: "",
+    end_date: "",
+    document_notes: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setAddDocumentsOpen(false);
@@ -54,7 +71,7 @@ const AddDocumentsForm = ({
       file_id: fileId,
       document_notes: formData.get("notes") as string,
       modified_by: "hardCodedTestUser",
-      modified_date: (new Date()).toString(),
+      modified_date: new Date().toString(),
       org_id: "hardCodedOrgID",
       asset_id: assetID,
       location_id: locationID,
@@ -112,10 +129,7 @@ const AddDocumentsForm = ({
       />
       <div className="modal">
         <div className="modal-box p-0 w-full sm:mx-2">
-          <form
-            method="post"
-
-          >
+          <form method="post">
             {/* Modal header */}
             <div className="p-5 bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
@@ -148,10 +162,7 @@ const AddDocumentsForm = ({
                 name="name"
                 required
                 placeholder="Enter Document Name"
-                // onChange={(e) =>
-                //   setData((curr) => ({ ...curr, name: e.target.value }))
-                // }
-                // value={data.name}
+                onChange={handleChange}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
               <label className="font-sans font-semibold text-sm text-black">
@@ -161,8 +172,11 @@ const AddDocumentsForm = ({
                 name="type"
                 className="select select-sm my-3 w-full border border-slate-300"
                 required
+                // onChange={handleChange}
               >
-                <option value={null} disabled selected hidden>Select Document Type</option>
+                <option value={null} disabled selected hidden>
+                  Select Document Type
+                </option>
                 <option value="17fb9bcc-2e34-4e21-821e-6ff0988ec5ae">
                   Certificates
                 </option>
