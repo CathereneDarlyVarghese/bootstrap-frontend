@@ -76,8 +76,8 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
-              ? "MadDog Bistro & Bar"
-              : props.assetAddress}
+                ? "MadDog Bistro & Bar"
+                : props.assetAddress}
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import WorkOrderForm from "./WorkOrderForm1";
 import closeIcon from "../../icons/closeIcon.svg";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -10,6 +11,8 @@ import { toast } from "react-toastify";
 import { StatusTypes } from "enums";
 import { Asset, IncomingAsset } from "types";
 import { deleteAsset } from "services/assetServices";
+
+import documentIcon from "../../icons/documentIcon.svg";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -45,6 +48,7 @@ const AssetDetails: React.FC<
   notes,
   selectedAsset1,
 }) => {
+    const [activeTab, setActiveTab] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -75,82 +79,38 @@ const AssetDetails: React.FC<
     return (
       <>
         <div
-          className="h-5/6 mx-4 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
+          className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
           id="style-7"
         >
           <div className="sticky top-0 z-50">
-            {/* stay on top */}
             <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white">
               <div className="flex flex-col">
                 <button
-                  className="ml-auto 2xl:hidden lg:block md:mt-2"
+                  className="ml-auto 2xl:hidden lg:block md:my-2"
                   onClick={() => {
                     setAssetId(null);
                   }}
                 >
                   <img src={closeIcon} onClick={closeAsset} />
                 </button>
-                <h1 className="font-sans font-bold text-xl lg:text-lg capitalize my-auto mx-auto">
-                  {cardTitle}
-                </h1>
+                <div className="flex flex-row">
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${activeTab === 0 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900" : "text-gray-400 font-normal"}`}
+                    onClick={() => {
+                      setActiveTab(0)
+                    }} >Documents</button>
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${activeTab === 1 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900" : "text-gray-400 font-normal"}`} onClick={() => {
+                    setActiveTab(1)
+                  }
+                  }>Maintenance</button>
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${activeTab === 2 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900" : "text-gray-400 font-normal"}`} onClick={() => {
+                    setActiveTab(2)
+                  }
+                  }>Status Checks</button>
+
+                </div>
               </div>
 
-              <div className="flex flex-row justify-center items-center mx-auto">
-                <button className="mx-3">
-                  <FiEdit3 className="text-xl" />
-                </button>
-                <button
-                  className="mx-3"
-                  onClick={async () => {
-                    if (
-                      window.confirm(
-                        "Are you sure you want to delete this asset?"
-                      )
-                    ) {
-                      console.log("Asset ID ==>> ", assetId);
-                      await deleteAsset(sessionToken, assetId)
-                        .then(() => {
-                          toast("Deleted successfully", {
-                            position: "bottom-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                          });
-                          refreshAssets();
-                        })
-                        .catch((error) => {
-                          console.error("Error deleting inventory:", error);
-                          toast("Oops, Something went wrong", {
-                            position: "bottom-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                          });
-                        });
-                    }
-                  }}
-                >
-                  <AiOutlineDelete className="text-2xl mx-3" />
-                </button>
-                <button className="mx-3">
-                  <BsQrCode className="text-xl" />
-                </button>
 
-                <WorkOrderForm
-                  assetId1={assetId}
-                  closeModal={() => {
-                    throw new Error("Function not implemented.");
-                  }}
-                />
-              </div>
               <button
                 className="ml-auto 2xl:block lg:hidden"
                 onClick={() => setAssetId(null)}
@@ -158,7 +118,6 @@ const AssetDetails: React.FC<
                 <img src={closeIcon} onClick={closeAsset} />
               </button>
             </div>
-            {/* stay on top */}
             <figure className="rounded-none">
               <img
                 src={cardImage}
@@ -169,10 +128,10 @@ const AssetDetails: React.FC<
             <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
               <div className="flex 2xl:flex-row lg:flex-col">
                 <h2
-                  className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm"
+                  className="flex text-gray-800 text-xl font-semibold font-sans tracking-wide xl:text-sm"
                   style={{ wordSpacing: 3 }}
                 >
-                  More Information:
+                  {cardTitle}
                 </h2>
 
                 <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
@@ -194,6 +153,9 @@ const AssetDetails: React.FC<
                 </div>
               </div>
               <div>
+                <h1 className="text-blue-900 font-semibold my-1">More Information:</h1>
+              </div>
+              <div>
                 <p className="text-black font-sans my-1 text-sm">
                   Section: {sectionName}
                 </p>
@@ -210,8 +172,71 @@ const AssetDetails: React.FC<
                   Notes: {notes}
                 </p>
               </div>
+              <div className="my-2">
+                <h1 className="text-blue-900 font-semibold my-1">Document:</h1>
+                <div className="flex flex-row items-center gap-2 mt-2">
+                  <img src={documentIcon} />
+                  <h2 className="font-sans text-gray-500 text-md md:text-xs">Document Name</h2>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
+            <div className="flex flex-row md:justify-center justify-start items-center">
+              <button className="mx-3">
+                <FiEdit3 className="text-xl" />
+              </button>
+              <button
+                className="mx-3"
+                onClick={async () => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this asset?"
+                    )
+                  ) {
+                    console.log("Asset ID ==>> ", assetId);
+                    await deleteAsset(sessionToken, assetId)
+                      .then(() => {
+                        toast("Deleted successfully", {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                        refreshAssets();
+                      })
+                      .catch((error) => {
+                        console.error("Error deleting inventory:", error);
+                        toast("Oops, Something went wrong", {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                      });
+                  }
+                }}
+              >
+                <AiOutlineDelete className="text-2xl mx-3" />
+              </button>
+              <button className="mx-3">
+                <BsQrCode className="text-xl" />
+              </button>
+
+              <WorkOrderForm
+                assetId1={assetId}
+                closeModal={() => {
+                  throw new Error("Function not implemented.");
+                }}
+              />
+            </div>
+            {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
                 onClick={() => {
@@ -239,7 +264,7 @@ const AssetDetails: React.FC<
               >
                 Status Checks
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </>

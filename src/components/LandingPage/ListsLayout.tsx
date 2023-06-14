@@ -273,18 +273,11 @@ const ListsLayout = (props: any) => {
             </div>
           ))} */}
 
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            removeClass("#parent-element .asset-details-card", "lg:hidden");
-            addClass("#parent-element .asset-details-card", "lg:w-full");
-            addClass("#parent-element .asset-card", "lg:hidden");
-          }}
-        >
+        <div>
           {/* Render asset cards */}
           {incomingAssets.map((asset) => (
             <div
-              style={{ cursor: "pointer" }}
+              // style={{ cursor: "pointer" }}
               onClick={() => {
                 setSelectedAsset(asset);
                 setAssetId(asset.asset_id);
