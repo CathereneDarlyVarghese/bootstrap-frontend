@@ -26,10 +26,10 @@ export async function getAllAssets(
   }
 }
 
-export async function getAsset(
+export async function getAssets(
   accessToken: string,
   id: string
-): Promise<IncomingAsset | null> {
+): Promise<IncomingAsset[] | null> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -39,7 +39,7 @@ export async function getAsset(
 
   try {
     const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.get<IncomingAsset>(url, config);
+    const response = await axios.get<IncomingAsset[]>(url, config);
     console.log(response);
     return response.data;
   } catch (err) {

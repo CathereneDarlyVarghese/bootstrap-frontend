@@ -17,7 +17,7 @@ import SearchIcon from "../../icons/circle2017.png";
 
 //sample image for ui testing
 import testImage from "./testImage.png";
-import { getAllAssets } from "services/assetServices";
+import { getAllAssets, getAssets } from "services/assetServices";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -93,10 +93,24 @@ const ListsLayout = (props: any) => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-        const assetsData = await getAllAssets(
-          userData.signInUserSession.accessToken.jwtToken
+
+        // Retrieve the location ID from the location state
+        const locationId = location.locationId;
+
+        // Fetch assets based on the selected location ID
+        const assetsData = await getAssets(
+          userData.signInUserSession.accessToken.jwtToken,
+          locationId
         );
-        setIncomingAssets(assetsData);
+
+        if (Array.isArray(assetsData)) {
+          setIncomingAssets(assetsData);
+        } else if (assetsData) {
+          setIncomingAssets([assetsData]);
+        } else {
+          setIncomingAssets([]);
+        }
+
         console.log("The fetched assets ==>>", assetsData);
       } catch (error) {
         console.log(error);
@@ -104,7 +118,7 @@ const ListsLayout = (props: any) => {
     };
 
     fetchAssets();
-  }, []);
+  }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
 
   // Filter assets based on current location
   // const filteredAssets = useMemo(
@@ -202,28 +216,35 @@ const ListsLayout = (props: any) => {
             addClass("#parent-element .asset-card", "lg:hidden");
           }}
         >
-          {/* Render asset cards */}
-          {incomingAssets.map((asset) => (
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setSelectedAsset(asset);
-                setAssetId(asset.asset_id);
-                removeClass("#parent-element .asset-details-card", "lg:hidden");
-                addClass("#parent-element .asset-details-card", "lg:w-full");
-                addClass("#parent-element .asset-card", "lg:hidden");
-              }}
-            >
-              <AssetCard
-                assetName={asset.asset_name}
-                assetType={asset.asset_type}
-                assetAddress={asset.location_name}
-                imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
-                status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
-                imagePlaceholder="img" // Add the appropriate image placeholder value
-              />
-            </div>
-          ))}
+          {incomingAssets.length > 0 ? (
+            incomingAssets.map((asset) => (
+              <div
+                key={asset.asset_id}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setSelectedAsset(asset);
+                  setAssetId(asset.asset_id);
+                  removeClass(
+                    "#parent-element .asset-details-card",
+                    "lg:hidden"
+                  );
+                  addClass("#parent-element .asset-details-card", "lg:w-full");
+                  addClass("#parent-element .asset-card", "lg:hidden");
+                }}
+              >
+                <AssetCard
+                  assetName={asset.asset_name}
+                  assetType={asset.asset_type}
+                  assetAddress={asset.location_name}
+                  imageLocation={asset.images_array[0]}
+                  status={asset.asset_status}
+                  imagePlaceholder="img"
+                />
+              </div>
+            ))
+          ) : (
+            <div>No assets found.</div>
+          )}
         </div>
         {/* <div style={{ cursor: "pointer" }}>
           <AssetCard
