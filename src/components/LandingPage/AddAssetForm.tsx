@@ -233,7 +233,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </label>
                   <select
                     name="type"
-                    className="select select-sm my-3 w-full border border-slate-300"
+                    className="select select-sm font-normal my-3 w-full border border-slate-300"
                   >
                     {/* Map through the asset types */}
                     {assetTypes.map((type) => (
@@ -266,7 +266,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 Add Image
               </label>
 
-              <div className="flex flex-row bg-transparent border border-gray-300 rounded-2xl p-2 my-3" >
+              <div className="flex flex-row bg-transparent border border-gray-300 rounded-xl p-2 my-3" >
                 <input
                   type="file"
                   onChange={(e) => {
@@ -278,13 +278,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
                 />
-                <input type="text" className={`bg-transparent font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
-                <button className="w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-2 rounded-xl ml-auto" id="upload" onClick={(e) => {
+                <input type="text" className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
+                <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
                   e.preventDefault()
                   const uploadButton = document.querySelector("#upload") as HTMLElement
                   uploadButton.click()
                 }}>
-                  <div className="flex flex-row items-center gap-1">
+                  <div className="flex flex-row items-center gap-0.5 mx-1">
                     <AiOutlinePaperClip className="text-lg" />
                     Choose File
                   </div>
@@ -301,7 +301,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <select
                     required
                     name="status"
-                    className="select select-sm my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
                     value={selectedStatus}
                     onChange={handleStatusChange}
                   >
@@ -324,7 +324,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </label>
                   <select
                     required
-                    className="select select-sm my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
                     onChange={(e) => handleLocationChange(e.target.value)}
                     value={selectedLocation}
                   >
@@ -352,7 +352,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </label>
                   <select
                     required
-                    className="select select-sm my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
                     onChange={(e) => handleSectionChange(e.target.value)}
                     value={selectedSection}
                   >
@@ -374,7 +374,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <select
                     required
                     name="placement"
-                    className="select select-sm my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
                   >
                     <option value="" disabled hidden>
                       Select Placement
@@ -392,7 +392,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Toggle for status check enabled */}
-              <div className="flex items-center">
+              <div className="flex items-center my-1">
                 <label
                   htmlFor="status_check_enabled"
                   className="font-sans font-semibold text-sm text-black mr-2"
@@ -407,7 +407,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Input field for status check interval */}
-              <label className="font-sans font-semibold text-sm text-black">
+              <label className="font-sans font-semibold text-sm text-black mt-2">
                 Status Check Interval (in days)
               </label>
               <input
@@ -415,7 +415,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 name="status_check_interval"
                 placeholder="Enter Status Check Interval"
                 min="1"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                className="input input-bordered input-sm text-sm w-full my-2 font-sans"
               />
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
