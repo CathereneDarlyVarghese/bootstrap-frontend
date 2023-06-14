@@ -277,7 +277,7 @@ const ListsLayout = (props: any) => {
           {/* Render asset cards */}
           {incomingAssets.map((asset) => (
             <div
-              // style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 setSelectedAsset(asset);
                 setAssetId(asset.asset_id);

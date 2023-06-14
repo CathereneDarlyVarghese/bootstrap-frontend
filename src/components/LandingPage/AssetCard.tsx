@@ -5,6 +5,7 @@ import MapIcon from "../../icons/mapIcon.svg";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
+import { BsQrCode } from "react-icons/bs";
 import { StatusTypes } from "enums";
 
 let status = "expire_soon";
@@ -79,8 +80,16 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
                 ? "MadDog Bistro & Bar"
                 : props.assetAddress}
           </p>
+          <button onClick={(e) => {
+            e.stopPropagation();
+          }}>
+            <BsQrCode className="text-xl" />
+          </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };
