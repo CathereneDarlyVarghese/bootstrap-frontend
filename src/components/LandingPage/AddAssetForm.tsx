@@ -18,6 +18,7 @@ import { getAssetSections } from "services/assetSectionServices";
 import { createFile } from "services/fileServices";
 import { createAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
+import { AiOutlinePaperClip } from "react-icons/ai";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -179,18 +180,18 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   return (
     <>
-      {/* Checkbox for modal toggle */}
+
       <input
         type="checkbox"
         checked={addAssetOpen}
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal">
-        <div className="modal-box p-0 w-full sm:mx-2">
+      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32" >
+        <div className="p-0 sm:mx-2 bg-white rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
-            <div className="p-5 bg-white flex flex-row">
+            <div className="p-5 bg-white flex flex-row rounded-xl">
               <h3 className="font-sans font-bold text-lg text-blue-800">
                 Add Assets
               </h3>
@@ -211,16 +212,38 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             </div>
 
             <div className="flex flex-col p-5">
-              {/* Input field for asset name */}
-              <label className="font-sans font-semibold text-black text-sm">
-                Name of Assets
-              </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter Asset Name"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
-              />
+              <div className="flex flex-row md:flex-col">
+                {/* Input field for asset name */}
+                <div>
+                  <label className="font-sans font-semibold text-black text-sm">
+                    Name of Assets
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter Asset Name"
+                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                  />
+                </div>
+
+                {/* Dropdown for asset type */}
+                <div className="2xl:ml-auto md:ml-0">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Asset Type
+                  </label>
+                  <select
+                    name="type"
+                    className="select select-sm my-3 w-full border border-slate-300"
+                  >
+                    {/* Map through the asset types */}
+                    {assetTypes.map((type) => (
+                      <option key={type.asset_type_id} value={type.asset_type_id}>
+                        {type.asset_type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
               {/* Input field for description */}
               <label className="font-sans font-semibold text-sm text-black">
@@ -233,21 +256,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
 
-              {/* Dropdown for asset type */}
-              <label className="font-sans font-semibold text-sm text-black">
-                Asset Type
-              </label>
-              <select
-                name="type"
-                className="select select-sm my-3 w-full border border-slate-300"
-              >
-                {/* Map through the asset types */}
-                {assetTypes.map((type) => (
-                  <option key={type.asset_type_id} value={type.asset_type_id}>
-                    {type.asset_type}
-                  </option>
-                ))}
-              </select>
+
 
               {/* File input for uploading an image */}
               <label
@@ -256,104 +265,130 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               >
                 Add Image
               </label>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
-              />
+
+              <div className="flex flex-row bg-transparent border border-gray-300 rounded-2xl p-2 my-3" >
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    setFile(e.target.files[0])
+                    const palceholderText = e.target.files[0];
+
+                    console.log(palceholderText.name)
+                  }}
+                  className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
+                  id="upload"
+                />
+                <input type="text" className={`bg-transparent font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
+                <button className="w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-2 rounded-xl ml-auto" id="upload" onClick={(e) => {
+                  e.preventDefault()
+                  const uploadButton = document.querySelector("#upload") as HTMLElement
+                  uploadButton.click()
+                }}>
+                  <div className="flex flex-row items-center gap-1">
+                    <AiOutlinePaperClip className="text-lg" />
+                    Choose File
+                  </div>
+                </button>
+
+              </div>
 
               {/* Dropdown for selecting asset status */}
-              <label className="font-sans font-semibold text-sm text-black">
-                Asset Status
-              </label>
-              <select
-                required
-                name="status"
-                className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                value={selectedStatus}
-                onChange={handleStatusChange}
-              >
-                <option value="" disabled hidden>
-                  Select Asset Status
-                </option>
-                {Object.entries(statusTypeNames).map(
-                  ([statusId, statusName]) => (
-                    <option key={statusId} value={statusId}>
-                      {statusName}
+              <div className="flex flex-row md:flex-col">
+                <div className="flex flex-col">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Asset Status
+                  </label>
+                  <select
+                    required
+                    name="status"
+                    className="select select-sm my-3 border border-slate-300 w-full"
+                    value={selectedStatus}
+                    onChange={handleStatusChange}
+                  >
+                    <option value="" disabled hidden>
+                      Select Asset Status
                     </option>
-                  )
-                )}
-              </select>
+                    {Object.entries(statusTypeNames).map(
+                      ([statusId, statusName]) => (
+                        <option key={statusId} value={statusId}>
+                          {statusName}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+                <div className="flex flex-col 2xl:ml-auto md:ml-0">
+                  {/* Dropdown for selecting location */}
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Select location
+                  </label>
+                  <select
+                    required
+                    className="select select-sm my-3 border border-slate-300 w-full"
+                    onChange={(e) => handleLocationChange(e.target.value)}
+                    value={selectedLocation}
+                  >
+                    <option value="" disabled hidden>
+                      Select Location
+                    </option>
+                    {locations.map((location) => (
+                      <option
+                        key={location.location_id}
+                        value={location.location_id}
+                      >
+                        {location.location_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              {/* Dropdown for selecting location */}
-              <div className="dropdown flex flex-col">
-                <label className="font-sans font-semibold text-sm text-black">
-                  Select location
-                </label>
-                <select
-                  required
-                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                  onChange={(e) => handleLocationChange(e.target.value)}
-                  value={selectedLocation}
-                >
-                  <option value="" disabled hidden>
-                    Select Location
-                  </option>
-                  {locations.map((location) => (
-                    <option
-                      key={location.location_id}
-                      value={location.location_id}
-                    >
-                      {location.location_name}
-                    </option>
-                  ))}
-                </select>
               </div>
 
-              {/* Dropdown for selecting section */}
-              <div className="dropdown flex flex-col">
-                <label className="font-sans font-semibold text-sm text-black">
-                  Select section
-                </label>
-                <select
-                  required
-                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                  onChange={(e) => handleSectionChange(e.target.value)}
-                  value={selectedSection}
-                >
-                  <option value="" disabled hidden>
-                    Select Section
-                  </option>
-                  {filteredSections.map((section) => (
-                    <option key={section.section_id} value={section.section_id}>
-                      {section.section_name}
+              <div className="flex flex-row md:flex-col">
+                {/* Dropdown for selecting section */}
+                <div className="dropdown flex flex-col">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Select section
+                  </label>
+                  <select
+                    required
+                    className="select select-sm my-3 border border-slate-300 w-full"
+                    onChange={(e) => handleSectionChange(e.target.value)}
+                    value={selectedSection}
+                  >
+                    <option value="" disabled hidden>
+                      Select Section
                     </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Dropdown for selecting placement */}
-              <div className="dropdown flex flex-col">
-                <label className="font-sans font-semibold text-sm text-black">
-                  Select placement
-                </label>
-                <select
-                  required
-                  name="placement"
-                  className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                >
-                  <option value="" disabled hidden>
-                    Select Placement
-                  </option>
-                  {filteredPlacements.map((placement) => (
-                    <option
-                      key={placement.placement_id}
-                      value={placement.placement_id}
-                    >
-                      {placement.placement_name}
+                    {filteredSections.map((section) => (
+                      <option key={section.section_id} value={section.section_id}>
+                        {section.section_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Dropdown for selecting placement */}
+                <div className="dropdown flex flex-col 2xl:ml-auto md:ml-0">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Select placement
+                  </label>
+                  <select
+                    required
+                    name="placement"
+                    className="select select-sm my-3 border border-slate-300 w-full"
+                  >
+                    <option value="" disabled hidden>
+                      Select Placement
                     </option>
-                  ))}
-                </select>
+                    {filteredPlacements.map((placement) => (
+                      <option
+                        key={placement.placement_id}
+                        value={placement.placement_id}
+                      >
+                        {placement.placement_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Toggle for status check enabled */}
@@ -383,27 +418,33 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
 
-              {/* Input field for finance purchase */}
-              <label className="font-sans font-semibold text-sm text-black">
-                Finance Purchase
-              </label>
-              <input
-                type="number"
-                name="finance_purchase"
-                placeholder="Enter Finance Purchase"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
-              />
+              <div className="flex flex-row md:flex-col">
+                {/* Input field for finance purchase */}
+                <div className="mr-1">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Finance Purchase
+                  </label>
+                  <input
+                    type="number"
+                    name="finance_purchase"
+                    placeholder="Enter Finance Purchase"
+                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                  />
+                </div>
+                {/* Input field for finance current value */}
+                <div className="ml-1">
+                  <label className="font-sans font-semibold text-sm text-black">
+                    Finance Current Value
+                  </label>
+                  <input
+                    type="number"
+                    name="finance_current_value"
+                    placeholder="Enter Finance Current Value"
+                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                  />
+                </div>
 
-              {/* Input field for finance current value */}
-              <label className="font-sans font-semibold text-sm text-black">
-                Finance Current Value
-              </label>
-              <input
-                type="number"
-                name="finance_current_value"
-                placeholder="Enter Finance Current Value"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
-              />
+              </div>
             </div>
 
             {/* Modal action */}
