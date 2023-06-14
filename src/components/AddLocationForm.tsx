@@ -1,6 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createAssetLocation } from "../services/locationServices";
+import { Auth, Hub } from "aws-amplify";
+import { AssetLocation } from "types";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
+  const [inputLocation, setInputLocation] = useState<string>("");
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [submit, setSubmit] = useState(true);
+
+  useEffect(() => {
+    const addLocation = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        const token = userData.signInUserSession.accessToken.jwtToken;
+        setSessionToken(token);
+        const assetLocationObj: AssetLocation = {
+          location_id: null,
+          location_name: inputLocation,
+        };
+        await createAssetLocation(sessionToken, assetLocationObj);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    addLocation();
+  }, [submit]);
+
+  const handleSubmit = () => {
+    console.log("location submitted");
+    setSubmit((prev) => !prev);
+  };
+
   return (
     <div>
       <input
@@ -16,6 +47,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
             onSubmit={(e) => {
               e.preventDefault();
               setAddLocationForm(false);
+              handleSubmit();
             }}
           >
             {/* Modal header */}
