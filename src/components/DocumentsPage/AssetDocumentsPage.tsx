@@ -87,7 +87,7 @@ const AssetDocumentsPage = () => {
                 fileStatus="File Uploaded"
                 documentStatus="active"
                 // FIX THIS - For now we are only displaying one file name
-                fileName={document.file_array[0]}
+                fileName={document.file_array}
               />
             </div>
           ))}
@@ -97,6 +97,8 @@ const AssetDocumentsPage = () => {
         <AddDocumentsForm
           addDocumentsOpen={addDocumentsOpen}
           setAddDocumentsOpen={setAddDocumentsOpen}
+          assetID={selectedAssetID}
+          locationID={null}
         />
       </div>
     </>

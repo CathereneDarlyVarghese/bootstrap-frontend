@@ -80,6 +80,7 @@ const DocumentsPage = () => {
                 // removeClass("#parent-element .asset-details-card", "lg:hidden");
                 // addClass("#parent-element .documents-card", "lg:w-full");
                 // addClass("#parent-element .asset-card", "lg:hidden");
+                console.log("File array ==>> ", document.file_array[0]);
               }}
             >
               <DocumentsCard
@@ -92,7 +93,7 @@ const DocumentsPage = () => {
                 fileStatus="File Uploaded"
                 documentStatus="active"
                 // FIX THIS - For now we are only displaying one file name
-                fileName={document.file_array[0]}
+                fileName={document.file_array}
               />
             </div>
           ))}
@@ -102,6 +103,7 @@ const DocumentsPage = () => {
         <AddDocumentsForm
           addDocumentsOpen={addDocumentsOpen}
           setAddDocumentsOpen={setAddDocumentsOpen}
+          locationID={selectedLocation}
         />
       </div>
     </>

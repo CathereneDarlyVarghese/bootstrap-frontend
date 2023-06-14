@@ -81,11 +81,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
                 <input
                   type="text"
                   id="name"
-                  placeholder="Enter Audit Title"
-                  value={inputLocation}
-                  onChange={(e) => {
-                    setInputLocation(e.target.value);
-                  }}
+                  placeholder="Location Name"
                   required
                   className="input input-bordered input-sm text-sm w-full my-3 font-sans"
                 />

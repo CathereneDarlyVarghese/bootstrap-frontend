@@ -78,13 +78,15 @@ export interface Document {
   document_name: string;
   document_description: string;
   document_type_id: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
   file_id: string;
   document_notes: string;
   modified_by: string;
-  modified_date: Date;
+  modified_date: string;
   org_id: string;
+  asset_id: string,
+  location_id: string
 }
 
 export interface IncomingDocument {
