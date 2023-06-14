@@ -98,7 +98,7 @@ const AssetDetails: React.FC<
                     onClick={() => {
                       setActiveTab(0)
                     }} >Documents</button>
-                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${activeTab === 1 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900" : "text-gray-400 font-normal"}`} onClick={() => {
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${activeTab === 1 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900" : "text-gray-400 font-normal"}`} onClick={() => {
                     setActiveTab(1)
                   }
                   }>Maintenance</button>

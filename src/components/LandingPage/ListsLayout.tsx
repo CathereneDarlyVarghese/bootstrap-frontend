@@ -207,7 +207,7 @@ const ListsLayout = (props: any) => {
         <div>
           <div className="tabs flex flex-row items-center" id="container" style={{ width: "100%", display: "flex", flexDirection: "row" }}>
             <button className="btn btn-sm rounded-2xl text-black md:hidden bg-transparent border-none hover:bg-blue-200 justify-center" id="scrollButton" onClick={scrollLeft}>{"<<"}</button>
-            <div className="overflow-x-auto flex-grow" id="style-7" style={{ width: "80%" }}>
+            <div className="overflow-x-auto flex-grow" id="style-7" style={{ width: "75%" }}>
               <ul className="flex flex-row">
 
                 {tabs.map((item, index) => (
