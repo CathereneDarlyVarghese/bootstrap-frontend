@@ -212,9 +212,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             </div>
 
             <div className="flex flex-col p-5">
-              <div className="flex flex-row md:flex-col">
+              <div className="flex flex-row gap-3 md:gap-0 md:flex-col">
                 {/* Input field for asset name */}
-                <div>
+                <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-black text-sm">
                     Name of Assets
                   </label>
@@ -227,7 +227,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
 
                 {/* Dropdown for asset type */}
-                <div className="2xl:ml-auto md:ml-0">
+                <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Asset Type
                   </label>
@@ -293,8 +293,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Dropdown for selecting asset status */}
-              <div className="flex flex-row md:flex-col">
-                <div className="flex flex-col">
+              <div className="flex flex-row gap-3 md:flex-col">
+                <div className="flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Asset Status
                   </label>
@@ -317,7 +317,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     )}
                   </select>
                 </div>
-                <div className="flex flex-col 2xl:ml-auto md:ml-0">
+                <div className="flex flex-col w-1/2 md:w-auto">
                   {/* Dropdown for selecting location */}
                   <label className="font-sans font-semibold text-sm text-black">
                     Select location
@@ -344,9 +344,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
               </div>
 
-              <div className="flex flex-row md:flex-col">
+              <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Dropdown for selecting section */}
-                <div className="dropdown flex flex-col">
+                <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Select section
                   </label>
@@ -367,7 +367,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </select>
                 </div>
                 {/* Dropdown for selecting placement */}
-                <div className="dropdown flex flex-col 2xl:ml-auto md:ml-0">
+                <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Select placement
                   </label>
@@ -418,9 +418,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
 
-              <div className="flex flex-row md:flex-col">
+              <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Input field for finance purchase */}
-                <div className="mr-1">
+                <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Finance Purchase
                   </label>
@@ -432,7 +432,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   />
                 </div>
                 {/* Input field for finance current value */}
-                <div className="ml-1">
+                <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black">
                     Finance Current Value
                   </label>
