@@ -56,8 +56,8 @@ const DocumentsPage = () => {
 
   return (
     <>
-      <div className="bg-gray-200 h-full overflow-y-auto p-5 pb-20">
-        <div className="flex flex-grow items-center">
+      <div className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen ? "2xl:bg-gray-200 xl:bg:white" : "bg-gray-200"}`}>
+        <div className={`flex flex-grow items-center ${addDocumentsOpen ? "xl:hidden" : ""}`}>
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents
           </h1>
@@ -71,8 +71,8 @@ const DocumentsPage = () => {
             +Add
           </button>
         </div>
-        <div className={`flex flex-row ${addDocumentsOpen ? "flex-row" : "flex-col"} items-start gap-2 mt-5`}>
-          <div className={`w-full ${addDocumentsOpen ? "w-3/5" : ""}`}>
+        <div className={`flex ${addDocumentsOpen ? "flex-row" : "flex-col"} items-start gap-2 mt-5`}>
+          <div className={`${addDocumentsOpen ? "w-3/5 xl:hidden" : "w-full"}`}>
             {incomingDocuments.map((document) => (
               <div className="cursor-pointer mb-5"
                 onClick={() => {
@@ -99,7 +99,7 @@ const DocumentsPage = () => {
               </div>
             ))}
           </div>
-          <div className={`w-2/5 ${addDocumentsOpen ? "" : "hidden"}`}>
+          <div className={`${addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"}`}>
             <AddDocumentsForm
               addDocumentsOpen={addDocumentsOpen}
               setAddDocumentsOpen={setAddDocumentsOpen}
