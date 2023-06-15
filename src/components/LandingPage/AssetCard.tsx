@@ -17,6 +17,7 @@ type AssetCardProps = {
   imageLocation: string;
   status: string;
   imagePlaceholder: string;
+  updatedDetailsTabIndex: any;
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
@@ -32,8 +33,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         return "";
     }
   };
+
+  const handleClick = () => {
+    props.updatedDetailsTabIndex(0)
+  }
+
   return (
-    <div className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar">
+    <div className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 overflow-hidden hover:border hover:border-blue-900 hide-scrollbar" onClick={handleClick}>
       <figure className="rounded-xl">
         <img
           src={props.imageLocation}

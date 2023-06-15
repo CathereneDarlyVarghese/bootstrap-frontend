@@ -42,6 +42,8 @@ const ListsLayout = (props: any) => {
   //sample array for pillblock nav tabs
   const tabs = ["VIP Lounge", "Bar area", "Kitchen area", "Stag area", "Lounge", "Restroom"]
   const [scroll, setScroll] = useState(false);
+  //active tabs in asset details card
+  const [detailsTab, setDetailsTab] = useState(0);
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -102,24 +104,7 @@ const ListsLayout = (props: any) => {
     setFilteredAssets(filtered);
   };
 
-  // useEffect(() => {
-  //   // Fetch assets data on location change
-  //   const init = async () => {
-  //     try {
-  //       const userData = await Auth.currentAuthenticatedUser();
-  //       setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-  //       console.log("User Data: ", userData);
-  //       const assetsData = await getInventory(
-  //         userData.signInUserSession.accessToken.jwtToken
-  //       );
-  //       console.log("Sessions Token ==>>", sessionToken);
-  //       setAssets(assetsData);
-  //     } catch {
-  //       console.log("Not signed in");
-  //     }
-  //   };
-  //   init();
-  // }, [location, forceRefresh]);
+
 
   useEffect(() => {
     const fetchAssets = async () => {
@@ -153,17 +138,10 @@ const ListsLayout = (props: any) => {
     fetchAssets();
   }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
 
-  // Filter assets based on current location
-  // const filteredAssets = useMemo(
-  //   () => assets.filter((a) => a.location === location.locationId),
-  //   [assets, location]
-  // );
 
-  // Get the selected asset based on assetId
-  // const asset = useMemo(
-  //   () => assets.find((a) => a.id === assetId),
-  //   [assetId, location]
-  // );
+  const detailsTabIndexRefresh = (tabIndex) => {
+    setDetailsTab(0)
+  }
 
   return (
     <div
@@ -237,12 +215,7 @@ const ListsLayout = (props: any) => {
                   </li>
 
                 ))}
-                {/* <li>
-                  <button className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === 0 ? "text-blue-900 border-b-blue-800 hover:border-b-blue-800 font-bold" : "text-gray-500 font-normal"} normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                    id="scrollLast">
-                    test
-                  </button>
-                </li> */}
+
 
               </ul>
             </div>
@@ -307,6 +280,7 @@ const ListsLayout = (props: any) => {
                 imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
                 status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
                 imagePlaceholder="img" // Add the appropriate image placeholder value
+                updatedDetailsTabIndex={detailsTabIndexRefresh}
               />
             </div>
           ))}
@@ -345,6 +319,8 @@ const ListsLayout = (props: any) => {
                 refreshAssets={refreshAssets}
                 setAssetId={setSelectedAsset}
                 selectedAsset1={selectedAsset}
+                tabIndex={detailsTab}
+                setTabIndex={setDetailsTab}
               />
             )}
           </>
