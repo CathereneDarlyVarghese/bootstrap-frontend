@@ -31,7 +31,7 @@ const DocumentsPage = () => {
         const userData = await Auth.currentAuthenticatedUser();
         setSessionToken(userData.signInUserSession.accessToken.jwtToken);
         const documentsData = await getDocumentsByLocationIdOnly(
-          userData.signInUserSession.accessToken.jwtToken, 
+          userData.signInUserSession.accessToken.jwtToken,
           location.locationId
         );
         setIncomingDocuments(documentsData);
@@ -47,8 +47,8 @@ const DocumentsPage = () => {
 
   return (
     <>
-      <div className="bg-gray-200 h-full overflow-y-auto p-5 pb-20">
-        <div className="flex flex-grow items-center">
+      <div className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen ? "2xl:bg-gray-200 xl:bg-white" : "bg-gray-200"}`}>
+        <div className={`flex flex-grow items-center ${addDocumentsOpen ? "xl:hidden" : ""}`}>
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents
           </h1>
@@ -56,47 +56,51 @@ const DocumentsPage = () => {
             className="btn btn-sm bg-blue-900 hover:bg-blue-900 capitalize w-32 ml-auto"
             onClick={() => {
               setAddDocumentsOpen(true);
+
             }}
           >
             +Add
           </button>
         </div>
-        <div>
-          {incomingDocuments.map((document) => (
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                // setSelectedDocument(document);
-                setDocumentId(document.document_id);
-                // removeClass("#parent-element .asset-details-card", "lg:hidden");
-                // addClass("#parent-element .documents-card", "lg:w-full");
-                // addClass("#parent-element .asset-card", "lg:hidden");
-                console.log("File array ==>> ", document.file_array[0]);
-              }}
-            >
-              <DocumentsCard
-                documentName={document.document_name}
-                documentDescription={document.document_description}
-                documentType={document.document_type}
-                startDate={document.start_date}
-                endDate={document.end_date}
-                documentNotes={document.document_notes}
-                fileStatus="File Uploaded"
-                documentStatus="active"
-                // FIX THIS - For now we are displaying no file name
-                fileName={document.file_array}
-              />
-            </div>
-          ))}
+        <div className={`flex ${addDocumentsOpen ? "flex-row" : "flex-col"} items-start gap-2 mt-5`}>
+          <div className={`${addDocumentsOpen ? "w-3/5 xl:hidden" : "w-full"}`}>
+            {incomingDocuments.map((document) => (
+              <div className="cursor-pointer mb-5"
+                onClick={() => {
+                  // setSelectedDocument(document);
+                  setDocumentId(document.document_id);
+                  // removeClass("#parent-element .asset-details-card", "lg:hidden");
+                  // addClass("#parent-element .documents-card", "lg:w-full");
+                  // addClass("#parent-element .asset-card", "lg:hidden");
+                  console.log("File array ==>> ", document.file_array[0]);
+                }}
+              >
+                <DocumentsCard
+                  documentName={document.document_name}
+                  documentDescription={document.document_description}
+                  documentType={document.document_type}
+                  startDate={document.start_date}
+                  endDate={document.end_date}
+                  documentNotes={document.document_notes}
+                  fileStatus="File Uploaded"
+                  documentStatus="active"
+                  // FIX THIS - For now we are only displaying one file name
+                  fileName={document.file_array}
+                />
+              </div>
+            ))}
+          </div>
+          <div className={`${addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"}`}>
+            <AddDocumentsForm
+              addDocumentsOpen={addDocumentsOpen}
+              setAddDocumentsOpen={setAddDocumentsOpen}
+              locationID={selectedLocation}
+            />
+          </div>
         </div>
+
       </div>
-      <div>
-        <AddDocumentsForm
-          addDocumentsOpen={addDocumentsOpen}
-          setAddDocumentsOpen={setAddDocumentsOpen}
-          locationID={selectedLocation}
-        />
-      </div>
+
     </>
   );
 };
