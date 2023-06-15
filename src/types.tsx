@@ -85,8 +85,8 @@ export interface Document {
   modified_by: string;
   modified_date: string;
   org_id: string;
-  asset_id: string,
-  location_id: string
+  asset_id: string;
+  location_id: string;
 }
 
 export interface IncomingDocument {
@@ -112,6 +112,17 @@ export interface AssetCheck {
   uptime_notes: string;
   modified_by: string;
   modified_date: Date;
+}
+
+export interface IncomingAssetCheck {
+  uptime_check_id: string;
+  asset_id: string;
+  status_check: string;
+  file_id: string;
+  uptime_notes: string;
+  modified_by: string;
+  modified_date: string;
+  images_array: string[][];
 }
 
 export interface AssetLocation {
