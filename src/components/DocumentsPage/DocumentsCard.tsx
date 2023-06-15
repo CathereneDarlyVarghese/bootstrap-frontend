@@ -17,7 +17,7 @@ const DocumentsCard = ({
   fileName,
 }) => {
   return (
-    <div className="card bg-white p-5 my-5" style={{ height: "fit-content" }}>
+    <div className="card bg-white p-5" style={{ height: "fit-content" }}>
       <div className="flex flex-row-reverse md:flex-col">
         <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
           <div className="mr-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">

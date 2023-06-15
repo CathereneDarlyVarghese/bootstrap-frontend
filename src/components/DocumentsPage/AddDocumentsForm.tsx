@@ -8,6 +8,7 @@ import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { createFile } from "services/fileServices";
 import { createDocument } from "services/documentServices";
+import { AiOutlinePaperClip } from "react-icons/ai";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -127,11 +128,11 @@ const AddDocumentsForm = ({
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal">
-        <div className="modal-box p-0 w-full sm:mx-2">
+      <div className="rounded-2xl">
+        <div className="bg-white rounded-2xl p-0 mb-5 w-full sm:mx-2">
           <form method="post">
             {/* Modal header */}
-            <div className="p-5 bg-white flex flex-row">
+            <div className="p-5 rounded-2xl bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
                 Add Document
               </h3>
@@ -170,9 +171,9 @@ const AddDocumentsForm = ({
               </label>
               <select
                 name="type"
-                className="select select-sm my-3 w-full border border-slate-300"
+                className="select select-sm font-normal my-3 w-full border border-slate-300"
                 required
-                // onChange={handleChange}
+              // onChange={handleChange}
               >
                 <option value={null} disabled selected hidden>
                   Select Document Type
@@ -231,10 +232,6 @@ const AddDocumentsForm = ({
                 name="description"
                 required
                 placeholder="Enter Description"
-                // onChange={(e) =>
-                //   setData((curr) => ({ ...curr, name: e.target.value }))
-                // }
-                // value={data.name}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
 
@@ -250,9 +247,21 @@ const AddDocumentsForm = ({
                 required
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
-                style={{}}
+                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
+                id="uploadbutton"
               />
+              <div className="flex flex-row rounded-lg border border-gray-300 p-2 my-2">
+                <input type="text" value={`${file ? file.name : "No file chosen"}`} className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} />
+                <button className="btn btn-xs bg-transparent border border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto" onClick={(e) => {
+                  e.preventDefault()
+                  const uploadButton = document.querySelector("#uploadbutton") as HTMLElement
+                  uploadButton.click()
+                }}>
+                  <AiOutlinePaperClip className="text-lg" />
+                  Choose File</button>
+              </div>
+
+
               <label className="font-sans font-semibold text-sm text-black">
                 Notes
               </label>
