@@ -6,30 +6,24 @@ import { AssetLocation } from "types";
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
   const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [submit, setSubmit] = useState(true);
 
-  useEffect(() => {
-    const addLocation = async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
-        const token = userData.signInUserSession.accessToken.jwtToken;
-        setSessionToken(token);
-        const assetLocationObj: AssetLocation = {
-          location_id: null,
-          location_name: inputLocation,
-        };
-        await createAssetLocation(sessionToken, assetLocationObj);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    addLocation();
-  }, [submit]);
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      const token = userData.signInUserSession.accessToken.jwtToken;
+      setSessionToken(token);
+      const assetLocationObj: AssetLocation = {
+        location_id: "",
+        location_name: inputLocation,
+      };
+      await createAssetLocation(token, assetLocationObj);
+    } catch (error) {
+      console.log(error);
+    }
 
-  const handleSubmit = () => {
-    console.log("location submitted");
-    setSubmit((prev) => !prev);
+    setAddLocationForm(false);
   };
 
   return (
@@ -42,14 +36,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
       />
       <div className="modal">
         <div className="modal-box p-0 w-full sm:mx-2">
-          <form
-            method="post"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setAddLocationForm(false);
-              handleSubmit();
-            }}
-          >
+          <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
             <div className="p-5 bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
@@ -84,6 +71,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
                   placeholder="Location Name"
                   required
                   className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                  onChange={(e) => setInputLocation(e.target.value)}
                 />
               </div>
             </div>
@@ -91,7 +79,10 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
             {/* Modal action */}
             <div className=" m-0 p-5 flex justify-center gap-5">
               <div>
-                <button className="btn bg-blue-900 hover:bg-blue-900">
+                <button
+                  className="btn bg-blue-900 hover:bg-blue-900"
+                  type="submit"
+                >
                   Submit
                 </button>
               </div>
