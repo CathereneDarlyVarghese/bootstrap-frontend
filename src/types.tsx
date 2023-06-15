@@ -85,8 +85,8 @@ export interface Document {
   modified_by: string;
   modified_date: string;
   org_id: string;
-  asset_id: string,
-  location_id: string
+  asset_id: string;
+  location_id: string;
 }
 
 export interface IncomingDocument {
@@ -95,12 +95,12 @@ export interface IncomingDocument {
   document_description: string;
   document_type_id: string;
   document_type: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
   file_array: string[];
   document_notes: string;
   modified_by: string;
-  modified_date: Date;
+  modified_date: string;
   org_id: string;
 }
 
@@ -112,6 +112,17 @@ export interface AssetCheck {
   uptime_notes: string;
   modified_by: string;
   modified_date: Date;
+}
+
+export interface IncomingAssetCheck {
+  uptime_check_id: string;
+  asset_id: string;
+  status_check: string;
+  file_id: string;
+  uptime_notes: string;
+  modified_by: string;
+  modified_date: string;
+  images_array: string[][];
 }
 
 export interface AssetLocation {
@@ -141,4 +152,9 @@ export interface File {
 export interface AssetType {
   asset_type_id: string;
   asset_type: string;
+}
+
+export interface DocumentType {
+  document_type_id: string;
+  document_type: string;
 }

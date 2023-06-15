@@ -18,7 +18,7 @@ import SearchIcon from "../../icons/circle2017.png";
 
 //sample image for ui testing
 import testImage from "./testImage.png";
-import { getAllAssets } from "services/assetServices";
+import { getAllAssets, getAssets } from "services/assetServices";
 
 
 const ListsLayout = (props: any) => {
@@ -126,10 +126,24 @@ const ListsLayout = (props: any) => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-        const assetsData = await getAllAssets(
-          userData.signInUserSession.accessToken.jwtToken
+
+        // Retrieve the location ID from the location state
+        const locationId = location.locationId;
+
+        // Fetch assets based on the selected location ID
+        const assetsData = await getAssets(
+          userData.signInUserSession.accessToken.jwtToken,
+          locationId
         );
-        setIncomingAssets(assetsData);
+
+        if (Array.isArray(assetsData)) {
+          setIncomingAssets(assetsData);
+        } else if (assetsData) {
+          setIncomingAssets([assetsData]);
+        } else {
+          setIncomingAssets([]);
+        }
+
         console.log("The fetched assets ==>>", assetsData);
       } catch (error) {
         console.log(error);
@@ -137,7 +151,7 @@ const ListsLayout = (props: any) => {
     };
 
     fetchAssets();
-  }, []);
+  }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
 
   // Filter assets based on current location
   // const filteredAssets = useMemo(

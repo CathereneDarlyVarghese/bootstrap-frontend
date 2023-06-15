@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import WorkOrderButton from "components/widgets/WorkOrderButton";
-import useAssetTypeNames from "hooks/useAssetTypeNames";
-import { Asset, Document } from "types";
-import { AssetTypes } from "enums";
+import { Document, DocumentType } from "types";
 import { uploadFiletoS3 } from "utils";
-import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { createFile } from "services/fileServices";
 import { createDocument } from "services/documentServices";
+import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
 
 const AddDocumentsForm = ({
@@ -16,29 +13,44 @@ const AddDocumentsForm = ({
   assetID = null,
   locationID = null,
 }) => {
-  const assetTypeNames = useAssetTypeNames();
+  const [token, setToken] = useState<string>("");
 
-  const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<any>();
 
-  const [formData, setFormData] = useState({
-    document_name: "",
-    document_description: "",
-    document_type_id: "",
-    start_date: "",
-    end_date: "",
-    document_notes: "",
-  });
+  const [documentType, setDocumentType] = useState<DocumentType[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
+  const defaultFormData = {
+    documentName: "",
+    documentDescription: "",
+    documentTypeID: "",
+    startDate: "",
+    endDate: "",
+    documentNotes: "",
+  };
+
+  const [formData, setFormData] = useState(defaultFormData);
+  const {
+    documentName,
+    documentDescription,
+    documentTypeID,
+    startDate,
+    endDate,
+    documentNotes,
+  } = formData;
+
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      //"id" and "name" of <elements> in <form> has to be same for this to work
+      [e.target.id]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAddDocumentsOpen(false);
 
@@ -55,28 +67,28 @@ const AddDocumentsForm = ({
     const fileId = String(createdFile);
 
     // Step 3: Prepare the document data
-    const formData = new FormData(event.target);
+    // const formData = new FormData(event.target);
 
-    console.log(
-      "Document name from form ==>> ",
-      formData.get("name") as string
-    );
+    const selectedDocumentTypeID = (document.querySelector('select')).value;
+    console.log("Selected document type: ", selectedDocumentTypeID);
 
     const documentData: Document = {
       document_id: null,
-      document_name: formData.get("name") as string,
-      document_description: formData.get("description") as string,
-      document_type_id: formData.get("type") as string,
-      start_date: formData.get("startDate") as string,
-      end_date: formData.get("endDate") as string,
+      document_name: formData.documentName,
+      document_description: formData.documentDescription,
+      document_type_id: selectedDocumentTypeID,
+      start_date: formData.startDate,
+      end_date: formData.endDate,
       file_id: fileId,
-      document_notes: formData.get("notes") as string,
+      document_notes: formData.documentNotes,
       modified_by: "hardCodedTestUser",
       modified_date: new Date().toString(),
       org_id: "hardCodedOrgID",
       asset_id: assetID,
       location_id: locationID,
     };
+
+    console.log("Document Data ==>> ", documentData);
 
     // Step 4: Create the document in the backend
     try {
@@ -106,12 +118,28 @@ const AddDocumentsForm = ({
         theme: "light",
       });
     }
+
+    setFormData(defaultFormData);
   };
 
   // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
-    settoken(data);
+    const fetchData = async () => {
+      try {
+        const data = window.localStorage.getItem("sessionToken");
+        const documentTypes = await getAllDocumentTypes(data);
+
+        setToken(data);
+        setDocumentType(documentTypes);
+      } catch (error) {
+        console.error(
+          "Failed to fetch Session Token and Document Types:",
+          error
+        );
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Function to close the add asset form
@@ -130,7 +158,7 @@ const AddDocumentsForm = ({
       />
       <div className="rounded-2xl">
         <div className="bg-white rounded-2xl p-0 mb-5 w-full sm:mx-2">
-          <form method="post">
+          <form method="post" onSubmit={(e) => handleSubmit(e)}>
             {/* Modal header */}
             <div className="p-5 rounded-2xl bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
@@ -159,43 +187,35 @@ const AddDocumentsForm = ({
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
+                id="documentName"
+                name="documentName"
+                value={documentName}
+                onChange={(e) => handleChange(e)}
                 required
                 placeholder="Enter Document Name"
-                onChange={handleChange}
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
               />
               <label className="font-sans font-semibold text-sm text-black">
                 Document Type
               </label>
               <select
-                name="type"
-                className="select select-sm font-normal my-3 w-full border border-slate-300"
+                id="documentType"
+                name="documentType"
+                onChange={(e) => handleChange(e)}
+                className="select select-sm my-3 w-full border border-slate-300"
                 required
-              // onChange={handleChange}
               >
-                <option value={null} disabled selected hidden>
+                <option value="" disabled selected hidden>
                   Select Document Type
                 </option>
-                <option value="17fb9bcc-2e34-4e21-821e-6ff0988ec5ae">
-                  Certificates
-                </option>
-                <option value="c689cd33-2f83-4774-aac7-6bc7841dde37">
-                  Contract
-                </option>
-                <option value="eb02fd38-9da6-4b68-9a27-23c3ca446d76">
-                  Invoices
-                </option>
-                <option value="31a03294-d1f7-4d5e-a644-7904b72b97dc">
-                  License
-                </option>
-                <option value="25020808-e9e7-4d42-b94d-06cc7ebb9db2">
-                  Rental Agreement
-                </option>
-                <option value="6ada07ac-b8e1-464b-a9d9-4495147e8fe4">
-                  Others
-                </option>
+                {documentType.map((documentType) => (
+                  <option
+                    key={documentType.document_type_id}
+                    value={documentType.document_type_id}
+                  >
+                    {documentType.document_type}
+                  </option>
+                ))}
               </select>
 
               <div className="flex flex-row gap-2 my-3">
@@ -205,7 +225,10 @@ const AddDocumentsForm = ({
                   </label>
                   <input
                     type="date"
+                    id="startDate"
                     name="startDate"
+                    value={startDate}
+                    onChange={(e) => handleChange(e)}
                     required
                     className="font-sans font-semibold text-sm text-black my-3"
                   />
@@ -216,7 +239,10 @@ const AddDocumentsForm = ({
                   </label>
                   <input
                     type="date"
+                    id="endDate"
                     name="endDate"
+                    value={endDate}
+                    onChange={(e) => handleChange(e)}
                     required
                     className="font-sans font-semibold text-sm text-black my-3"
                   />
@@ -228,8 +254,10 @@ const AddDocumentsForm = ({
               </label>
               <input
                 type="text"
-                id="desciption"
-                name="description"
+                id="documentDescription"
+                name="documentDescription"
+                value={documentDescription}
+                onChange={(e) => handleChange(e)}
                 required
                 placeholder="Enter Description"
                 className="input input-bordered input-sm text-sm w-full my-3 font-sans"
@@ -245,16 +273,17 @@ const AddDocumentsForm = ({
               <input
                 type="file"
                 required
+                id="file"
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
                 className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
-                id="uploadbutton"
+
               />
               <div className="flex flex-row rounded-lg border border-gray-300 p-2 my-2">
                 <input type="text" value={`${file ? file.name : "No file chosen"}`} className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} />
                 <button className="btn btn-xs bg-transparent border border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto" onClick={(e) => {
                   e.preventDefault()
-                  const uploadButton = document.querySelector("#uploadbutton") as HTMLElement
+                  const uploadButton = document.querySelector("#file") as HTMLElement
                   uploadButton.click()
                 }}>
                   <AiOutlinePaperClip className="text-lg" />
@@ -267,8 +296,10 @@ const AddDocumentsForm = ({
               </label>
               <input
                 type="text"
-                id="notes"
-                name="notes"
+                id="documentNotes"
+                name="documentNotes"
+                value={documentNotes}
+                onChange={(e) => handleChange(e)}
                 placeholder="Enter Description"
                 // onChange={(e) =>
                 //   setData((curr) => ({ ...curr, name: e.target.value }))
@@ -281,14 +312,13 @@ const AddDocumentsForm = ({
             {/* Modal action */}
             <div className="modal-action m-0 p-5 flex justify-center">
               <div>
-                {/* WorkOrderButton component */}
-                <WorkOrderButton
-                  title="Submit"
-                  workPending={false}
-                  onClick={handleSubmit}
-                  buttonColor={"bg-blue-900"}
-                  hoverColor={"hover:bg-blue-900"}
-                />
+                <button
+                  className={`btn bg-blue-900 gap-5 hover:bg-blue-900  capitalize`}
+                  id="submit"
+                  type="submit"
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </form>
