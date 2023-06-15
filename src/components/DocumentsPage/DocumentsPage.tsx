@@ -22,8 +22,8 @@ const DocumentsPage = () => {
   const [documentId, setDocumentId] = useState(null);
   // const [selectedDocument, setSelectedDocument] = useState(null);
 
-  const selectedLocation = location.toString();
-  console.log("The selected location (1) ==>>", location.locationId);
+  const selectedLocation = location.locationId;
+  console.log("The selected location (1) ==>>", selectedLocation);
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -44,15 +44,6 @@ const DocumentsPage = () => {
 
     fetchDocuments();
   }, [location]);
-
-  // function to remove class for UI
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
-  //function to add class for UI
-  const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
-  };
 
   return (
     <>
@@ -92,7 +83,7 @@ const DocumentsPage = () => {
                 documentNotes={document.document_notes}
                 fileStatus="File Uploaded"
                 documentStatus="active"
-                // FIX THIS - For now we are only displaying one file name
+                // FIX THIS - For now we are displaying no file name
                 fileName={document.file_array}
               />
             </div>

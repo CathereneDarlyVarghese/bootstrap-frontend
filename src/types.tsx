@@ -95,12 +95,12 @@ export interface IncomingDocument {
   document_description: string;
   document_type_id: string;
   document_type: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
   file_array: string[];
   document_notes: string;
   modified_by: string;
-  modified_date: Date;
+  modified_date: string;
   org_id: string;
 }
 
@@ -141,4 +141,9 @@ export interface File {
 export interface AssetType {
   asset_type_id: string;
   asset_type: string;
+}
+
+export interface DocumentType {
+  document_type_id: string;
+  document_type: string;
 }
