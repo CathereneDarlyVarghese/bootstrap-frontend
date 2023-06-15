@@ -236,66 +236,9 @@ const AssetDetails: React.FC<
                 }}
               />
             </div>
-            <button
-              className="ml-auto 2xl:block lg:hidden"
-              onClick={() => setAssetId(null)}
-            >
-              <img src={closeIcon} onClick={closeAsset} />
-            </button>
-          </div>
-          <figure className="rounded-none">
-            <img
-              src={cardImage}
-              alt="an image"
-              className="rounded-xl h-48 w-fit object-cover mx-auto"
-            />
-          </figure>
-          <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
-            <div className="flex 2xl:flex-row lg:flex-col">
-              <h2
-                className="flex text-blue-900 text-xl font-semibold font-sans tracking-wide xl:text-sm"
-                style={{ wordSpacing: 3 }}
-              >
-                More Information:
-              </h2>
 
-              <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-                <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                  {assetType}
-                </button>
-                <button
-                  className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2 ${getStatusColor(
-                    selectedAsset1?.asset_status
-                  )}`}
-                >
-                  {getStatusText(selectedAsset1?.asset_status)}
-                </button>
-
-                <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                  <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                  10/07/23
-                </button>
-              </div>
-            </div>
-            <div>
-              <p className="text-black font-sans my-1 text-sm">
-                Section: {sectionName}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Placement: {placementName}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Purchase Price: {purchasePrice}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Current Value: {currentValue}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Notes: {notes}
-              </p>
-            </div>
           </div>
-          <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
+          {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
               onClick={() => {
@@ -323,7 +266,7 @@ const AssetDetails: React.FC<
             >
               Status Checks
             </button>
-          </div>
+          </div> */}
         </div>
       </>
     );
