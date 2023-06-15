@@ -1,6 +1,6 @@
 // assetCheckService.ts
 import axios from "axios";
-import { AssetCheck } from "../types";
+import { AssetCheck, IncomingAssetCheck } from "../types";
 
 type Props = {
   accessToken: string;
@@ -9,7 +9,7 @@ type Props = {
 
 export const getAssetChecks = async (
   accessToken: string
-): Promise<AssetCheck[]> => {
+): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
     {
@@ -25,7 +25,7 @@ export const getAssetChecks = async (
 export const getAssetCheckById = async (
   accessToken: string,
   id: string
-): Promise<AssetCheck> => {
+): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
     {

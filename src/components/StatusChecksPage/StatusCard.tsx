@@ -1,45 +1,49 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-import MapIcon from "../../icons/mapIcon.svg";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { BsFillXCircleFill } from "react-icons/bs";
+import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
 
-let status = "expire_soon";
-
-type StatusCardProps = {
-  assetName: string;
-  assetType: string;
-  assetAddress: string;
-  imageLocation: string;
+interface StatusCardProps {
   status: string;
-  imagePlaceholder: string;
-};
+  date: Date;
+  uptime_notes: string;
+  onClick: () => void;
+}
 
-const StatusCard: React.FC<StatusCardProps> = (props) => {
+const StatusCard: React.FC<StatusCardProps> = ({
+  status,
+  date,
+  uptime_notes,
+  onClick,
+}) => {
+  const formattedDate = date.toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 hover:border hover:border-blue-900 hide-scrollbar overflow-y-hidden overflow-hidden">
-      <div
-        className="card-body overflow-auto px-0 py-0 w-11/12 overflow-hidden"
-        id="style-7"
-      >
+    <div
+      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 hover:border hover:border-blue-900 hide-scrollbar overflow-y-hidden overflow-hidden"
+      onClick={onClick}
+    >
+      <div className="card-body overflow-auto px-0 py-0 w-11/12 overflow-hidden">
         <div className="flex flex-row justify-between">
           <h1
             className="flex text-gray-800 text-lg font-semibold font-sans tracking-wide xl:text-sm"
             style={{ wordSpacing: 3 }}
           >
-            {props.assetName}
+            {formattedDate}
           </h1>
+          <div className="flex items-center">
+            {status === "INACTIVE" && (
+              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
+            )}
+            {status === "ACTIVE" && (
+              <BsFillCheckCircleFill className="text-green-500 text-xl mr-2" />
+            )}
+            {status === "UNDER MAINTENANCE" && (
+              <BsFillXCircleFill className="text-gray-500 text-xl mr-2" />
+            )}
+          </div>
         </div>
-
         <div className="flex flex-row items-center">
-          <p className="text-gray-500">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            in nunc quis eros ultricies auctor ut non metus. In mollis iaculis
-            justo. Maecenas convallis libero non purus euismod, quis malesuada
-            elit posuere.
-          </p>
+          <p className="text-gray-500">{uptime_notes}</p>
         </div>
       </div>
     </div>
@@ -47,18 +51,9 @@ const StatusCard: React.FC<StatusCardProps> = (props) => {
 };
 
 StatusCard.propTypes = {
-  assetName: PropTypes.string,
-  assetType: PropTypes.string,
-  assetAddress: PropTypes.string,
-  imageLocation: PropTypes.string,
-  imagePlaceholder: PropTypes.string,
-};
-
-StatusCard.defaultProps = {
-  assetName: "assetName",
-  assetType: "assetType",
-  assetAddress: "assetAddress",
-  imagePlaceholder: "imagePlaceholder",
+  status: PropTypes.string.isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default StatusCard;

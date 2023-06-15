@@ -233,7 +233,7 @@ const AssetDetails: React.FC<
             </button>
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-              onClick={() => navigate("/status-checks")}
+              onClick={() => navigate("/status-checks", { state: { assetId } })}
             >
               Status Checks
             </button>
