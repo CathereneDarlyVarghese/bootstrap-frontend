@@ -29,6 +29,20 @@ const StatusChecksPage = () => {
     // Toggle the assetId state to trigger refresh
   };
 
+  const handleStatusAdded = async () => {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      const response = await getAssetCheckById(
+        userData.signInUserSession.accessToken.jwtToken,
+        assetId1
+      );
+      setAssetChecks(response);
+      console.log("status Checks Fetched ==>>", response);
+    } catch (error) {
+      console.log("Error fetching asset checks:", error);
+    }
+  };
+
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
     setStatusCheckId(selectedStatusCheckId);
     const selectedAssetCheck = assetChecks.find(
@@ -115,6 +129,8 @@ const StatusChecksPage = () => {
       <AddStatusForm
         addFormOpen={addFormOpen}
         setAddFormOpen={setAddFormOpen}
+        assetId={assetId1}
+        onStatusAdded={handleStatusAdded}
       />
     </div>
   );

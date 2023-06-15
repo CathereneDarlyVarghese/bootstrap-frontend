@@ -1,74 +1,117 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
-import { Asset } from "types";
+import { Asset, AssetCheck } from "types";
 import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
 import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
+import { createAssetCheck } from "services/assetCheckServices";
+import { createFile } from "services/fileServices";
+import useStatusTypeNames from "hooks/useStatusTypes";
 
-const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
+const AddStatusForm = ({
+  addFormOpen,
+  setAddFormOpen,
+  assetId,
+  onStatusAdded,
+}) => {
   // Custom hook to fetch asset type names
   const assetTypeNames = useAssetTypeNames();
+  const [token, setToken] = useState<string>("");
   const [reportIssue, setReportIssue] = useState(false);
-
-  // State variables
-  const [token, settoken] = useState<string>("");
+  const now = new Date();
+  const statusTypeNames = useStatusTypeNames();
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const formRef = useRef<HTMLFormElement>(null);
   const [file, setFile] = useState<any>();
-  // const [data, setData] = useState<Asset>({
-  //   org_id: {
-  //     name: "testorg1",
-  //     id: "2",
-  //     members: [],
-  //   },
-  //   orgId: "2",
-  //   audit: {
-  //     createdAt: "test",
-  //     createdBy: "test",
-  //   },
-  //   id: "2",
-  //   name: "",
-  //   imageS3: "",
-  //   location: "sg",
-  //   workOrders: [],
-  //   type: AssetTypes.Appliances,
-  // });
 
-  const handleSubmit = async () => {
-    setAddFormOpen(false);
-    // try {
-    //   // Upload file to S3 bucket
-    //   const imageLocation = await uploadFiletoS3(file, "inventory");
-    //   console.log(imageLocation);
-    //   data.images_id = imageLocation.location;
+  useEffect(() => {
+    const data = window.localStorage.getItem("sessionToken");
+    setToken(data);
+  }, []);
 
-    //   // Add inventory using the API service
-    //   await addInventory(token, data)
-    //     .then(() => {
-    //       toast.success("Asset Added Successfully", {
-    //         position: "bottom-left",
-    //         autoClose: 5000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //         theme: "light",
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       throw new Error(error);
-    //     });
-    // } catch (error) {
-    //   alert("Something went wrong!");
-    // }
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedStatus(event.target.value);
   };
 
-  // useEffect hook to retrieve the session token from localStorage
-  // useEffect(() => {
-  //   const data = window.localStorage.getItem("sessionToken");
-  //   settoken(data);
-  // }, []);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(formRef.current);
+
+    if (reportIssue) {
+      // Case when reporting an issue
+      try {
+        // Upload file to S3 bucket
+        const imageLocation = await uploadFiletoS3(file, "assetCheck");
+        const createdFile = await createFile(token, {
+          file_id: "",
+          file_array: [imageLocation.location],
+        });
+
+        const assetCheck = {
+          uptime_check_id: "",
+          asset_id: assetId,
+          status_check: selectedStatus,
+          file_id: String(createdFile),
+          uptime_notes: formData.get("uptime_notes") as string,
+          modified_by: formData.get("name") as string,
+          modified_date: new Date(),
+        };
+
+        // Add inventory using the API service
+        await createAssetCheck(token, assetCheck);
+        toast.success("Asset Check Added Successfully", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        onStatusAdded();
+      } catch (error) {
+        toast.error("Failed to add asset");
+      }
+    } else {
+      console.log("reportIssue", reportIssue);
+      // Case when there is no issue
+      const assetCheck = {
+        uptime_check_id: "",
+        asset_id: assetId,
+        status_check: "ca879fb3-2f94-41b0-afb2-dea1448aaed3",
+        file_id: null,
+        uptime_notes: "Working Fine",
+        modified_by: formData.get("name") as string,
+        modified_date: new Date(),
+      };
+      console.log("Token >>", token);
+
+      try {
+        // Add inventory using the API service
+        await createAssetCheck(token, assetCheck);
+        toast.success("Asset Check Added Successfully", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        onStatusAdded();
+      } catch (error) {
+        toast.error("Failed to add asset");
+      }
+    }
+
+    // Log the form submission
+    console.log("Form submitted:", formData);
+  };
 
   // Function to close the add asset form
   const closeAddForm = () => {
@@ -94,17 +137,11 @@ const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
       />
       <div className="modal">
         <div className="modal-box p-0 w-full sm:mx-2">
-          <form
-            method="post"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
+          <form method="post" onSubmit={handleSubmit} ref={formRef}>
             {/* Modal header */}
             <div className="p-5 bg-white flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800">
-                Add New Audit
+                Status Check {now.toLocaleDateString()}
               </h3>
               <svg
                 viewBox="0 0 24 24"
@@ -129,17 +166,13 @@ const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
               {/* Input field for asset name */}
               <div>
                 <label className="font-sans font-semibold text-black text-sm">
-                  Audit Title
+                  Who is This?
                 </label>
                 <input
                   type="text"
-                  id="name"
-                  placeholder="Enter Audit Title"
+                  name="name"
+                  placeholder="Enter Name"
                   required
-                  // onChange={(e) =>
-                  //   setData((curr) => ({ ...curr, name: e.target.value }))
-                  // }
-                  // value={data.asset_name}
                   className="input input-bordered input-sm text-sm w-full my-3 font-sans"
                 />
               </div>
@@ -151,32 +184,33 @@ const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
                     </label>
                     <input
                       type="text"
-                      id="desciption"
+                      name="uptime_notes"
                       placeholder="Enter Notes"
-                      // onChange={(e) =>
-                      //   setData((curr) => ({ ...curr, name: e.target.value }))
-                      // }
-                      // value={data.asset_name}
                       className="input input-bordered input-sm text-sm w-full my-3 font-sans "
                     />
                   </div>
+
                   <div>
-                    <label className="font-sans font-semibold text-sm text-black ">
-                      Asset Type
+                    <label className="font-sans font-semibold text-sm text-black">
+                      Asset Status
                     </label>
-                    <select className="select select-sm my-3 w-full border border-slate-300 ">
-                      {[AssetTypes.Appliances].map((type) => (
-                        <option
-                          key={type}
-                          selected
-                          value={AssetTypes.Appliances}
-                          // onChange={() =>
-                          //   setData((curr) => ({ ...curr, type }))
-                          // }
-                        >
-                          {assetTypeNames[type]}
-                        </option>
-                      ))}
+                    <select
+                      required
+                      name="status"
+                      className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
+                    >
+                      <option value="" disabled hidden>
+                        Select Asset Status
+                      </option>
+                      {Object.entries(statusTypeNames).map(
+                        ([statusId, statusName]) => (
+                          <option key={statusId} value={statusId}>
+                            {statusName}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
 
@@ -192,29 +226,6 @@ const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
                       onChange={(e) => setFile(e.target.files[0])}
                       className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 "
                     />
-                  </div>
-
-                  {/* Dropdown for selecting location */}
-                  <div className="dropdown flex flex-col">
-                    <label className="font-sans font-semibold text-sm text-black">
-                      Select location
-                    </label>
-                    <select
-                      required
-                      className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
-                      // onChange={(e) => {
-                      //   setData((curr) => ({
-                      //     ...curr,
-                      //     location: e.target.value,
-                      //   }));
-                      // }}
-                    >
-                      <option value="" disabled selected hidden>
-                        Select Location
-                      </option>
-                      <option value="tsd">The Spiffy Dapper</option>
-                      <option value="mdb">MadDog Bistro & Bar</option>
-                    </select>
                   </div>
                 </div>
               )}
@@ -236,15 +247,13 @@ const AddStatusForm = ({ addFormOpen, setAddFormOpen }) => {
                 )}
               </div>
               <div>
-                <WorkOrderButton
-                  title="Submit"
-                  workPending={false}
-                  onClick={() => {
-                    console.log("Report Submitted");
-                  }}
-                  buttonColor={"bg-blue-900"}
-                  hoverColor={"hover:bg-blue-900"}
-                />
+                <button
+                  className="btn bg-blue-900 hover:bg-blue-900 capitalize"
+                  type="submit"
+                  onClick={handleSubmit}
+                >
+                  Fine
+                </button>
               </div>
             </div>
           </form>
