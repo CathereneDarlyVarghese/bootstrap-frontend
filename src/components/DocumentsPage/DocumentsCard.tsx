@@ -29,7 +29,7 @@ const DocumentsCard = ({
             <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
               <AiOutlineCalendar className="text-xl text-blue-900" />
               <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
-                {startDate}
+                {startDate.substring(0, 10)}
               </h1>
             </div>
           </div>
@@ -42,7 +42,7 @@ const DocumentsCard = ({
             <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
               <AiOutlineCalendar className="text-xl text-blue-900" />
               <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
-                {endDate}
+                {endDate.substring(0, 10)}
               </h1>
             </div>
           </div>
