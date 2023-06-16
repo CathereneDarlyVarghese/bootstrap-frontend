@@ -70,14 +70,14 @@ const AssetDocumentsPage = () => {
               <DocumentsCard
                 documentName={document.document_name}
                 documentDescription={document.document_description}
-                documentType={document.document_type}
+                documentTypeID={document.document_type_id}
                 startDate={document.start_date}
                 endDate={document.end_date}
                 documentNotes={document.document_notes}
                 fileStatus="File Uploaded"
                 documentStatus="active"
                 // FIX THIS - For now we are only displaying one file name
-                fileName={document.file_array}
+                fileID={document.file_id}
               />
             </div>
           ))}
