@@ -40,14 +40,7 @@ const AssetDocumentsPage = () => {
     fetchDocuments();
   }, [selectedAssetID]);
 
-  // function to remove class for UI
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
-  //function to add class for UI
-  const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
-  };
+
 
   return (
     <>
@@ -56,25 +49,22 @@ const AssetDocumentsPage = () => {
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents
           </h1>
-          <button
+          {/* <button
             className="btn btn-sm bg-blue-900 hover:bg-blue-900 capitalize w-32 ml-auto"
             onClick={() => {
               setAddDocumentsOpen(true);
             }}
           >
             +Add
-          </button>
+          </button> */}
         </div>
         <div>
           {incomingDocuments.map((document) => (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                // setSelectedDocument(document);
                 setDocumentId(document.document_id);
-                // removeClass("#parent-element .asset-details-card", "lg:hidden");
-                // addClass("#parent-element .documents-card", "lg:w-full");
-                // addClass("#parent-element .asset-card", "lg:hidden");
+
               }}
             >
               <DocumentsCard
@@ -93,14 +83,7 @@ const AssetDocumentsPage = () => {
           ))}
         </div>
       </div>
-      <div>
-        <AddDocumentsForm
-          addDocumentsOpen={addDocumentsOpen}
-          setAddDocumentsOpen={setAddDocumentsOpen}
-          assetID={selectedAssetID}
-          locationID={null}
-        />
-      </div>
+
     </>
   );
 };
