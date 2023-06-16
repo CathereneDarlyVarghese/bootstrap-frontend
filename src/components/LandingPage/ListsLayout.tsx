@@ -338,6 +338,7 @@ const ListsLayout = (props: any) => {
             placementName={selectedAsset.placement_name}
             purchasePrice={selectedAsset.asset_finance_purchase}
             currentValue={selectedAsset.asset_finance_current_value}
+            statusCheckDate={selectedAsset.next_asset_check_date}
             sessionToken={sessionToken}
             refreshAssets={refreshAssets}
             setAssetId={setSelectedAsset}

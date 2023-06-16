@@ -71,6 +71,7 @@ export interface IncomingAsset {
   modified_date: string;
   modified_by: string;
   images_array: string;
+  next_asset_check_date: Date;
 }
 
 export interface Document {

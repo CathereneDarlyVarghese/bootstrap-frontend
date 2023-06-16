@@ -20,6 +20,7 @@ interface AssetDetailsProps {
   placementName: string | null;
   purchasePrice: string | null;
   currentValue: string | null;
+  statusCheckDate: Date | null;
   notes: string | null;
   assetType: string | null;
   setAssetId: (id: string | null) => void;
@@ -42,6 +43,7 @@ const AssetDetails: React.FC<
   placementName,
   purchasePrice,
   currentValue,
+  statusCheckDate,
   notes,
   selectedAsset1,
 }) => {
@@ -185,10 +187,16 @@ const AssetDetails: React.FC<
                   {getStatusText(selectedAsset1?.asset_status)}
                 </button>
 
-                <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                  <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                  10/07/23
-                </button>
+                {statusCheckDate ? (
+                  <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
+                    <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
+                    {statusCheckDate.toLocaleString()}
+                  </button>
+                ) : (
+                  <span className="text-gray-400">
+                    No status check date available
+                  </span>
+                )}
               </div>
             </div>
             <div>
