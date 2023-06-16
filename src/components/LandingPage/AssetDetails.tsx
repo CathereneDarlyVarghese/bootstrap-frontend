@@ -13,8 +13,7 @@ import { Asset, IncomingAsset } from "types";
 import { deleteAsset } from "services/assetServices";
 
 import documentIcon from "../../icons/documentIcon.svg";
-import DocumentsCard from "components/DocumentsPage/DocumentsCard";
-import DocumentsPage from "components/DocumentsPage/DocumentsPage";
+import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 
 interface AssetDetailsProps {
@@ -83,14 +82,15 @@ const AssetDetails: React.FC<
       return "bg-gray-400";
     };
 
+
     return (
       <>
         <div
-          className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white border-blue-900 rounded-xl overflow-y-auto"
+          className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
           id="style-7"
         >
           <div className="sticky top-0 z-50">
-            <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white">
+            <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
               <div className="flex flex-col">
                 <button
                   className="ml-auto 2xl:hidden lg:block md:my-2"
@@ -98,18 +98,19 @@ const AssetDetails: React.FC<
                     setAssetId(null);
                   }}
                 >
-                  <img src={closeIcon} onClick={closeAsset} />
+                  {/* <img src={closeIcon} onClick={closeAsset} /> */}
+                  <TfiClose className="font-bold text-black dark:text-white" onClick={closeAsset} />
                 </button>
                 <div className="flex flex-row">
-                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`}
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1 ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`}
                     onClick={() => {
                       setTabIndex(1)
                     }} >Documents</button>
-                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`} onClick={() => {
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2 ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`} onClick={() => {
                     setTabIndex(2)
                   }
                   }>Maintenance</button>
-                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3 ? "text-blue-900 border-b-blue-900 hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`} onClick={() => {
+                  <button className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3 ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold" : "text-gray-400 font-normal"}`} onClick={() => {
                     setTabIndex(3)
                   }
                   }>Status Checks</button>
@@ -122,7 +123,8 @@ const AssetDetails: React.FC<
                 className="ml-auto 2xl:block lg:hidden"
                 onClick={() => setAssetId(null)}
               >
-                <img src={closeIcon} onClick={closeAsset} />
+                <TfiClose onClick={closeAsset} className="font-bold text-black dark:text-white" />
+
               </button>
             </div>
             {
@@ -138,14 +140,14 @@ const AssetDetails: React.FC<
                   <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
                     <div className="flex 2xl:flex-row lg:flex-col">
                       <h2
-                        className="flex text-gray-800 text-xl font-semibold font-sans tracking-wide xl:text-sm"
+                        className="flex text-gray-800 dark:text-gray-300 text-xl font-semibold font-sans tracking-wide xl:text-sm"
                         style={{ wordSpacing: 3 }}
                       >
                         {cardTitle}
                       </h2>
 
                       <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-                        <button className="badge w-fit bg-gray-200 text-blue-700 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
+                        <button className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
                           {assetType}
                         </button>
                         <button
@@ -163,36 +165,36 @@ const AssetDetails: React.FC<
                       </div>
                     </div>
                     <div>
-                      <h1 className="text-blue-900 font-semibold my-1">More Information:</h1>
+                      <h1 className="text-blue-900 dark:text-white font-semibold my-1">More Information:</h1>
                     </div>
                     <div>
-                      <p className="text-black font-sans my-1 text-sm">
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                         Section: {sectionName}
                       </p>
-                      <p className="text-black font-sans my-1 text-sm">
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                         Placement: {placementName}
                       </p>
-                      <p className="text-black font-sans my-1 text-sm">
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                         Purchase Price: {purchasePrice}
                       </p>
-                      <p className="text-black font-sans my-1 text-sm">
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                         Current Value: {currentValue}
                       </p>
-                      <p className="text-black font-sans my-1 text-sm">
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                         Notes: {notes}
                       </p>
                     </div>
                     <div className="my-2">
-                      <h1 className="text-blue-900 font-semibold my-1">Document:</h1>
+                      <h1 className="text-blue-900 dark:text-white font-semibold my-1">Document:</h1>
                       <div className="flex flex-row items-center gap-2 mt-2">
                         <img src={documentIcon} />
-                        <h2 className="font-sans text-gray-500 text-md md:text-xs">Document Name</h2>
+                        <h2 className="font-sans text-gray-500 dark:text-gray-300 text-md md:text-xs">Document Name</h2>
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-row md:justify-center justify-start items-center">
                     <button className="mx-3">
-                      <FiEdit3 className="text-xl" />
+                      <FiEdit3 className="text-xl text-black dark:text-white" />
                     </button>
                     <button
                       className="mx-3"
@@ -233,7 +235,7 @@ const AssetDetails: React.FC<
                         }
                       }}
                     >
-                      <AiOutlineDelete className="text-2xl mx-3" />
+                      <AiOutlineDelete className="text-2xl mx-3 text-black dark:text-white" />
                     </button>
                     {/* <button className="mx-3">
                 <BsQrCode className="text-xl" />
@@ -252,7 +254,11 @@ const AssetDetails: React.FC<
                   <AssetDocumentsPage />
                 </div>
               ) : (
-                "Page Coming Soon"
+                <div className="flex justify-center items-center h-64">
+                  <p className="font-sans text-black dark:text-white">
+                    Page Coming Soon
+                  </p>
+                </div>
               )
             }
 

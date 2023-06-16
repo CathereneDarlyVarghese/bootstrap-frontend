@@ -76,7 +76,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
         htmlFor="my-modal-3"
         className="btn w-fit mx-3 bg-transparent text-slate-800 border-none hover:bg-transparent"
       >
-        <AiOutlineFileAdd style={{ fontSize: 25 }} />
+        <AiOutlineFileAdd className="text-black dark:text-white" style={{ fontSize: 25 }} />
 
         {/* Add Work Order */}
       </label>
