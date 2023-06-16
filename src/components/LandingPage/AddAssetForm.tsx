@@ -188,11 +188,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         className="modal-toggle"
       />
       <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32" >
-        <div className="p-0 sm:mx-2 bg-white rounded-2xl">
+        <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
-            <div className="p-5 bg-white flex flex-row rounded-xl">
-              <h3 className="font-sans font-bold text-lg text-blue-800">
+            <div className="p-5 bg-white dark:bg-gray-700 flex flex-row rounded-xl">
+              <h3 className="font-sans font-bold dark:font-semibold text-lg text-blue-800 dark:text-white ">
                 Add Assets
               </h3>
               <svg
@@ -200,7 +200,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 strokeWidth="1.5"
-                className="w-6 h-6 text-blue-800 ml-auto cursor-pointer"
+                className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
                 onClick={closeAddForm}
               >
                 <path
@@ -215,29 +215,29 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <div className="flex flex-row gap-3 md:gap-0 md:flex-col">
                 {/* Input field for asset name */}
                 <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-black text-sm">
+                  <label className="font-sans font-semibold text-black dark:text-white text-sm">
                     Name of Assets
                   </label>
                   <input
                     type="text"
                     name="name"
                     placeholder="Enter Asset Name"
-                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
 
                 {/* Dropdown for asset type */}
                 <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Asset Type
                   </label>
                   <select
                     name="type"
-                    className="select select-sm font-normal my-3 w-full border border-slate-300"
+                    className="select select-sm font-normal my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   >
                     {/* Map through the asset types */}
                     {assetTypes.map((type) => (
-                      <option key={type.asset_type_id} value={type.asset_type_id}>
+                      <option key={type.asset_type_id} value={type.asset_type_id} className="text-black">
                         {type.asset_type}
                       </option>
                     ))}
@@ -246,14 +246,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Input field for description */}
-              <label className="font-sans font-semibold text-sm text-black">
+              <label className="font-sans font-semibold text-sm text-black dark:text-white">
                 Description
               </label>
               <input
                 type="text"
                 name="notes"
                 placeholder="Enter Description"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
 
@@ -261,12 +261,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
-                className="font-sans font-semibold text-sm text-black"
+                className="font-sans font-semibold text-sm text-black dark:text-white"
               >
                 Add Image
               </label>
 
-              <div className="flex flex-row bg-transparent border border-gray-300 rounded-xl p-2 my-3" >
+              <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3" >
                 <input
                   type="file"
                   onChange={(e) => {
@@ -278,13 +278,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
                 />
-                <input type="text" className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
+                <input type="text" className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
                 <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
                   e.preventDefault()
                   const uploadButton = document.querySelector("#upload") as HTMLElement
                   uploadButton.click()
                 }}>
-                  <div className="flex flex-row items-center gap-0.5 mx-1">
+                  <div className="flex flex-row items-center gap-0.5 dark:text-white mx-1">
                     <AiOutlinePaperClip className="text-lg" />
                     Choose File
                   </div>
@@ -295,13 +295,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               {/* Dropdown for selecting asset status */}
               <div className="flex flex-row gap-3 md:flex-col">
                 <div className="flex flex-col w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Asset Status
                   </label>
                   <select
                     required
                     name="status"
-                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
                     value={selectedStatus}
                     onChange={handleStatusChange}
                   >
@@ -319,12 +319,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
                 <div className="flex flex-col w-1/2 md:w-auto">
                   {/* Dropdown for selecting location */}
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Select location
                   </label>
                   <select
                     required
-                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                     onChange={(e) => handleLocationChange(e.target.value)}
                     value={selectedLocation}
                   >
@@ -347,12 +347,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Dropdown for selecting section */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Select section
                   </label>
                   <select
                     required
-                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                     onChange={(e) => handleSectionChange(e.target.value)}
                     value={selectedSection}
                   >
@@ -368,13 +368,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Select placement
                   </label>
                   <select
                     required
                     name="placement"
-                    className="select select-sm font-normal my-3 border border-slate-300 w-full"
+                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                   >
                     <option value="" disabled hidden>
                       Select Placement
@@ -395,7 +395,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               <div className="flex items-center my-1">
                 <label
                   htmlFor="status_check_enabled"
-                  className="font-sans font-semibold text-sm text-black mr-2"
+                  className="font-sans font-semibold text-sm text-black dark:text-white mr-2"
                 >
                   Enable Status Check
                 </label>
@@ -407,7 +407,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Input field for status check interval */}
-              <label className="font-sans font-semibold text-sm text-black mt-2">
+              <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
                 Status Check Interval (in days)
               </label>
               <input
@@ -415,32 +415,32 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 name="status_check_interval"
                 placeholder="Enter Status Check Interval"
                 min="1"
-                className="input input-bordered input-sm text-sm w-full my-2 font-sans"
+                className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
               />
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Input field for finance purchase */}
                 <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Finance Purchase
                   </label>
                   <input
                     type="number"
                     name="finance_purchase"
                     placeholder="Enter Finance Purchase"
-                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
                 {/* Input field for finance current value */}
                 <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Finance Current Value
                   </label>
                   <input
                     type="number"
                     name="finance_current_value"
                     placeholder="Enter Finance Current Value"
-                    className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
 
