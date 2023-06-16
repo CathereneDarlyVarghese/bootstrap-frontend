@@ -72,20 +72,20 @@ const DocumentsPage = () => {
                   // removeClass("#parent-element .asset-details-card", "lg:hidden");
                   // addClass("#parent-element .documents-card", "lg:w-full");
                   // addClass("#parent-element .asset-card", "lg:hidden");
-                  console.log("File array ==>> ", document.file_array[0]);
+                  console.log("File array ==>> ", document.file_id);
                 }}
               >
                 <DocumentsCard
                   documentName={document.document_name}
                   documentDescription={document.document_description}
-                  documentType={document.document_type}
+                  documentTypeID={document.document_type_id}
                   startDate={document.start_date}
                   endDate={document.end_date}
                   documentNotes={document.document_notes}
                   fileStatus="File Uploaded"
                   documentStatus="active"
                   // FIX THIS - For now we are only displaying one file name
-                  fileName={document.file_array}
+                  fileID={document.file_id}
                 />
               </div>
             ))}

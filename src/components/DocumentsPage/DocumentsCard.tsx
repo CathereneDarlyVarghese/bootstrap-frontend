@@ -1,21 +1,59 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillXCircleFill } from "react-icons/bs";
 import documentIcon from "../../icons/documentIcon.svg";
+import { Auth } from "aws-amplify";
+import { getDocumentTypeById } from "services/documentTypeServices";
+import { getFileById } from "services/fileServices";
 
 const DocumentsCard = ({
   documentName,
   documentDescription,
-  documentType,
+  documentTypeID,
   startDate,
   endDate,
   documentNotes,
   fileStatus,
   documentStatus,
-  fileName,
+  fileID,
 }) => {
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [documentType, setDocumentType] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>(null);
+
+  useEffect(() => {
+    const fetchDocumentDetails = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+
+        const fetchedDocumentType = await getDocumentTypeById(
+          userData.signInUserSession.accessToken.jwtToken,
+          documentTypeID
+        );
+
+        setDocumentType(fetchedDocumentType.document_type);
+
+        const fetchedFile = await getFileById(
+          userData.signInUserSession.accessToken.jwtToken,
+          fileID
+        );
+
+        // setFileName((fetchedFile.file_array[0]));
+        setFileName(fetchedFile.file_array[0]);
+
+        // console.log("Document Type ==>> ", documentType);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDocumentDetails();
+  }, []);
+
+  // console.log("Selected Document Type ==>> ", documentType);
+  // console.log("Session Token ==>> ", sessionToken);  
   return (
     <div className="card bg-white p-5" style={{ height: "fit-content" }}>
       <div className="flex flex-row-reverse md:flex-col">
@@ -29,7 +67,7 @@ const DocumentsCard = ({
             <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
               <AiOutlineCalendar className="text-xl text-blue-900" />
               <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
-                {startDate}
+                {startDate.substring(0, 10)}
               </h1>
             </div>
           </div>
@@ -42,7 +80,7 @@ const DocumentsCard = ({
             <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
               <AiOutlineCalendar className="text-xl text-blue-900" />
               <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
-                {endDate}
+                {endDate.substring(0, 10)}
               </h1>
             </div>
           </div>
