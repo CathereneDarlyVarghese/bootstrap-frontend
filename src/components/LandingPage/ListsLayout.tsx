@@ -345,6 +345,34 @@ const ListsLayout = (props: any) => {
             </div>
           )
 
+        {selectedAsset ? (
+          <AssetDetails
+            closeAsset={() => {
+              addClass("#parent-element .asset-details-card", "lg:hidden");
+              removeClass("#parent-element .asset-details-card", "w-full");
+              removeClass("#parent-element .asset-card", "lg:hidden");
+            }}
+            assetId={selectedAsset.asset_id}
+            cardImage={selectedAsset.images_array[0]}
+            cardTitle={selectedAsset.asset_name}
+            assetType={selectedAsset.asset_type}
+            notes={selectedAsset.asset_notes}
+            sectionName={selectedAsset.section_name}
+            placementName={selectedAsset.placement_name}
+            purchasePrice={selectedAsset.asset_finance_purchase}
+            currentValue={selectedAsset.asset_finance_current_value}
+            statusCheckDate={selectedAsset.next_asset_check_date}
+            sessionToken={sessionToken}
+            refreshAssets={refreshAssets}
+            setAssetId={setSelectedAsset}
+            selectedAsset1={selectedAsset}
+          />
+        ) : (
+          <div className="flex items-center h-fit my-52 mx-auto justify-center">
+            <h1 className="font-bold text-3xl text-slate-400">
+              Choose an Asset
+            </h1>
+          </div>
         )}
       </div>
 
