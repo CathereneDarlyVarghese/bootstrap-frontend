@@ -143,9 +143,11 @@ const ListsLayout = (props: any) => {
     setDetailsTab(0)
   }
 
+
+
   return (
     <div
-      className="bg-primary-content h-full "
+      className="bg-primary-content h-full dark:bg-gray-800"
       style={{ display: "flex", flexDirection: "row" }}
       id="parent-element"
     >
@@ -158,7 +160,7 @@ const ListsLayout = (props: any) => {
         closeOnClick
       />
       <div
-        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full asset-card"
+        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800"
         id="style-7"
       >
         <div
@@ -166,7 +168,7 @@ const ListsLayout = (props: any) => {
           className="items-center justify-center"
         >
           {/* Search input field */}
-          <div className="flex flex-row items-center bg-gray-100 rounded-xl w-full">
+          <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full">
             <button>
               <img
                 src={SearchIcon}
@@ -177,7 +179,7 @@ const ListsLayout = (props: any) => {
             <input
               type="text"
               placeholder="Search Appliance"
-              className="w-4/5 h-12 p-5 bg-gray-100 placeholder-blue-700 text-blue-700 text-sm border-none font-sans"
+              className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
@@ -197,14 +199,14 @@ const ListsLayout = (props: any) => {
 
         </div>
         <div>
-          <div className="tabs flex flex-row items-center" id="container" style={{ width: "100%", display: "flex", flexDirection: "row" }}>
-            <button className="btn btn-sm rounded-2xl text-black md:hidden bg-transparent border-none hover:bg-blue-200 justify-center" id="scrollButton" onClick={scrollLeft}>{"<<"}</button>
+          <div className="tabs flex flex-row items-center" id="style-7" style={{ width: "100%", display: "flex", flexDirection: "row" }}>
+            <button className="btn btn-sm rounded-2xl text-black dark:text-white md:hidden bg-transparent border-none hover:bg-blue-200 hover:dark:bg-gray-600 justify-center" id="scrollButton" onClick={scrollLeft}>{"<<"}</button>
             <div className="overflow-x-auto flex-grow" id="style-7" style={{ width: "75%" }}>
               <ul className="flex flex-row">
 
                 {tabs.map((item, index) => (
                   <li>
-                    <button className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index ? "text-blue-900 border-b-blue-800 hover:border-b-blue-800 font-bold" : "text-gray-500 font-normal"} normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                    <button className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold" : "text-gray-500 dark:text-gray-400 font-normal"} normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
                       id={`${index === tabs.length - 1 ? "scrollLast" : index === 0 ? "scrollFirst" : ""}`}
 
                       onClick={() => {
@@ -219,12 +221,12 @@ const ListsLayout = (props: any) => {
 
               </ul>
             </div>
-            <button className="btn btn-sm rounded-2xl text-black md:hidden bg-transparent border-none hover:bg-blue-200 justify-center" id="scrollButton" onClick={scrollRight}>{">>"}</button>
+            <button className="btn btn-sm rounded-2xl text-black hover:dark:bg-gray-600 dark:text-white md:hidden bg-transparent border-none hover:bg-blue-200 justify-center" id="scrollButton" onClick={scrollRight}>{">>"}</button>
 
 
           </div>
           <div className="px-2">
-            <select className="select select-sm md:select-xs mb-3 md:mt-2 border border-slate-300 w-full">
+            <select className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
               <option>Front Bar</option>
               <option>Left Corner</option>
               <option>Right Corner</option>
@@ -287,7 +289,7 @@ const ListsLayout = (props: any) => {
         </div>
       </div>
       <div
-        className="w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 lg:bg-white lg:hidden asset-details-card md:pb-14"
+        className={`w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700  lg:hidden asset-details-card md:pb-14`}
         id="style-7"
       >
 

@@ -11,6 +11,7 @@ import ootstrap from "../icons/ootstrap.svg";
 import ScanButton from "./widgets/ScanButton";
 import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -151,6 +152,7 @@ const NavBar = () => {
               Status
             </a>
           </div>
+          <ThemeSwitcher />
         </div>
 
         <div className="flex-none gap-5 md:gap-2 ">
