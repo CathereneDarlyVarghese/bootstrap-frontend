@@ -47,7 +47,7 @@ const DocumentsPage = () => {
 
   return (
     <>
-      <div className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen ? "2xl:bg-gray-200 dark:2xl:bg-black xl:bg-white dark:xl:bg-gray-700" : "bg-gray-200 dark:bg-black"}`}>
+      <div className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen ? "2xl:bg-gray-200 dark:2xl:bg-black xl:bg-white dark:xl:bg-gray-800" : "bg-gray-200 dark:bg-black"}`}>
         <div className={`flex flex-grow items-center ${addDocumentsOpen ? "xl:hidden" : ""}`}>
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents

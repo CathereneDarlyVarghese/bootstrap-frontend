@@ -310,7 +310,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     </option>
                     {Object.entries(statusTypeNames).map(
                       ([statusId, statusName]) => (
-                        <option key={statusId} value={statusId}>
+                        <option key={statusId} value={statusId} className="text-black bg-white dark:text-white dark:bg-gray-800">
                           {statusName}
                         </option>
                       )
@@ -335,7 +335,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       <option
                         key={location.location_id}
                         value={location.location_id}
-                      >
+                        className="text-black bg-white dark:text-white dark:bg-gray-800">
                         {location.location_name}
                       </option>
                     ))}
@@ -360,7 +360,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       Select Section
                     </option>
                     {filteredSections.map((section) => (
-                      <option key={section.section_id} value={section.section_id}>
+                      <option key={section.section_id} value={section.section_id} className="text-black bg-white dark:text-white dark:bg-gray-800">
                         {section.section_name}
                       </option>
                     ))}
@@ -383,7 +383,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       <option
                         key={placement.placement_id}
                         value={placement.placement_id}
-                      >
+                        className="text-black bg-white dark:text-white dark:bg-gray-800">
                         {placement.placement_name}
                       </option>
                     ))}

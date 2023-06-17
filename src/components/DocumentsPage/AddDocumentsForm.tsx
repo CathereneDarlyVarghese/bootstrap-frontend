@@ -38,6 +38,7 @@ const AddDocumentsForm = ({
     documentNotes,
   } = formData;
 
+
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -158,11 +159,11 @@ const AddDocumentsForm = ({
         className="modal-toggle"
       />
       <div className="rounded-2xl">
-        <div className="bg-white rounded-2xl p-0 mb-5 w-full sm:mx-2">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-0 mb-5 w-full sm:mx-2">
           <form method="post" onSubmit={(e) => handleSubmit(e)}>
             {/* Modal header */}
-            <div className="p-5 rounded-2xl bg-white flex flex-row">
-              <h3 className="font-sans font-bold text-lg text-blue-800">
+            <div className="p-5 rounded-2xl bg-white dark:bg-gray-800 flex flex-row">
+              <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-white">
                 Add Document
               </h3>
               <svg
@@ -170,7 +171,7 @@ const AddDocumentsForm = ({
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 strokeWidth="1.5"
-                className="w-6 h-6 text-blue-800 ml-auto cursor-pointer"
+                className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
                 onClick={closeAddForm}
               >
                 <path
@@ -183,7 +184,7 @@ const AddDocumentsForm = ({
 
             <div className="flex flex-col p-5">
               {/* Input field for asset name */}
-              <label className="font-sans font-semibold text-black text-sm">
+              <label className="font-sans font-semibold text-black dark:text-white text-sm">
                 Name
               </label>
               <input
@@ -194,23 +195,23 @@ const AddDocumentsForm = ({
                 onChange={(e) => handleChange(e)}
                 required
                 placeholder="Enter Document Name"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
-              <label className="font-sans font-semibold text-sm text-black">
+              <label className="font-sans font-semibold text-sm text-black dark:text-white">
                 Document Type
               </label>
               <select
                 id="documentType"
                 name="documentType"
                 onChange={(e) => handleChange(e)}
-                className="select select-sm my-3 w-full border border-slate-300"
+                className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                 required
               >
-                <option value="" disabled selected hidden>
+                <option value="" disabled selected hidden >
                   Select Document Type
                 </option>
                 {documentType.map((documentType) => (
-                  <option
+                  <option className="text-black bg-white dark:text-white dark:bg-gray-800"
                     key={documentType.document_type_id}
                     value={documentType.document_type_id}
                   >
@@ -221,7 +222,7 @@ const AddDocumentsForm = ({
 
               <div className="flex flex-row gap-2 my-3">
                 <div className="flex flex-col">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Start Date
                   </label>
                   <input
@@ -231,11 +232,23 @@ const AddDocumentsForm = ({
                     value={startDate}
                     onChange={(e) => handleChange(e)}
                     required
-                    className="font-sans font-semibold text-sm text-black my-3"
+                    className="font-sans font-semibold text-sm text-black dark:text-white bg-transparent  my-3"
                   />
+
+                  {/* <div data-te-datepicker-init
+                    data-te-input-wrapper-init>
+                    <input
+                      type="text"
+                      className="peer min-h-[auto] w-full rounded border-0 bg-transparent px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                      placeholder="Select a date" />
+                    <label
+                      htmlFor="floatingInput"
+                      className="pointer-events-none mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+                    >Select a date</label>
+                  </div> */}
                 </div>
                 <div className="flex flex-col ml-auto">
-                  <label className="font-sans font-semibold text-sm text-black">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     End Date
                   </label>
                   <input
@@ -245,12 +258,12 @@ const AddDocumentsForm = ({
                     value={endDate}
                     onChange={(e) => handleChange(e)}
                     required
-                    className="font-sans font-semibold text-sm text-black my-3"
+                    className="font-sans font-semibold text-sm text-black dark:text-white bg-transparent my-3"
                   />
                 </div>
               </div>
 
-              <label className="font-sans font-semibold text-sm text-black">
+              <label className="font-sans font-semibold text-sm text-black dark:text-white">
                 Description
               </label>
               <input
@@ -261,13 +274,13 @@ const AddDocumentsForm = ({
                 onChange={(e) => handleChange(e)}
                 required
                 placeholder="Enter Description"
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
               {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
-                className="font-sans font-semibold text-sm text-black"
+                className="font-sans font-semibold text-sm text-black dark:text-white"
               >
                 Upload File
               </label>
@@ -280,9 +293,9 @@ const AddDocumentsForm = ({
                 className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
 
               />
-              <div className="flex flex-row rounded-lg border border-gray-300 p-2 my-2">
-                <input type="text" value={`${file ? file.name : "No file chosen"}`} className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black" : "text-gray-400"}`} />
-                <button className="btn btn-xs bg-transparent border border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto" onClick={(e) => {
+              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2">
+                <input type="text" value={`${file ? file.name : "No file chosen"}`} className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} />
+                <button className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto" onClick={(e) => {
                   e.preventDefault()
                   const uploadButton = document.querySelector("#file") as HTMLElement
                   uploadButton.click()
@@ -292,7 +305,7 @@ const AddDocumentsForm = ({
               </div>
 
 
-              <label className="font-sans font-semibold text-sm text-black">
+              <label className="font-sans font-semibold text-sm text-black dark:text-white">
                 Notes
               </label>
               <input
@@ -306,7 +319,7 @@ const AddDocumentsForm = ({
                 //   setData((curr) => ({ ...curr, name: e.target.value }))
                 // }
                 // value={data.name}
-                className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
             </div>
 

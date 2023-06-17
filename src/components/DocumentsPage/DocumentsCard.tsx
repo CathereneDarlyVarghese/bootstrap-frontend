@@ -64,9 +64,9 @@ const DocumentsCard = ({
                 Start Date:
               </h1>
             </div>
-            <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
-              <AiOutlineCalendar className="text-xl text-blue-900" />
-              <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
+            <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
+              <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
+              <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                 {startDate.substring(0, 10)}
               </h1>
             </div>
@@ -77,9 +77,9 @@ const DocumentsCard = ({
                 End Date:
               </h1>
             </div>
-            <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
-              <AiOutlineCalendar className="text-xl text-blue-900" />
-              <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
+            <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
+              <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
+              <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                 {endDate.substring(0, 10)}
               </h1>
             </div>
@@ -104,7 +104,7 @@ const DocumentsCard = ({
       <div className="mt-4 flex flex-row gap-5 items-center">
         <div className="flex flex-row gap-2 items-center">
           <img src={documentIcon} />
-          <h1 className="font-sans text-gray-500 text-md md:text-xs">
+          <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
             {fileName || ""}
           </h1>
         </div>
