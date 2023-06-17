@@ -7,7 +7,7 @@ import AssetDetails from "./AssetDetails";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset, AssetSection, IncomingAsset } from "types";
+import { Asset, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,7 +19,6 @@ import SearchIcon from "../../icons/circle2017.png";
 //sample image for ui testing
 import testImage from "./testImage.png";
 import { getAllAssets, getAssets } from "services/assetServices";
-import { getAssetSections } from "services/assetSectionServices";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -40,9 +39,14 @@ const ListsLayout = (props: any) => {
 
   const [activeTab, setActiveTab] = useState(0);
   //sample array for pillblock nav tabs
-  // const tabs = ["VIP Lounge", "Bar area", "Kitchen area", "Stag area", "Lounge", "Restroom"]
-  const tabs = [{ section_id: "", section_name: "", location_id: "" }];
-  const [assetSections, setAssetSections] = useState<AssetSection[]>(tabs);
+  const tabs = [
+    "VIP Lounge",
+    "Bar area",
+    "Kitchen area",
+    "Stag area",
+    "Lounge",
+    "Restroom",
+  ];
   const [scroll, setScroll] = useState(false);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
@@ -127,12 +131,6 @@ const ListsLayout = (props: any) => {
         }
 
         console.log("The fetched assets ==>>", assetsData);
-
-        const fetchedAssetSections = await getAssetSections(
-          userData.signInUserSession.accessToken.jwtToken
-        );
-        
-        setAssetSections(fetchedAssetSections);
       } catch (error) {
         console.log(error);
       }
@@ -216,7 +214,7 @@ const ListsLayout = (props: any) => {
               style={{ width: "75%" }}
             >
               <ul className="flex flex-row">
-                {assetSections.map((item, index) => (
+                {tabs.map((item, index) => (
                   <li>
                     <button
                       className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
@@ -235,7 +233,7 @@ const ListsLayout = (props: any) => {
                         setActiveTab(index);
                       }}
                     >
-                      {item.section_name}
+                      {item}
                     </button>
                   </li>
                 ))}
@@ -346,6 +344,7 @@ const ListsLayout = (props: any) => {
                 selectedAsset1={selectedAsset}
                 tabIndex={detailsTab}
                 setTabIndex={setDetailsTab}
+                assetCheckDate={selectedAsset.next_asset_check_date}
               />
             )}
           </>
