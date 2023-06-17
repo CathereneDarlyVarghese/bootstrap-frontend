@@ -6,10 +6,10 @@ import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
 
-const AssetDocumentsPage = () => {
+const AssetDocumentsPage = ({ selectedAsset }) => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const selectedAssetID = JSON.parse(searchParams.get("selectedAssetID"));
+  // const searchParams = new URLSearchParams(location.search);
+  const selectedAssetID = selectedAsset.asset_id;
 
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -40,8 +40,6 @@ const AssetDocumentsPage = () => {
     fetchDocuments();
   }, [selectedAssetID]);
 
-
-
   return (
     <>
       <div className="bg-gray-200 h-full overflow-y-auto p-5 pb-20">
@@ -49,14 +47,14 @@ const AssetDocumentsPage = () => {
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents
           </h1>
-          {/* <button
+          <button
             className="btn btn-sm bg-blue-900 hover:bg-blue-900 capitalize w-32 ml-auto"
             onClick={() => {
               setAddDocumentsOpen(true);
             }}
           >
             +Add
-          </button> */}
+          </button>
         </div>
         <div>
           {incomingDocuments.map((document) => (
@@ -64,7 +62,6 @@ const AssetDocumentsPage = () => {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setDocumentId(document.document_id);
-
               }}
             >
               <DocumentsCard
@@ -83,7 +80,6 @@ const AssetDocumentsPage = () => {
           ))}
         </div>
       </div>
-
     </>
   );
 };
