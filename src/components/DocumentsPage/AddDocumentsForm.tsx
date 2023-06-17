@@ -77,15 +77,16 @@ const AddDocumentsForm = ({
       document_name: formData.documentName,
       document_description: formData.documentDescription,
       document_type_id: selectedDocumentTypeID,
-      start_date: formData.startDate,
-      end_date: formData.endDate,
+      start_date: (formData.startDate).toString(),
+      end_date: (formData.endDate).toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
-      modified_by: "hardCodedTestUser",
-      modified_date: new Date().toString(),
-      org_id: "hardCodedOrgID",
+      modified_by: "John Doe",
+      modified_date: "2023-06-15",
+      org_id: null,
       asset_id: assetID,
       location_id: locationID,
+      document_type: selectedDocumentTypeID
     };
 
     console.log("Document Data ==>> ", documentData);
