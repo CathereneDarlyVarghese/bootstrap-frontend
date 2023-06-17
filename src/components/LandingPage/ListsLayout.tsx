@@ -7,7 +7,7 @@ import AssetDetails from "./AssetDetails";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset, IncomingAsset } from "types";
+import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,8 @@ import SearchIcon from "../../icons/circle2017.png";
 //sample image for ui testing
 import testImage from "./testImage.png";
 import { getAllAssets, getAssets } from "services/assetServices";
+import { getAssetSections } from "services/assetSectionServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -39,17 +41,25 @@ const ListsLayout = (props: any) => {
 
   const [activeTab, setActiveTab] = useState(0);
   //sample array for pillblock nav tabs
-  const tabs = [
-    "VIP Lounge",
-    "Bar area",
-    "Kitchen area",
-    "Stag area",
-    "Lounge",
-    "Restroom",
+  const defaultAssetSections = [
+    { section_id: "", section_name: "", location_id: "" },
   ];
+  const [assetSections, setAssetSections] =
+    useState<AssetSection[]>(defaultAssetSections);
+  const [selectedAssetSectionID, setSelectedAssetSectionID] =
+    useState<string>("");
   const [scroll, setScroll] = useState(false);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
+
+  const defaultAssetPlacements = [
+    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
+  ];
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
+    defaultAssetPlacements
+  );
+  const [selectedAssetPlacementID, setSelectedAssetPlacementID] =
+    useState<string>("");
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -139,6 +149,63 @@ const ListsLayout = (props: any) => {
     fetchAssets();
   }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
 
+  useEffect(() => {
+    const fetchAssetSections = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+
+        const fetchedAssetSections = await getAssetSections(
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setAssetSections(fetchedAssetSections);
+        // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
+
+        if (selectedAssetSectionID === "") {
+          setSelectedAssetSectionID(fetchedAssetSections[0].section_id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAssetSections();
+  }, []);
+
+  useEffect(() => {
+    const fetchAssetPlacements = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+
+        const fetchedAssetPlacements = await getAssetPlacements(
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setAssetPlacements(fetchedAssetPlacements);
+
+        console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
+
+        const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
+          (placement: AssetPlacement) =>
+            placement.section_id === selectedAssetSectionID
+        );
+
+        setAssetPlacements(filteredFetchedAssetPlacements);
+
+        console.log(
+          "Filtered Fetched Asset Placement ==>> ",
+          filteredFetchedAssetPlacements
+        );
+
+        if (selectedAssetPlacementID === "") {
+          setSelectedAssetPlacementID(
+            filteredFetchedAssetPlacements[0].placement_id
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAssetPlacements();
+  }, [selectedAssetSectionID]);
+
   const detailsTabIndexRefresh = (tabIndex) => {
     setDetailsTab(0);
   };
@@ -214,7 +281,7 @@ const ListsLayout = (props: any) => {
               style={{ width: "75%" }}
             >
               <ul className="flex flex-row">
-                {tabs.map((item, index) => (
+                {assetSections.map((item, index) => (
                   <li>
                     <button
                       className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
@@ -223,7 +290,7 @@ const ListsLayout = (props: any) => {
                           : "text-gray-500 dark:text-gray-400 font-normal"
                       } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
                       id={`${
-                        index === tabs.length - 1
+                        index === assetSections.length - 1
                           ? "scrollLast"
                           : index === 0
                           ? "scrollFirst"
@@ -231,9 +298,10 @@ const ListsLayout = (props: any) => {
                       }`}
                       onClick={() => {
                         setActiveTab(index);
+                        setSelectedAssetSectionID(item.section_id);
                       }}
                     >
-                      {item}
+                      {item.section_name}
                     </button>
                   </li>
                 ))}
@@ -249,10 +317,15 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="px-2">
             <select className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
-              <option>Front Bar</option>
-              <option>Left Corner</option>
-              <option>Right Corner</option>
-              <option>Ceiling</option>
+              {/* <option value="" hidden disabled selected>Select a Placement</option> */}
+              {assetPlacements.map((placement) => (
+                <option
+                  key={placement.placement_name}
+                  value={placement.placement_name}
+                >
+                  {placement.placement_name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
