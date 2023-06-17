@@ -25,7 +25,6 @@ interface AssetDetailsProps {
   placementName: string | null;
   purchasePrice: string | null;
   currentValue: string | null;
-  statusCheckDate: Date | null;
   notes: string | null;
   assetType: string | null;
   setAssetId: (id: string | null) => void;
@@ -50,7 +49,6 @@ const AssetDetails: React.FC<
   placementName,
   purchasePrice,
   currentValue,
-  statusCheckDate,
   notes,
   selectedAsset1,
   tabIndex,
@@ -266,35 +264,6 @@ const AssetDetails: React.FC<
 
 
 
-                {statusCheckDate ? (
-                  <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                    <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                    {statusCheckDate.toLocaleString()}
-                  </button>
-                ) : (
-                  <span className="text-gray-400">
-                    No status check date available
-                  </span>
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="text-black font-sans my-1 text-sm">
-                Section: {sectionName}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Placement: {placementName}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Purchase Price: {purchasePrice}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Current Value: {currentValue}
-              </p>
-              <p className="text-black font-sans my-1 text-sm">
-                Notes: {notes}
-              </p>
-            </div>
           </div>
           {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
             <button
