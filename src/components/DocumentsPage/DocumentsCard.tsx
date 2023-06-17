@@ -102,13 +102,13 @@ const DocumentsCard = ({
         <p className="text-gray-400">{documentNotes}</p>
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-2 items-center md:w-1/3">
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
             {fileName || ""}
           </h1>
         </div>
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-2 items-center sm:ml-auto">
           {fileStatus === "File Uploaded" ? (
             <>
               <BsFillCheckCircleFill className="text-lg text-green-500" />
