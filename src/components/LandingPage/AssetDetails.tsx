@@ -251,7 +251,7 @@ const AssetDetails: React.FC<
                 </>
               ) : tabIndex === 1 ? (
                 <div>
-                  <AssetDocumentsPage />
+                  <AssetDocumentsPage selectedAsset={selectedAsset1} />
                 </div>
               ) : (
                 <div className="flex justify-center items-center h-64">
