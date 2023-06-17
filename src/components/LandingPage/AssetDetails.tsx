@@ -25,7 +25,6 @@ interface AssetDetailsProps {
   placementName: string | null;
   purchasePrice: string | null;
   currentValue: string | null;
-  statusCheckDate: Date | null;
   notes: string | null;
   assetType: string | null;
   setAssetId: (id: string | null) => void;
@@ -50,7 +49,6 @@ const AssetDetails: React.FC<
   placementName,
   purchasePrice,
   currentValue,
-  statusCheckDate,
   notes,
   selectedAsset1,
   tabIndex,

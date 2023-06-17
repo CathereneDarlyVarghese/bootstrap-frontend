@@ -13,14 +13,8 @@ import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { getAllAssetLocations } from "services/locationServices";
-import {
-  createAssetPlacement,
-  getAssetPlacements,
-} from "services/assetPlacementServices";
-import {
-  createAssetSection,
-  getAssetSections,
-} from "services/assetSectionServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
+import { getAssetSections } from "services/assetSectionServices";
 import { createFile } from "services/fileServices";
 import { createAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
@@ -70,98 +64,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       (placement) => placement.section_id === sectionId
     );
     setFilteredPlacements(placements);
-  };
-
-  //fetch data
-  const fetchData = async () => {
-    try {
-      const accessToken = window.localStorage.getItem("sessionToken");
-
-      const [types, locations, placements, sections] = await Promise.all([
-        getAllAssetTypes(accessToken),
-        getAllAssetLocations(accessToken),
-        getAssetPlacements(accessToken),
-        getAssetSections(accessToken),
-      ]);
-
-      setAssetTypes(types);
-      setLocations(locations);
-      setAssetPlacements(placements);
-      setAssetSections(sections);
-
-      console.log("Asset Types:", types);
-      console.log("Asset Locations:", locations);
-      console.log("Asset Placements:", placements);
-      console.log("Asset Sections:", sections);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
-
-  // Function to handle adding a section
-  const handleAddSection = async () => {
-    if (selectedLocation) {
-      const sectionName = prompt("Enter Section Name");
-      if (sectionName) {
-        const newSection: AssetSection = {
-          section_id: "",
-          section_name: sectionName,
-          location_id: selectedLocation,
-        };
-        try {
-          const createdSection = await createAssetSection(token, newSection);
-          console.log("Created Section:", createdSection);
-          const updatedSections = [...assetSections, createdSection];
-          setAssetSections(updatedSections);
-          setFilteredSections(updatedSections);
-
-          // Fetch updated data and call handleLocationChange
-          fetchData();
-          handleLocationChange(selectedLocation);
-        } catch (error) {
-          console.error("Failed to create section:", error);
-        }
-      }
-    } else {
-      alert("Please select a location first.");
-    }
-  };
-
-  const handleAddPlacement = async () => {
-    if (selectedLocation && selectedSection) {
-      const placementName = prompt("Enter Placement Name");
-      if (placementName) {
-        const newPlacement: AssetPlacement = {
-          placement_id: "",
-          placement_name: placementName,
-          section_id: selectedSection,
-          location_id: selectedLocation,
-        };
-        try {
-          const createdPlacement = await createAssetPlacement(
-            token,
-            newPlacement
-          );
-          console.log("Created Placement:", createdPlacement);
-          const updatedPlacements = [...assetPlacements, createdPlacement];
-          setAssetPlacements(updatedPlacements);
-
-          // Update filtered placements
-          const filteredPlacements = updatedPlacements.filter(
-            (placement) => placement.section_id === selectedSection
-          );
-          setFilteredPlacements(filteredPlacements);
-
-          // Fetch updated data and call handleSectionChange
-          fetchData();
-          handleSectionChange(selectedSection);
-        } catch (error) {
-          console.error("Failed to create placement:", error);
-        }
-      }
-    } else {
-      alert("Please select a location and section first.");
-    }
   };
 
   const handleSubmit = async (event) => {
@@ -243,6 +145,31 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("sessionToken");
+
+        const [types, locations, placements, sections] = await Promise.all([
+          getAllAssetTypes(accessToken),
+          getAllAssetLocations(accessToken),
+          getAssetPlacements(accessToken),
+          getAssetSections(accessToken),
+        ]);
+
+        setAssetTypes(types);
+        setLocations(locations);
+        setAssetPlacements(placements);
+        setAssetSections(sections);
+
+        console.log("Asset Types:", types);
+        console.log("Asset Locations:", locations);
+        console.log("Asset Placements:", placements);
+        console.log("Asset Sections:", sections);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
     fetchData();
   }, []);
 
@@ -447,10 +374,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       Select Section
                     </option>
                     {filteredSections.map((section) => (
-                      <option
-                        key={section.section_id}
-                        value={section.section_id}
-                      >
+                      <option key={section.section_id} value={section.section_id}>
                         {section.section_name}
                       </option>
                     ))}
