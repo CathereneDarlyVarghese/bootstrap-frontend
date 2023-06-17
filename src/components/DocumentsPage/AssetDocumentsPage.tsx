@@ -79,6 +79,14 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
             </div>
           ))}
         </div>
+        <div className={`${addDocumentsOpen ? "" : "hidden"}`}>
+          <AddDocumentsForm
+            addDocumentsOpen={addDocumentsOpen}
+            setAddDocumentsOpen={setAddDocumentsOpen}
+            assetID={selectedAssetID}
+          // locationID={selectedLocation}
+          />
+        </div>
       </div>
     </>
   );
