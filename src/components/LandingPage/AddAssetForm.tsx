@@ -180,14 +180,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   return (
     <>
-
       <input
         type="checkbox"
         checked={addAssetOpen}
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32" >
+      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
@@ -237,7 +236,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   >
                     {/* Map through the asset types */}
                     {assetTypes.map((type) => (
-                      <option key={type.asset_type_id} value={type.asset_type_id} className="text-black">
+                      <option
+                        key={type.asset_type_id}
+                        value={type.asset_type_id}
+                        className="text-black"
+                      >
                         {type.asset_type}
                       </option>
                     ))}
@@ -256,8 +259,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
-
-
               {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
@@ -266,30 +267,44 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 Add Image
               </label>
 
-              <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3" >
+              <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3">
                 <input
                   type="file"
                   onChange={(e) => {
-                    setFile(e.target.files[0])
+                    setFile(e.target.files[0]);
                     const palceholderText = e.target.files[0];
 
-                    console.log(palceholderText.name)
+                    console.log(palceholderText.name);
                   }}
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
                 />
-                <input type="text" className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
-                <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
-                  e.preventDefault()
-                  const uploadButton = document.querySelector("#upload") as HTMLElement
-                  uploadButton.click()
-                }}>
+                <input
+                  type="text"
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
+                  value={file && file.name ? file.name : "No file chosen"}
+                  disabled
+                />
+                <button
+                  className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto"
+                  id="upload"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const uploadButton = document.querySelector(
+                      "#upload"
+                    ) as HTMLElement;
+                    uploadButton.click();
+                  }}
+                >
                   <div className="flex flex-row items-center gap-0.5 dark:text-white mx-1">
                     <AiOutlinePaperClip className="text-lg" />
                     Choose File
                   </div>
                 </button>
-
               </div>
 
               {/* Dropdown for selecting asset status */}
@@ -341,7 +356,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     ))}
                   </select>
                 </div>
-
               </div>
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
@@ -443,7 +457,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
-
               </div>
             </div>
 
