@@ -75,6 +75,8 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
                 documentStatus="active"
                 // FIX THIS - For now we are only displaying one file name
                 fileID={document.file_id}
+                fileOpen={""}
+                setFileOpen={""}
               />
             </div>
           ))}

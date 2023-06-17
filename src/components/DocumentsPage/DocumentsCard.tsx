@@ -18,6 +18,8 @@ const DocumentsCard = ({
   fileStatus,
   documentStatus,
   fileID,
+  setFileOpen,
+  fileOpen
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [documentType, setDocumentType] = useState<string | null>(null);
@@ -104,6 +106,8 @@ const DocumentsCard = ({
       <div className="mt-4 flex flex-row gap-5 items-center">
         <div className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden" onClick={() => {
           console.log("clicked")
+          setFileOpen(true)
+          console.log(fileOpen)
         }}>
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
