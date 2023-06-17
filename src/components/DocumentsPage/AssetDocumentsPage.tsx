@@ -6,10 +6,10 @@ import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
 
-const AssetDocumentsPage = () => {
+const AssetDocumentsPage = ({ selectedAsset }) => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const selectedAssetID = JSON.parse(searchParams.get("selectedAssetID"));
+  // const searchParams = new URLSearchParams(location.search);
+  const selectedAssetID = selectedAsset.asset_id;
 
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -40,15 +40,6 @@ const AssetDocumentsPage = () => {
     fetchDocuments();
   }, [selectedAssetID]);
 
-  // function to remove class for UI
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
-  //function to add class for UI
-  const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
-  };
-
   return (
     <>
       <div className="bg-gray-200 h-full overflow-y-auto p-5 pb-20">
@@ -70,36 +61,24 @@ const AssetDocumentsPage = () => {
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                // setSelectedDocument(document);
                 setDocumentId(document.document_id);
-                // removeClass("#parent-element .asset-details-card", "lg:hidden");
-                // addClass("#parent-element .documents-card", "lg:w-full");
-                // addClass("#parent-element .asset-card", "lg:hidden");
               }}
             >
               <DocumentsCard
                 documentName={document.document_name}
                 documentDescription={document.document_description}
-                documentType={document.document_type}
+                documentTypeID={document.document_type_id}
                 startDate={document.start_date}
                 endDate={document.end_date}
                 documentNotes={document.document_notes}
                 fileStatus="File Uploaded"
                 documentStatus="active"
                 // FIX THIS - For now we are only displaying one file name
-                fileName={document.file_array}
+                fileID={document.file_id}
               />
             </div>
           ))}
         </div>
-      </div>
-      <div>
-        <AddDocumentsForm
-          addDocumentsOpen={addDocumentsOpen}
-          setAddDocumentsOpen={setAddDocumentsOpen}
-          assetID={selectedAssetID}
-          locationID={null}
-        />
       </div>
     </>
   );
