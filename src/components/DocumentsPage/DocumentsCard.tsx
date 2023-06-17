@@ -55,41 +55,41 @@ const DocumentsCard = ({
   // console.log("Selected Document Type ==>> ", documentType);
   // console.log("Session Token ==>> ", sessionToken);  
   return (
-    <div className="card bg-white p-5" style={{ height: "fit-content" }}>
+    <div className="card bg-white dark:bg-gray-800 p-5" style={{ height: "fit-content" }}>
       <div className="flex flex-row-reverse md:flex-col">
         <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
           <div className="mr-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
             <div>
-              <h1 className="text-black font-semibold font-sans text-md md:text-sm md:font-medium">
+              <h1 className="text-black dark:text-white font-semibold font-sans text-md md:text-sm md:font-medium">
                 Start Date:
               </h1>
             </div>
-            <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
-              <AiOutlineCalendar className="text-xl text-blue-900" />
-              <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
+            <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
+              <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
+              <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                 {startDate.substring(0, 10)}
               </h1>
             </div>
           </div>
           <div className="ml-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
             <div>
-              <h1 className="text-black font-semibold font-sans text-md md:text-sm md:font-medium">
+              <h1 className="text-black dark:text-white font-semibold font-sans text-md md:text-sm md:font-medium">
                 End Date:
               </h1>
             </div>
-            <div className="flex flex-row items-center gap-1 border rounded-md p-2 text-md md:text-sm">
-              <AiOutlineCalendar className="text-xl text-blue-900" />
-              <h1 className="text-blue-900 font-sans font-semibold text-md md:text-xs md:font-medium">
+            <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
+              <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
+              <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                 {endDate.substring(0, 10)}
               </h1>
             </div>
           </div>
         </div>
         <div className="flex flex-row items-center gap-5">
-          <h1 className="text-black text-lg font-semibold font-sans">
+          <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
             {documentName}
           </h1>
-          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 p-3">
+          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto">
             {documentType}
           </div>
         </div>
@@ -98,17 +98,19 @@ const DocumentsCard = ({
         <p className="text-gray-400">{documentDescription}</p>
       </div>
       <div className="mt-2">
-        <h1 className="text-black font-sans font-semibold">Note:</h1>
+        <h1 className="text-black dark:text-white font-sans font-semibold">Note:</h1>
         <p className="text-gray-400">{documentNotes}</p>
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden" onClick={() => {
+          console.log("clicked")
+        }}>
           <img src={documentIcon} />
-          <h1 className="font-sans text-gray-500 text-md md:text-xs">
+          <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
             {fileName || ""}
           </h1>
         </div>
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-2 items-center sm:ml-auto">
           {fileStatus === "File Uploaded" ? (
             <>
               <BsFillCheckCircleFill className="text-lg text-green-500" />
