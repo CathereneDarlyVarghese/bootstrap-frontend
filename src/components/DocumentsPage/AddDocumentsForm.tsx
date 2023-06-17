@@ -70,7 +70,8 @@ const AddDocumentsForm = ({
     // Step 3: Prepare the document data
     // const formData = new FormData(event.target);
 
-    const selectedDocumentTypeID = (document.querySelector('select')).value;
+    const selectedSelectTag = document.querySelector("#documentType") as HTMLSelectElement;
+    const selectedDocumentTypeID = selectedSelectTag.value;
     console.log("Selected document type: ", selectedDocumentTypeID);
 
     const documentData: Document = {
