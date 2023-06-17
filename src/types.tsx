@@ -71,6 +71,7 @@ export interface IncomingAsset {
   modified_date: string;
   modified_by: string;
   images_array: string;
+  next_asset_check_date: Date;
 }
 
 export interface Document {
@@ -85,8 +86,8 @@ export interface Document {
   modified_by: string;
   modified_date: string;
   org_id: string;
-  asset_id: string,
-  location_id: string
+  asset_id: string;
+  location_id: string;
   document_type: string;
 }
 
@@ -102,7 +103,7 @@ export interface IncomingDocument {
   modified_by: string;
   modified_date: string;
   org_id: string;
-  asset_id:string;
+  asset_id: string;
   location_id: string;
   document_type: string;
 }
