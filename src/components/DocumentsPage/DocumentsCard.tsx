@@ -86,10 +86,10 @@ const DocumentsCard = ({
           </div>
         </div>
         <div className="flex flex-row items-center gap-5">
-          <h1 className="text-black dark:text-white text-lg font-semibold font-sans">
+          <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
             {documentName}
           </h1>
-          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 p-3">
+          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto">
             {documentType}
           </div>
         </div>
@@ -102,7 +102,7 @@ const DocumentsCard = ({
         <p className="text-gray-400">{documentNotes}</p>
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
-        <div className="flex flex-row gap-2 items-center md:w-1/3">
+        <div className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden">
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
             {fileName || ""}
