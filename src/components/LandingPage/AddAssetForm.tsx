@@ -350,25 +350,31 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Select section
                   </label>
-                  <select
-                    required
-                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                    onChange={(e) => handleSectionChange(e.target.value)}
-                    value={selectedSection}
-                  >
-                    <option value="" disabled hidden>
-                      Select Section
-                    </option>
-                    {filteredSections.map((section) => (
-                      <option key={section.section_id} value={section.section_id} className="text-black bg-white dark:text-white dark:bg-gray-800">
-                        {section.section_name}
+                  <div className="flex flex-row items-center">
+                    <select
+                      required
+                      className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-1/2"
+                      onChange={(e) => handleSectionChange(e.target.value)}
+                      value={selectedSection}
+                    >
+                      <option value="" disabled hidden>
+                        Select Section
                       </option>
-                    ))}
-                    <option className="text-black bg-white dark:text-white dark:bg-gray-800">
-                      +Add Section
-                    </option>
-                  </select>
+                      {filteredSections.map((section) => (
+                        <option key={section.section_id} value={section.section_id} className="text-black bg-white dark:text-white dark:bg-gray-800">
+                          {section.section_name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="w-1/2 mx-2">
+                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => e.preventDefault()}>+Add Section</button>
+                    </div>
+                  </div>
+
                 </div>
+
+
+
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
@@ -392,6 +398,23 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* Adding Section and Placement */}
+              <div className="flex flex-row md:flex-col items-center my-2 gap-3 md:gap-2">
+                <div className="flex flex-col w-1/2 md:w-full">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    New Section Name
+                  </label>
+                  <input type="text" className="block w-full text-md text-black border border-gray-300 rounded-lg bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                </div>
+                <div className="w-1/2 md:w-full">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    New Placement Name
+                  </label>
+                  <input type="text" className="block w-full text-md text-black border border-gray-300 rounded-lg bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                </div>
+
               </div>
 
               {/* Toggle for status check enabled */}
