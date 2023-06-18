@@ -89,6 +89,7 @@ export interface Document {
   asset_id: string;
   location_id: string;
   document_type: string;
+
 }
 
 export interface IncomingDocument {
