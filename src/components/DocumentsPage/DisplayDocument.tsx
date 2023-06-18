@@ -1,11 +1,11 @@
 import React from 'react'
 
-const DisplayDocument = ({ closeFile }) => {
+const DisplayDocument = ({ closeFile, fileName }) => {
     return (
         <div className="rounded-xl p-3 bg-white dark:bg-gray-800">
             <div className="p-0 mb-5 w-full sm:mx-2">
                 <div className="flex flex-row">
-                    <h1 className="font-sans font-semibold text-blue-900 dark:text-white">Document name</h1>
+                    <h1 className="font-sans font-semibold text-blue-900 dark:text-white">{fileName}</h1>
                     <svg
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"

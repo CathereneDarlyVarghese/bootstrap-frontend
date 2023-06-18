@@ -364,6 +364,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         {section.section_name}
                       </option>
                     ))}
+                    <option className="text-black bg-white dark:text-white dark:bg-gray-800">
+                      +Add Section
+                    </option>
                   </select>
                 </div>
                 {/* Dropdown for selecting placement */}

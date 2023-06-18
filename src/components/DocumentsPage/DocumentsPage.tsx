@@ -110,7 +110,7 @@ const DocumentsPage = () => {
           </div>
           {/* display file */}
           <div className={`${fileOpen && !addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"}`}>
-            <DisplayDocument closeFile={() => {
+            <DisplayDocument fileName={"Document name"} closeFile={() => {
               setFileOpen(false)
             }} />
           </div>
