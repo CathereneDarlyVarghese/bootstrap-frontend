@@ -38,6 +38,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     AssetPlacement[]
   >([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [addSection, setAddSection] = useState(false);
 
   const statusTypeNames = useStatusTypeNames();
 
@@ -367,7 +368,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       ))}
                     </select>
                     <div className="w-1/2 mx-2">
-                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => e.preventDefault()}>+Add Section</button>
+                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
+                        e.preventDefault()
+                        setAddSection(true)
+                      }
+                      }>+Add Section</button>
                     </div>
                   </div>
 
@@ -401,18 +406,18 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
               {/* Adding Section and Placement */}
-              <div className="flex flex-row md:flex-col items-center my-2 gap-3 md:gap-2">
+              <div className={`flex flex-row md:flex-col items-center my-2 gap-3 md:gap-21 ${addSection ? "" : "hidden"}`}>
                 <div className="flex flex-col w-1/2 md:w-full">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     New Section Name
                   </label>
-                  <input type="text" className="block w-full text-md text-black border border-gray-300 rounded-lg bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                  <input type="text" className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
                 </div>
                 <div className="w-1/2 md:w-full">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     New Placement Name
                   </label>
-                  <input type="text" className="block w-full text-md text-black border border-gray-300 rounded-lg bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                  <input type="text" className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
                 </div>
 
               </div>
