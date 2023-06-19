@@ -19,6 +19,8 @@ import { createFile } from "services/fileServices";
 import { createAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
+import { TfiClose } from "react-icons/tfi";
+
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -354,7 +356,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <div className="flex flex-row items-center">
                     <select
                       required
-                      className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-1/2"
+                      className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       onChange={(e) => handleSectionChange(e.target.value)}
                       value={selectedSection}
                     >
@@ -367,13 +369,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         </option>
                       ))}
                     </select>
-                    <div className="w-1/2 mx-2">
-                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
-                        e.preventDefault()
-                        setAddSection(true)
-                      }
-                      }>+Add Section</button>
-                    </div>
+
                   </div>
 
                 </div>
@@ -404,23 +400,56 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </select>
                 </div>
               </div>
+              <div className="my-2">
+                <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
+                  e.preventDefault();
+                  setAddSection(true);
+                  (window as any).addSectionModal.showModal();
+                }
+                }>+Add Section</button>
+              </div>
 
               {/* Adding Section and Placement */}
-              <div className={`flex flex-row md:flex-col items-center my-2 gap-3 md:gap-21 ${addSection ? "" : "hidden"}`}>
-                <div className="flex flex-col w-1/2 md:w-full">
-                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    New Section Name
-                  </label>
-                  <input type="text" className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
-                </div>
-                <div className="w-1/2 md:w-full">
-                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    New Placement Name
-                  </label>
-                  <input type="text" className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
-                </div>
+              <input type="checkbox" checked={addSection} id="my_modal_6" className="modal-toggle" />
+              <div id="addSectionModal" className="modal">
+                <form method="dialog" className="modal-box">
+                  <div className="flex flex-row">
+                    <h3>Add Section & Placement</h3>
+                    <button className="ml-auto" onClick={() => { setAddSection(false) }}>
+                      <TfiClose
+                        className="font-bold text-black dark:text-white"
+                      />
+                    </button>
+                  </div>
+                  <div>
+                    <div className={`flex flex-col my-2 gap-3`}>
+                      <form className="">
+                        <div className="flex flex-col w-full">
+                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                            New Section Name
+                          </label>
+                          <input type="text" required className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                        </div>
+                        <div className="w-full">
+                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                            New Placement Name
+                          </label>
+                          <input type="text" required className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                        </div>
+                        <div className="w-full mt-4 flex justify-center">
+                          <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto" onClick={(e) => {
+                            e.preventDefault()
+                            setAddSection(false)
+                          }}>Submit</button>
+                        </div>
 
+                      </form>
+                    </div>
+                  </div>
+
+                </form>
               </div>
+
 
               {/* Toggle for status check enabled */}
               <div className="flex items-center my-1">

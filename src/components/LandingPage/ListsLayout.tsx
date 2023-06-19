@@ -217,18 +217,16 @@ const ListsLayout = (props: any) => {
                 {tabs.map((item, index) => (
                   <li>
                     <button
-                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
-                        activeTab === index
-                          ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                          : "text-gray-500 dark:text-gray-400 font-normal"
-                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                      id={`${
-                        index === tabs.length - 1
-                          ? "scrollLast"
-                          : index === 0
+                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index
+                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                        : "text-gray-500 dark:text-gray-400 font-normal"
+                        } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                      id={`${index === tabs.length - 1
+                        ? "scrollLast"
+                        : index === 0
                           ? "scrollFirst"
                           : ""
-                      }`}
+                        }`}
                       onClick={() => {
                         setActiveTab(index);
                       }}
@@ -320,7 +318,11 @@ const ListsLayout = (props: any) => {
             {addAssetOpen ? (
               <AddAssetForm
                 addAssetOpen={addAssetOpen}
-                setAddAssetOpen={setAddAssetOpen}
+                setAddAssetOpen={() => {
+                  setAddAssetOpen(false)
+                  setSelectedAsset(null)
+                }}
+
               />
             ) : (
               <AssetDetails

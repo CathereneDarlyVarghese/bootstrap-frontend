@@ -91,7 +91,7 @@ const AssetDetails: React.FC<
           className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
           id="style-7"
         >
-          <div className="sticky top-0 z-50">
+          <div className="sticky top-0">
             <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
               <div className="flex flex-col">
                 <button
