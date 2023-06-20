@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
+import Pusher from "pusher-js";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
@@ -30,6 +31,7 @@ const ListsLayout = (props: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -106,6 +108,49 @@ const ListsLayout = (props: any) => {
     );
     setFilteredAssets(filtered);
   };
+
+  useEffect(() => {
+    const subscribeToPusherChannel = () => {
+      var pusher = new Pusher("f626cc1d579038ad1013", {
+        cluster: "ap1",
+      });
+
+      const channel = pusher.subscribe("my-channel");
+
+      channel.bind("EVENT_NAME", (data) => {
+        if (notificationEnabled && Notification.permission === "granted") {
+          const notification = new Notification("New Event", {
+            body: data.message,
+            icon: "/path/to/icon.png",
+          });
+          notification.onclick = () => {
+            // Handle the notification click event
+          };
+        }
+        alert(JSON.stringify(data));
+      });
+    };
+
+    const requestNotificationPermission = () => {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted");
+            setNotificationEnabled(true);
+            subscribeToPusherChannel();
+          } else {
+            console.log("Notification permission denied");
+          }
+        });
+      } else {
+        console.log("Notification permission already granted");
+        setNotificationEnabled(true);
+        subscribeToPusherChannel();
+      }
+    };
+
+    requestNotificationPermission();
+  }, []);
 
   useEffect(() => {
     const fetchAssets = async () => {
