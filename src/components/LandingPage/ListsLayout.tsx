@@ -7,7 +7,7 @@ import AssetDetails from "./AssetDetails";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset, IncomingAsset } from "types";
+import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,8 @@ import SearchIcon from "../../icons/circle2017.png";
 //sample image for ui testing
 import testImage from "./testImage.png";
 import { getAllAssets, getAssets } from "services/assetServices";
+import { getAssetSections } from "services/assetSectionServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -37,19 +39,28 @@ const ListsLayout = (props: any) => {
   // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
   const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(-1);
   //sample array for pillblock nav tabs
-  const tabs = [
-    "VIP Lounge",
-    "Bar area",
-    "Kitchen area",
-    "Stag area",
-    "Lounge",
-    "Restroom",
+  const defaultAssetSections = [
+    { section_id: "", section_name: "", location_id: "" },
   ];
+  const [assetSections, setAssetSections] =
+    useState<AssetSection[]>(defaultAssetSections);
+  const [selectedAssetSection, setSelectedAssetSection] =
+    useState<AssetSection>(defaultAssetSections[0]);
   const [scroll, setScroll] = useState(false);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
+
+  const defaultAssetPlacements = [
+    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
+  ];
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
+    defaultAssetPlacements
+  );
+  const [selectedAssetPlacement, setSelectedAssetPlacement] =
+    useState<AssetPlacement>(defaultAssetPlacements[0]);
+  const [selectedAssetPlacementName, setSelectedAssetPlacementName] = useState<string>("");
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -139,6 +150,61 @@ const ListsLayout = (props: any) => {
     fetchAssets();
   }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
 
+  useEffect(() => {
+    const fetchAssetSections = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+
+        const fetchedAssetSections = await getAssetSections(
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setAssetSections(fetchedAssetSections);
+        // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAssetSections();
+  }, []);
+
+  // console.log("Selected Asset Section ==>> ", selectedAssetSectionID);
+
+  useEffect(() => {
+    const fetchAssetPlacements = async () => {
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+
+        const fetchedAssetPlacements = await getAssetPlacements(
+          userData.signInUserSession.accessToken.jwtToken
+        );
+        setAssetPlacements(fetchedAssetPlacements);
+
+        console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
+
+        // Filtering fetched Asset Placements on the basis of selected Asset Section
+        const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
+          (placement: AssetPlacement) =>
+            placement.section_id === selectedAssetSection.section_id
+        );
+
+        setAssetPlacements(filteredFetchedAssetPlacements);
+
+        console.log(
+          "Filtered Fetched Asset Placement ==>> ",
+          filteredFetchedAssetPlacements
+        );
+
+        if(selectedAssetPlacementName === "") {
+          setSelectedAssetPlacementName(filteredFetchedAssetPlacements[0].placement_name);
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAssetPlacements();
+  }, [selectedAssetSection.section_id, selectedAssetPlacementName]);
+
   const detailsTabIndexRefresh = (tabIndex) => {
     setDetailsTab(0);
   };
@@ -214,7 +280,7 @@ const ListsLayout = (props: any) => {
               style={{ width: "75%" }}
             >
               <ul className="flex flex-row">
-                {tabs.map((item, index) => (
+                {assetSections.map((item, index) => (
                   <li>
                     <button
                       className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
@@ -223,7 +289,7 @@ const ListsLayout = (props: any) => {
                           : "text-gray-500 dark:text-gray-400 font-normal"
                       } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
                       id={`${
-                        index === tabs.length - 1
+                        index === assetSections.length - 1
                           ? "scrollLast"
                           : index === 0
                           ? "scrollFirst"
@@ -231,9 +297,11 @@ const ListsLayout = (props: any) => {
                       }`}
                       onClick={() => {
                         setActiveTab(index);
+                        setSelectedAssetSection(item);
+                        setSelectedAssetPlacementName("");
                       }}
                     >
-                      {item}
+                      {item.section_name}
                     </button>
                   </li>
                 ))}
@@ -248,11 +316,18 @@ const ListsLayout = (props: any) => {
             </button>
           </div>
           <div className="px-2">
-            <select className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
-              <option>Front Bar</option>
-              <option>Left Corner</option>
-              <option>Right Corner</option>
-              <option>Ceiling</option>
+            <select
+            onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
+            className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
+              {/* <option value="" hidden disabled selected>Select a Placement</option> */}
+              {assetPlacements.map((placement) => (
+                <option
+                  key={placement.placement_name}
+                  value={placement.placement_name}
+                >
+                  {placement.placement_name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -260,54 +335,74 @@ const ListsLayout = (props: any) => {
         {/* {filteredAssets
           .filter(
             (a) =>
-              a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              a.type.toLowerCase().includes(searchTerm.toLowerCase())
+              a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              a.asset_type.toLowerCase().includes(searchTerm.toLowerCase())
           )
           .map((a) => (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                setAssetId(a.id);
+                setAssetId(a.asset_id);
                 removeClass("#parent-element .asset-details-card", "lg:hidden");
                 addClass("#parent-element .asset-details-card", "lg:w-full");
                 addClass("#parent-element .asset-card", "lg:hidden");
               }}
             >
               <AssetCard
-                assetName={a.name}
-                assetType={a.type}
-                assetAddress={a.location}
-                imageLocation={a.imageS3}
+                assetName={a.asset_name}
+                assetType={a.asset_type}
+                assetAddress={a.location_name}
+                imageLocation={a.images_array}
                 imagePlaceholder="img"
-                status={a.type}
+                status={a.asset_status}
+                updatedDetailsTabIndex={0}
               />
             </div>
           ))} */}
-
         <div>
           {/* Render asset cards */}
-          {incomingAssets.map((asset) => (
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setSelectedAsset(asset);
-                setAssetId(asset.asset_id);
-                removeClass("#parent-element .asset-details-card", "lg:hidden");
-                addClass("#parent-element .asset-details-card", "lg:w-full");
-                addClass("#parent-element .asset-card", "lg:hidden");
-              }}
-            >
-              <AssetCard
-                assetName={asset.asset_name}
-                assetType={asset.asset_type}
-                assetAddress={asset.location_name}
-                imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
-                status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
-                imagePlaceholder="img" // Add the appropriate image placeholder value
-                updatedDetailsTabIndex={detailsTabIndexRefresh}
-              />
-            </div>
-          ))}
+          {incomingAssets
+            .filter((a) => {
+              const sectionMatch =
+                !selectedAssetSection ||
+                selectedAssetSection.section_name === "" ||
+                selectedAssetSection.section_name === a.section_name;
+              const placementMatch =
+                !selectedAssetPlacementName ||
+                selectedAssetPlacementName === "" ||
+                selectedAssetPlacementName === a.placement_name;
+              const searchTermMatch =
+                searchTerm === "" ||
+                a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                a.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
+
+              return sectionMatch && placementMatch && searchTermMatch;
+            })
+            .map((asset) => (
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setSelectedAsset(asset);
+                  setAssetId(asset.asset_id);
+                  removeClass(
+                    "#parent-element .asset-details-card",
+                    "lg:hidden"
+                  );
+                  addClass("#parent-element .asset-details-card", "lg:w-full");
+                  addClass("#parent-element .asset-card", "lg:hidden");
+                }}
+              >
+                <AssetCard
+                  assetName={asset.asset_name}
+                  assetType={asset.asset_type}
+                  assetAddress={asset.location_name}
+                  imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
+                  status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
+                  imagePlaceholder="img" // Add the appropriate image placeholder value
+                  updatedDetailsTabIndex={detailsTabIndexRefresh}
+                />
+              </div>
+            ))}
         </div>
       </div>
       <div
@@ -384,12 +479,14 @@ const ListsLayout = (props: any) => {
   );
 };
 
-ListsLayout.propTypes = {
+{
+  /* ListsLayout.propTypes = {
   searchType: PropTypes.string,
 };
 
 ListsLayout.defaultProps = {
   searchType: "Item",
-};
+}; */
+}
 
 export default ListsLayout;
