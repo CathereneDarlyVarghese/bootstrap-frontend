@@ -412,9 +412,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               {/* Adding Section and Placement */}
               <input type="checkbox" checked={addSection} id="my_modal_6" className="modal-toggle" />
               <div id="addSectionModal" className="modal">
-                <form method="dialog" className="modal-box">
-                  <div className="flex flex-row">
-                    <h3>Add Section & Placement</h3>
+                <form method="dialog" className="modal-box bg-white dark:bg-gray-800">
+                  <div className="flex flex-row mb-5">
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">Add Section & Placement</h3>
                     <button className="ml-auto" onClick={() => { setAddSection(false) }}>
                       <TfiClose
                         className="font-bold text-black dark:text-white"

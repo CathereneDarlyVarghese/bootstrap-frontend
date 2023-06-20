@@ -16,6 +16,7 @@ import documentIcon from "../../icons/documentIcon.svg";
 import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
+import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage"
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -292,7 +293,7 @@ const AssetDetails: React.FC<
               </div>
             ) : tabIndex === 2 ? (
               <div className="">
-                <StatusChecksPage />
+                <AssetStatusChecksPage />
               </div>
             ) : (
               <p className="text-black dark:text-white">

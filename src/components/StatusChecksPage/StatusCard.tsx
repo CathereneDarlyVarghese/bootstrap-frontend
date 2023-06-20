@@ -19,13 +19,13 @@ const StatusCard: React.FC<StatusCardProps> = ({
   const formattedDate = date.toLocaleDateString();
   return (
     <div
-      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 hover:border hover:border-blue-900 hide-scrollbar overflow-y-hidden overflow-hidden"
+      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 border hover:border hover:border-blue-900 dark:border-gray-600 hover:dark:border-gray-400 dark:bg-gray-800 hide-scrollbar overflow-y-hidden overflow-hidden"
       onClick={onClick}
     >
       <div className="card-body overflow-auto px-0 py-0 w-11/12 overflow-hidden">
         <div className="flex flex-row justify-between">
           <h1
-            className="flex text-gray-800 text-lg font-semibold font-sans tracking-wide xl:text-sm"
+            className="flex text-gray-800 dark:text-white text-lg font-semibold font-sans tracking-wide xl:text-sm"
             style={{ wordSpacing: 3 }}
           >
             {formattedDate}
@@ -43,7 +43,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
           </div>
         </div>
         <div className="flex flex-row items-center">
-          <p className="text-gray-500">{uptime_notes}</p>
+          <p className="text-gray-500 dark:text-gray-400">{uptime_notes}</p>
         </div>
       </div>
     </div>
