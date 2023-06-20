@@ -159,7 +159,7 @@ const AssetDetails: React.FC<
                   <img
                     src={cardImage}
                     alt="an image"
-                    className="rounded-xl h-48 w-fit object-cover mx-auto"
+                    className="rounded-xl h-48 object-cover mx-auto"
                   />
                 </figure>
                 <div className="px-0 overflow-auto flex flex-col h-fit mt-4">

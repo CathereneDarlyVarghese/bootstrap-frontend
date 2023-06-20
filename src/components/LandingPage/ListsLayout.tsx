@@ -60,6 +60,7 @@ const ListsLayout = (props: any) => {
   );
   const [selectedAssetPlacement, setSelectedAssetPlacement] =
     useState<AssetPlacement>(defaultAssetPlacements[0]);
+  const [selectedAssetPlacementName, setSelectedAssetPlacementName] = useState<string>("");
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -180,6 +181,7 @@ const ListsLayout = (props: any) => {
 
         console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
 
+        // Filtering fetched Asset Placements on the basis of selected Asset Section
         const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
           (placement: AssetPlacement) =>
             placement.section_id === selectedAssetSection.section_id
@@ -192,15 +194,16 @@ const ListsLayout = (props: any) => {
           filteredFetchedAssetPlacements
         );
 
-        if (selectedAssetPlacement.placement_id === "") {
-          setSelectedAssetPlacement(filteredFetchedAssetPlacements[0]);
+        if(selectedAssetPlacementName === "") {
+          setSelectedAssetPlacementName(filteredFetchedAssetPlacements[0].placement_name);
         }
+
       } catch (error) {
         console.log(error);
       }
     };
     fetchAssetPlacements();
-  }, [selectedAssetSection.section_id]);
+  }, [selectedAssetSection.section_id, selectedAssetPlacementName]);
 
   const detailsTabIndexRefresh = (tabIndex) => {
     setDetailsTab(0);
@@ -295,6 +298,7 @@ const ListsLayout = (props: any) => {
                       onClick={() => {
                         setActiveTab(index);
                         setSelectedAssetSection(item);
+                        setSelectedAssetPlacementName("");
                       }}
                     >
                       {item.section_name}
@@ -312,7 +316,8 @@ const ListsLayout = (props: any) => {
             </button>
           </div>
           <div className="px-2">
-            <select 
+            <select
+            onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
             className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
               {/* <option value="" hidden disabled selected>Select a Placement</option> */}
               {assetPlacements.map((placement) => (
@@ -363,9 +368,9 @@ const ListsLayout = (props: any) => {
                 selectedAssetSection.section_name === "" ||
                 selectedAssetSection.section_name === a.section_name;
               const placementMatch =
-                !selectedAssetPlacement ||
-                selectedAssetPlacement.placement_name === "" ||
-                selectedAssetPlacement.placement_name === a.placement_name;
+                !selectedAssetPlacementName ||
+                selectedAssetPlacementName === "" ||
+                selectedAssetPlacementName === a.placement_name;
               const searchTermMatch =
                 searchTerm === "" ||
                 a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
