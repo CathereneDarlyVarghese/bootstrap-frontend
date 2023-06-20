@@ -14,7 +14,7 @@ import { Amplify, Auth, Hub } from "aws-amplify";
 import awsConfig from "aws-exports";
 import NavBar from "components/NavBar";
 import { ToastContainer } from "react-toastify";
-
+import Pusher from "pusher-js";
 import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
 import { RedirectFunction } from "react-router-dom";
