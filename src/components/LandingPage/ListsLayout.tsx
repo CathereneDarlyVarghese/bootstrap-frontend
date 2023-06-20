@@ -39,7 +39,7 @@ const ListsLayout = (props: any) => {
   // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
   const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(-1);
   //sample array for pillblock nav tabs
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
@@ -160,15 +160,14 @@ const ListsLayout = (props: any) => {
         setAssetSections(fetchedAssetSections);
         // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
 
-        if (selectedAssetSectionID === "") {
-          setSelectedAssetSectionID(fetchedAssetSections[0].section_id);
-        }
       } catch (error) {
         console.log(error);
       }
     };
     fetchAssetSections();
   }, []);
+
+  // console.log("Selected Asset Section ==>> ", selectedAssetSectionID);
 
   useEffect(() => {
     const fetchAssetPlacements = async () => {
@@ -333,33 +332,38 @@ const ListsLayout = (props: any) => {
         {/* {filteredAssets
           .filter(
             (a) =>
-              a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              a.type.toLowerCase().includes(searchTerm.toLowerCase())
+              a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              a.asset_type.toLowerCase().includes(searchTerm.toLowerCase())
           )
           .map((a) => (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
-                setAssetId(a.id);
+                setAssetId(a.asset_id);
                 removeClass("#parent-element .asset-details-card", "lg:hidden");
                 addClass("#parent-element .asset-details-card", "lg:w-full");
                 addClass("#parent-element .asset-card", "lg:hidden");
               }}
             >
               <AssetCard
-                assetName={a.name}
-                assetType={a.type}
-                assetAddress={a.location}
-                imageLocation={a.imageS3}
+                assetName={a.asset_name}
+                assetType={a.asset_type}
+                assetAddress={a.location_name}
+                imageLocation={a.images_array}
                 imagePlaceholder="img"
-                status={a.type}
+                status={a.asset_status}
+                updatedDetailsTabIndex={0}
               />
             </div>
           ))} */}
-
         <div>
           {/* Render asset cards */}
-          {incomingAssets.map((asset) => (
+          {incomingAssets
+          .filter(
+            (a) =>
+              a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              a.asset_type.toLowerCase().includes(searchTerm.toLowerCase())
+          ).map((asset) => (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
@@ -457,12 +461,14 @@ const ListsLayout = (props: any) => {
   );
 };
 
-ListsLayout.propTypes = {
+{
+  /* ListsLayout.propTypes = {
   searchType: PropTypes.string,
 };
 
 ListsLayout.defaultProps = {
   searchType: "Item",
-};
+}; */
+}
 
 export default ListsLayout;
