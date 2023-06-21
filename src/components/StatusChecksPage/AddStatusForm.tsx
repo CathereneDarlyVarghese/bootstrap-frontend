@@ -9,6 +9,10 @@ import { toast } from "react-toastify";
 import { createAssetCheck } from "services/assetCheckServices";
 import { createFile } from "services/fileServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
+import { AiOutlinePaperClip } from "react-icons/ai";
+import { TfiClose } from "react-icons/tfi";
+
+
 
 const AddStatusForm = ({
   addFormOpen,
@@ -136,36 +140,28 @@ const AddStatusForm = ({
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box p-0 w-full sm:mx-2">
+        <div className="modal-box p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
           <form method="post" onSubmit={handleSubmit} ref={formRef}>
             {/* Modal header */}
-            <div className="p-5 bg-white flex flex-row">
-              <h3 className="font-sans font-bold text-lg text-blue-800">
+            <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
+              <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
                 Status Check {now.toLocaleDateString()}
               </h3>
-              <svg
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                strokeWidth="1.5"
-                className="w-6 h-6 text-blue-800 ml-auto cursor-pointer"
-                onClick={() => {
-                  setAddFormOpen(false);
-                  setReportIssue(false);
-                }}
-              >
-                <path
-                  d="M18 6L6 18M6 6l12 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
+              <button className="ml-auto" onClick={(e) => {
+                e.preventDefault()
+                setAddFormOpen(false)
+              }}>
+                <TfiClose
+                  className="font-bold text-blue-800 dark:text-blue-500"
                 />
-              </svg>
+              </button>
+
             </div>
 
             <div className="flex flex-col p-5">
               {/* Input field for asset name */}
               <div>
-                <label className="font-sans font-semibold text-black text-sm">
+                <label className="font-sans font-semibold text-black dark:text-white text-sm">
                   Who is This?
                 </label>
                 <input
@@ -173,31 +169,31 @@ const AddStatusForm = ({
                   name="name"
                   placeholder="Enter Name"
                   required
-                  className="input input-bordered input-sm text-sm w-full my-3 font-sans"
+                  className="input input-bordered input-sm bg-transparent text-black dark:text-white dark:border-gray-600 text-sm w-full my-3 font-sans"
                 />
               </div>
               {reportIssue && (
                 <div>
                   <div>
-                    <label className="font-sans font-semibold text-sm text-black ">
+                    <label className="font-sans font-semibold text-sm text-black dark:text-white ">
                       Notes
                     </label>
                     <input
                       type="text"
                       name="uptime_notes"
                       placeholder="Enter Notes"
-                      className="input input-bordered input-sm text-sm w-full my-3 font-sans "
+                      className="input input-bordered input-sm bg-transparent text-black dark:text-white dark:border-gray-600 text-sm w-full my-3 font-sans "
                     />
                   </div>
 
                   <div>
-                    <label className="font-sans font-semibold text-sm text-black">
+                    <label className="font-sans font-semibold text-sm text-black dark:text-white">
                       Asset Status
                     </label>
                     <select
                       required
                       name="status"
-                      className="select select-sm my-3 border border-slate-300 2xl:w-full md:w-fit"
+                      className="select select-sm my-3 bg-transparent text-black dark:text-white border border-slate-300 dark:border-gray-500 2xl:w-full md:w-fit"
                       value={selectedStatus}
                       onChange={handleStatusChange}
                     >
@@ -206,7 +202,7 @@ const AddStatusForm = ({
                       </option>
                       {Object.entries(statusTypeNames).map(
                         ([statusId, statusName]) => (
-                          <option key={statusId} value={statusId}>
+                          <option key={statusId} value={statusId} className="text-black dark:text-white bg-gray-800">
                             {statusName}
                           </option>
                         )
@@ -217,15 +213,29 @@ const AddStatusForm = ({
                   <div>
                     <label
                       htmlFor="file_input"
-                      className="font-sans font-semibold text-sm text-black "
+                      className="font-sans font-semibold text-sm text-black dark:text-white"
                     >
                       Add Image
                     </label>
-                    <input
-                      type="file"
-                      onChange={(e) => setFile(e.target.files[0])}
-                      className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 "
-                    />
+                    <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3">
+                      <input
+                        type="file"
+                        onChange={(e) => setFile(e.target.files[0])}
+                        className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
+                        id="upload"
+                      />
+                      <input type="text" className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
+                      <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
+                        e.preventDefault()
+                        const uploadButton = document.querySelector("#upload") as HTMLElement
+                        uploadButton.click()
+                      }}>
+                        <div className="flex flex-row items-center gap-0.5 dark:text-white mx-1">
+                          <AiOutlinePaperClip className="text-lg" />
+                          Choose File
+                        </div>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -252,7 +262,8 @@ const AddStatusForm = ({
                   type="submit"
                   onClick={handleSubmit}
                 >
-                  Fine
+                  {reportIssue ? "Submit" : "Fine"}
+
                 </button>
               </div>
             </div>
