@@ -239,7 +239,7 @@ const ListsLayout = (props: any) => {
           filteredFetchedAssetPlacements
         );
 
-        if(selectedAssetPlacementName === "") {
+        if (selectedAssetPlacementName === "") {
           setSelectedAssetPlacementName(filteredFetchedAssetPlacements[0].placement_name);
         }
 
@@ -328,18 +328,16 @@ const ListsLayout = (props: any) => {
                 {assetSections.map((item, index) => (
                   <li>
                     <button
-                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
-                        activeTab === index
+                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index
                           ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
                           : "text-gray-500 dark:text-gray-400 font-normal"
-                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                      id={`${
-                        index === assetSections.length - 1
+                        } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                      id={`${index === assetSections.length - 1
                           ? "scrollLast"
                           : index === 0
-                          ? "scrollFirst"
-                          : ""
-                      }`}
+                            ? "scrollFirst"
+                            : ""
+                        }`}
                       onClick={() => {
                         setActiveTab(index);
                         setSelectedAssetSection(item);
@@ -362,8 +360,8 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="px-2">
             <select
-            onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
-            className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
+              onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
+              className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
               {/* <option value="" hidden disabled selected>Select a Placement</option> */}
               {assetPlacements.map((placement) => (
                 <option

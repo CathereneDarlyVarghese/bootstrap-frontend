@@ -22,6 +22,7 @@ import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
 import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import DocumentsPage from "components/DocumentsPage/DocumentsPage";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
+import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 
 Amplify.configure(awsConfig);
 
@@ -41,6 +42,8 @@ function AppContent() {
           <Route path="/status-checks" element={<StatusChecksPage />} />
 
           {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
+          <Route path="/asset-status-checks" element={<AssetStatusChecksPage />} />
+
         </Routes>
       </div>
     </div>
