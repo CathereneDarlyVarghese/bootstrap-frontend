@@ -111,7 +111,7 @@ const DocumentsCard = ({
         }}>
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-            {fileName || ""}
+            {String(fileName).substring(51) || ""}
           </h1>
         </div>
         <div className="flex flex-row gap-2 items-center sm:ml-auto">
