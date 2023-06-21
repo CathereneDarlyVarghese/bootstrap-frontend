@@ -404,7 +404,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
                   e.preventDefault();
                   setAddSection(true);
-                  (window as any).addSectionModal.showModal();
+                  // (window as any).addSectionModal.showModal();
                 }
                 }>+Add Section</button>
               </div>
