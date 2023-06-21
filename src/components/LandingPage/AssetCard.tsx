@@ -102,7 +102,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
 
-          <DisplayQR assetName={"Asset name"} showQr={showQr} closeQr={() => setShowQr(false)} />
+          <DisplayQR assetName={"Asset name"} closeQr={() => setShowQr(false)} showQr={showQr} />
 
         </div>
 
