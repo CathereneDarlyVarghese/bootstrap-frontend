@@ -36,6 +36,9 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
     }
   };
 
+  const redirectURL = process.env.REACT_APP_REDIRECT_URL;
+  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(props.assetName)}`;
+
   const handleClick = () => {
     props.updatedDetailsTabIndex(0);
   };
@@ -108,7 +111,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
 
-          <DisplayQR assetName={"Asset name"} closeQr={() => setShowQr(false)} showQr={showQr} />
+          <DisplayQR assetName={props.assetName} link={QRLink} closeQr={() => setShowQr(false)} showQr={showQr} />
 
         </div>
       </div>
