@@ -147,9 +147,15 @@ const AddStatusForm = ({
               <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
                 Status Check {now.toLocaleDateString()}
               </h3>
-              <TfiClose
-                className="font-bold text-blue-800 dark:text-blue-500 ml-auto"
-              />
+              <button className="ml-auto" onClick={(e) => {
+                e.preventDefault()
+                setAddFormOpen(false)
+              }}>
+                <TfiClose
+                  className="font-bold text-blue-800 dark:text-blue-500"
+                />
+              </button>
+
             </div>
 
             <div className="flex flex-col p-5">
