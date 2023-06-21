@@ -62,7 +62,8 @@ const ListsLayout = (props: any) => {
   );
   const [selectedAssetPlacement, setSelectedAssetPlacement] =
     useState<AssetPlacement>(defaultAssetPlacements[0]);
-  const [selectedAssetPlacementName, setSelectedAssetPlacementName] = useState<string>("");
+  const [selectedAssetPlacementName, setSelectedAssetPlacementName] =
+    useState<string>("");
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -109,6 +110,25 @@ const ListsLayout = (props: any) => {
       });
     }
   };
+
+  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("search", encodeURIComponent(newSearchTerm));
+
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const scannedSearchTerm = urlParams.get('search');
+    if (scannedSearchTerm) {
+      setSearchTerm(decodeURIComponent(scannedSearchTerm));
+    }
+  }, []);
 
   const filterAssets = (searchTerm: string) => {
     const filtered = incomingAssets.filter(
@@ -240,9 +260,10 @@ const ListsLayout = (props: any) => {
         );
 
         if (selectedAssetPlacementName === "") {
-          setSelectedAssetPlacementName(filteredFetchedAssetPlacements[0].placement_name);
+          setSelectedAssetPlacementName(
+            filteredFetchedAssetPlacements[0].placement_name
+          );
         }
-
       } catch (error) {
         console.log(error);
       }
@@ -288,8 +309,9 @@ const ListsLayout = (props: any) => {
             <input
               type="text"
               placeholder="Search Appliance"
+              value={searchTerm}
               className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchInputChange(e)}
             />
           </div>
 
@@ -328,16 +350,18 @@ const ListsLayout = (props: any) => {
                 {assetSections.map((item, index) => (
                   <li>
                     <button
-                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index
-                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                        : "text-gray-500 dark:text-gray-400 font-normal"
-                        } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                      id={`${index === assetSections.length - 1
-                        ? "scrollLast"
-                        : index === 0
+                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
+                        activeTab === index
+                          ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                          : "text-gray-500 dark:text-gray-400 font-normal"
+                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                      id={`${
+                        index === assetSections.length - 1
+                          ? "scrollLast"
+                          : index === 0
                           ? "scrollFirst"
                           : ""
-                        }`}
+                      }`}
                       onClick={() => {
                         setActiveTab(index);
                         setSelectedAssetSection(item);
@@ -361,7 +385,8 @@ const ListsLayout = (props: any) => {
           <div className="px-2">
             <select
               onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
-              className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full">
+              className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full"
+            >
               {/* <option value="" hidden disabled selected>Select a Placement</option> */}
               {assetPlacements.map((placement) => (
                 <option
@@ -427,7 +452,7 @@ const ListsLayout = (props: any) => {
                 onClick={() => {
                   setSelectedAsset(asset);
                   setAssetId(asset.asset_id);
-                  setAddAssetOpen(false)
+                  setAddAssetOpen(false);
                   removeClass(
                     "#parent-element .asset-details-card",
                     "lg:hidden"
@@ -460,8 +485,8 @@ const ListsLayout = (props: any) => {
               <AddAssetForm
                 addAssetOpen={addAssetOpen}
                 setAddAssetOpen={() => {
-                  setAddAssetOpen(false)
-                  setSelectedAsset(null)
+                  setAddAssetOpen(false);
+                  setSelectedAsset(null);
                 }}
               />
             ) : (
