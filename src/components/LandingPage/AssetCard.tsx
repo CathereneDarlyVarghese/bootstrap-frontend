@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import MapIcon from "../../icons/mapIcon.svg";
@@ -7,6 +7,7 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { StatusTypes } from "enums";
+import DisplayQR from "./DisplayQR";
 
 let status = "expire_soon";
 
@@ -21,6 +22,7 @@ type AssetCardProps = {
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
+  const [showQr, setShowQr] = useState(false)
   const getStatusText = (status: string | null) => {
     switch (status) {
       case StatusTypes.ACTIVE:
@@ -94,10 +96,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
                 : props.assetAddress}
           </p>
           <button onClick={(e) => {
+            setShowQr(true)
             e.stopPropagation();
           }}>
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
+
+          <DisplayQR assetName={"Asset name"} showQr={showQr} closeQr={() => setShowQr(false)} />
 
         </div>
 
