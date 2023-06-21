@@ -42,8 +42,7 @@ function AppContent() {
           <Route path="/status-checks" element={<StatusChecksPage />} />
 
           {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
-          <Route path="/asset-status-checks" element={<AssetStatusChecksPage />} />
-
+          {/* <Route path="/asset-status-checks" element={<AssetStatusChecksPage />} /> */}
         </Routes>
       </div>
     </div>
