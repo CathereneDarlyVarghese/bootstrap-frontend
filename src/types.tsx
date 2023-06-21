@@ -99,7 +99,7 @@ export interface IncomingDocument {
   document_type_id: string;
   start_date: string;
   end_date: string;
-  file_id: string[];
+  file_id: string;
   document_notes: string;
   modified_by: string;
   modified_date: string;

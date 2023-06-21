@@ -1,32 +1,45 @@
-import React from 'react'
+import PropTypes from "prop-types"
 
-const DisplayDocument = ({ closeFile, fileName }) => {
-    return (
-        <div className="rounded-xl p-3 bg-white dark:bg-gray-800">
-            <div className="p-0 mb-5 w-full sm:mx-2">
-                <div className="flex flex-row">
-                    <h1 className="font-sans font-semibold text-blue-900 dark:text-white">{fileName}</h1>
-                    <svg
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        strokeWidth="1.5"
-                        className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
-                        onClick={closeFile}
-                    >
-                        <path
-                            d="M18 6L6 18M6 6l12 12"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                        />
-                    </svg>
-                </div>
-                <div>
-                    <p className="text-black dark:text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula arcu eu ligula volutpat bibendum. Fusce venenatis eu urna vel tincidunt. Curabitur sagittis laoreet purus in maximus. Praesent eu nulla id justo auctor sagittis ut ut nulla. Praesent tempor tellus ut nulla interdum varius. Proin tristique hendrerit dui sed efficitur. Morbi convallis consequat pretium. Proin tortor nisi, placerat vitae turpis eget, vestibulum iaculis dolor. Aliquam venenatis feugiat lorem vitae lacinia. Mauris congue massa et magna auctor, a imperdiet ipsum commodo. In hac habitasse platea dictumst. Suspendisse nec odio volutpat, pretium leo id, porta mi. Sed suscipit magna semper iaculis imperdiet. Morbi non nibh scelerisque, viverra diam id, dapibus diam.</p>
-                </div>
-            </div>
+const DisplayDocument = (props) => {
+  return (  
+    <div className="rounded-xl p-3 bg-white dark:bg-gray-800">
+      <div className="p-0 mb-5 w-full sm:mx-2">
+        <div className="flex flex-row">
+          <h1 className="font-sans font-semibold text-blue-900 dark:text-white">
+            {String(props.fileName).substring(51)}
+          </h1>
+          <svg
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            strokeWidth="1.5"
+            className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
+            onClick={props.closeFile}
+          >
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+          </svg>
         </div>
-    )
+        <div>
+          <iframe src={props.fileName} width="100%">
+            {String(props.fileName).substring(51)}
+          </iframe>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+DisplayDocument.propTypes = {
+  fileName: PropTypes.string,
+  closeFile: PropTypes.any
 }
 
-export default DisplayDocument
+DisplayDocument.defaultProps = {
+  fileName: "https://dube-filestorage.s3.amazonaws.com/document/"
+}
+
+export default DisplayDocument;
