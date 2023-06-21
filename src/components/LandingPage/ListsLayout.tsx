@@ -92,7 +92,7 @@ const ListsLayout = (props: any) => {
   const scrollLeft = () => {
     setScroll(true);
     if (scroll) {
-      document.getElementById("scrollFirst").scrollIntoView({
+      document.getElementById("scrollAll").scrollIntoView({
         inline: "start",
         behavior: "smooth",
         block: "nearest",
@@ -347,6 +347,23 @@ const ListsLayout = (props: any) => {
               style={{ width: "75%" }}
             >
               <ul className="flex flex-row">
+                <li>
+                  <button
+                    className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
+                      activeTab === -1
+                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                        : "text-gray-500 dark:text-gray-400 font-normal"
+                    } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                    id="scrollAll"
+                    onClick={() => {
+                      setActiveTab(-1);
+                      setSelectedAssetSection(defaultAssetSections[0]);
+                      setSelectedAssetPlacementName("");
+                    }}
+                  >
+                    All Assets
+                  </button>
+                </li>
                 {assetSections.map((item, index) => (
                   <li>
                     <button
