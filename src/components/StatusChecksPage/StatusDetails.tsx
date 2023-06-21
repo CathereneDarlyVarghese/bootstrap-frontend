@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 
-
 interface StatusDetailsProps {
   sessionToken: string | null;
   uptimeCheckId: string;

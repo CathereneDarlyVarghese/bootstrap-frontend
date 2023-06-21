@@ -31,10 +31,10 @@ const StatusCard: React.FC<StatusCardProps> = ({
             {formattedDate}
           </h1>
           <div className="flex items-center">
-            {status === "INACTIVE" && (
+            {status === "DOWN" && (
               <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
             )}
-            {status === "ACTIVE" && (
+            {status === "WORKING" && (
               <BsFillCheckCircleFill className="text-green-500 text-xl mr-2" />
             )}
             {status === "UNDER MAINTENANCE" && (
