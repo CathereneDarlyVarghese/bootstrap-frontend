@@ -65,10 +65,10 @@ const AssetDetails: React.FC<
 
   const getStatusText = (status: string | null) => {
     switch (status) {
-      case StatusTypes.ACTIVE:
-        return "Active";
-      case StatusTypes.INACTIVE:
-        return "Inactive";
+      case StatusTypes.WORKING:
+        return "WORKING";
+      case StatusTypes.DOWN:
+        return "DOWN";
       case StatusTypes.MAINTENANCE:
         return "Maintenance";
       default:
@@ -77,9 +77,9 @@ const AssetDetails: React.FC<
   };
 
   const getStatusColor = (status: string | undefined): string => {
-    if (status === StatusTypes.ACTIVE) {
+    if (status === StatusTypes.WORKING) {
       return "bg-green-400";
-    } else if (status === StatusTypes.INACTIVE) {
+    } else if (status === StatusTypes.DOWN) {
       return "bg-red-400";
     } else if (status === StatusTypes.MAINTENANCE) {
       return "bg-yellow-400";

@@ -20,8 +20,8 @@ export enum DocumentationTypes {
 }
 
 export enum StatusTypes {
-  ACTIVE = "ca879fb3-2f94-41b0-afb2-dea1448aaed3",
-  INACTIVE = "1b3fff6a-aeda-4115-b3c1-b9a5654a629e",
+  WORKING = "ca879fb3-2f94-41b0-afb2-dea1448aaed3",
+  DOWN = "1b3fff6a-aeda-4115-b3c1-b9a5654a629e",
   MAINTENANCE = "24bbffe7-4d1d-4b9c-b959-4957033e29b6",
 }
 

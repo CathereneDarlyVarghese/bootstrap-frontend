@@ -23,10 +23,10 @@ type AssetCardProps = {
 const AssetCard: React.FC<AssetCardProps> = (props) => {
   const getStatusText = (status: string | null) => {
     switch (status) {
-      case StatusTypes.ACTIVE:
-        return "Active";
-      case StatusTypes.INACTIVE:
-        return "Inactive";
+      case StatusTypes.WORKING:
+        return "WORKING";
+      case StatusTypes.DOWN:
+        return "DOWN";
       case StatusTypes.MAINTENANCE:
         return "Maintenance";
       default:
@@ -35,18 +35,20 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   };
 
   const handleClick = () => {
-    props.updatedDetailsTabIndex(0)
-  }
+    props.updatedDetailsTabIndex(0);
+  };
 
   //dark mode colors
-  const assetCarBgColor = "bg-gray-700"
-  const badgeBgColor = "bg-gray-800"
-  const textColor = "text-white"
-  const locationColor = "bg-gray-100"
-
+  const assetCarBgColor = "bg-gray-700";
+  const badgeBgColor = "bg-gray-800";
+  const textColor = "text-white";
+  const locationColor = "bg-gray-100";
 
   return (
-    <div className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:${assetCarBgColor} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`} onClick={handleClick}>
+    <div
+      className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:${assetCarBgColor} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
+      onClick={handleClick}
+    >
       <figure className="rounded-xl">
         <img
           src={props.imageLocation}
@@ -59,10 +61,12 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         id="style-7"
       >
         <div className="flex flex-row">
-          <button className={`badge w-fit bg-gray-200 dark:${badgeBgColor} text-blue-700 dark:text-blue-500 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4 text-md xl:text-xs`}>
+          <button
+            className={`badge w-fit bg-gray-200 dark:${badgeBgColor} text-blue-700 dark:text-blue-500 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4 text-md xl:text-xs`}
+          >
             {props.assetType}
           </button>
-          {props.status === StatusTypes.ACTIVE ? (
+          {props.status === StatusTypes.WORKING ? (
             <>
               <BsFillCheckCircleFill className="text-2xl text-green-600" />
             </>
@@ -86,23 +90,24 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         <div className="flex flex-row items-center">
           <img src={MapIcon} className="h-6 mr-3 ml-2" />
           {/* <PinIcon /> */}
-          <p className={`text-sm text-start text-gray-500 dark:text-gray-300 font-sans font-light tracking-wider xl:text-xs /*truncate*/`}>
+          <p
+            className={`text-sm text-start text-gray-500 dark:text-gray-300 font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
+          >
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
-                ? "MadDog Bistro & Bar"
-                : props.assetAddress}
+              ? "MadDog Bistro & Bar"
+              : props.assetAddress}
           </p>
-          <button onClick={(e) => {
-            e.stopPropagation();
-          }}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 };

@@ -2,8 +2,8 @@ import { StatusTypes } from "enums";
 
 const useStatusTypeNames = () => {
   return {
-    [StatusTypes.ACTIVE]: "Active",
-    [StatusTypes.INACTIVE]: "Inactive",
+    [StatusTypes.WORKING]: "WORKING",
+    [StatusTypes.DOWN]: "DOWN",
     [StatusTypes.MAINTENANCE]: "Maintenance",
   };
 };
