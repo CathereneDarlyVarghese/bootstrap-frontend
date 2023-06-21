@@ -10,6 +10,8 @@ import { createAssetCheck } from "services/assetCheckServices";
 import { createFile } from "services/fileServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
+import { TfiClose } from "react-icons/tfi";
+
 
 
 const AddStatusForm = ({
@@ -142,26 +144,12 @@ const AddStatusForm = ({
           <form method="post" onSubmit={handleSubmit} ref={formRef}>
             {/* Modal header */}
             <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
-              <h3 className="font-sans font-bold text-lg text-blue-800">
+              <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
                 Status Check {now.toLocaleDateString()}
               </h3>
-              <svg
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                strokeWidth="1.5"
-                className="w-6 h-6 text-blue-800 ml-auto cursor-pointer"
-                onClick={() => {
-                  setAddFormOpen(false);
-                  setReportIssue(false);
-                }}
-              >
-                <path
-                  d="M18 6L6 18M6 6l12 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
+              <TfiClose
+                className="font-bold text-blue-800 dark:text-blue-500 ml-auto"
+              />
             </div>
 
             <div className="flex flex-col p-5">
