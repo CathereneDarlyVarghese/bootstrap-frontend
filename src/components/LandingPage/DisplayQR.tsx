@@ -25,27 +25,30 @@ const DisplayQR = ({ showQr, closeQr, assetName, link }) => {
       />
       <div className="modal">
         <div className="modal-box">
-            {/* display QR here */}
-            <div className="flex flex-col gap-5 mx-auto p-8" id="qr-code">
-              <h3 className="font-bold text-lg place-self-center p-2">
-                QR Code: {assetName}
-              </h3>
-              <QRCode value={link} level="H" className="place-self-center"/>
-            </div>
-            <div className="flex flex-row justify-center gap-3">
-              <button
-                className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-                onClick={handleDownload}
-              >
-                Download
-              </button>
-              <button
-                className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-                onClick={closeQr}
-              >
-                Close
-              </button>
-            </div>
+          {/* display QR here */}
+          <div className="flex flex-col gap-5 mx-auto p-8" id="qr-code">
+            <h3 className="font-bold text-lg place-self-center p-2">
+              QR Code: {assetName}
+            </h3>
+            <QRCode value={link} level="H" className="place-self-center" />
+          </div>
+          <div className="flex flex-row justify-center gap-3">
+            <button
+              className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+              onClick={handleDownload}
+            >
+              Download
+            </button>
+            <button
+              className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+              onClick={(e) => {
+                e.stopPropagation()
+                closeQr()
+              }}
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

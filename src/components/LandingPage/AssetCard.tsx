@@ -6,6 +6,7 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
+import { BsCircleFill } from "react-icons/bs";
 import DisplayQR from "./DisplayQR";
 import { AssetCondition, StatusTypes } from "enums";
 
@@ -80,11 +81,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetType}
           </button>
           {props.status === StatusTypes.WORKING ? (
-            <BsFillCheckCircleFill className="text-2xl text-green-600" />
+            <BsCircleFill className="text-2xl text-green-600" />
           ) : props.status === StatusTypes.MAINTENANCE ? (
-            <AiFillExclamationCircle className="text-2xl text-yellow-600" />
+            <BsCircleFill className="text-2xl text-yellow-600" />
           ) : (
-            <BsFillXCircleFill className="text-2xl text-red-700" />
+            <BsCircleFill className="text-2xl text-red-700" />
           )}
         </div>
         <h1
@@ -102,8 +103,8 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
-              ? "MadDog Bistro & Bar"
-              : props.assetAddress}
+                ? "MadDog Bistro & Bar"
+                : props.assetAddress}
           </p>
           <button
             onClick={(e) => {
@@ -117,7 +118,10 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           <DisplayQR
             assetName={props.assetName}
             link={QRLink}
-            closeQr={() => setShowQr(false)}
+            closeQr={() => {
+              setShowQr(false)
+
+            }}
             showQr={showQr}
           />
         </div>
