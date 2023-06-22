@@ -6,6 +6,7 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
+import { StatusTypes } from "enums";
 import DisplayQR from "./DisplayQR";
 import { AssetCondition, StatusTypes } from "enums";
 
@@ -102,8 +103,8 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"
               : props.assetAddress === "mdb"
-              ? "MadDog Bistro & Bar"
-              : props.assetAddress}
+                ? "MadDog Bistro & Bar"
+                : props.assetAddress}
           </p>
           <button
             onClick={(e) => {
@@ -120,6 +121,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             closeQr={() => setShowQr(false)}
             showQr={showQr}
           />
+
         </div>
 
         {/* <div className="flex items-center">

@@ -273,6 +273,12 @@ const AssetDetails: React.FC<
                 </button>
 
                 <button className="mx-3">
+                  {/* onClick={toggleAssetCondition} */}
+                  {assetCondition === "Active"
+                    ? "Mark as Inactive"
+                    : "Mark as Active"}
+                </button>
+                <button className="mx-3">
                   <FiEdit3 className="text-xl text-black dark:text-white" />
                 </button>
                 <button
