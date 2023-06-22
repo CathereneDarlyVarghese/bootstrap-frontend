@@ -55,6 +55,7 @@ export interface Asset {
   status_check_enabled?: boolean;
   images_id?: string;
   status_check_interval: number;
+  asset_condition: string;
 }
 
 export interface IncomingAsset {
@@ -72,6 +73,7 @@ export interface IncomingAsset {
   modified_by: string;
   images_array: string;
   next_asset_check_date: Date;
+  asset_condition: string;
 }
 
 export interface Document {
