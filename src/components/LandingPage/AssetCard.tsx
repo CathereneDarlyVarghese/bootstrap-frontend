@@ -8,6 +8,7 @@ import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { StatusTypes } from "enums";
 import DisplayQR from "./DisplayQR";
+import { AssetCondition, StatusTypes } from "enums";
 
 let status = "expire_soon";
 
@@ -17,6 +18,7 @@ type AssetCardProps = {
   assetAddress: string;
   imageLocation: string;
   status: string;
+  assetCondition: string;
   imagePlaceholder: string;
   updatedDetailsTabIndex: any;
 };
@@ -43,15 +45,20 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
     props.updatedDetailsTabIndex(0);
   };
 
-  //dark mode colors
+  // Dark mode colors
   const assetCarBgColor = "bg-gray-700";
   const badgeBgColor = "bg-gray-800";
   const textColor = "text-white";
   const locationColor = "bg-gray-100";
 
+  const assetCardStyle = {
+    backgroundColor: props.assetCondition === "INACTIVE" ? "gray" : "",
+  };
+
   return (
     <div
       className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:${assetCarBgColor} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
+      style={assetCardStyle}
       onClick={handleClick}
     >
       <figure className="rounded-xl">
@@ -72,20 +79,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetType}
           </button>
           {props.status === StatusTypes.WORKING ? (
-            <>
-              <BsFillCheckCircleFill className="text-2xl text-green-600" />
-            </>
+            <BsFillCheckCircleFill className="text-2xl text-green-600" />
           ) : props.status === StatusTypes.MAINTENANCE ? (
-            <>
-              <AiFillExclamationCircle className="text-2xl text-yellow-600" />
-            </>
+            <AiFillExclamationCircle className="text-2xl text-yellow-600" />
           ) : (
-            <>
-              <BsFillXCircleFill className="text-2xl text-red-700" />
-            </>
+            <BsFillXCircleFill className="text-2xl text-red-700" />
           )}
         </div>
-
         <h1
           className={`flex ml-2 text-gray-800 dark:${textColor} text-lg font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
@@ -114,6 +114,14 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           <DisplayQR assetName={props.assetName} link={QRLink} closeQr={() => setShowQr(false)} showQr={showQr} />
 
         </div>
+
+        {/* <div className="flex items-center">
+          {props.assetCondition === "INACTIVE" ? (
+            <span className="text-sm text-red-500 mr-2">Inactive</span>
+          ) : (
+            <span className="text-sm text-green-500 mr-2">Active</span>
+          )}
+        </div> */}
       </div>
     </div>
   );
@@ -124,6 +132,7 @@ AssetCard.propTypes = {
   assetType: PropTypes.string,
   assetAddress: PropTypes.string,
   imageLocation: PropTypes.string,
+  assetCondition: PropTypes.string,
   imagePlaceholder: PropTypes.string,
 };
 

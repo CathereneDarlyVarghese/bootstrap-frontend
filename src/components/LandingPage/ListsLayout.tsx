@@ -22,6 +22,7 @@ import testImage from "./testImage.png";
 import { getAllAssets, getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
+import { AssetCondition } from "enums";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -482,9 +483,10 @@ const ListsLayout = (props: any) => {
                   assetName={asset.asset_name}
                   assetType={asset.asset_type}
                   assetAddress={asset.location_name}
-                  imageLocation={asset.images_array[0]} // Replace `imageLocation` with the correct property name from the `Asset` type
-                  status={asset.asset_status} // Replace `asset_status` with the correct property name from the `Asset` type
-                  imagePlaceholder="img" // Add the appropriate image placeholder value
+                  imageLocation={asset.images_array[0]}
+                  status={asset.asset_status}
+                  assetCondition={asset.asset_condition}
+                  imagePlaceholder="img"
                   updatedDetailsTabIndex={detailsTabIndexRefresh}
                 />
               </div>
