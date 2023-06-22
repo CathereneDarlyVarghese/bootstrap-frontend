@@ -27,3 +27,8 @@ code {
 .card {
   height: 500px;
 }
+
+.inactive-card {
+  /* Add your grayed out styling here */
+  opacity: 0.5;
+}

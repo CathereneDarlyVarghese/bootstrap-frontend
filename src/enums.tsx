@@ -25,6 +25,11 @@ export enum StatusTypes {
   MAINTENANCE = "24bbffe7-4d1d-4b9c-b959-4957033e29b6",
 }
 
+export enum AssetCondition {
+  ACTIVE = "3267d9ad-17c5-4e65-bad8-c2f3aeccde10",
+  INACTIVE = "31910288-8919-4ce3-8f2e-d3e0bb455e2b",
+}
+
 export enum LocationTypes {
   Locations = "locations",
 }
