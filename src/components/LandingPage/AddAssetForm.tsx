@@ -20,7 +20,7 @@ import { createAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
-
+import useAssetCondition from "hooks/useAssetCondition";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -41,11 +41,18 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   >([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [addSection, setAddSection] = useState(false);
+  const [selectedCondition, setSelectedCondition] = useState("");
 
   const statusTypeNames = useStatusTypeNames();
+  const AssetCondition = useAssetCondition();
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatus(event.target.value);
+  };
+
+  const handleConditionChange = (event) => {
+    setSelectedCondition(event.target.value);
+    console.log("selected condition ->", event.target.value);
   };
 
   const handleLocationChange = (locationId: string) => {
@@ -99,6 +106,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       asset_placement: formData.get("placement") as string,
       asset_section: selectedSection,
       asset_status: selectedStatus,
+      asset_condition: selectedCondition,
       asset_finance_purchase: parseFloat(
         formData.get("finance_purchase") as string
       ),
@@ -183,14 +191,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   return (
     <>
-
       <input
         type="checkbox"
         checked={addAssetOpen}
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32" >
+      <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
             {/* Modal header */}
@@ -240,7 +247,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   >
                     {/* Map through the asset types */}
                     {assetTypes.map((type) => (
-                      <option key={type.asset_type_id} value={type.asset_type_id} className="text-black">
+                      <option
+                        key={type.asset_type_id}
+                        value={type.asset_type_id}
+                        className="text-black"
+                      >
                         {type.asset_type}
                       </option>
                     ))}
@@ -259,8 +270,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
-
-
               {/* File input for uploading an image */}
               <label
                 htmlFor="file_input"
@@ -269,30 +278,44 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 Add Image
               </label>
 
-              <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3" >
+              <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3">
                 <input
                   type="file"
                   onChange={(e) => {
-                    setFile(e.target.files[0])
+                    setFile(e.target.files[0]);
                     const palceholderText = e.target.files[0];
 
-                    console.log(palceholderText.name)
+                    console.log(palceholderText.name);
                   }}
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
                 />
-                <input type="text" className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
-                <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
-                  e.preventDefault()
-                  const uploadButton = document.querySelector("#upload") as HTMLElement
-                  uploadButton.click()
-                }}>
+                <input
+                  type="text"
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
+                  value={file && file.name ? file.name : "No file chosen"}
+                  disabled
+                />
+                <button
+                  className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto"
+                  id="upload"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const uploadButton = document.querySelector(
+                      "#upload"
+                    ) as HTMLElement;
+                    uploadButton.click();
+                  }}
+                >
                   <div className="flex flex-row items-center gap-0.5 dark:text-white mx-1">
                     <AiOutlinePaperClip className="text-lg" />
                     Choose File
                   </div>
                 </button>
-
               </div>
 
               {/* Dropdown for selecting asset status */}
@@ -313,7 +336,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     </option>
                     {Object.entries(statusTypeNames).map(
                       ([statusId, statusName]) => (
-                        <option key={statusId} value={statusId} className="text-black bg-white dark:text-white dark:bg-gray-800">
+                        <option
+                          key={statusId}
+                          value={statusId}
+                          className="text-black bg-white dark:text-white dark:bg-gray-800"
+                        >
                           {statusName}
                         </option>
                       )
@@ -338,13 +365,42 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       <option
                         key={location.location_id}
                         value={location.location_id}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800">
+                        className="text-black bg-white dark:text-white dark:bg-gray-800"
+                      >
                         {location.location_name}
                       </option>
                     ))}
                   </select>
                 </div>
+              </div>
 
+              {/* Dropdown for selecting asset condition */}
+              <div className="flex flex-col w-1/2 md:w-auto">
+                <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                  Asset Condition
+                </label>
+                <select
+                  required
+                  name="condition"
+                  className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
+                  value={selectedCondition}
+                  onChange={handleConditionChange}
+                >
+                  <option value="" disabled hidden>
+                    Select Asset Condition
+                  </option>
+                  {Object.entries(AssetCondition).map(
+                    ([conditionKey, conditionValue]) => (
+                      <option
+                        key={conditionKey}
+                        value={conditionKey}
+                        className="text-black bg-white dark:text-white dark:bg-gray-800"
+                      >
+                        {conditionValue}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
@@ -364,17 +420,17 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         Select Section
                       </option>
                       {filteredSections.map((section) => (
-                        <option key={section.section_id} value={section.section_id} className="text-black bg-white dark:text-white dark:bg-gray-800">
+                        <option
+                          key={section.section_id}
+                          value={section.section_id}
+                          className="text-black bg-white dark:text-white dark:bg-gray-800"
+                        >
                           {section.section_name}
                         </option>
                       ))}
                     </select>
-
                   </div>
-
                 </div>
-
-
 
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
@@ -393,7 +449,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       <option
                         key={placement.placement_id}
                         value={placement.placement_id}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800">
+                        className="text-black bg-white dark:text-white dark:bg-gray-800"
+                      >
                         {placement.placement_name}
                       </option>
                     ))}
@@ -401,24 +458,41 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
               </div>
               <div className="my-2">
-                <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
-                  e.preventDefault();
-                  setAddSection(true);
-                  (window as any).addSectionModal.showModal();
-                }
-                }>+Add Section</button>
+                <button
+                  className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setAddSection(true);
+                    (window as any).addSectionModal.showModal();
+                  }}
+                >
+                  +Add Section
+                </button>
               </div>
 
               {/* Adding Section and Placement */}
-              <input type="checkbox" checked={addSection} id="my_modal_6" className="modal-toggle" />
+              <input
+                type="checkbox"
+                checked={addSection}
+                id="my_modal_6"
+                className="modal-toggle"
+              />
               <div id="addSectionModal" className="modal">
-                <form method="dialog" className="modal-box bg-white dark:bg-gray-800">
+                <form
+                  method="dialog"
+                  className="modal-box bg-white dark:bg-gray-800"
+                >
                   <div className="flex flex-row mb-5">
-                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">Add Section & Placement</h3>
-                    <button className="ml-auto" onClick={() => { setAddSection(false) }}>
-                      <TfiClose
-                        className="font-bold text-black dark:text-white"
-                      />
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                      Add Section & Placement
+                    </h3>
+                    <button
+                      className="ml-auto"
+                      onClick={() => {
+                        setAddSection(false);
+                      }}
+                    >
+                      <TfiClose className="font-bold text-black dark:text-white" />
                     </button>
                   </div>
                   <div>
@@ -428,28 +502,38 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                           <label className="font-sans font-semibold text-sm text-black dark:text-white">
                             New Section Name
                           </label>
-                          <input type="text" required className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                          <input
+                            type="text"
+                            required
+                            className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                          />
                         </div>
                         <div className="w-full">
                           <label className="font-sans font-semibold text-sm text-black dark:text-white">
                             New Placement Name
                           </label>
-                          <input type="text" required className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans" />
+                          <input
+                            type="text"
+                            required
+                            className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                          />
                         </div>
                         <div className="w-full mt-4 flex justify-center">
-                          <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto" onClick={(e) => {
-                            e.preventDefault()
-                            setAddSection(false)
-                          }}>Submit</button>
+                          <button
+                            className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAddSection(false);
+                            }}
+                          >
+                            Submit
+                          </button>
                         </div>
-
                       </form>
                     </div>
                   </div>
-
                 </form>
               </div>
-
 
               {/* Toggle for status check enabled */}
               <div className="flex items-center my-1">
@@ -503,7 +587,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
-
               </div>
             </div>
 
