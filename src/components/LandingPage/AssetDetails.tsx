@@ -36,6 +36,7 @@ interface AssetDetailsProps {
   tabIndex: any;
   setTabIndex: (tabIndex) => void;
   assetCheckDate: Date | null;
+  assetCondition: string | null;
 }
 
 const AssetDetails: React.FC<
@@ -58,6 +59,7 @@ const AssetDetails: React.FC<
   tabIndex,
   setTabIndex,
   assetCheckDate,
+  assetCondition,
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
@@ -235,6 +237,12 @@ const AssetDetails: React.FC<
                 </div>
               </div>
               <div className="flex flex-row md:justify-center justify-start items-center">
+                <button className="mx-3">
+                  {/* onClick={toggleAssetCondition} */}
+                  {assetCondition === "Active"
+                    ? "Mark as Inactive"
+                    : "Mark as Active"}
+                </button>
                 <button className="mx-3">
                   <FiEdit3 className="text-xl text-black dark:text-white" />
                 </button>
