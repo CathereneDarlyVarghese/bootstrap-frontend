@@ -8,9 +8,9 @@ import { BsQrCode } from "react-icons/bs";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
-import { StatusTypes } from "enums";
+import { AssetCondition, StatusTypes } from "enums";
 import { Asset, IncomingAsset, IncomingAssetCheck } from "types";
-import { deleteAsset } from "services/assetServices";
+import { deleteAsset, toggleAssetCondition } from "services/assetServices";
 
 import documentIcon from "../../icons/documentIcon.svg";
 import { TfiClose } from "react-icons/tfi";
@@ -18,6 +18,7 @@ import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 import { getAssetCheckById } from "services/assetCheckServices";
+import useAssetCondition from "hooks/useAssetCondition";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -64,6 +65,7 @@ const AssetDetails: React.FC<
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+  const assetConditions = useAssetCondition();
 
   const getStatusText = (status: string | null) => {
     switch (status) {
@@ -87,6 +89,30 @@ const AssetDetails: React.FC<
       return "bg-yellow-400";
     }
     return "bg-gray-400";
+  };
+
+  const handleToggleAssetCondition = async () => {
+    try {
+      const toggledAssetCondition =
+        assetCondition === assetConditions[AssetCondition.ACTIVE]
+          ? assetConditions[AssetCondition.INACTIVE]
+          : assetConditions[AssetCondition.ACTIVE];
+
+      await toggleAssetCondition(sessionToken, assetId, toggledAssetCondition);
+      refreshAssets();
+    } catch (error) {
+      console.error("Error toggling asset condition:", error);
+      toast("Oops, Something went wrong", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   return (
@@ -237,6 +263,15 @@ const AssetDetails: React.FC<
                 </div>
               </div>
               <div className="flex flex-row md:justify-center justify-start items-center">
+                <button
+                  className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
+                  onClick={handleToggleAssetCondition}
+                >
+                  {assetCondition === assetConditions[AssetCondition.ACTIVE]
+                    ? "Mark as Inactive"
+                    : "Mark as Active"}
+                </button>
+
                 <button className="mx-3">
                   {/* onClick={toggleAssetCondition} */}
                   {assetCondition === "Active"

@@ -1,4 +1,6 @@
 import axios from "axios";
+import { AssetCondition } from "enums";
+import useAssetCondition from "hooks/useAssetCondition";
 import { Asset, IncomingAsset } from "types"; // ensure the Asset type is defined
 
 type Props = {
@@ -78,7 +80,7 @@ export async function createAsset(
 export async function updateAsset(
   accessToken: string,
   id: string,
-  assetData: Asset
+  assetData: Partial<Asset>
 ): Promise<Asset> {
   const config = {
     headers: {
@@ -98,8 +100,8 @@ export async function updateAsset(
     );
     return response.data;
   } catch (err) {
-    console.log(err);
-    return null;
+    console.error("Error updating asset:", err);
+    throw new Error("Failed to update asset. Please try again.");
   }
 }
 
@@ -122,4 +124,37 @@ export async function deleteAsset(
     console.log(err);
     throw err;
   }
+}
+
+export async function toggleAssetCondition(
+  accessToken: string,
+  id: string,
+  changedCondition: string
+): Promise<void> {
+  const assetConditionMap: Record<string, string> = {
+    [AssetCondition.ACTIVE]: "ACTIVE",
+    [AssetCondition.INACTIVE]: "INACTIVE",
+    // Add more condition mappings if needed
+  };
+
+  console.log("changed condition=>", changedCondition);
+
+  const toggledConditionText =
+    changedCondition === assetConditionMap[AssetCondition.ACTIVE]
+      ? assetConditionMap[AssetCondition.ACTIVE]
+      : assetConditionMap[AssetCondition.INACTIVE];
+
+  const toggledConditionUUID = Object.keys(assetConditionMap).find(
+    (key) => assetConditionMap[key] === toggledConditionText
+  );
+
+  if (!toggledConditionUUID) {
+    throw new Error(`Invalid asset condition: ${toggledConditionText}`);
+  }
+
+  const assetData: Partial<Asset> = {
+    asset_condition: toggledConditionUUID,
+  };
+  console.log("asset data ==>>", assetData);
+  await updateAsset(accessToken, id, assetData);
 }

@@ -24,7 +24,7 @@ type AssetCardProps = {
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
-  const [showQr, setShowQr] = useState(false)
+  const [showQr, setShowQr] = useState(false);
   const getStatusText = (status: string | null) => {
     switch (status) {
       case StatusTypes.WORKING:
@@ -39,7 +39,9 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   };
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
-  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(props.assetName)}`;
+  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
+    props.assetName
+  )}`;
 
   const handleClick = () => {
     props.updatedDetailsTabIndex(0);
@@ -104,14 +106,21 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
                 ? "MadDog Bistro & Bar"
                 : props.assetAddress}
           </p>
-          <button onClick={(e) => {
-            setShowQr(true)
-            e.stopPropagation();
-          }}>
+          <button
+            onClick={(e) => {
+              setShowQr(true);
+              e.stopPropagation();
+            }}
+          >
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
 
-          <DisplayQR assetName={props.assetName} link={QRLink} closeQr={() => setShowQr(false)} showQr={showQr} />
+          <DisplayQR
+            assetName={props.assetName}
+            link={QRLink}
+            closeQr={() => setShowQr(false)}
+            showQr={showQr}
+          />
 
         </div>
 
