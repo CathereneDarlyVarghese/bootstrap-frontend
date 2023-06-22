@@ -112,7 +112,9 @@ const ListsLayout = (props: any) => {
     }
   };
 
-  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
 
@@ -125,7 +127,7 @@ const ListsLayout = (props: any) => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const scannedSearchTerm = urlParams.get('search');
+    const scannedSearchTerm = urlParams.get("search");
     if (scannedSearchTerm) {
       setSearchTerm(decodeURIComponent(scannedSearchTerm));
     }
@@ -224,14 +226,21 @@ const ListsLayout = (props: any) => {
         const fetchedAssetSections = await getAssetSections(
           userData.signInUserSession.accessToken.jwtToken
         );
-        setAssetSections(fetchedAssetSections);
+
+        // Filtering fetched Asset Sections on the basis of selected Location
+        const filteredFetchedAssetSections = fetchedAssetSections.filter(
+          (section: AssetSection) =>
+            section.location_id === location.locationId
+        );
+
+        setAssetSections(filteredFetchedAssetSections);
         // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
       } catch (error) {
         console.log(error);
       }
     };
     fetchAssetSections();
-  }, []);
+  }, [location]);
 
   // console.log("Selected Asset Section ==>> ", selectedAssetSectionID);
 

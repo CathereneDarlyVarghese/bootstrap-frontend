@@ -6,7 +6,6 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
-import { StatusTypes } from "enums";
 import DisplayQR from "./DisplayQR";
 import { AssetCondition, StatusTypes } from "enums";
 
