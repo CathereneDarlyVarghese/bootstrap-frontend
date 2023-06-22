@@ -268,12 +268,6 @@ const ListsLayout = (props: any) => {
           "Filtered Fetched Asset Placement ==>> ",
           filteredFetchedAssetPlacements
         );
-
-        if (selectedAssetPlacementName === "") {
-          setSelectedAssetPlacementName(
-            filteredFetchedAssetPlacements[0].placement_name
-          );
-        }
       } catch (error) {
         console.log(error);
       }
@@ -371,7 +365,7 @@ const ListsLayout = (props: any) => {
                       setSelectedAssetPlacementName("");
                     }}
                   >
-                    All Assets
+                    All Sections
                   </button>
                 </li>
                 {assetSections.map((item, index) => (
@@ -417,7 +411,7 @@ const ListsLayout = (props: any) => {
               onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
               className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full"
             >
-              {/* <option value="" hidden disabled selected>Select a Placement</option> */}
+              <option value="">All Placements</option>
               {assetPlacements.map((placement) => (
                 <option
                   key={placement.placement_name}
