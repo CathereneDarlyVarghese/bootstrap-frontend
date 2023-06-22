@@ -458,16 +458,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
               </div>
               <div className="my-2">
-                <button
-                  className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setAddSection(true);
-                    (window as any).addSectionModal.showModal();
-                  }}
-                >
-                  +Add Section
-                </button>
+                <button className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize" onClick={(e) => {
+                  e.preventDefault();
+                  setAddSection(true);
+                  // (window as any).addSectionModal.showModal();
+                }
+                }>+Add Section</button>
               </div>
 
               {/* Adding Section and Placement */}

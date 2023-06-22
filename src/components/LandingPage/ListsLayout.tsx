@@ -93,7 +93,7 @@ const ListsLayout = (props: any) => {
   const scrollLeft = () => {
     setScroll(true);
     if (scroll) {
-      document.getElementById("scrollFirst").scrollIntoView({
+      document.getElementById("scrollAll").scrollIntoView({
         inline: "start",
         behavior: "smooth",
         block: "nearest",
@@ -111,6 +111,25 @@ const ListsLayout = (props: any) => {
       });
     }
   };
+
+  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("search", encodeURIComponent(newSearchTerm));
+
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const scannedSearchTerm = urlParams.get('search');
+    if (scannedSearchTerm) {
+      setSearchTerm(decodeURIComponent(scannedSearchTerm));
+    }
+  }, []);
 
   const filterAssets = (searchTerm: string) => {
     const filtered = incomingAssets.filter(
@@ -291,8 +310,9 @@ const ListsLayout = (props: any) => {
             <input
               type="text"
               placeholder="Search Appliance"
+              value={searchTerm}
               className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchInputChange(e)}
             />
           </div>
 
@@ -328,6 +348,23 @@ const ListsLayout = (props: any) => {
               style={{ width: "75%" }}
             >
               <ul className="flex flex-row">
+                <li>
+                  <button
+                    className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
+                      activeTab === -1
+                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                        : "text-gray-500 dark:text-gray-400 font-normal"
+                    } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                    id="scrollAll"
+                    onClick={() => {
+                      setActiveTab(-1);
+                      setSelectedAssetSection(defaultAssetSections[0]);
+                      setSelectedAssetPlacementName("");
+                    }}
+                  >
+                    All Assets
+                  </button>
+                </li>
                 {assetSections.map((item, index) => (
                   <li>
                     <button

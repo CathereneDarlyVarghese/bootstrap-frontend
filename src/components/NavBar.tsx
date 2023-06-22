@@ -107,7 +107,7 @@ const NavBar = () => {
         <div className="flex-1">
           <a
             onClick={() => {
-              navigate("/home");
+              navigate("/");
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
