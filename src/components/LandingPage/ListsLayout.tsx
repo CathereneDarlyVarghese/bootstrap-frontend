@@ -393,6 +393,8 @@ const ListsLayout = (props: any) => {
                         setActiveTab(index);
                         setSelectedAssetSection(item);
                         setSelectedAssetPlacementName("");
+                        const selectElement = document.getElementById('selectAssetPlacement') as HTMLSelectElement;
+                        selectElement.selectedIndex = 0;
                       }}
                     >
                       {item.section_name}
@@ -411,6 +413,7 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="px-2">
             <select
+            id="selectAssetPlacement"
               onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
               className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full"
             >
