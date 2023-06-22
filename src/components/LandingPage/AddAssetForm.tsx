@@ -463,7 +463,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     setAddSection(true);
-                    (window as any).addSectionModal.showModal();
+                    // (window as any).addSectionModal.showModal();
                   }}
                 >
                   +Add Section

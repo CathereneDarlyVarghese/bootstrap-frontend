@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import MapIcon from "../../icons/mapIcon.svg";
@@ -6,6 +6,7 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
+import DisplayQR from "./DisplayQR";
 import { AssetCondition, StatusTypes } from "enums";
 
 let status = "expire_soon";
@@ -22,6 +23,7 @@ type AssetCardProps = {
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
+  const [showQr, setShowQr] = useState(false);
   const getStatusText = (status: string | null) => {
     switch (status) {
       case StatusTypes.WORKING:
@@ -34,6 +36,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         return "";
     }
   };
+
+  const redirectURL = process.env.REACT_APP_REDIRECT_URL;
+  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
+    props.assetName
+  )}`;
 
   const handleClick = () => {
     props.updatedDetailsTabIndex(0);
@@ -88,22 +95,40 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         </h1>
         <div className="flex flex-row items-center">
           <img src={MapIcon} className="h-6 mr-3 ml-2" />
+          {/* <PinIcon /> */}
+          <p
+            className={`text-sm text-start text-gray-500 dark:text-gray-300 font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
+          >
+            {props.assetAddress === "tsd"
+              ? "The Spiffy Dapper"
+              : props.assetAddress === "mdb"
+              ? "MadDog Bistro & Bar"
+              : props.assetAddress}
+          </p>
           <button
             onClick={(e) => {
+              setShowQr(true);
               e.stopPropagation();
             }}
           >
             <BsQrCode className="text-xl text-black dark:text-white" />
           </button>
+
+          <DisplayQR
+            assetName={props.assetName}
+            link={QRLink}
+            closeQr={() => setShowQr(false)}
+            showQr={showQr}
+          />
         </div>
 
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           {props.assetCondition === "INACTIVE" ? (
             <span className="text-sm text-red-500 mr-2">Inactive</span>
           ) : (
             <span className="text-sm text-green-500 mr-2">Active</span>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
