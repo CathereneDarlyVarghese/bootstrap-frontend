@@ -41,6 +41,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   >([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [addSection, setAddSection] = useState(false);
+  const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
 
   const statusTypeNames = useStatusTypeNames();
@@ -409,7 +410,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     Select section
                   </label>
                   <div className="flex flex-row items-center">
-                    <div className="w-5/6">
+                    <div className="w-11/12">
 
                       <select
                         required
@@ -432,7 +433,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       </select>
                     </div>
 
-                    <div className="w-1/6 ml-3">
+                    <div className="w-1/12 ml-3">
                       <button
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
@@ -453,7 +454,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     Select placement
                   </label>
                   <div className="flex flex-row items-center">
-                    <div>
+                    <div className="w-11/12 ">
                       <select
                         required
                         name="placement"
@@ -473,8 +474,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         ))}
                       </select>
                     </div>
-                    <div>
-                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800">
+                    <div className="w-1/12 ml-3">
+                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800" onClick={(e) => {
+                        e.preventDefault();
+                        setAddPlacement(true)
+
+                      }}>
                         +
                       </button>
                     </div>
@@ -484,7 +489,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
 
 
-              {/* Adding Section and Placement */}
+              {/* Adding Section */}
               <input
                 type="checkbox"
                 checked={addSection}
@@ -529,6 +534,62 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                             onClick={(e) => {
                               e.preventDefault();
                               setAddSection(false);
+                            }}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* adding placement modal */}
+              <input
+                type="checkbox"
+                checked={addPlacement}
+                id="my_modal_6"
+                className="modal-toggle"
+              />
+              <div id="addSectionModal" className="modal">
+                <form
+                  method="dialog"
+                  className="modal-box bg-white dark:bg-gray-800"
+                >
+                  <div className="flex flex-row mb-5">
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                      Add Placement
+                    </h3>
+                    <button
+                      className="ml-auto"
+                      onClick={() => {
+                        setAddPlacement(false);
+                      }}
+                    >
+                      <TfiClose className="font-bold text-black dark:text-white" />
+                    </button>
+                  </div>
+                  <div>
+                    <div className={`flex flex-col my-2 gap-3`}>
+                      <form className="">
+                        <div className="flex flex-col w-full">
+                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                            New Placement Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                          />
+                        </div>
+
+                        <div className="w-full mt-4 flex justify-center">
+                          <button
+                            className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAddPlacement(false);
                             }}
                           >
                             Submit
