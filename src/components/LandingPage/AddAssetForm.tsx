@@ -13,8 +13,14 @@ import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { getAllAssetLocations } from "services/locationServices";
-import { getAssetPlacements } from "services/assetPlacementServices";
-import { getAssetSections } from "services/assetSectionServices";
+import {
+  createAssetPlacement,
+  getAssetPlacements,
+} from "services/assetPlacementServices";
+import {
+  createAssetSection,
+  getAssetSections,
+} from "services/assetSectionServices";
 import { createFile } from "services/fileServices";
 import { createAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
@@ -156,34 +162,101 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setToken(data);
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const accessToken = window.localStorage.getItem("sessionToken");
+
+      const [types, locations, placements, sections] = await Promise.all([
+        getAllAssetTypes(accessToken),
+        getAllAssetLocations(accessToken),
+        getAssetPlacements(accessToken),
+        getAssetSections(accessToken),
+      ]);
+
+      setAssetTypes(types);
+      setLocations(locations);
+      setAssetPlacements(placements);
+      setAssetSections(sections);
+
+      console.log("Asset Types:", types);
+      console.log("Asset Locations:", locations);
+      console.log("Asset Placements:", placements);
+      console.log("Asset Sections:", sections);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const accessToken = window.localStorage.getItem("sessionToken");
-
-        const [types, locations, placements, sections] = await Promise.all([
-          getAllAssetTypes(accessToken),
-          getAllAssetLocations(accessToken),
-          getAssetPlacements(accessToken),
-          getAssetSections(accessToken),
-        ]);
-
-        setAssetTypes(types);
-        setLocations(locations);
-        setAssetPlacements(placements);
-        setAssetSections(sections);
-
-        console.log("Asset Types:", types);
-        console.log("Asset Locations:", locations);
-        console.log("Asset Placements:", placements);
-        console.log("Asset Sections:", sections);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
     fetchData();
   }, []);
+
+  // Function to handle adding a section
+  const handleAddSection = async (event) => {
+    const formData = new FormData(event.target);
+    if (selectedLocation) {
+      const sectionName = prompt("Enter Section Name");
+      if (sectionName) {
+        const newSection: AssetSection = {
+          section_id: "",
+          section_name: sectionName,
+          location_id: selectedLocation,
+        };
+        try {
+          const createdSection = await createAssetSection(token, newSection);
+          console.log("Created Section:", createdSection);
+          const updatedSections = [...assetSections, createdSection];
+          setAssetSections(updatedSections);
+          setFilteredSections(updatedSections);
+
+          // Fetch updated data and call handleLocationChange
+          fetchData();
+          handleLocationChange(selectedLocation);
+        } catch (error) {
+          console.error("Failed to create section:", error);
+        }
+      }
+    } else {
+      alert("Please select a location first.");
+    }
+  };
+
+  const handleAddPlacement = async () => {
+    if (selectedLocation && selectedSection) {
+      const placementName = prompt("Enter Placement Name");
+      if (placementName) {
+        const newPlacement: AssetPlacement = {
+          placement_id: "",
+          placement_name: placementName,
+          section_id: selectedSection,
+          location_id: selectedLocation,
+        };
+        try {
+          const createdPlacement = await createAssetPlacement(
+            token,
+            newPlacement
+          );
+          console.log("Created Placement:", createdPlacement);
+          const updatedPlacements = [...assetPlacements, createdPlacement];
+          setAssetPlacements(updatedPlacements);
+
+          // Update filtered placements
+          const filteredPlacements = updatedPlacements.filter(
+            (placement) => placement.section_id === selectedSection
+          );
+          setFilteredPlacements(filteredPlacements);
+
+          // Fetch updated data and call handleSectionChange
+          fetchData();
+          handleSectionChange(selectedSection);
+        } catch (error) {
+          console.error("Failed to create placement:", error);
+        }
+      }
+    } else {
+      alert("Please select a location and section first.");
+    }
+  };
 
   // Function to close the add asset form
   const closeAddForm = () => {
@@ -293,10 +366,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
-                    ? "text-black dark:text-white"
-                    : "text-gray-400"
-                    }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -411,7 +485,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12">
-
                       <select
                         required
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
@@ -438,7 +511,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          setAddSection(true);
+                          // setAddSection(true);
+                          handleAddSection(e);
+
                           // (window as any).addSectionModal.showModal();
                         }}
                       >
@@ -475,19 +550,20 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       </select>
                     </div>
                     <div className="w-1/12 ml-3">
-                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800" onClick={(e) => {
-                        e.preventDefault();
-                        setAddPlacement(true)
-
-                      }}>
+                      <button
+                        className="btn btn-sm bg-blue-800 hover:bg-blue-800"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // setAddPlacement(true);
+                          handleAddPlacement();
+                        }}
+                      >
                         +
                       </button>
                     </div>
                   </div>
-
                 </div>
               </div>
-
 
               {/* Adding Section */}
               <input
