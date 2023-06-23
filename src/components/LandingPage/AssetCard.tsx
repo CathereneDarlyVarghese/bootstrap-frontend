@@ -55,12 +55,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
 
   const assetCardStyle = {
     backgroundColor: props.assetCondition === "INACTIVE" ? "gray" : "",
+    color: props.assetCondition === "INACTIVE" ? "#a3a8a5" : ""
   };
 
   return (
     <div
-      className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:${assetCarBgColor} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
-      style={assetCardStyle}
+      className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:bg-gray-700 ${props.assetCondition === "INACTIVE" ? "bg-gray-500 dark:bg-gray-500" : "bg-gray-100 dark:bg-gray-700"} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
+      // style={{ backgroundColor: assetCardStyle.backgroundColor }}
       onClick={handleClick}
     >
       <figure className="rounded-xl">
@@ -89,7 +90,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           )}
         </div>
         <h1
-          className={`flex ml-2 text-gray-800 dark:${textColor} text-lg font-semibold font-sans tracking-wide xl:text-sm`}
+          className={`flex ml-2 ${props.assetCondition === "INACTIVE" ? "text-gray-400 dark:text-gray-400" : "text-gray-800 dark:text-white"} text-lg font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
         >
           {props.assetName}

@@ -228,11 +228,10 @@ const AddStatusForm = ({
                       />
                       <input
                         type="text"
-                        className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                          file && file
-                            ? "text-black dark:text-white"
-                            : "text-gray-400"
-                        }`}
+                        className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                          ? "text-black dark:text-white"
+                          : "text-gray-400"
+                          }`}
                         value={file && file.name ? file.name : "No file chosen"}
                         disabled
                       />
@@ -277,7 +276,11 @@ const AddStatusForm = ({
                 <button
                   className="btn bg-blue-900 hover:bg-blue-900 capitalize"
                   type="submit"
-                  onClick={handleSubmit}
+                  onClick={(e) => {
+                    handleSubmit(e);
+                    setAddFormOpen(false)
+                    setReportIssue(false)
+                  }}
                 >
                   {reportIssue ? "Submit" : "Fine"}
                 </button>

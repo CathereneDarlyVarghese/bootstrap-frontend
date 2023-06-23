@@ -60,7 +60,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             <img src={closeIcon} alt="Close" />
           </button>
           <h1 className="font-sans font-bold text-xl text-black dark:text-white lg:text-lg capitalize my-auto mx-auto">
-            Status Check Date: {modifiedDate}
+            Status Check Date: {modifiedDate.substring(0, 10)}
           </h1>
         </div>
         <button className="ml-auto 2xl:block lg:hidden" onClick={closeAsset}>
@@ -79,7 +79,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
       <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
         <div className="flex 2xl:flex-row lg:flex-col">
           <h2
-            className="flex text-black text-xl font-semibold font-sans tracking-wide xl:text-sm"
+            className="flex text-black dark:text-white text-xl font-semibold font-sans tracking-wide xl:text-sm"
             style={{ wordSpacing: 3 }}
           >
             {statusCheck}

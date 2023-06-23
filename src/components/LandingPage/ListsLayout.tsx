@@ -23,6 +23,7 @@ import { getAllAssets, getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { AssetCondition } from "enums";
+import { TfiClose } from "react-icons/tfi";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -317,6 +318,11 @@ const ListsLayout = (props: any) => {
               className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
               onChange={(e) => handleSearchInputChange(e)}
             />
+            <button onClick={() => {
+              setSearchTerm("")
+            }}>
+              <TfiClose className="text-blue-600 dark:text-white" />
+            </button>
           </div>
 
           {/* Add asset button */}
@@ -353,11 +359,10 @@ const ListsLayout = (props: any) => {
               <ul className="flex flex-row">
                 <li>
                   <button
-                    className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
-                      activeTab === -1
-                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                        : "text-gray-500 dark:text-gray-400 font-normal"
-                    } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                    className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === -1
+                      ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                      : "text-gray-500 dark:text-gray-400 font-normal"
+                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
                     id="scrollAll"
                     onClick={() => {
                       setActiveTab(-1);
@@ -371,18 +376,16 @@ const ListsLayout = (props: any) => {
                 {assetSections.map((item, index) => (
                   <li>
                     <button
-                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${
-                        activeTab === index
-                          ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                          : "text-gray-500 dark:text-gray-400 font-normal"
-                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                      id={`${
-                        index === assetSections.length - 1
-                          ? "scrollLast"
-                          : index === 0
+                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index
+                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
+                        : "text-gray-500 dark:text-gray-400 font-normal"
+                        } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
+                      id={`${index === assetSections.length - 1
+                        ? "scrollLast"
+                        : index === 0
                           ? "scrollFirst"
                           : ""
-                      }`}
+                        }`}
                       onClick={() => {
                         setActiveTab(index);
                         setSelectedAssetSection(item);
@@ -407,7 +410,7 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="px-2">
             <select
-            id="selectAssetPlacement"
+              id="selectAssetPlacement"
               onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
               className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full"
             >
