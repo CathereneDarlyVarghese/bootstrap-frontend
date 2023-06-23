@@ -41,6 +41,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   >([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [addSection, setAddSection] = useState(false);
+  const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
 
   const statusTypeNames = useStatusTypeNames();
@@ -292,11 +293,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -410,25 +410,41 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     Select section
                   </label>
                   <div className="flex flex-row items-center">
-                    <select
-                      required
-                      className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                      onChange={(e) => handleSectionChange(e.target.value)}
-                      value={selectedSection}
-                    >
-                      <option value="" disabled hidden>
-                        Select Section
-                      </option>
-                      {filteredSections.map((section) => (
-                        <option
-                          key={section.section_id}
-                          value={section.section_id}
-                          className="text-black bg-white dark:text-white dark:bg-gray-800"
-                        >
-                          {section.section_name}
+                    <div className="w-11/12">
+
+                      <select
+                        required
+                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+                        onChange={(e) => handleSectionChange(e.target.value)}
+                        value={selectedSection}
+                      >
+                        <option value="" disabled hidden>
+                          Select Section
                         </option>
-                      ))}
-                    </select>
+                        {filteredSections.map((section) => (
+                          <option
+                            key={section.section_id}
+                            value={section.section_id}
+                            className="text-black bg-white dark:text-white dark:bg-gray-800"
+                          >
+                            {section.section_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="w-1/12 ml-3">
+                      <button
+                        className="btn btn-sm bg-blue-800 hover:bg-blue-800"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setAddSection(true);
+                          // (window as any).addSectionModal.showModal();
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -437,40 +453,43 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
                     Select placement
                   </label>
-                  <select
-                    required
-                    name="placement"
-                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                  >
-                    <option value="" disabled hidden>
-                      Select Placement
-                    </option>
-                    {filteredPlacements.map((placement) => (
-                      <option
-                        key={placement.placement_id}
-                        value={placement.placement_id}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800"
+                  <div className="flex flex-row items-center">
+                    <div className="w-11/12 ">
+                      <select
+                        required
+                        name="placement"
+                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        {placement.placement_name}
-                      </option>
-                    ))}
-                  </select>
+                        <option value="" disabled hidden>
+                          Select Placement
+                        </option>
+                        {filteredPlacements.map((placement) => (
+                          <option
+                            key={placement.placement_id}
+                            value={placement.placement_id}
+                            className="text-black bg-white dark:text-white dark:bg-gray-800"
+                          >
+                            {placement.placement_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="w-1/12 ml-3">
+                      <button className="btn btn-sm bg-blue-800 hover:bg-blue-800" onClick={(e) => {
+                        e.preventDefault();
+                        setAddPlacement(true)
+
+                      }}>
+                        +
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-              <div className="my-2">
-                <button
-                  className="btn btn-sm bg-blue-800 hover:bg-blue-800 capitalize"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setAddSection(true);
-                    // (window as any).addSectionModal.showModal();
-                  }}
-                >
-                  +Add Section
-                </button>
-              </div>
 
-              {/* Adding Section and Placement */}
+
+              {/* Adding Section */}
               <input
                 type="checkbox"
                 checked={addSection}
@@ -484,7 +503,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 >
                   <div className="flex flex-row mb-5">
                     <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                      Add Section & Placement
+                      Add Section
                     </h3>
                     <button
                       className="ml-auto"
@@ -508,22 +527,69 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                             className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                           />
                         </div>
-                        <div className="w-full">
-                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                            New Placement Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            className="block w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg bg-transparent dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                          />
-                        </div>
+
                         <div className="w-full mt-4 flex justify-center">
                           <button
                             className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
                             onClick={(e) => {
                               e.preventDefault();
                               setAddSection(false);
+                            }}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* adding placement modal */}
+              <input
+                type="checkbox"
+                checked={addPlacement}
+                id="my_modal_6"
+                className="modal-toggle"
+              />
+              <div id="addSectionModal" className="modal">
+                <form
+                  method="dialog"
+                  className="modal-box bg-white dark:bg-gray-800"
+                >
+                  <div className="flex flex-row mb-5">
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                      Add Placement
+                    </h3>
+                    <button
+                      className="ml-auto"
+                      onClick={() => {
+                        setAddPlacement(false);
+                      }}
+                    >
+                      <TfiClose className="font-bold text-black dark:text-white" />
+                    </button>
+                  </div>
+                  <div>
+                    <div className={`flex flex-col my-2 gap-3`}>
+                      <form className="">
+                        <div className="flex flex-col w-full">
+                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                            New Placement Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                          />
+                        </div>
+
+                        <div className="w-full mt-4 flex justify-center">
+                          <button
+                            className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAddPlacement(false);
                             }}
                           >
                             Submit
