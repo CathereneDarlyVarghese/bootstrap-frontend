@@ -247,7 +247,7 @@ const AssetDetails: React.FC<
                       Notes: {notes}
                     </p>
                   </div>
-                  <div className="my-2">
+                  {/* <div className="my-2">
                     <h1 className="text-blue-900 dark:text-white font-semibold my-1">
                       Document:
                     </h1>
@@ -257,9 +257,9 @@ const AssetDetails: React.FC<
                         Document Name
                       </h2>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
-                <div className="flex flex-row md:justify-center justify-start items-center">
+                <div className="flex flex-row md:justify-center justify-start items-center my-2">
                   <button
                     className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                     onClick={() => {
