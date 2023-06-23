@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillExclamationCircle } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
 import { BsFillXCircleFill } from "react-icons/bs";
 import documentIcon from "../../icons/documentIcon.svg";
 import { Auth } from "aws-amplify";
@@ -101,7 +102,19 @@ const DocumentsCard = ({
       </div>
       <div className="mt-2">
         <h1 className="text-black dark:text-white font-sans font-semibold">Note:</h1>
-        <p className="text-gray-400">{documentNotes}</p>
+        <div className="flex flex row items-center">
+          <div>
+            <p className="text-gray-400">{documentNotes}</p>
+          </div>
+          <div className="ml-auto">
+            <button onClick={(e) => {
+              e.stopPropagation()
+              console.log("delete documents button clicked")
+            }}>
+              <AiOutlineDelete className="text-2xl text-black dark:text-white" />
+            </button>
+          </div>
+        </div>
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
         <div className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden" onClick={() => {
@@ -133,7 +146,7 @@ const DocumentsCard = ({
         </div>
         <div className="ml-auto">
           {documentStatus === "active" ? (
-            <BsFillCheckCircleFill className="text-green-600 text-3xl md:text-2xl" />
+            <BsFillCheckCircleFill className="text-green-600 text-3xl md:text-2xl " />
           ) : documentStatus === "expiring soon" ? (
             <AiFillExclamationCircle className="text-yellow-600 text-3xl md:text-2xl" />
           ) : (
