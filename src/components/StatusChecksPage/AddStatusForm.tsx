@@ -12,8 +12,6 @@ import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 
-
-
 const AddStatusForm = ({
   addFormOpen,
   setAddFormOpen,
@@ -147,15 +145,15 @@ const AddStatusForm = ({
               <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
                 Status Check {now.toLocaleDateString()}
               </h3>
-              <button className="ml-auto" onClick={(e) => {
-                e.preventDefault()
-                setAddFormOpen(false)
-              }}>
-                <TfiClose
-                  className="font-bold text-blue-800 dark:text-blue-500"
-                />
+              <button
+                className="ml-auto"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setAddFormOpen(false);
+                }}
+              >
+                <TfiClose className="font-bold text-blue-800 dark:text-blue-500" />
               </button>
-
             </div>
 
             <div className="flex flex-col p-5">
@@ -202,7 +200,11 @@ const AddStatusForm = ({
                       </option>
                       {Object.entries(statusTypeNames).map(
                         ([statusId, statusName]) => (
-                          <option key={statusId} value={statusId} className="text-black dark:text-white bg-gray-800">
+                          <option
+                            key={statusId}
+                            value={statusId}
+                            className="text-black dark:text-white bg-gray-800"
+                          >
                             {statusName}
                           </option>
                         )
@@ -224,12 +226,27 @@ const AddStatusForm = ({
                         className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                         id="upload"
                       />
-                      <input type="text" className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} value={file && file.name ? (file.name) : "No file chosen"} disabled />
-                      <button className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto" id="upload" onClick={(e) => {
-                        e.preventDefault()
-                        const uploadButton = document.querySelector("#upload") as HTMLElement
-                        uploadButton.click()
-                      }}>
+                      <input
+                        type="text"
+                        className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                          file && file
+                            ? "text-black dark:text-white"
+                            : "text-gray-400"
+                        }`}
+                        value={file && file.name ? file.name : "No file chosen"}
+                        disabled
+                      />
+                      <button
+                        className="btn btn-xs bg-transparent hover:bg-transparent normal-case font-normal w-fit border text-blue-600 font-sans text-xs md:text-[9px] border-gray-400 p-0.5 rounded-xl ml-auto"
+                        id="upload"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const uploadButton = document.querySelector(
+                            "#upload"
+                          ) as HTMLElement;
+                          uploadButton.click();
+                        }}
+                      >
                         <div className="flex flex-row items-center gap-0.5 dark:text-white mx-1">
                           <AiOutlinePaperClip className="text-lg" />
                           Choose File
@@ -263,7 +280,6 @@ const AddStatusForm = ({
                   onClick={handleSubmit}
                 >
                   {reportIssue ? "Submit" : "Fine"}
-
                 </button>
               </div>
             </div>

@@ -136,7 +136,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
         <AddStatusForm
           addFormOpen={addFormOpen}
           setAddFormOpen={() => setAddFormOpen(false)}
-          assetId={selectedAssetCheck?.asset_id || ""}
+          assetId={assetId || ""}
           onStatusAdded={() => console.log("")}
         />
       </div>
