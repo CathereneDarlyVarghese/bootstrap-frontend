@@ -59,8 +59,8 @@ const DocumentsCard = ({
   // console.log("Session Token ==>> ", sessionToken);  
   return (
     <div className="card bg-white dark:bg-gray-800 p-5" style={{ height: "fit-content" }}>
-      <div className="flex flex-row-reverse md:flex-col">
-        <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
+      <div className={`flex flex-row-reverse md:flex-col ${fileOpen ? "flex-col" : "flex-row-reverse"}`}>
+        <div className={` mb-3 flex flex-row md:ml-0 ${fileOpen ? "ml-0" : "ml-auto"} gap-4 items-center`}>
           <div className="mr-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
             <div>
               <h1 className="text-black dark:text-white font-semibold font-sans text-md md:text-sm md:font-medium">
@@ -92,7 +92,7 @@ const DocumentsCard = ({
           <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
             {documentName}
           </h1>
-          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto">
+          <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
             {documentType}
           </div>
         </div>
@@ -121,6 +121,7 @@ const DocumentsCard = ({
           console.log("clicked")
           setFileOpen(true)
           console.log(fileOpen)
+          window.scrollTo({ top: 0, behavior: "smooth" })
         }}>
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
