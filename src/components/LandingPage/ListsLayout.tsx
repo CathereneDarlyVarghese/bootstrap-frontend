@@ -24,6 +24,8 @@ import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { AssetCondition } from "enums";
 import { TfiClose } from "react-icons/tfi";
+import { BsFilter } from "react-icons/bs"
+import FilterOptions from "./FilterOptions";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -36,6 +38,7 @@ const ListsLayout = (props: any) => {
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [filtersOpen, setFitlersOpen] = useState(false)
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -303,27 +306,30 @@ const ListsLayout = (props: any) => {
           className="items-center justify-center"
         >
           {/* Search input field */}
-          <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full">
-            <button>
-              <img
-                src={SearchIcon}
-                className="h-fit justify-center items-center ml-3"
-              />
-            </button>
+          <div className="flex flex-col">
+            <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full">
+              <button>
+                <img
+                  src={SearchIcon}
+                  className="h-fit justify-center items-center ml-3"
+                />
+              </button>
 
-            <input
-              type="text"
-              placeholder="Search Appliance"
-              value={searchTerm}
-              className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
-              onChange={(e) => handleSearchInputChange(e)}
-            />
-            <button onClick={() => {
-              setSearchTerm("")
-            }}>
-              <TfiClose className="text-blue-600 dark:text-white" />
-            </button>
+              <input
+                type="text"
+                placeholder="Search Appliance"
+                value={searchTerm}
+                className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
+                onChange={(e) => handleSearchInputChange(e)}
+              />
+              <button onClick={() => {
+                setSearchTerm("")
+              }}>
+                <TfiClose className="text-blue-600 dark:text-white" />
+              </button>
+            </div>
           </div>
+
 
           {/* Add asset button */}
           <button
@@ -339,168 +345,72 @@ const ListsLayout = (props: any) => {
           </button>
         </div>
         <div>
-          <div
-            className="tabs flex flex-row items-center"
-            id="style-7"
-            style={{ width: "100%", display: "flex", flexDirection: "row" }}
-          >
-            <button
-              className="btn btn-sm rounded-2xl text-black dark:text-white md:hidden bg-transparent border-none hover:bg-blue-200 hover:dark:bg-gray-600 justify-center"
-              id="scrollButton"
-              onClick={scrollLeft}
-            >
-              {"<<"}
-            </button>
-            <div
-              className="overflow-x-auto flex-grow"
-              id="style-7"
-              style={{ width: "75%" }}
-            >
-              <ul className="flex flex-row">
-                <li>
-                  <button
-                    className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === -1
-                      ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                      : "text-gray-500 dark:text-gray-400 font-normal"
-                      } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                    id="scrollAll"
-                    onClick={() => {
-                      setActiveTab(-1);
-                      setSelectedAssetSection(defaultAssetSections[0]);
-                      setSelectedAssetPlacementName("");
-                    }}
-                  >
-                    All Sections
-                  </button>
-                </li>
-                {assetSections.map((item, index) => (
-                  <li>
-                    <button
-                      className={`btn bg-transparent font-sans text-xs md:text-[10px] ${activeTab === index
-                        ? "text-blue-900 dark:text-white border-b-blue-800 dark:border-b-white hover:border-b-blue-800 hover:dark:border-b-white font-bold"
-                        : "text-gray-500 dark:text-gray-400 font-normal"
-                        } normal-case w-24 p-0 border-transparent rounded-none hover:bg-transparent hover:border-transparent `}
-                      id={`${index === assetSections.length - 1
-                        ? "scrollLast"
-                        : index === 0
-                          ? "scrollFirst"
-                          : ""
-                        }`}
-                      onClick={() => {
-                        setActiveTab(index);
-                        setSelectedAssetSection(item);
-                        setSelectedAssetPlacementName("");
-                        const selectElement = document.getElementById('selectAssetPlacement') as HTMLSelectElement;
-                        selectElement.selectedIndex = 0;
-                      }}
-                    >
-                      {item.section_name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <button
-              className="btn btn-sm rounded-2xl text-black hover:dark:bg-gray-600 dark:text-white md:hidden bg-transparent border-none hover:bg-blue-200 justify-center"
-              id="scrollButton"
-              onClick={scrollRight}
-            >
-              {">>"}
-            </button>
-          </div>
-          <div className="px-2">
-            <select
-              id="selectAssetPlacement"
-              onChange={(e) => setSelectedAssetPlacementName(e.target.value)}
-              className="select select-sm md:select-xs bg-white dark:bg-gray-700 text-black dark:text-white mb-3 md:mt-2 border border-slate-300 dark:border-gray-600 w-full"
-            >
-              <option value="">All Placements</option>
-              {assetPlacements.map((placement) => (
-                <option
-                  key={placement.placement_name}
-                  value={placement.placement_name}
-                >
-                  {placement.placement_name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        {/* Render filtered asset cards */}
-        {/* {filteredAssets
-          .filter(
-            (a) =>
-              a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              a.asset_type.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((a) => (
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setAssetId(a.asset_id);
-                removeClass("#parent-element .asset-details-card", "lg:hidden");
-                addClass("#parent-element .asset-details-card", "lg:w-full");
-                addClass("#parent-element .asset-card", "lg:hidden");
-              }}
-            >
-              <AssetCard
-                assetName={a.asset_name}
-                assetType={a.asset_type}
-                assetAddress={a.location_name}
-                imageLocation={a.images_array}
-                imagePlaceholder="img"
-                status={a.asset_status}
-                updatedDetailsTabIndex={0}
-              />
-            </div>
-          ))} */}
-        <div>
-          {/* Render asset cards */}
-          {incomingAssets
-            .filter((a) => {
-              const sectionMatch =
-                !selectedAssetSection ||
-                selectedAssetSection.section_name === "" ||
-                selectedAssetSection.section_name === a.section_name;
-              const placementMatch =
-                !selectedAssetPlacementName ||
-                selectedAssetPlacementName === "" ||
-                selectedAssetPlacementName === a.placement_name;
-              const searchTermMatch =
-                searchTerm === "" ||
-                a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                a.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
-
-              return sectionMatch && placementMatch && searchTermMatch;
-            })
-            .map((asset) => (
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setSelectedAsset(asset);
-                  setAssetId(asset.asset_id);
-                  setAddAssetOpen(false);
-                  removeClass(
-                    "#parent-element .asset-details-card",
-                    "lg:hidden"
-                  );
-                  addClass("#parent-element .asset-details-card", "lg:w-full");
-                  addClass("#parent-element .asset-card", "lg:hidden");
-                }}
-              >
-                <AssetCard
-                  assetName={asset.asset_name}
-                  assetType={asset.asset_type}
-                  assetAddress={asset.location_name}
-                  imageLocation={asset.images_array[0]}
-                  status={asset.asset_status}
-                  assetCondition={asset.asset_condition}
-                  imagePlaceholder="img"
-                  updatedDetailsTabIndex={detailsTabIndexRefresh}
-                />
+          <div className={`flex flex-row justify-end my-2 ${filtersOpen ? "hidden" : ""}`}>
+            <button className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black" onClick={() => setFitlersOpen(true)}>
+              <div className="flex flex-row">
+                Filter
+                <BsFilter />
               </div>
-            ))}
+            </button>
+          </div>
+
         </div>
+        {filtersOpen ? (
+          <div className="my-2">
+            <FilterOptions filterClose={() => setFitlersOpen(false)} />
+          </div>
+        ) : (
+          <div>
+            {/* Render asset cards */}
+            {incomingAssets
+              .filter((a) => {
+                const sectionMatch =
+                  !selectedAssetSection ||
+                  selectedAssetSection.section_name === "" ||
+                  selectedAssetSection.section_name === a.section_name;
+                const placementMatch =
+                  !selectedAssetPlacementName ||
+                  selectedAssetPlacementName === "" ||
+                  selectedAssetPlacementName === a.placement_name;
+                const searchTermMatch =
+                  searchTerm === "" ||
+                  a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  a.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
+
+                return sectionMatch && placementMatch && searchTermMatch;
+              })
+              .map((asset) => (
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setSelectedAsset(asset);
+                    setAssetId(asset.asset_id);
+                    setAddAssetOpen(false);
+                    removeClass(
+                      "#parent-element .asset-details-card",
+                      "lg:hidden"
+                    );
+                    addClass("#parent-element .asset-details-card", "lg:w-full");
+                    addClass("#parent-element .asset-card", "lg:hidden");
+                  }}
+                >
+                  <AssetCard
+                    assetName={asset.asset_name}
+                    assetType={asset.asset_type}
+                    assetAddress={asset.location_name}
+                    imageLocation={asset.images_array[0]}
+                    status={asset.asset_status}
+                    assetCondition={asset.asset_condition}
+                    imagePlaceholder="img"
+                    updatedDetailsTabIndex={detailsTabIndexRefresh}
+                  />
+                </div>
+              ))}
+          </div>
+        )}
+
+
+
       </div>
       <div
         className={`w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700  lg:hidden asset-details-card md:pb-14`}
