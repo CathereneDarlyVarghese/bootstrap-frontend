@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { AiOutlineDelete } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlineHistory,
+  AiOutlineEdit,
+} from "react-icons/ai";
 import { BsFillXCircleFill } from "react-icons/bs";
 import documentIcon from "../../icons/documentIcon.svg";
 import { Auth } from "aws-amplify";
@@ -150,7 +154,14 @@ const DocumentsCard = ({
             <p className="text-gray-400">{documentNotes}</p>
           </div>
           <div className="ml-auto">
+            <button title="Edit Document">
+              <AiOutlineEdit className="text-2xl text-black dark:text-white" />
+            </button>
+            <button title="Document History">
+              <AiOutlineHistory className="text-2xl text-black dark:text-white" />
+            </button>
             <button
+            title="Delete Document"
               onClick={(e) => {
                 e.stopPropagation();
                 if (
