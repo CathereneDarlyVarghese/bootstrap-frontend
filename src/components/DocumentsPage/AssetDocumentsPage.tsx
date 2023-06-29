@@ -7,7 +7,6 @@ import { getDocumentsByAssetId } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
 import DisplayDocument from "./DisplayDocument";
 
-
 const AssetDocumentsPage = ({ selectedAsset }) => {
   const location = useLocation();
   // const searchParams = new URLSearchParams(location.search);
@@ -18,9 +17,8 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
   >([]); //This is because the fetched documents are a mixture from documents and document_types tables
-  const [documentId, setDocumentId] = useState(null);
+  const [documentID, setDocumentID] = useState(null);
   const [fileOpen, setFileOpen] = useState(false);
-
 
   console.log("The selected asset ID (1) ==>>", selectedAssetID);
 
@@ -46,8 +44,18 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
 
   return (
     <>
-      <div className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen && !fileOpen ? "2xl:bg-white dark:2xl:bg-gray-800 xl:bg-white dark:xl:bg-gray-800" : "bg-white dark:bg-gray-800"}`}>
-        <div className={`flex flex-grow items-center ${addDocumentsOpen && !fileOpen ? "xl:hidden" : ""} `}>
+      <div
+        className={`h-full overflow-y-auto p-5 pb-20 ${
+          addDocumentsOpen && !fileOpen
+            ? "2xl:bg-white dark:2xl:bg-gray-800 xl:bg-white dark:xl:bg-gray-800"
+            : "bg-white dark:bg-gray-800"
+        }`}
+      >
+        <div
+          className={`flex flex-grow items-center ${
+            addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
+          } `}
+        >
           <h1 className="text-blue-800 dark:text-blue-700 text-xl font-sans font-semibold">
             Documents
           </h1>
@@ -60,17 +68,32 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
             +Add
           </button>
         </div>
-        <div className={`flex ${(addDocumentsOpen || fileOpen) ? "flex-row" : "flex-col"} items-start gap-2 mt-5`}>
-          <div className={`${addDocumentsOpen ? "w-3/5 hidden" : fileOpen ? "w-3/5 hidden" : !fileOpen ? "w-full" : "w-full"}`}>
-
+        <div
+          className={`flex ${
+            addDocumentsOpen || fileOpen ? "flex-row" : "flex-col"
+          } items-start gap-2 mt-5`}
+        >
+          <div
+            className={`${
+              addDocumentsOpen
+                ? "w-3/5 hidden"
+                : fileOpen
+                ? "w-3/5 hidden"
+                : !fileOpen
+                ? "w-full"
+                : "w-full"
+            }`}
+          >
             {incomingDocuments.map((document) => (
-              <div className="border border-gray-300 dark:border-gray-600 rounded-xl"
+              <div
+                className="border border-gray-300 dark:border-gray-600 rounded-xl"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  setDocumentId(document.document_id);
+                  setDocumentID(document.document_id);
                 }}
               >
                 <DocumentsCard
+                  documentID={document.document_id}
                   documentName={document.document_name}
                   documentDescription={document.document_description}
                   documentTypeID={document.document_type_id}
@@ -88,19 +111,30 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
             ))}
           </div>
         </div>
-        <div className={`border border-gray-300 dark:border-gray-600 rounded-xl ${addDocumentsOpen && !fileOpen ? "w-full" : "hidden"}`}>
+        <div
+          className={`border border-gray-300 dark:border-gray-600 rounded-xl ${
+            addDocumentsOpen && !fileOpen ? "w-full" : "hidden"
+          }`}
+        >
           <AddDocumentsForm
             addDocumentsOpen={addDocumentsOpen}
             setAddDocumentsOpen={setAddDocumentsOpen}
             assetID={selectedAssetID}
-          // locationID={selectedLocation}
+            // locationID={selectedLocation}
           />
         </div>
         {/* display file */}
-        <div className={`border border-gray-300 dark:border-gray-600 rounded-xl ${fileOpen && !addDocumentsOpen ? "w-full" : "hidden"}`}>
-          <DisplayDocument fileName={"Document name"} closeFile={() => {
-            setFileOpen(false)
-          }} />
+        <div
+          className={`border border-gray-300 dark:border-gray-600 rounded-xl ${
+            fileOpen && !addDocumentsOpen ? "w-full" : "hidden"
+          }`}
+        >
+          <DisplayDocument
+            fileName={"Document name"}
+            closeFile={() => {
+              setFileOpen(false);
+            }}
+          />
         </div>
       </div>
     </>
