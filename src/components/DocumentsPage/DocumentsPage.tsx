@@ -85,6 +85,10 @@ const DocumentsPage = () => {
     fetchFile();
   }, [selectedDocument]);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       <div
@@ -123,7 +127,7 @@ const DocumentsPage = () => {
               addDocumentsOpen
                 ? "w-3/5 xl:hidden"
                 : fileOpen
-                ? "w-3/5 xl:hidden"
+                ? "w-2/5 xl:hidden"
                 : !fileOpen
                 ? "w-full"
                 : "w-full"
@@ -155,6 +159,16 @@ const DocumentsPage = () => {
                 />
               </div>
             ))}
+            <div>
+              <button
+                className="btn"
+                onClick={() => {
+                  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+                }}
+              >
+                scroll to top
+              </button>
+            </div>
           </div>
           <div
             className={`${
@@ -170,7 +184,7 @@ const DocumentsPage = () => {
           {/* display file */}
           <div
             className={`${
-              fileOpen && !addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"
+              fileOpen && !addDocumentsOpen ? "w-3/5 xl:w-full" : "hidden"
             }`}
           >
             <DisplayDocument

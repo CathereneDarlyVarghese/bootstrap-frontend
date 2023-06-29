@@ -139,7 +139,7 @@ const DocumentsCard = ({
           <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
             {documentName}
           </h1>
-          <div className="badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto">
+          <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
             {documentType}
           </div>
         </div>
