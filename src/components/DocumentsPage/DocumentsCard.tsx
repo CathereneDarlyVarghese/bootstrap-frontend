@@ -14,6 +14,7 @@ import { getDocumentTypeById } from "services/documentTypeServices";
 import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
+import EditDocumentsForm from "./EditDocumentsForm";
 
 const DocumentsCard = ({
   documentID,
@@ -32,6 +33,7 @@ const DocumentsCard = ({
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [documentType, setDocumentType] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>(null);
+  const [editFormOpen, setEditFormOpen] = useState(false)
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -145,23 +147,25 @@ const DocumentsCard = ({
       <div className="mt-2">
         <p className="text-gray-400">{documentDescription}</p>
       </div>
-      <div className="mt-2">
-        <h1 className="text-black dark:text-white font-sans font-semibold">
-          Note:
-        </h1>
-        <div className="flex row items-center">
-          <div>
+      <div className="mt-2 flex flex-row">
+        <div className="mr-1">
+          <h1 className="text-black dark:text-white font-sans font-semibold">
+            Note:
+          </h1>
+          <div >
             <p className="text-gray-400">{documentNotes}</p>
           </div>
-          <div className="ml-auto">
-            <button title="Edit Document">
+        </div>
+        <div className="ml-auto">
+          <div className="flex flex-row md:flex-col gap-1 md:gap-2">
+            <button title="Edit Document" onClick={() => setEditFormOpen(true)}>
               <AiOutlineEdit className="text-2xl text-black dark:text-white" />
             </button>
             <button title="Document History">
               <AiOutlineHistory className="text-2xl text-black dark:text-white" />
             </button>
             <button
-            title="Delete Document"
+              title="Delete Document"
               onClick={(e) => {
                 e.stopPropagation();
                 if (
@@ -178,6 +182,7 @@ const DocumentsCard = ({
             </button>
           </div>
         </div>
+
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
         <div
@@ -220,6 +225,9 @@ const DocumentsCard = ({
           )}
           {/* <AiFillExclamationCircle className="text-yellow-600 text-3xl md:text-2xl" /> */}
         </div>
+      </div>
+      <div>
+        <EditDocumentsForm open={editFormOpen} close={() => setEditFormOpen(false)} />
       </div>
     </div>
   );
