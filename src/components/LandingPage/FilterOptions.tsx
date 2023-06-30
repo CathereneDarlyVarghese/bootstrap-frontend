@@ -7,10 +7,9 @@ import { useLocation } from "react-router-dom";
 export var selectedSectionNames: string[] = [];
 export var selectedPlacementNames: string[] = [];
 
-export const FilterOptions = ({ filterClose, sections, placements }) => {
+export const FilterOptions = ({ filterClose, sections, placements, selectedButtonsSection, setSelectedButtonsSection, selectedButtonsPlacement, setSelectedButtonsPlacement }) => {
+
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
-  const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
-  const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
   const filterButtonsStatus = [
     { title: "Working", info: "" },
@@ -25,8 +24,6 @@ export const FilterOptions = ({ filterClose, sections, placements }) => {
 
     selectedSectionNames = [];
     selectedPlacementNames = [];
-
-    // clearQueryParams();
   };
 
   const handleStatusClick = (buttonIndex) => {
@@ -38,26 +35,6 @@ export const FilterOptions = ({ filterClose, sections, placements }) => {
       setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
     }
   };
-
-  /*const clearQueryParams = () => {
-    const urlWithoutParams = window.location.origin + window.location.pathname;
-    window.history.pushState(null, "", urlWithoutParams);
-  };*/
-
-  /*const updateURL = () => {
-    const sectionNamesParam = selectedSectionNames.join(",");
-    const placementNamesParam = selectedPlacementNames.join(",");
-    const queryString = `?sectionNames=${encodeURIComponent(sectionNamesParam)}&placementNames=${encodeURIComponent(placementNamesParam)}`;
-    window.history.pushState(null, "", queryString);
-  };*/
-
-  /*useEffect(() => {
-    updateURL();
-
-    if (selectedSectionNames.length === 0 && selectedPlacementNames.length === 0) {
-      clearQueryParams();
-    }
-  }, [selectedSectionNames, selectedPlacementNames]);*/
 
   const handleSectionClick = (buttonIndex) => {
     if (buttonIndex === -1) {
