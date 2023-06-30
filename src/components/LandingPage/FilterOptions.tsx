@@ -45,9 +45,9 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
   };
 
   const updateURL = () => {
-    const sectionNames = selectedSectionNames.join("&sectionNames=");
-    const placementNames = selectedPlacementNames.join("&placementNames=");
-    const queryString = `?sectionNames=${sectionNames}&placementNames=${placementNames}`;
+    const sectionNamesParam = selectedSectionNames.join(",");
+    const placementNamesParam = selectedPlacementNames.join(",");
+    const queryString = `?sectionNames=${encodeURIComponent(sectionNamesParam)}&placementNames=${encodeURIComponent(placementNamesParam)}`;
     window.history.pushState(null, "", queryString);
   };
 
@@ -173,7 +173,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
         </div>
       </div>
       <div className="my-3">
-        <h1 className="font-sans">Sort by Status:</h1>
+        <h1 className="font-sans">Status</h1>
         <button
           className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
             selectedButtonsStatus.includes(-1)
@@ -198,7 +198,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
         ))}
       </div>
       <div className="my-3">
-        <h1 className="font-sans">Sort by Section:</h1>
+        <h1 className="font-sans">Section</h1>
         <button
           className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
             selectedButtonsSection.includes(-1)
@@ -226,7 +226,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
           ))}
       </div>
       <div>
-        <h1 className="font-sans">Sort by Placement:</h1>
+        <h1 className="font-sans">Placement</h1>
         <button
           className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
             selectedButtonsPlacement.includes(-1)
