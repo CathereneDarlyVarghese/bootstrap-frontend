@@ -8,8 +8,11 @@ import documentIcon from "../../icons/documentIcon.svg";
 import { Auth } from "aws-amplify";
 import { getDocumentTypeById } from "services/documentTypeServices";
 import { getFileById } from "services/fileServices";
+import { deleteDocument } from "services/documentServices";
+import { toast } from "react-toastify";
 
 const DocumentsCard = ({
+  documentID,
   documentName,
   documentDescription,
   documentTypeID,
@@ -20,7 +23,7 @@ const DocumentsCard = ({
   documentStatus,
   fileID,
   setFileOpen,
-  fileOpen
+  fileOpen,
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [documentType, setDocumentType] = useState<string | null>(null);
@@ -56,9 +59,47 @@ const DocumentsCard = ({
   }, []);
 
   // console.log("Selected Document Type ==>> ", documentType);
-  // console.log("Session Token ==>> ", sessionToken);  
+  // console.log("Session Token ==>> ", sessionToken);
+
+  const deleteSelectedDocument = async () => {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+
+      await deleteDocument(
+        userData.signInUserSession.accessToken.jwtToken,
+        documentID
+      );
+      toast.success("Document Deleted Successfully!", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      console.log("Failed to delete document: ", error);
+      toast.error("Failed to create document", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   return (
-    <div className="card bg-white dark:bg-gray-800 p-5" style={{ height: "fit-content" }}>
+    <div
+      className="card bg-white dark:bg-gray-800 p-5"
+      style={{ height: "fit-content" }}
+    >
       <div className="flex flex-row-reverse md:flex-col">
         <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
           <div className="mr-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
@@ -101,27 +142,41 @@ const DocumentsCard = ({
         <p className="text-gray-400">{documentDescription}</p>
       </div>
       <div className="mt-2">
-        <h1 className="text-black dark:text-white font-sans font-semibold">Note:</h1>
-        <div className="flex flex row items-center">
+        <h1 className="text-black dark:text-white font-sans font-semibold">
+          Note:
+        </h1>
+        <div className="flex row items-center">
           <div>
             <p className="text-gray-400">{documentNotes}</p>
           </div>
           <div className="ml-auto">
-            <button onClick={(e) => {
-              e.stopPropagation()
-              console.log("delete documents button clicked")
-            }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete this document?"
+                  )
+                ) {
+                  deleteSelectedDocument();
+                }
+                console.log("Delete document button clicked");
+              }}
+            >
               <AiOutlineDelete className="text-2xl text-black dark:text-white" />
             </button>
           </div>
         </div>
       </div>
       <div className="mt-4 flex flex-row gap-5 items-center">
-        <div className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden" onClick={() => {
-          console.log("clicked")
-          setFileOpen(true)
-          console.log(fileOpen)
-        }}>
+        <div
+          className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden"
+          onClick={() => {
+            console.log("clicked");
+            setFileOpen(true);
+            console.log(fileOpen);
+          }}
+        >
           <img src={documentIcon} />
           <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
             {String(fileName).substring(51) || ""}

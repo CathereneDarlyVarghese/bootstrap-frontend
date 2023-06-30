@@ -38,7 +38,8 @@ const DocumentsPage = () => {
     location_id: "",
     document_type: "",
   };
-  const [selectedDocument, setSelectedDocument] = useState<IncomingDocument>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] =
+    useState<IncomingDocument>(defaultDocument);
 
   //display file
   const [fileOpen, setFileOpen] = useState(false);
@@ -62,7 +63,6 @@ const DocumentsPage = () => {
 
         //Initialising selectedDocument as the first one (to avoid null error)
         setSelectedDocument(documentsData[0]);
-
       } catch (error) {
         console.log(error);
       }
@@ -72,7 +72,7 @@ const DocumentsPage = () => {
   }, [location]);
 
   useEffect(() => {
-    const fetchFile = async() => {
+    const fetchFile = async () => {
       const userData = await Auth.currentAuthenticatedUser();
 
       const fetchedFile = await getFileById(
@@ -81,9 +81,9 @@ const DocumentsPage = () => {
       );
 
       setFileName(fetchedFile.file_array[0]);
-    }
-    fetchFile()
-  }, [selectedDocument])
+    };
+    fetchFile();
+  }, [selectedDocument]);
 
   return (
     <>
@@ -139,6 +139,7 @@ const DocumentsPage = () => {
                 }}
               >
                 <DocumentsCard
+                  documentID={document.document_id}
                   documentName={document.document_name}
                   documentDescription={document.document_description}
                   documentTypeID={document.document_type_id}
@@ -167,10 +168,17 @@ const DocumentsPage = () => {
             />
           </div>
           {/* display file */}
-          <div className={`${fileOpen && !addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"}`}>
-            <DisplayDocument fileName={fileName} closeFile={() => {
-              setFileOpen(false)
-            }} />
+          <div
+            className={`${
+              fileOpen && !addDocumentsOpen ? "w-2/5 xl:w-full" : "hidden"
+            }`}
+          >
+            <DisplayDocument
+              fileName={fileName}
+              closeFile={() => {
+                setFileOpen(false);
+              }}
+            />
           </div>
         </div>
       </div>
