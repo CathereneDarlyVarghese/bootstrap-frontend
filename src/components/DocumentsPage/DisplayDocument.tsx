@@ -3,9 +3,9 @@ import PropTypes from "prop-types"
 const DisplayDocument = (props) => {
   return (
     <>
-      <input type="checkbox" checked={true} id="my_modal_6" className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box h-screen w-fit" >
+      {/* <input type="checkbox" checked={true} id="my_modal_6" className="modal-toggle" /> */}
+      <div className="">
+        <div className="h-screen" >
           <div className="rounded-xl p-3 bg-white dark:bg-gray-800">
             <div className="p-0 mb-5 w-full sm:mx-2">
               <div className="flex flex-row">
@@ -27,8 +27,8 @@ const DisplayDocument = (props) => {
                   />
                 </svg>
               </div>
-              <div style={{ width: "100%" }}>
-                <iframe src={props.fileName} width="500px">
+              <div className="h-52 w-full">
+                <iframe src={props.fileName} width="100%" height="100%">
                   {String(props.fileName).substring(51)}
                 </iframe>
               </div>
@@ -43,7 +43,7 @@ const DisplayDocument = (props) => {
 
 DisplayDocument.propTypes = {
   fileName: PropTypes.string,
-  closeFile: PropTypes.any
+  closeFile: PropTypes.any,
 }
 
 DisplayDocument.defaultProps = {

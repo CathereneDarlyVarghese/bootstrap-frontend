@@ -103,14 +103,15 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
       </div>
       {/* Map Status Cards here */}
       <div className={`${detailsOpen ? "hidden" : ""}`}>
-        {assetChecks.map((assetCheck) => (
-          <StatusCard
-            status={assetCheck.status_check}
-            date={new Date(assetCheck.modified_date)}
-            onClick={() => handleStatusCardClick(assetCheck.uptime_check_id)}
-            uptime_notes={assetCheck.uptime_notes}
-          />
-        ))}
+        {assetChecks.sort((a, b) => new Date(b.modified_date).getTime() - new Date(a.modified_date).getTime())
+          .map((assetCheck) => (
+            <StatusCard
+              status={assetCheck.status_check}
+              date={new Date(assetCheck.modified_date)}
+              onClick={() => handleStatusCardClick(assetCheck.uptime_check_id)}
+              uptime_notes={assetCheck.uptime_notes}
+            />
+          ))}
       </div>
 
       <div className={`${detailsOpen ? "" : "hidden"}`}>
