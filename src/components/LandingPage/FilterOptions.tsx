@@ -4,13 +4,13 @@ import { Auth } from "aws-amplify";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { useLocation } from "react-router-dom";
 
-const FilterOptions = ({ filterClose, sections, placements }) => {
+export var selectedSectionNames: string[] = [];
+export var selectedPlacementNames: string[] = [];
+
+export const FilterOptions = ({ filterClose, sections, placements }) => {
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
-
-  const [selectedSectionNames, setSelectedSectionNames] = useState([]);
-  const [selectedPlacementNames, setSelectedPlacementNames] = useState([]);
 
   const filterButtonsStatus = [
     { title: "Working", info: "" },
@@ -23,10 +23,10 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
     setSelectedButtonsPlacement([]);
     setSelectedButtonsSection([]);
 
-    setSelectedSectionNames([]);
-    setSelectedPlacementNames([]);
+    selectedSectionNames = [];
+    selectedPlacementNames = [];
 
-    clearQueryParams();
+    // clearQueryParams();
   };
 
   const handleStatusClick = (buttonIndex) => {
@@ -39,32 +39,32 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
     }
   };
 
-  const clearQueryParams = () => {
+  /*const clearQueryParams = () => {
     const urlWithoutParams = window.location.origin + window.location.pathname;
     window.history.pushState(null, "", urlWithoutParams);
-  };
+  };*/
 
-  const updateURL = () => {
+  /*const updateURL = () => {
     const sectionNamesParam = selectedSectionNames.join(",");
     const placementNamesParam = selectedPlacementNames.join(",");
     const queryString = `?sectionNames=${encodeURIComponent(sectionNamesParam)}&placementNames=${encodeURIComponent(placementNamesParam)}`;
     window.history.pushState(null, "", queryString);
-  };
+  };*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     updateURL();
 
     if (selectedSectionNames.length === 0 && selectedPlacementNames.length === 0) {
       clearQueryParams();
     }
-  }, [selectedSectionNames, selectedPlacementNames]);
+  }, [selectedSectionNames, selectedPlacementNames]);*/
 
   const handleSectionClick = (buttonIndex) => {
     if (buttonIndex === -1) {
       if (selectedButtonsSection.includes(-1)) {
         // If "All" button is already selected, unselect it and all other buttons
         setSelectedButtonsSection([]);
-        setSelectedSectionNames([]);
+        selectedSectionNames = [];
       } else {
         // If "All" button is not selected, select it and all other buttons
         const allIndices = [];
@@ -72,21 +72,21 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
           allIndices.push(i);
         }
         setSelectedButtonsSection([-1, ...allIndices]);
-        setSelectedSectionNames(sections.map((section) => section.section_name));
+        selectedSectionNames = (sections.map((section) => section.section_name));
       }
     } else {
       if (selectedButtonsSection.includes(buttonIndex)) {
         setSelectedButtonsSection(
           selectedButtonsSection.filter((index) => index !== buttonIndex)
         );
-        setSelectedSectionNames(
+        selectedSectionNames = (
           selectedSectionNames.filter(
             (sectionName) => sectionName !== sections[buttonIndex].section_name
           )
         );
       } else {
         setSelectedButtonsSection([...selectedButtonsSection, buttonIndex]);
-        setSelectedSectionNames([
+        selectedSectionNames = ([
           ...selectedSectionNames,
           sections[buttonIndex].section_name,
         ]);
@@ -99,7 +99,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
       if (selectedButtonsPlacement.includes(-1)) {
         // If "All" button is already selected, unselect it and all other buttons
         setSelectedButtonsPlacement([]);
-        setSelectedPlacementNames([]);
+        selectedPlacementNames = [];
       } else {
         // If "All" button is not selected, select it and all other buttons
         const allIndices = [];
@@ -107,7 +107,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
           allIndices.push(i);
         }
         setSelectedButtonsPlacement([-1, ...allIndices]);
-        setSelectedPlacementNames(
+        selectedPlacementNames = (
           placements.map((placement) => placement.placement_name)
         );
       }
@@ -116,7 +116,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
         setSelectedButtonsPlacement(
           selectedButtonsPlacement.filter((index) => index !== buttonIndex)
         );
-        setSelectedPlacementNames(
+        selectedPlacementNames = (
           selectedPlacementNames.filter(
             (placementName) =>
               placementName !== placements[buttonIndex].placement_name
@@ -124,7 +124,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
         );
       } else {
         setSelectedButtonsPlacement([...selectedButtonsPlacement, buttonIndex]);
-        setSelectedPlacementNames([
+        selectedPlacementNames = ([
           ...selectedPlacementNames,
           placements[buttonIndex].placement_name,
         ]);
@@ -158,7 +158,7 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
       <div className="flex flex-row">
         <h1 className="font-sans font-semibold">Fitler and Sort</h1>
         <div className="flex flex-row gap-2 ml-auto">
-          <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 font-normal px-4 font-sans rounded-full capitalize ml-auto">
+          <button onClick={filterClose} className="btn btn-sm bg-blue-900 hover:bg-blue-900 font-normal px-4 font-sans rounded-full capitalize ml-auto">
             Done
           </button>
           <button
@@ -257,4 +257,3 @@ const FilterOptions = ({ filterClose, sections, placements }) => {
   );
 };
 
-export default FilterOptions;

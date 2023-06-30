@@ -1,6 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { useRef } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
@@ -10,22 +8,21 @@ import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
-import { getInventory } from "services/apiServices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import WorkOrderForm from "./WorkOrderForm1";
 
 import SearchIcon from "../../icons/circle2017.png";
 
-//sample image for ui testing
-import testImage from "./testImage.png";
 import { getAllAssets, getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
-import { AssetCondition } from "enums";
 import { TfiClose } from "react-icons/tfi";
-import { BsFilter } from "react-icons/bs"
-import FilterOptions from "./FilterOptions";
+import { BsFilter } from "react-icons/bs";
+import {
+  FilterOptions,
+  selectedSectionNames,
+  selectedPlacementNames,
+} from "./FilterOptions";
 
 const ListsLayout = (props: any) => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
@@ -38,7 +35,7 @@ const ListsLayout = (props: any) => {
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
-  const [filtersOpen, setFitlersOpen] = useState(false)
+  const [filtersOpen, setFitlersOpen] = useState(false);
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -46,8 +43,6 @@ const ListsLayout = (props: any) => {
   // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
   const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
-  const [activeTab, setActiveTab] = useState(-1);
-  //sample array for pillblock nav tabs
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
   ];
@@ -55,7 +50,6 @@ const ListsLayout = (props: any) => {
     useState<AssetSection[]>(defaultAssetSections);
   const [selectedAssetSection, setSelectedAssetSection] =
     useState<AssetSection>(defaultAssetSections[0]);
-  const [scroll, setScroll] = useState(false);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
 
@@ -65,11 +59,9 @@ const ListsLayout = (props: any) => {
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
     defaultAssetPlacements
   );
-  const [selectedAssetPlacement, setSelectedAssetPlacement] =
-    useState<AssetPlacement>(defaultAssetPlacements[0]);
+
   const [selectedAssetPlacementName, setSelectedAssetPlacementName] =
     useState<string>("");
-  const [filterButton, setFilterButton] = useState(true)
 
   const handleAddWorkOrder = () => {
     setShowWorkOrderForm(true);
@@ -94,29 +86,6 @@ const ListsLayout = (props: any) => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
-  //button to scroll pill navigation
-  const scrollLeft = () => {
-    setScroll(true);
-    if (scroll) {
-      document.getElementById("scrollAll").scrollIntoView({
-        inline: "start",
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  };
-
-  const scrollRight = () => {
-    setScroll(true);
-    if (scroll) {
-      document.getElementById("scrollLast").scrollIntoView({
-        inline: "start",
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  };
-
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -137,16 +106,6 @@ const ListsLayout = (props: any) => {
       setSearchTerm(decodeURIComponent(scannedSearchTerm));
     }
   }, []);
-
-  const filterAssets = (searchTerm: string) => {
-    const filtered = incomingAssets.filter(
-      (asset) =>
-        asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.asset_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.location_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredAssets(filtered);
-  };
 
   useEffect(() => {
     const subscribeToPusherChannel = () => {
@@ -234,8 +193,7 @@ const ListsLayout = (props: any) => {
 
         // Filtering fetched Asset Sections on the basis of selected Location
         const filteredFetchedAssetSections = fetchedAssetSections.filter(
-          (section: AssetSection) =>
-            section.location_id === location.locationId
+          (section: AssetSection) => section.location_id === location.locationId
         );
 
         setAssetSections(filteredFetchedAssetSections);
@@ -260,12 +218,6 @@ const ListsLayout = (props: any) => {
         setAssetPlacements(fetchedAssetPlacements);
 
         console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
-
-        // Filtering fetched Asset Placements on the basis of selected Asset Section
-        // const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
-        //   (placement: AssetPlacement) =>
-        //     placement.section_id === selectedAssetSection.section_id
-        // );
 
         setAssetPlacements(fetchedAssetPlacements);
       } catch (error) {
@@ -318,14 +270,14 @@ const ListsLayout = (props: any) => {
                 className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                 onChange={(e) => handleSearchInputChange(e)}
               />
-              <button onClick={() => {
-                setSearchTerm("")
-              }}>
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                }}
+              >
                 <TfiClose className="text-blue-600 dark:text-white" />
               </button>
             </div>
-
-
 
             {/* Add asset button */}
             <button
@@ -341,55 +293,79 @@ const ListsLayout = (props: any) => {
             </button>
           </div>
           <div className="bg-gray-100 mt-1">
+            {incomingAssets
+              .filter((a) => {
+                const SearchTermMatch =
+                  a.asset_name
+                    .toLowerCase()
+                    .startsWith(searchTerm.toLowerCase()) && searchTerm !== "";
 
-            {incomingAssets.filter((a) => {
-              const SearchTermMatch =
-                a.asset_name.toLowerCase().startsWith(searchTerm.toLowerCase()) && searchTerm !== ""
-
-              return SearchTermMatch;
-            }).slice(0, 5).map((asset) => (
-              <div className="bg-gray-100 hover:bg-gray-300" onClick={() => setSearchTerm(asset.asset_name)}>
-                <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">{asset.asset_name}</p>
-              </div>
-            ))}
+                return SearchTermMatch;
+              })
+              .slice(0, 5)
+              .map((asset) => (
+                <div
+                  className="bg-gray-100 hover:bg-gray-300"
+                  onClick={() => setSearchTerm(asset.asset_name)}
+                >
+                  <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
+                    {asset.asset_name}
+                  </p>
+                </div>
+              ))}
           </div>
-
         </div>
 
         <div>
-          <div className={`flex flex-row justify-end my-2 ${filtersOpen ? "hidden" : ""}`}>
-            <button className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black" onClick={() => setFitlersOpen(true)}>
+          <div
+            className={`flex flex-row justify-end my-2 ${
+              filtersOpen ? "hidden" : ""
+            }`}
+          >
+            <button
+              className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
+              onClick={() => setFitlersOpen(true)}
+            >
               <div className="flex flex-row">
                 Filter
                 <BsFilter />
               </div>
             </button>
           </div>
-
         </div>
         {filtersOpen ? (
           <div className="my-2">
-            <FilterOptions filterClose={() => setFitlersOpen(false)} sections={assetSections} placements={assetPlacements} />
+            <FilterOptions
+              filterClose={() => setFitlersOpen(false)}
+              sections={assetSections}
+              placements={assetPlacements}
+            />
           </div>
         ) : (
           <div>
             {/* Render asset cards */}
             {incomingAssets
-              .filter((a) => {
-                const sectionMatch =
-                  !selectedAssetSection ||
-                  selectedAssetSection.section_name === "" ||
-                  selectedAssetSection.section_name === a.section_name;
-                const placementMatch =
-                  !selectedAssetPlacementName ||
-                  selectedAssetPlacementName === "" ||
-                  selectedAssetPlacementName === a.placement_name;
+              .filter((asset) => {
                 const searchTermMatch =
                   searchTerm === "" ||
-                  a.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  a.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
+                  asset.asset_name
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  asset.asset_type
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase());
 
-                return sectionMatch && placementMatch && searchTermMatch;
+                const sectionFilterMatch =
+                  selectedSectionNames.length === 0 ||
+                  selectedSectionNames.includes(asset.section_name);
+
+                const placementFilterMatch =
+                  selectedPlacementNames.length === 0 ||
+                  selectedPlacementNames.includes(asset.placement_name);
+
+                return (
+                  searchTermMatch && sectionFilterMatch && placementFilterMatch
+                );
               })
               .map((asset) => (
                 <div
@@ -402,7 +378,10 @@ const ListsLayout = (props: any) => {
                       "#parent-element .asset-details-card",
                       "lg:hidden"
                     );
-                    addClass("#parent-element .asset-details-card", "lg:w-full");
+                    addClass(
+                      "#parent-element .asset-details-card",
+                      "lg:w-full"
+                    );
                     addClass("#parent-element .asset-card", "lg:hidden");
                   }}
                 >
@@ -420,9 +399,6 @@ const ListsLayout = (props: any) => {
               ))}
           </div>
         )}
-
-
-
       </div>
       <div
         className={`w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700  lg:hidden asset-details-card md:pb-14`}
