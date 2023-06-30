@@ -4,17 +4,17 @@ import { Auth } from "aws-amplify";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { useLocation } from "react-router-dom";
 
+export var selectedStatusIds: string[] = [];
 export var selectedSectionNames: string[] = [];
 export var selectedPlacementNames: string[] = [];
 
-export const FilterOptions = ({ filterClose, sections, placements, selectedButtonsSection, setSelectedButtonsSection, selectedButtonsPlacement, setSelectedButtonsPlacement }) => {
+export const FilterOptions = ({ filterClose, sections, placements, selectedButtonsSection, setSelectedButtonsSection, selectedButtonsPlacement, setSelectedButtonsPlacement, selectedButtonsStatus, setSelectedButtonsStatus }) => {
+// const statuses = ["Working", "DOWN", "Maintenance"];
 
-  const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
-
-  const filterButtonsStatus = [
-    { title: "Working", info: "" },
-    { title: "Down", info: "" },
-    { title: "Maintenance", info: "" },
+  const statuses = [
+    { status_name: "Working", status_id: "ca879fb3-2f94-41b0-afb2-dea1448aaed3" },
+    { status_name: "Down", status_id: "1b3fff6a-aeda-4115-b3c1-b9a5654a629e" },
+    { status_name: "Maintenance", status_id: "24bbffe7-4d1d-4b9c-b959-4957033e29b6" },
   ];
 
   const handleReset = () => {
@@ -24,15 +24,41 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
 
     selectedSectionNames = [];
     selectedPlacementNames = [];
+    selectedStatusIds = [];
   };
 
   const handleStatusClick = (buttonIndex) => {
-    if (selectedButtonsStatus.includes(buttonIndex)) {
-      setSelectedButtonsStatus(
-        selectedButtonsStatus.filter((index) => index !== buttonIndex)
-      );
+    if (buttonIndex === -1) {
+      if (selectedButtonsStatus.includes(-1)) {
+        // If "All" button is already selected, unselect it and all other buttons
+        setSelectedButtonsStatus([]);
+        selectedStatusIds = [];
+      } else {
+        // If "All" button is not selected, select it and all other buttons
+        const allIndices = [];
+        for (let i = 0; i < statuses.length; i++) {
+          allIndices.push(i);
+        }
+        setSelectedButtonsStatus([-1, ...allIndices]);
+        selectedStatusIds = (statuses.map((status) => status.status_id));
+      }
     } else {
-      setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
+      if (selectedButtonsStatus.includes(buttonIndex)) {
+        setSelectedButtonsStatus(
+          selectedButtonsStatus.filter((index) => index !== buttonIndex)
+        );
+        selectedStatusIds = (
+          selectedStatusIds.filter(
+            (statusId) => statusId !== statuses[buttonIndex].status_id
+          )
+        );
+      } else {
+        setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
+        selectedStatusIds = ([
+          ...selectedStatusIds,
+          statuses[buttonIndex].status_id
+        ]);
+      }
     }
   };
 
@@ -161,7 +187,7 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
         >
           All
         </button>
-        {filterButtonsStatus.map((button, index) => (
+        {statuses.map((status, index) => (
           <button
             className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
               selectedButtonsStatus.includes(index)
@@ -170,7 +196,7 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
             } border-blue-500 hover:border-blue-500 rounded-full m-1`}
             onClick={() => handleStatusClick(index)}
           >
-            {button.title}
+            {status.status_name}
           </button>
         ))}
       </div>

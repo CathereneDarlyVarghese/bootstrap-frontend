@@ -20,6 +20,7 @@ import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import {
   FilterOptions,
+  selectedStatusIds,
   selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
@@ -36,6 +37,7 @@ const ListsLayout = (props: any) => {
   const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [filtersOpen, setFitlersOpen] = useState(false);
+  const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
@@ -369,6 +371,8 @@ const ListsLayout = (props: any) => {
                 setSelectedButtonsSection={setSelectedButtonsSection}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
+                selectedButtonsStatus={selectedButtonsStatus}
+                setSelectedButtonsStatus={setSelectedButtonsStatus}
               />
             </div>
           ) : (
@@ -385,6 +389,10 @@ const ListsLayout = (props: any) => {
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase());
 
+                  const statusFilterMatch =
+                    selectedStatusIds.length === 0 ||
+                    selectedStatusIds.includes(asset.asset_status)
+
                   const sectionFilterMatch =
                     selectedSectionNames.length === 0 ||
                     selectedSectionNames.includes(asset.section_name);
@@ -400,6 +408,7 @@ const ListsLayout = (props: any) => {
 
                   return (
                     searchTermMatch &&
+                    statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
                     selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
