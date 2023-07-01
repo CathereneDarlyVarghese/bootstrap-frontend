@@ -63,7 +63,7 @@ const FilterOptions = ({ filterClose }) => {
     return (
         <div className="p-2">
             <div className="flex flex-row">
-                <h1 className="font-sans font-semibold">Fitler and Sort</h1>
+                <h1 className="font-sans font-semibold">Filter</h1>
                 <div className="flex flex-row gap-2 ml-auto">
                     <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 font-normal px-4 font-sans rounded-full capitalize ml-auto">Done</button>
                     <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 font-normal px-4 font-sans rounded-full capitalize ml-auto" onClick={handleReset}>Reset</button>
@@ -74,7 +74,7 @@ const FilterOptions = ({ filterClose }) => {
 
             </div>
             <div>
-                <h1 className="font-sans">Sort by Location:</h1>
+                <h1 className="font-sans">Location</h1>
                 {
                     filterButtonsLocation.map((button, index) => (
                         <button
@@ -85,7 +85,7 @@ const FilterOptions = ({ filterClose }) => {
                 }
             </div>
             <div className="my-3">
-                <h1 className="font-sans">Sort by Section:</h1>
+                <h1 className="font-sans">Section</h1>
                 {
                     filterButtonsSection.map((button, index) => (
                         <button
@@ -96,7 +96,7 @@ const FilterOptions = ({ filterClose }) => {
                 }
             </div>
             <div className="my-3">
-                <h1 className="font-sans">Sort by Status:</h1>
+                <h1 className="font-sans">Status</h1>
                 {
                     filterButtonsStatus.map((button, index) => (
                         <button className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(index) ? "bg-blue-200 hover:bg-blue-200" : "bg-white hover:bg-white"} border-blue-500 hover:border-blue-500 rounded-full m-1`}
