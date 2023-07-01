@@ -18,14 +18,18 @@ import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
+import { AiOutlineScan } from "react-icons/ai";
 import {
   FilterOptions,
   selectedStatusIds,
   selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
+import ScanButton from "components/widgets/ScanButton";
+import { Navigate, useNavigate } from "react-router";
 
 const ListsLayout = (props: any) => {
+  const navigate = useNavigate();
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
@@ -302,7 +306,7 @@ const ListsLayout = (props: any) => {
 
                 {/* Add asset button */}
                 <button
-                  className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+                  className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none md:hidden"
                   onClick={() => {
                     handleAddAssetOpen();
                     removeClass(
@@ -318,6 +322,14 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
+                <button className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block" onClick={() => navigate("/scan")}>
+                  <div className="flex flex-row items-center">
+                    <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
+                    <h1>Scan</h1>
+                  </div>
+                </button>
+
+
               </div>
               <div className="bg-gray-100 mt-1">
                 {incomingAssets
@@ -346,9 +358,8 @@ const ListsLayout = (props: any) => {
           </div>
           <div>
             <div
-              className={`flex flex-row justify-end my-2 ${
-                filtersOpen ? "hidden" : ""
-              }`}
+              className={`flex flex-row justify-end my-2 ${filtersOpen ? "hidden" : ""
+                }`}
             >
               <button
                 className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
@@ -410,7 +421,7 @@ const ListsLayout = (props: any) => {
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                    selectedPlacementNames.length === 0
+                      selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : unionFilterMatch)
                   );
