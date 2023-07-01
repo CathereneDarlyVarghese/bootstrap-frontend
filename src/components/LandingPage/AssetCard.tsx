@@ -90,7 +90,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           )}
         </div>
         <h1
-          className={`flex ml-2 ${props.assetCondition === "INACTIVE" ? "text-gray-400 dark:text-gray-400" : "text-gray-800 dark:text-white"} text-lg font-semibold font-sans tracking-wide xl:text-sm`}
+          className={`flex ml-2 ${props.assetCondition === "INACTIVE" ? "text-gray-400 dark:text-gray-400" : "text-gray-800 dark:text-white"} ${props.assetName.length > 10 ? "text-md" : "text-lg"}  font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
         >
           {props.assetName}

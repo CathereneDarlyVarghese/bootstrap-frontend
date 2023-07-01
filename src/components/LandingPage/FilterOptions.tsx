@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { Auth } from "aws-amplify";
 import { getAssetPlacements } from "services/assetPlacementServices";
-import { useLocation } from "react-router-dom";
 
 export var selectedStatusIds: string[] = [];
 export var selectedSectionNames: string[] = [];
 export var selectedPlacementNames: string[] = [];
 
 export const FilterOptions = ({ filterClose, sections, placements, selectedButtonsSection, setSelectedButtonsSection, selectedButtonsPlacement, setSelectedButtonsPlacement, selectedButtonsStatus, setSelectedButtonsStatus }) => {
-// const statuses = ["Working", "DOWN", "Maintenance"];
+  // const statuses = ["Working", "DOWN", "Maintenance"];
 
   const statuses = [
     { status_name: "Working", status_id: "ca879fb3-2f94-41b0-afb2-dea1448aaed3" },
@@ -151,7 +150,7 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
             placements = fetchedPlacements;
           }
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     getPlacements();
   }, []);
@@ -178,22 +177,20 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
       <div className="my-3">
         <h1 className="font-sans">Status</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-            selectedButtonsStatus.includes(-1)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
-          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(-1)
+            ? "bg-blue-200 hover:bg-blue-200"
+            : "bg-white hover:bg-white"
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handleStatusClick(-1)}
         >
           All
         </button>
         {statuses.map((status, index) => (
           <button
-            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-              selectedButtonsStatus.includes(index)
-                ? "bg-blue-200 hover:bg-blue-200"
-                : "bg-white hover:bg-white"
-            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(index)
+              ? "bg-blue-200 hover:bg-blue-200"
+              : "bg-white hover:bg-white"
+              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
             onClick={() => handleStatusClick(index)}
           >
             {status.status_name}
@@ -203,11 +200,10 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
       <div className="my-3">
         <h1 className="font-sans">Section</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-            selectedButtonsSection.includes(-1)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
-          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsSection.includes(-1)
+            ? "bg-blue-200 hover:bg-blue-200"
+            : "bg-white hover:bg-white"
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handleSectionClick(-1)}
         >
           All
@@ -217,11 +213,10 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
           .map((section, index) => (
             <button
               key={index}
-              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-                selectedButtonsSection.includes(index)
-                  ? "bg-blue-200 hover:bg-blue-200"
-                  : "bg-white hover:bg-white"
-              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsSection.includes(index)
+                ? "bg-blue-200 hover:bg-blue-200"
+                : "bg-white hover:bg-white"
+                } border-blue-500 hover:border-blue-500 rounded-full m-1`}
               onClick={() => handleSectionClick(index)}
             >
               {section.section_name}
@@ -231,11 +226,10 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
       <div>
         <h1 className="font-sans">Placement</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-            selectedButtonsPlacement.includes(-1)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
-          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(-1)
+            ? "bg-blue-200 hover:bg-blue-200"
+            : "bg-white hover:bg-white"
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handlePlacementClick(-1)}
         >
           All
@@ -245,11 +239,10 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
           .map((placement, index) => (
             <button
               key={index}
-              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-                selectedButtonsPlacement.includes(index)
-                  ? "bg-blue-200 hover:bg-blue-200"
-                  : "bg-white hover:bg-white"
-              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(index)
+                ? "bg-blue-200 hover:bg-blue-200"
+                : "bg-white hover:bg-white"
+                } border-blue-500 hover:border-blue-500 rounded-full m-1`}
               onClick={() => handlePlacementClick(index)}
             >
               {placement.placement_name}
