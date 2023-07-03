@@ -18,6 +18,7 @@ import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import EditDocumentsForm from "./EditDocumentsForm";
+import { File } from "types";
 
 const DocumentsCard = ({
   documentID,
@@ -34,8 +35,9 @@ const DocumentsCard = ({
   fileOpen,
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const defaultDocumentFile: File = { file_id: "", file_array: [] };
   const [documentType, setDocumentType] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>(null);
+  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -52,13 +54,13 @@ const DocumentsCard = ({
 
         setDocumentType(fetchedDocumentType.document_type);
 
-        const fetchedFile = await getFileById(
+        const fetchedDocumentFile = await getFileById(
           userData.signInUserSession.accessToken.jwtToken,
           fileID
         );
 
         // setFileName((fetchedFile.file_array[0]));
-        setFileName(fetchedFile.file_array[0]);
+        setDocumentFile(fetchedDocumentFile);
 
         // console.log("Document Type ==>> ", documentType);
       } catch (error) {
@@ -145,7 +147,11 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {documentName}
               </h1>
-              <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
+              <div
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${
+                  fileOpen ? "ml-auto" : ""
+                }`}
+              >
                 {documentType}
               </div>
             </div>
@@ -162,11 +168,9 @@ const DocumentsCard = ({
               }}
             >
               <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
-              </h1>
+              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"></h1>
             </div>
-            <div
+            {/* <div
               className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
@@ -178,7 +182,7 @@ const DocumentsCard = ({
               <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
                 {String(fileName).substring(51) || ""}
               </h1>
-            </div>
+            </div> */}
           </div>
           {/* Show files history above this section */}
           <div className="ml-auto">
@@ -187,9 +191,7 @@ const DocumentsCard = ({
             </button>
           </div>
         </div>
-
       ) : (
-
         <div
           className="card bg-white dark:bg-gray-800 p-5"
           style={{ height: "fit-content" }}
@@ -227,7 +229,11 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {documentName}
               </h1>
-              <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
+              <div
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${
+                  fileOpen ? "ml-auto" : ""
+                }`}
+              >
                 {documentType}
               </div>
             </div>
@@ -240,16 +246,22 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white font-sans font-semibold">
                 Note:
               </h1>
-              <div >
+              <div>
                 <p className="text-gray-400">{documentNotes}</p>
               </div>
             </div>
             <div className="ml-auto">
               <div className="flex flex-row md:flex-col gap-1 md:gap-2">
-                <button title="Edit Document" onClick={() => setEditFormOpen(true)}>
+                <button
+                  title="Edit Document"
+                  onClick={() => setEditFormOpen(true)}
+                >
                   <AiOutlineEdit className="text-2xl text-blue-900 dark:text-white" />
                 </button>
-                <button title="Document History" onClick={() => setShowHistory(true)}>
+                <button
+                  title="Document History"
+                  onClick={() => setShowHistory(true)}
+                >
                   <AiOutlineHistory className="text-2xl text-blue-900 dark:text-white" />
                 </button>
                 <button
@@ -270,7 +282,6 @@ const DocumentsCard = ({
                 </button>
               </div>
             </div>
-
           </div>
           <div className="mt-4 flex flex-row gap-5 items-center">
             <div
@@ -283,7 +294,7 @@ const DocumentsCard = ({
             >
               <img src={documentIcon} />
               <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
+                {/* {documentFile.file_array[0][(documentFile.file_array[0]).length - 1]} */}
               </h1>
             </div>
             <div className="flex flex-row gap-2 items-center sm:ml-auto">
@@ -315,12 +326,13 @@ const DocumentsCard = ({
             </div>
           </div>
           <div>
-            <EditDocumentsForm open={editFormOpen} close={() => setEditFormOpen(false)} />
+            <EditDocumentsForm
+              open={editFormOpen}
+              close={() => setEditFormOpen(false)}
+            />
           </div>
         </div>
-
       )}
-
     </>
   );
 };
