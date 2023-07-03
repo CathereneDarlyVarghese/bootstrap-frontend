@@ -5,6 +5,7 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { TbListDetails } from "react-icons/tb";
 import { CgDetailsMore } from "react-icons/cg";
 import { TiArrowBackOutline } from "react-icons/ti";
+import { AiOutlinePlus } from "react-icons/ai";
 import {
   AiOutlineDelete,
   AiOutlineHistory,
@@ -283,9 +284,9 @@ const DocumentsCard = ({
               </div>
             </div>
           </div>
-          <div className="mt-4 flex flex-row gap-5 items-center">
+          <div className="mt-4 flex flex-row md:flex-col gap-5 items-center">
             <div
-              className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden"
+              className="flex flex-row gap-2 items-center md:mr-auto overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
                 setFileOpen(true);
@@ -297,7 +298,7 @@ const DocumentsCard = ({
                 {/* {documentFile.file_array[0][(documentFile.file_array[0]).length - 1]} */}
               </h1>
             </div>
-            <div className="flex flex-row gap-2 items-center sm:ml-auto">
+            {/* <div className="flex flex-row gap-2 items-center sm:ml-auto">
               {fileStatus === "File Uploaded" ? (
                 <>
                   <BsFillCheckCircleFill className="text-lg text-green-500" />
@@ -313,6 +314,22 @@ const DocumentsCard = ({
                   </h1>
                 </>
               )}
+            </div> */}
+            <div className="md:w-full">
+              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full">
+                <div className="flex flex-row items-center gap-2">
+                  <AiOutlineHistory className="text-lg" />
+                  <p>Change exisiting version File</p>
+                </div>
+              </button>
+            </div>
+            <div className="md:w-full">
+              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full">
+                <div className="flex flex-row items-center gap-2">
+                  <AiOutlinePlus />
+                  <p>Add a new version File</p>
+                </div>
+              </button>
             </div>
             <div className="ml-auto">
               {documentStatus === "active" ? (

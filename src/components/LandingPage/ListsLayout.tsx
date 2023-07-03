@@ -37,6 +37,7 @@ const ListsLayout = (props: any) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOptions, setShowOptions] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
@@ -262,16 +263,16 @@ const ListsLayout = (props: any) => {
         closeOnClick
       />
       <div
-        className="w-1/3 h-5/6 rounded-xl p-2 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800"
+        className="w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800"
         id="style-7"
       >
         <div className="flex flex-col">
           <div
             style={{ display: "flex", flexDirection: "row" }}
-            className=" justify-center"
+            className=" justify-center "
           >
             {/* Search input field */}
-            <div className="flex flex-col">
+            <div className="flex flex-col absolute z-10 w-1/3 lg:w-full">
               <div
                 style={{ display: "flex", flexDirection: "row" }}
                 className=" justify-center"
@@ -290,7 +291,10 @@ const ListsLayout = (props: any) => {
                     placeholder="Search Asset"
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
-                    onChange={(e) => handleSearchInputChange(e)}
+                    onChange={(e) => {
+                      handleSearchInputChange(e)
+                      setShowOptions(true)
+                    }}
                   />
                   {searchTerm !== "" && (
                     <button
@@ -306,7 +310,7 @@ const ListsLayout = (props: any) => {
 
                 {/* Add asset button */}
                 <button
-                  className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none md:hidden"
+                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none md:hidden"
                   onClick={() => {
                     handleAddAssetOpen();
                     removeClass(
@@ -322,7 +326,7 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
-                <button className="btn w-28 h-fit ml-3 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block" onClick={() => navigate("/scan")}>
+                <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block" onClick={() => navigate("/scan")}>
                   <div className="flex flex-row items-center">
                     <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
                     <h1>Scan</h1>
@@ -331,7 +335,7 @@ const ListsLayout = (props: any) => {
 
 
               </div>
-              <div className="bg-gray-100 mt-1">
+              <div className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}>
                 {incomingAssets
                   .filter((a) => {
                     const SearchTermMatch =
@@ -346,7 +350,11 @@ const ListsLayout = (props: any) => {
                   .map((asset) => (
                     <div
                       className="bg-gray-100 hover:bg-gray-300"
-                      onClick={() => setSearchTerm(asset.asset_name)}
+                      onClick={() => {
+                        setSearchTerm(asset.asset_name)
+                        setShowOptions(false)
+
+                      }}
                     >
                       <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
                         {asset.asset_name}
@@ -356,9 +364,9 @@ const ListsLayout = (props: any) => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="mt-5">
             <div
-              className={`flex flex-row justify-end my-2 ${filtersOpen ? "hidden" : ""
+              className={`flex flex-row justify-end mt-10 ${filtersOpen ? "hidden" : ""
                 }`}
             >
               <button
@@ -373,7 +381,7 @@ const ListsLayout = (props: any) => {
             </div>
           </div>
           {filtersOpen ? (
-            <div className="my-2">
+            <div className="mt-10">
               <FilterOptions
                 filterClose={() => setFitlersOpen(false)}
                 sections={assetSections}
