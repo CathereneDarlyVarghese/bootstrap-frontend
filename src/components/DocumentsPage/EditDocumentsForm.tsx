@@ -223,8 +223,18 @@ const EditDocumentsForm = ({
                   className="font-sans font-semibold text-sm text-black dark:text-white"
                 >
                   Upload File
-                  <h1 className="text-xs text-slate-400">
-                    {`(Existing: ${
+                  <h1
+                    className="text-xs text-blue-800"
+                    onClick={() =>
+                      window.open(
+                        documentFile.file_array[
+                          documentFile.file_array.length - 1
+                        ][0],
+                        "_blank"
+                      )
+                    }
+                  >
+                    {`(Latest: ${
                       documentFile.file_array.length > 0
                         ? documentFile.file_array[
                             documentFile.file_array.length - 1

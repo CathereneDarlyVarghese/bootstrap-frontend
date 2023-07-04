@@ -5,7 +5,6 @@ import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
-import DisplayDocument from "./DisplayDocument";
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
   const location = useLocation();
