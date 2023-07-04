@@ -130,10 +130,10 @@ const AddDocumentsForm = ({
     const fetchData = async () => {
       try {
         const data = window.localStorage.getItem("sessionToken");
-        const documentTypes = await getAllDocumentTypes(data);
+        const fetchedDocumentTypes = await getAllDocumentTypes(data);
 
         setToken(data);
-        setDocumentTypes(documentTypes);
+        setDocumentTypes(fetchedDocumentTypes);
       } catch (error) {
         console.error(
           "Failed to fetch Session Token and Document Types:",

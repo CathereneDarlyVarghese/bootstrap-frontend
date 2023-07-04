@@ -2,7 +2,21 @@ import React, { useState, useEffect } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { getAllDocumentTypes } from "services/documentTypeServices";
-import { DocumentType } from "types";
+import { DocumentType, File } from "types";
+import { getFileById } from "services/fileServices";
+
+interface FormData {
+  documentID: string;
+  documentName: string;
+  documentDescription: string;
+  documentTypeID: string;
+  startDate: string;
+  endDate: string;
+  documentNotes: string;
+  fileStatus: string;
+  documentStatus: string;
+  fileID: string;
+}
 
 const EditDocumentsForm = ({
   open,
@@ -19,7 +33,7 @@ const EditDocumentsForm = ({
   fileID,
 }) => {
   const [file, setFile] = useState<any>();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     documentID: documentID,
     documentName: documentName,
     documentDescription: documentDescription,
@@ -32,15 +46,27 @@ const EditDocumentsForm = ({
     fileID: fileID,
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
+  const [selectedStartDate, setSelectedStartDate] = useState<string>(
+    formData.startDate
+  );
+  const [selectedEndDate, setSelectedEndDate] = useState<string>(
+    formData.endDate
+  );
+  const defaultDocumentFile: File = { file_id: "", file_array: [] };
+  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
 
   // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
-    const fetchDocumentTypes = async () => {
+    const fetchDetails = async () => {
       try {
         const data = window.localStorage.getItem("sessionToken");
-        const documentTypes = await getAllDocumentTypes(data);
+        const fetchedDocumentTypes = await getAllDocumentTypes(data);
+        const fetchedDocumentFile = await getFileById(data, fileID);
 
-        setDocumentTypes(documentTypes);
+        setDocumentTypes(fetchedDocumentTypes);
+        setDocumentFile(fetchedDocumentFile);
+
+        console.log("Form Data Document Name ==>> ", formData.fileID);
       } catch (error) {
         console.error(
           "Failed to fetch Session Token and Document Types:",
@@ -49,7 +75,7 @@ const EditDocumentsForm = ({
       }
     };
 
-    fetchDocumentTypes();
+    fetchDetails();
   }, []);
 
   const handleFormDataChange = (
@@ -65,6 +91,14 @@ const EditDocumentsForm = ({
       ...prevState,
       [id]: value,
     }));
+  };
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedEndDate(e.target.value);
   };
 
   //   const handleSubmit = (e) => {
@@ -146,8 +180,8 @@ const EditDocumentsForm = ({
                       type="date"
                       id="startDate"
                       name="startDate"
-                      value={Date.parse(formData.startDate)}
-                      onChange={(e) => handleFormDataChange(e)}
+                      defaultValue={String(formData.startDate).substring(0, 10)}
+                      onChange={(e) => handleStartDateChange(e)}
                       required
                       className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                     />
@@ -160,8 +194,8 @@ const EditDocumentsForm = ({
                       type="date"
                       id="endDate"
                       name="endDate"
-                      value={Date.parse(formData.endDate)}
-                      onChange={(e) => handleFormDataChange(e)}
+                      defaultValue={String(formData.endDate).substring(0, 10)}
+                      onChange={(e) => handleEndDateChange(e)}
                       required
                       className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                     />
@@ -179,7 +213,6 @@ const EditDocumentsForm = ({
                   onChange={(e) => {
                     handleFormDataChange(e);
                   }}
-                  required
                   placeholder="Enter Description"
                   className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                 />
@@ -190,6 +223,15 @@ const EditDocumentsForm = ({
                   className="font-sans font-semibold text-sm text-black dark:text-white"
                 >
                   Upload File
+                  <h1 className="text-xs text-slate-400">
+                    {`(Existing: ${
+                      documentFile.file_array.length > 0
+                        ? documentFile.file_array[
+                            documentFile.file_array.length - 1
+                          ][0].substring(51)
+                        : ""
+                    })`}
+                  </h1>
                 </label>
                 <input
                   type="file"
