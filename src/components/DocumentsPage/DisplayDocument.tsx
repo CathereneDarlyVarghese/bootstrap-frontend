@@ -28,9 +28,9 @@ const DisplayDocument = (props) => {
                 </svg>
               </div>
               <div className="h-52 w-full">
-                <iframe src={props.fileName} width="100%" height="100%">
+                <a target="_blank" href={props.fileName}>
                   {String(props.fileName).substring(51)}
-                </iframe>
+                </a>
               </div>
             </div>
           </div>

@@ -32,8 +32,6 @@ const DocumentsCard = ({
   fileStatus,
   documentStatus,
   fileID,
-  setFileOpen,
-  fileOpen,
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const defaultDocumentFile: File = { file_id: "", file_array: [] };
@@ -149,9 +147,7 @@ const DocumentsCard = ({
                 {documentName}
               </h1>
               <div
-                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${
-                  fileOpen ? "ml-auto" : ""
-                }`}
+                className={"badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"}
               >
                 {documentType}
               </div>
@@ -164,8 +160,6 @@ const DocumentsCard = ({
               className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
               }}
             >
               <img src={documentIcon} />
@@ -231,9 +225,7 @@ const DocumentsCard = ({
                 {documentName}
               </h1>
               <div
-                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${
-                  fileOpen ? "ml-auto" : ""
-                }`}
+                className={"badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"}
               >
                 {documentType}
               </div>
@@ -289,8 +281,6 @@ const DocumentsCard = ({
               className="flex flex-row gap-2 items-center md:mr-auto overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
               }}
             >
               <img src={documentIcon} />
