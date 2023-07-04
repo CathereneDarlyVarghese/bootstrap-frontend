@@ -59,6 +59,7 @@ const DocumentsCard = ({
         );
 
         // setFileName((fetchedFile.file_array[0]));
+        console.log("Fetched File ==>> ", fetchedDocumentFile);
         setDocumentFile(fetchedDocumentFile);
 
         // console.log("Document Type ==>> ", documentType);
@@ -147,37 +148,42 @@ const DocumentsCard = ({
                 {documentName}
               </h1>
               <div
-                className={"badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"}
+                className={
+                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                }
               >
                 {documentType}
               </div>
             </div>
           </div>
           <div>
-            <h1 className="font-sans">Documents History</h1>
-            {/* Show history of files here */}
+            <h1 className="font-sans">Document History</h1>
             <div
               className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
               }}
             >
-              <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"></h1>
+              {/* Document History */}
+              {documentFile.file_array
+                .slice(0, -1)
+                .reverse()
+                .map((element, index) => (
+                  <>
+                    <img src={documentIcon} />
+                    <h1
+                      className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
+                      onClick={() => window.open(element[0], "_blank")}
+                    >
+                      {element[0].substring(51)}
+                    </h1>
+                  </>
+                ))}
+
+              {documentFile.file_array.slice(0, -1).length === 0 && (
+                <p className="text-xl text-slate-400">Unavailable</p>
+              )}
             </div>
-            {/* <div
-              className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
-              onClick={() => {
-                console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
-              }}
-            >
-              <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
-              </h1>
-            </div> */}
           </div>
           {/* Show files history above this section */}
           <div className="ml-auto">
@@ -225,7 +231,9 @@ const DocumentsCard = ({
                 {documentName}
               </h1>
               <div
-                className={"badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"}
+                className={
+                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                }
               >
                 {documentType}
               </div>
@@ -284,8 +292,25 @@ const DocumentsCard = ({
               }}
             >
               <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {/* {documentFile.file_array[0][(documentFile.file_array[0]).length - 1]} */}
+              {/* Display Latest Entry in file_array */}
+              <h1
+                className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
+                onClick={() => {
+                  if (documentFile.file_array.length > 0) {
+                    window.open(
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0],
+                      "_blank"
+                    );
+                  }
+                }}
+              >
+                {documentFile.file_array.length > 0
+                  ? documentFile.file_array[
+                      documentFile.file_array.length - 1
+                    ][0].substring(51)
+                  : ""}
               </h1>
             </div>
             {/* <div className="flex flex-row gap-2 items-center sm:ml-auto">
