@@ -17,7 +17,7 @@ const AddDocumentsForm = ({
 
   const [file, setFile] = useState<any>();
 
-  const [documentType, setDocumentType] = useState<DocumentType[]>([]);
+  const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
 
   const defaultFormData = {
     documentName: "",
@@ -133,7 +133,7 @@ const AddDocumentsForm = ({
         const documentTypes = await getAllDocumentTypes(data);
 
         setToken(data);
-        setDocumentType(documentTypes);
+        setDocumentTypes(documentTypes);
       } catch (error) {
         console.error(
           "Failed to fetch Session Token and Document Types:",
@@ -211,7 +211,7 @@ const AddDocumentsForm = ({
                 <option value="" disabled selected hidden >
                   Select Document Type
                 </option>
-                {documentType.map((documentType) => (
+                {documentTypes.map((documentType) => (
                   <option className="text-black bg-white dark:text-white dark:bg-gray-800"
                     key={documentType.document_type_id}
                     value={documentType.document_type_id}

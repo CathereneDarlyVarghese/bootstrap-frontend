@@ -361,6 +361,16 @@ const DocumentsCard = ({
             <EditDocumentsForm
               open={editFormOpen}
               close={() => setEditFormOpen(false)}
+              documentID={documentID}
+              documentName={documentName}
+              documentDescription={documentDescription}
+              documentTypeID={documentTypeID}
+              startDate={startDate}
+              endDate={endDate}
+              documentNotes={documentNotes}
+              fileStatus={fileStatus}
+              documentStatus={documentStatus}
+              fileID={fileID}
             />
           </div>
         </div>
