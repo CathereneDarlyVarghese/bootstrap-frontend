@@ -236,9 +236,11 @@ const EditDocumentsForm = ({
                   >
                     {`(Latest: ${
                       documentFile.file_array.length > 0
-                        ? documentFile.file_array[
-                            documentFile.file_array.length - 1
-                          ][0].substring(51)
+                        ? String(
+                            documentFile.file_array[
+                              documentFile.file_array.length - 1
+                            ][0]
+                          ).substring(51)
                         : ""
                     })`}
                   </h1>
