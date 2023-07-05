@@ -110,7 +110,6 @@ const DocumentsPage = () => {
             className="btn btn-sm bg-blue-900 hover:bg-blue-900 capitalize w-32 ml-auto"
             onClick={() => {
               setAddDocumentsOpen(true);
-              setFileOpen(false);
             }}
           >
             +Add
@@ -154,8 +153,6 @@ const DocumentsPage = () => {
                   documentStatus="active"
                   // FIX THIS - For now we are only displaying one file name
                   fileID={document.file_id}
-                  fileOpen={fileOpen}
-                  setFileOpen={setFileOpen}
                 />
               </div>
             ))}
@@ -179,19 +176,6 @@ const DocumentsPage = () => {
               addDocumentsOpen={addDocumentsOpen}
               setAddDocumentsOpen={setAddDocumentsOpen}
               locationID={selectedLocation}
-            />
-          </div>
-          {/* display file */}
-          <div
-            className={`${
-              fileOpen && !addDocumentsOpen ? "w-3/5 xl:w-full" : "hidden"
-            }`}
-          >
-            <DisplayDocument
-              fileName={fileName}
-              closeFile={() => {
-                setFileOpen(false);
-              }}
             />
           </div>
         </div>

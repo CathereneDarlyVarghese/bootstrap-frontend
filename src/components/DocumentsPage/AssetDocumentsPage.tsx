@@ -104,8 +104,6 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
                   documentStatus="active"
                   // FIX THIS - For now we are only displaying one file name
                   fileID={document.file_id}
-                  fileOpen={fileOpen}
-                  setFileOpen={setFileOpen}
                 />
               </div>
             ))}
@@ -121,19 +119,6 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
             setAddDocumentsOpen={setAddDocumentsOpen}
             assetID={selectedAssetID}
             // locationID={selectedLocation}
-          />
-        </div>
-        {/* display file */}
-        <div
-          className={`border border-gray-300 dark:border-gray-600 rounded-xl ${
-            fileOpen && !addDocumentsOpen ? "w-full" : "hidden"
-          }`}
-        >
-          <DisplayDocument
-            fileName={"Document name"}
-            closeFile={() => {
-              setFileOpen(false);
-            }}
           />
         </div>
       </div>

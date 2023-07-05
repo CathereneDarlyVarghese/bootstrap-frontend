@@ -5,6 +5,7 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { TbListDetails } from "react-icons/tb";
 import { CgDetailsMore } from "react-icons/cg";
 import { TiArrowBackOutline } from "react-icons/ti";
+import { AiOutlinePlus } from "react-icons/ai";
 import {
   AiOutlineDelete,
   AiOutlineHistory,
@@ -18,6 +19,7 @@ import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import EditDocumentsForm from "./EditDocumentsForm";
+import { File } from "types";
 
 const DocumentsCard = ({
   documentID,
@@ -30,12 +32,11 @@ const DocumentsCard = ({
   fileStatus,
   documentStatus,
   fileID,
-  setFileOpen,
-  fileOpen,
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const defaultDocumentFile: File = { file_id: "", file_array: [] };
   const [documentType, setDocumentType] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>(null);
+  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -52,13 +53,14 @@ const DocumentsCard = ({
 
         setDocumentType(fetchedDocumentType.document_type);
 
-        const fetchedFile = await getFileById(
+        const fetchedDocumentFile = await getFileById(
           userData.signInUserSession.accessToken.jwtToken,
           fileID
         );
 
         // setFileName((fetchedFile.file_array[0]));
-        setFileName(fetchedFile.file_array[0]);
+        console.log("Fetched File ==>> ", fetchedDocumentFile);
+        setDocumentFile(fetchedDocumentFile);
 
         // console.log("Document Type ==>> ", documentType);
       } catch (error) {
@@ -145,39 +147,42 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {documentName}
               </h1>
-              <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
+              <div
+                className={
+                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                }
+              >
                 {documentType}
               </div>
             </div>
           </div>
           <div>
-            <h1 className="font-sans">Documents History</h1>
-            {/* Show history of files here */}
+            <h1 className="font-sans">Document History</h1>
             <div
               className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
               }}
             >
-              <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
-              </h1>
-            </div>
-            <div
-              className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
-              onClick={() => {
-                console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
-              }}
-            >
-              <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
-              </h1>
+              {/* Document History */}
+              {documentFile.file_array
+                .slice(0, -1)
+                .reverse()
+                .map((element, index) => (
+                  <>
+                    <img src={documentIcon} />
+                    <h1
+                      className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
+                      onClick={() => window.open(element[0], "_blank")}
+                    >
+                      {element[0].substring(51)}
+                    </h1>
+                  </>
+                ))}
+
+              {documentFile.file_array.slice(0, -1).length === 0 && (
+                <p className="text-xl text-slate-400">Unavailable</p>
+              )}
             </div>
           </div>
           {/* Show files history above this section */}
@@ -187,9 +192,7 @@ const DocumentsCard = ({
             </button>
           </div>
         </div>
-
       ) : (
-
         <div
           className="card bg-white dark:bg-gray-800 p-5"
           style={{ height: "fit-content" }}
@@ -227,7 +230,11 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {documentName}
               </h1>
-              <div className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto ${fileOpen ? "ml-auto" : ""}`}>
+              <div
+                className={
+                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                }
+              >
                 {documentType}
               </div>
             </div>
@@ -240,16 +247,22 @@ const DocumentsCard = ({
               <h1 className="text-black dark:text-white font-sans font-semibold">
                 Note:
               </h1>
-              <div >
+              <div>
                 <p className="text-gray-400">{documentNotes}</p>
               </div>
             </div>
             <div className="ml-auto">
               <div className="flex flex-row md:flex-col gap-1 md:gap-2">
-                <button title="Edit Document" onClick={() => setEditFormOpen(true)}>
+                <button
+                  title="Edit Document"
+                  onClick={() => setEditFormOpen(true)}
+                >
                   <AiOutlineEdit className="text-2xl text-blue-900 dark:text-white" />
                 </button>
-                <button title="Document History" onClick={() => setShowHistory(true)}>
+                <button
+                  title="Document History"
+                  onClick={() => setShowHistory(true)}
+                >
                   <AiOutlineHistory className="text-2xl text-blue-900 dark:text-white" />
                 </button>
                 <button
@@ -270,23 +283,37 @@ const DocumentsCard = ({
                 </button>
               </div>
             </div>
-
           </div>
-          <div className="mt-4 flex flex-row gap-5 items-center">
+          <div className="mt-4 flex flex-row md:flex-col gap-5 items-center">
             <div
-              className="flex flex-row gap-2 items-center md:w-1/3 overflow-x-hidden"
+              className="flex flex-row gap-2 items-center md:mr-auto overflow-x-hidden"
               onClick={() => {
                 console.log("clicked");
-                setFileOpen(true);
-                console.log(fileOpen);
               }}
             >
               <img src={documentIcon} />
-              <h1 className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs">
-                {String(fileName).substring(51) || ""}
+              {/* Display Latest Entry in file_array */}
+              <h1
+                className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
+                onClick={() => {
+                  if (documentFile.file_array.length > 0) {
+                    window.open(
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0],
+                      "_blank"
+                    );
+                  }
+                }}
+              >
+                {documentFile.file_array.length > 0
+                  ? documentFile.file_array[
+                      documentFile.file_array.length - 1
+                    ][0].substring(51)
+                  : ""}
               </h1>
             </div>
-            <div className="flex flex-row gap-2 items-center sm:ml-auto">
+            {/* <div className="flex flex-row gap-2 items-center sm:ml-auto">
               {fileStatus === "File Uploaded" ? (
                 <>
                   <BsFillCheckCircleFill className="text-lg text-green-500" />
@@ -302,6 +329,22 @@ const DocumentsCard = ({
                   </h1>
                 </>
               )}
+            </div> */}
+            <div className="md:w-full">
+              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full">
+                <div className="flex flex-row items-center gap-2">
+                  <AiOutlineHistory className="text-lg" />
+                  <p>Change exisiting version File</p>
+                </div>
+              </button>
+            </div>
+            <div className="md:w-full">
+              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full">
+                <div className="flex flex-row items-center gap-2">
+                  <AiOutlinePlus />
+                  <p>Add a new version File</p>
+                </div>
+              </button>
             </div>
             <div className="ml-auto">
               {documentStatus === "active" ? (
@@ -315,12 +358,13 @@ const DocumentsCard = ({
             </div>
           </div>
           <div>
-            <EditDocumentsForm open={editFormOpen} close={() => setEditFormOpen(false)} />
+            <EditDocumentsForm
+              open={editFormOpen}
+              close={() => setEditFormOpen(false)}
+            />
           </div>
         </div>
-
       )}
-
     </>
   );
 };
