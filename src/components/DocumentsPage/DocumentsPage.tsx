@@ -5,7 +5,6 @@ import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByLocationIdOnly } from "services/documentServices";
 import { Document, IncomingDocument } from "types";
-import DisplayDocument from "./DisplayDocument";
 import { getFileById } from "services/fileServices";
 
 const testDescription =

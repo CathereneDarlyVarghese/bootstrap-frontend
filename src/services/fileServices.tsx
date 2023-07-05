@@ -93,3 +93,43 @@ export async function deleteFile(
 
   await axios.delete(`${BASE_URL}/protected/file/${id}`, config);
 }
+
+export async function appendToFileArray(
+  accessToken: string,
+  fileId: string,
+  newEntry: string
+): Promise<void> {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  const response = await axios.post(
+    `${BASE_URL}/protected/file/${fileId}/append`,
+    newEntry,
+    config
+  );
+  return response.data;
+}
+
+export async function replaceLatestInFileArray(
+  accessToken: string,
+  fileId: string,
+  newEntry: string
+): Promise<void> {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  const response = await axios.put(
+    `${BASE_URL}/protected/file/${fileId}/replace-latest`,
+    newEntry,
+    config
+  );
+  return response.data;
+}
