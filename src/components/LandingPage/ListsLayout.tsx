@@ -272,7 +272,7 @@ const ListsLayout = (props: any) => {
             className=" justify-center "
           >
             {/* Search input field */}
-            <div className="flex flex-col absolute z-10 w-1/3 lg:w-full">
+            <div className="flex flex-col z-10 absolute w-1/3 lg:w-full">
               <div
                 style={{ display: "flex", flexDirection: "row" }}
                 className=" justify-center"

@@ -19,7 +19,9 @@ import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import EditDocumentsForm from "./EditDocumentsForm";
+import ChangeVersionForm from "./ChangeVersionForm";
 import { File } from "types";
+import AddNewVersionForm from "./AddNewVersionForm";
 
 const DocumentsCard = ({
   documentID,
@@ -39,6 +41,8 @@ const DocumentsCard = ({
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [versionForm, setVersionForm] = useState(false)
+
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -299,7 +303,7 @@ const DocumentsCard = ({
                   if (documentFile.file_array.length > 0) {
                     window.open(
                       documentFile.file_array[
-                        documentFile.file_array.length - 1
+                      documentFile.file_array.length - 1
                       ][0],
                       "_blank"
                     );
@@ -308,10 +312,10 @@ const DocumentsCard = ({
               >
                 {documentFile.file_array.length > 0
                   ? String(
-                      documentFile.file_array[
-                        documentFile.file_array.length - 1
-                      ][0]
-                    ).substring(51)
+                    documentFile.file_array[
+                    documentFile.file_array.length - 1
+                    ][0]
+                  ).substring(51)
                   : ""}
               </h1>
             </div>
@@ -333,7 +337,7 @@ const DocumentsCard = ({
               )}
             </div> */}
             <div className="md:w-full">
-              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full">
+              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
                 <div className="flex flex-row items-center gap-2">
                   <AiOutlineHistory className="text-lg" />
                   <p>Change exisiting version File</p>
@@ -341,7 +345,7 @@ const DocumentsCard = ({
               </button>
             </div>
             <div className="md:w-full">
-              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full">
+              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
                 <div className="flex flex-row items-center gap-2">
                   <AiOutlinePlus />
                   <p>Add a new version File</p>
@@ -374,6 +378,12 @@ const DocumentsCard = ({
               documentStatus={documentStatus}
               fileID={fileID}
             />
+          </div>
+          <div>
+            <ChangeVersionForm open={versionForm} closeForm={() => setVersionForm(false)} />
+          </div>
+          <div>
+            <AddNewVersionForm open={versionForm} closeForm={() => setVersionForm(false)} />
           </div>
         </div>
       )}
