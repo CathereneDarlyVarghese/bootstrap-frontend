@@ -3,7 +3,10 @@ import { TfiClose } from "react-icons/tfi";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { getAllDocumentTypes } from "services/documentTypeServices";
 import { DocumentType, File } from "types";
-import { getFileById } from "services/fileServices";
+import { appendToFileArray, getFileById } from "services/fileServices";
+import { uploadFiletoS3 } from "utils";
+import { updateDocument } from "services/documentServices";
+import { toast } from "react-toastify";
 
 interface FormData {
   documentID: string;
@@ -32,7 +35,7 @@ const EditDocumentsForm = ({
   documentStatus,
   fileID,
 }) => {
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<any>(null);
   const [formData, setFormData] = useState<FormData>({
     documentID: documentID,
     documentName: documentName,
@@ -112,6 +115,63 @@ const EditDocumentsForm = ({
   //     });
   //   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // setAddDocumentsOpen(false);
+
+    const token = window.localStorage.getItem("sessionToken");
+
+    if (file) {
+      // Step 1: Obtain file location (link) from S3 bucket
+      const documentLocation = await uploadFiletoS3(file, "document");
+      console.log("documentLocation ==>> ", documentLocation);
+
+      // Step 2: Append this file location into file_array of existing File object in the backend
+      const appendedFile = await appendToFileArray(
+        token,
+        formData.fileID,
+        String(documentLocation)
+      );
+      console.log(
+        "Return from appendFile (Success/Error Message) ==>> ",
+        appendedFile
+      );
+    }
+    try {
+      const updatedDocument = await updateDocument(
+        token,
+        formData.documentID,
+        formData
+      );
+      console.log("Updated Document:", updatedDocument);
+      toast.success("Document Updated Successfully", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      // setAddDocumentsOpen(false);
+    } catch (error) {
+      console.error("Failed to update document:", error);
+      toast.error("Failed to update document", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    // setFormData(defaultDocumentFile);
+  };
+
   return (
     <>
       <input
@@ -122,6 +182,7 @@ const EditDocumentsForm = ({
       />
       <div className="modal">
         <div className="modal-box max-h-full">
+        <form method="post" onSubmit={(e) => handleSubmit(e)}>
           <div className="flex flex-row">
             <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-white">
               Edit Document
@@ -319,6 +380,7 @@ const EditDocumentsForm = ({
               Submit
             </button>
           </div>
+          </form>
         </div>
       </div>
     </>
