@@ -137,8 +137,8 @@ const AddStatusForm = ({
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal" >
-        <div className="modal-box p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
+      <div className="modal z-50">
+        <div className="modal-box z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
           <form method="post" onSubmit={handleSubmit} ref={formRef}>
             {/* Modal header */}
             <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">

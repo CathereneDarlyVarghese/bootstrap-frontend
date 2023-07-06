@@ -151,16 +151,6 @@ const DocumentsPage = () => {
                 />
               </div>
             ))}
-            <div>
-              <button
-                className="btn"
-                onClick={() => {
-                  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-                }}
-              >
-                scroll to top
-              </button>
-            </div>
           </div>
           <div
             className={`${addDocumentsOpen && !fileOpen ? "w-2/5 xl:w-full" : "hidden"

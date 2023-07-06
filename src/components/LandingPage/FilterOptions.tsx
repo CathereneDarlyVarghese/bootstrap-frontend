@@ -158,7 +158,7 @@ export const FilterOptions = ({ filterClose, sections, placements, selectedButto
   return (
     <div className="p-2">
       <div className="flex flex-row">
-        <h1 className="font-sans font-semibold">Fitler and Sort</h1>
+        <h1 className="font-sans font-semibold">Filter</h1>
         <div className="flex flex-row gap-2 ml-auto">
           <button onClick={filterClose} className="btn btn-sm bg-blue-900 hover:bg-blue-900 font-normal px-4 font-sans rounded-full capitalize ml-auto">
             Done
