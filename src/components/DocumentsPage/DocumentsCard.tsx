@@ -41,8 +41,8 @@ const DocumentsCard = ({
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [versionForm, setVersionForm] = useState(false)
-
+  const [replaceFileForm, setReplaceFileForm] = useState(false);
+  const [addFileForm, setAddFileForm] = useState(false);
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -303,7 +303,7 @@ const DocumentsCard = ({
                   if (documentFile.file_array.length > 0) {
                     window.open(
                       documentFile.file_array[
-                      documentFile.file_array.length - 1
+                        documentFile.file_array.length - 1
                       ][0],
                       "_blank"
                     );
@@ -312,10 +312,10 @@ const DocumentsCard = ({
               >
                 {documentFile.file_array.length > 0
                   ? String(
-                    documentFile.file_array[
-                    documentFile.file_array.length - 1
-                    ][0]
-                  ).substring(51)
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0]
+                    ).substring(51)
                   : ""}
               </h1>
             </div>
@@ -337,7 +337,10 @@ const DocumentsCard = ({
               )}
             </div> */}
             <div className="md:w-full">
-              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
+              <button
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full"
+                onClick={() => setReplaceFileForm(true)}
+              >
                 <div className="flex flex-row items-center gap-2">
                   <MdAutorenew className="text-lg" />
                   <p>Replace Exisiting File</p>
@@ -345,7 +348,10 @@ const DocumentsCard = ({
               </button>
             </div>
             <div className="md:w-full">
-              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
+              <button
+                className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full"
+                onClick={() => setAddFileForm(true)}
+              >
                 <div className="flex flex-row items-center gap-2">
                   <AiFillPlusCircle />
                   <p>Add a New File</p>
@@ -380,10 +386,16 @@ const DocumentsCard = ({
             />
           </div>
           <div>
-            <ReplaceExistingFileForm open={versionForm} closeForm={() => setVersionForm(false)} />
+            <ReplaceExistingFileForm
+              open={replaceFileForm}
+              closeForm={() => setReplaceFileForm(false)}
+            />
           </div>
           <div>
-            <AddNewFileForm open={versionForm} closeForm={() => setVersionForm(false)} />
+            <AddNewFileForm
+              open={addFileForm}
+              closeForm={() => setAddFileForm(false)}
+            />
           </div>
         </div>
       )}

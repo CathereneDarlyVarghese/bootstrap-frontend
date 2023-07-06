@@ -15,7 +15,7 @@ const AddNewFileForm = ({ open, closeForm }) => {
         <div className="modal-box">
           <div className="flex flex-row">
             <h3 className="font-bold text-lg text-blue-900">
-              Add New Version File
+              Add a New File
             </h3>
             <svg
               viewBox="0 0 24 24"
@@ -78,7 +78,7 @@ const AddNewFileForm = ({ open, closeForm }) => {
           <div className="w-full flex flex-row justify-center">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-              onClick={closeForm(true)}
+              onClick={closeForm}
             >
               Submit
             </button>

@@ -13,9 +13,25 @@ const ReplaceExistingFileForm = ({ open, closeForm }) => {
       />
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg text-blue-900">
-            Replace Existing File
-          </h3>
+          <div className="flex flex-row">
+            <h3 className="font-bold text-lg text-blue-900">
+              Replace Existing File
+            </h3>
+            <svg
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              strokeWidth="1.5"
+              className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
+              onClick={closeForm}
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
           <div className="my-5">
             <form>
               <label
@@ -62,7 +78,7 @@ const ReplaceExistingFileForm = ({ open, closeForm }) => {
           <div className="w-full flex flex-row justify-center">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-              onClick={closeForm(false)}
+              onClick={closeForm}
             >
               Submit
             </button>
