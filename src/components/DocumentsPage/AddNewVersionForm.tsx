@@ -20,7 +20,7 @@ const AddNewVersionForm = ({ open, closeForm }) => {
                             <input
                                 type="file"
                                 required
-                                id="files"
+                                id="file"
                                 name="file"
                                 onChange={(e) => setFile(e.target.files[0])}
                                 className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"

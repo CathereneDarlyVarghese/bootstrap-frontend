@@ -193,7 +193,7 @@ const AssetDetails: React.FC<
                   />
                 </figure>
                 <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
-                  <div className="flex 2xl:flex-row lg:flex-col">
+                  <div className="flex 2xl:flex-row items-center lg:flex-col">
                     <h2
                       className="flex text-gray-800 dark:text-gray-300 text-xl font-semibold font-sans tracking-wide xl:text-sm"
                       style={{ wordSpacing: 3 }}
@@ -216,11 +216,12 @@ const AssetDetails: React.FC<
                       {assetCheckDate ? (
                         <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
                           <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                          {assetCheckDate.toLocaleString()}
+                          {assetCheckDate.toLocaleString().slice(0, 10)}
                         </button>
                       ) : (
-                        <span className="text-gray-400">
-                          No status check date available
+                        <span className="text-gray-400 mx-1">
+                          {/* No status check date available */}
+                          Date not available
                         </span>
                       )}
                     </div>
@@ -238,10 +239,10 @@ const AssetDetails: React.FC<
                       Placement: {placementName}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Purchase Price: {purchasePrice}
+                      Purchase Price: {parseInt(purchasePrice)}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Current Value: {currentValue}
+                      Current Value: {parseInt(currentValue)}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                       Notes: {notes}
@@ -342,7 +343,9 @@ const AssetDetails: React.FC<
                 />
               </div>
             ) : (
-              <p className="text-black dark:text-white">Page Coming Soon</p>
+              <div className="flex flex-row justify-center h-28 items-center">
+                <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">Page Coming Soon</p>
+              </div>
             )}
           </div>
           {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
