@@ -81,7 +81,7 @@ export async function getAllDocuments(
 export async function updateDocument(
   accessToken: string,
   id: string,
-  updatedData: Document
+  updatedData
 ): Promise<Document> {
   const config = {
     headers: {

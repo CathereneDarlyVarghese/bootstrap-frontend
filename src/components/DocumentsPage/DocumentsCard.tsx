@@ -3,9 +3,9 @@ import { AiOutlineCalendar } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { TbListDetails } from "react-icons/tb";
-import { CgDetailsMore } from "react-icons/cg";
+import { AiFillPlusCircle } from "react-icons/ai";
 import { TiArrowBackOutline } from "react-icons/ti";
-import { AiOutlinePlus } from "react-icons/ai";
+import { MdAutorenew } from "react-icons/md";
 import {
   AiOutlineDelete,
   AiOutlineHistory,
@@ -19,9 +19,9 @@ import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import EditDocumentsForm from "./EditDocumentsForm";
-import ChangeVersionForm from "./ChangeVersionForm";
+import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import { File } from "types";
-import AddNewVersionForm from "./AddNewVersionForm";
+import AddNewFileForm from "./AddNewFileForm";
 
 const DocumentsCard = ({
   documentID,
@@ -41,8 +41,8 @@ const DocumentsCard = ({
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [versionForm, setVersionForm] = useState(false)
-
+  const [replaceFileForm, setReplaceFileForm] = useState(false);
+  const [addFileForm, setAddFileForm] = useState(false);
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -179,7 +179,7 @@ const DocumentsCard = ({
                       className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
                       onClick={() => window.open(element[0], "_blank")}
                     >
-                      {element[0].substring(51)}
+                      {element[0] ? element[0].substring(51): "Null"}
                     </h1>
                   </>
                 ))}
@@ -303,7 +303,7 @@ const DocumentsCard = ({
                   if (documentFile.file_array.length > 0) {
                     window.open(
                       documentFile.file_array[
-                      documentFile.file_array.length - 1
+                        documentFile.file_array.length - 1
                       ][0],
                       "_blank"
                     );
@@ -312,10 +312,10 @@ const DocumentsCard = ({
               >
                 {documentFile.file_array.length > 0
                   ? String(
-                    documentFile.file_array[
-                    documentFile.file_array.length - 1
-                    ][0]
-                  ).substring(51)
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0]
+                    ).substring(51)
                   : ""}
               </h1>
             </div>
@@ -337,18 +337,24 @@ const DocumentsCard = ({
               )}
             </div> */}
             <div className="md:w-full">
-              <button className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
+              <button
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full"
+                onClick={() => setReplaceFileForm(true)}
+              >
                 <div className="flex flex-row items-center gap-2">
-                  <AiOutlineHistory className="text-lg" />
-                  <p>Change exisiting version File</p>
+                  <MdAutorenew className="text-lg" />
+                  <p>Replace Exisiting File</p>
                 </div>
               </button>
             </div>
             <div className="md:w-full">
-              <button className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full" onClick={() => setVersionForm(true)}>
+              <button
+                className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full"
+                onClick={() => setAddFileForm(true)}
+              >
                 <div className="flex flex-row items-center gap-2">
-                  <AiOutlinePlus />
-                  <p>Add a new version File</p>
+                  <AiFillPlusCircle />
+                  <p>Add a New File</p>
                 </div>
               </button>
             </div>
@@ -380,10 +386,18 @@ const DocumentsCard = ({
             />
           </div>
           <div>
-            <ChangeVersionForm open={versionForm} closeForm={() => setVersionForm(false)} />
+            <ReplaceExistingFileForm
+            fileID={fileID}
+              open={replaceFileForm}
+              closeForm={() => setReplaceFileForm(false)}
+            />
           </div>
           <div>
-            <AddNewVersionForm open={versionForm} closeForm={() => setVersionForm(false)} />
+            <AddNewFileForm
+              fileID={fileID}
+              open={addFileForm}
+              closeForm={() => setAddFileForm(false)}
+            />
           </div>
         </div>
       )}

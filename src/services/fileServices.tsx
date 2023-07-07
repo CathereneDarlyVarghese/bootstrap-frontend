@@ -106,9 +106,14 @@ export async function appendToFileArray(
     },
   };
 
+  const requestObject = {
+    fileId,
+    newEntry
+  }
+
   const response = await axios.post(
     `${BASE_URL}/protected/file/${fileId}/append`,
-    newEntry,
+    requestObject,
     config
   );
   return response.data;
@@ -126,9 +131,14 @@ export async function replaceLatestInFileArray(
     },
   };
 
+  const requestObject = {
+    fileId,
+    newEntry
+  }
+
   const response = await axios.put(
     `${BASE_URL}/protected/file/${fileId}/replace-latest`,
-    newEntry,
+    requestObject,
     config
   );
   return response.data;

@@ -47,5 +47,3 @@ const AddNewVersionForm = ({ open, closeForm }) => {
         </>
     )
 }
-
-export default AddNewVersionForm;
