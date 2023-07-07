@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlinePaperClip } from "react-icons/ai";
 
-const ReplaceExistingFileForm = ({ open, closeForm }) => {
+const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   const [file, setFile] = useState<any>();
   return (
     <>
