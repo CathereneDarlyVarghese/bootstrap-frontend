@@ -75,9 +75,9 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box">
+        <div className="modal-box dark:bg-gray-900">
           <div className="flex flex-row">
-            <h3 className="font-bold text-lg text-blue-900">Add a New File</h3>
+            <h3 className="font-bold text-lg text-blue-900 dark:text-blue-700">Add a New File</h3>
             <svg
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -95,12 +95,24 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
           </div>
           <div className="my-5">
             <form method="post" onSubmit={(e) => handleSubmit(e)}>
-              <label
-                htmlFor="file_input"
-                className="font-sans font-semibold text-sm text-black dark:text-white"
-              >
-                Upload File
-              </label>
+              <div className="flex flex-col gap-3">
+                <label
+                  htmlFor="file_input"
+                  className="font-sans font-semibold text-sm text-black dark:text-white"
+                >
+                  Upload File
+                </label>
+                <input
+                  type="file"
+                  required
+                  id="file"
+                  name="file"
+                  onChange={(e) => handleFileChange(e)}
+                  className="text-black dark:text-white"
+                />
+
+              </div>
+
               {/* <input
                 type="file"
                 required
@@ -133,13 +145,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
                   Choose File
                 </button>
               </div> */}
-              <input
-                type="file"
-                required
-                id="file"
-                name="file"
-                onChange={(e) => handleFileChange(e)}
-              />
+
               <div className="w-full flex flex-row justify-center">
                 <button
                   id="submit"
