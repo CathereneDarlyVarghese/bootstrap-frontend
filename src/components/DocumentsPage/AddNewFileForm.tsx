@@ -4,7 +4,6 @@ import { AiOutlinePaperClip } from "react-icons/ai";
 import { appendToFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
   const [file, setFile] = useState<any>();
@@ -53,7 +52,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
         theme: "light",
       });
     } catch (error) {
-      console.error("Failed to add file:", error);
+      console.error("Failed to Add File:", error);
       toast.error("Failed to add file", {
         position: "bottom-left",
         autoClose: 5000,

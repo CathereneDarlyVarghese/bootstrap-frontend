@@ -1,8 +1,71 @@
+import { Auth } from "aws-amplify";
 import React, { useState } from "react";
 import { AiOutlinePaperClip } from "react-icons/ai";
+import { replaceLatestInFileArray } from "services/fileServices";
+import { uploadFiletoS3 } from "utils";
+import { toast } from "react-toastify";
 
 const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   const [file, setFile] = useState<any>();
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+
+  const handleSubmit = async (
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+
+    console.log("Selected File ==>> ", file);
+
+    const userData = await Auth.currentAuthenticatedUser();
+    const token = userData.signInUserSession.accessToken.jwtToken;
+
+    // Step 1: Upload the file to S3 bucket
+    const documentLocation = await uploadFiletoS3(file, "document");
+    console.log("documentLocation ==>> ", documentLocation);
+
+    const newEntry: string = documentLocation.location;
+    console.log("newEntry ==>> ", newEntry);
+
+    console.log("File ID ==>> ", fileID);
+
+    try {
+      const replacedFile = await replaceLatestInFileArray(
+        token,
+        fileID,
+        newEntry
+      );
+      console.log("New File ==>> ", replacedFile);
+      toast.success("Existing File Replaced Successfully", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      console.error("Failed to Replace Existing File:", error);
+      toast.error("Failed to replace existing file", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   return (
     <>
       <input
@@ -33,14 +96,14 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
             </svg>
           </div>
           <div className="my-5">
-            <form>
+            <form method="post" onSubmit={(e) => handleSubmit(e)}>
               <label
                 htmlFor="file_input"
                 className="font-sans font-semibold text-sm text-black dark:text-white"
               >
                 Upload File
               </label>
-              <input
+              {/* <input
                 type="file"
                 required
                 id="files"
@@ -72,16 +135,23 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
                   <AiOutlinePaperClip className="text-lg" />
                   Choose File
                 </button>
+              </div> */}
+              <input
+                type="file"
+                required
+                id="file"
+                name="file"
+                onChange={(e) => handleFileChange(e)}
+              />
+              <div className="w-full flex flex-row justify-center">
+                <button
+                  className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+                  onClick={closeForm}
+                >
+                  Submit
+                </button>
               </div>
             </form>
-          </div>
-          <div className="w-full flex flex-row justify-center">
-            <button
-              className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-              onClick={closeForm}
-            >
-              Submit
-            </button>
           </div>
         </div>
       </div>
