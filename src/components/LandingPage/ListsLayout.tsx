@@ -278,7 +278,7 @@ const ListsLayout = (props: any) => {
                 className=" justify-center bg-white dark:bg-gray-800 py-2"
               >
                 {/* Search input field */}
-                <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full">
+                <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full h-12">
                   <button>
                     <img
                       src={SearchIcon}
@@ -310,7 +310,7 @@ const ListsLayout = (props: any) => {
 
                 {/* Add asset button */}
                 <button
-                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none md:hidden"
+                  className="btn w-28 h-12 ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
                   onClick={() => {
                     handleAddAssetOpen();
                     removeClass(
@@ -326,7 +326,7 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
-                <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block" onClick={() => navigate("/scan")}>
+                <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none hidden" onClick={() => navigate("/scan")}>
                   <div className="flex flex-row items-center">
                     <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
                     <h1>Scan</h1>
