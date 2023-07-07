@@ -179,7 +179,7 @@ const DocumentsCard = ({
                       className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
                       onClick={() => window.open(element[0], "_blank")}
                     >
-                      {element[0].substring(51)}
+                      {element[0] ? element[0].substring(51): "Null"}
                     </h1>
                   </>
                 ))}
@@ -387,12 +387,14 @@ const DocumentsCard = ({
           </div>
           <div>
             <ReplaceExistingFileForm
+            fileID={fileID}
               open={replaceFileForm}
               closeForm={() => setReplaceFileForm(false)}
             />
           </div>
           <div>
             <AddNewFileForm
+              fileID={fileID}
               open={addFileForm}
               closeForm={() => setAddFileForm(false)}
             />
