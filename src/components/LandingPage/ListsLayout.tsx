@@ -235,17 +235,21 @@ const ListsLayout = (props: any) => {
         const fetchedAssetPlacements = await getAssetPlacements(
           userData.signInUserSession.accessToken.jwtToken
         );
-        setAssetPlacements(fetchedAssetPlacements);
 
-        console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
+        // Filtering fetched Asset Placements on the basis of selected Location
+        const filteredFetchedAssetSections = fetchedAssetPlacements.filter(
+          (placement: AssetPlacement) => placement.location_id === location.locationId
+        );
 
-        setAssetPlacements(fetchedAssetPlacements);
+        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetSections);
+
+        setAssetPlacements(filteredFetchedAssetSections);
       } catch (error) {
         console.log(error);
       }
     };
     fetchAssetPlacements();
-  }, [selectedAssetSection.section_id, selectedAssetPlacementName]);
+  }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
   const detailsTabIndexRefresh = (tabIndex) => {
     setDetailsTab(0);
