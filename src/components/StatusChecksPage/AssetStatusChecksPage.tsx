@@ -141,6 +141,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           closeAsset={() => {
             setDetailsOpen(false);
           }}
+          status_check_data={selectedAssetCheck?.status_check_data}
         />
       </div>
       <div>

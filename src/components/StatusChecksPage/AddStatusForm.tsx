@@ -19,6 +19,7 @@ import {
 } from "services/assetCheckFormServices";
 import { withTheme } from "@rjsf/core";
 import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme you prefer
+import { Auth } from "aws-amplify";
 
 const AddStatusForm = ({
   addFormOpen,
@@ -40,10 +41,15 @@ const AddStatusForm = ({
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
   const [file, setFile] = useState<any>();
+  const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
-    setToken(data);
+    const fetchCredentials = async () => {
+      const userData = await Auth.currentAuthenticatedUser();
+      setToken(userData.signInUserSession.accessToken.jwtToken);
+      setName(userData.attributes.given_name);
+    };
+    fetchCredentials();
   }, []);
 
   useEffect(() => {
@@ -98,11 +104,9 @@ const AddStatusForm = ({
           status_check: selectedStatus,
           file_id: String(createdFile),
           uptime_notes: formData.uptime_notes as string,
-          modified_by: formData.name as string,
-          // uptime_notes: formData.get("uptime_notes") as string,
-          // modified_by: formData.get("name") as string,
+          modified_by: name,
           modified_date: new Date(),
-          status_check_data: JSON.parse(JSON.stringify({})),
+          status_check_data: JSON.parse(JSON.stringify(formData)),
         };
 
         // Add inventory using the API service
@@ -130,10 +134,9 @@ const AddStatusForm = ({
         status_check: "ca879fb3-2f94-41b0-afb2-dea1448aaed3",
         file_id: null,
         uptime_notes: "Working Fine",
-        modified_by: formData.name as string,
-        // modified_by: formData.get("name") as string,
+        modified_by: name,
         modified_date: new Date(),
-        status_check_data: JSON.parse(JSON.stringify(formDataState)),
+        status_check_data: JSON.parse(JSON.stringify(formData)),
       };
       console.log("Token >>", token);
 
