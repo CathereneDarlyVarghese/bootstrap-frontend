@@ -237,13 +237,13 @@ const ListsLayout = (props: any) => {
         );
 
         // Filtering fetched Asset Placements on the basis of selected Location
-        const filteredFetchedAssetSections = fetchedAssetPlacements.filter(
+        const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
           (placement: AssetPlacement) => placement.location_id === location.locationId
         );
 
-        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetSections);
+        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetPlacements);
 
-        setAssetPlacements(filteredFetchedAssetSections);
+        setAssetPlacements(filteredFetchedAssetPlacements);
       } catch (error) {
         console.log(error);
       }
