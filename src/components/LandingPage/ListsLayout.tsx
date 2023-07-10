@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
@@ -22,7 +22,7 @@ import { AiOutlineScan } from "react-icons/ai";
 import {
   FilterOptions,
   selectedStatusIds,
-  selectedSectionNames,
+  // selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
 import ScanButton from "components/widgets/ScanButton";
@@ -45,6 +45,9 @@ const ListsLayout = (props: any) => {
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
+  const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
+    []
+  );
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -248,6 +251,29 @@ const ListsLayout = (props: any) => {
     setDetailsTab(0);
   };
 
+  const handleSectionSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+
+    if (selectedValue === "") {
+      // When "All Sections" is selected, reset selectedSectionNames to []
+      setSelectedSectionNames([]);
+    } else {
+      // When any other option is selected, include only that section_name
+      setSelectedSectionNames([selectedValue]);
+    }
+  };
+
+  const selectRef = useRef<HTMLSelectElement>(null);
+
+  const handleSectionReset = () => {
+    if (selectRef.current) {
+      selectRef.current.value = "";
+      setSelectedSectionNames([]);
+    }
+  };
+
   return (
     <div
       className="bg-primary-content h-full dark:bg-gray-800"
@@ -292,8 +318,8 @@ const ListsLayout = (props: any) => {
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
-                      handleSearchInputChange(e)
-                      setShowOptions(true)
+                      handleSearchInputChange(e);
+                      setShowOptions(true);
                     }}
                   />
                   {searchTerm !== "" && (
@@ -326,16 +352,19 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
-                <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block" onClick={() => navigate("/scan")}>
+                <button
+                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block"
+                  onClick={() => navigate("/scan")}
+                >
                   <div className="flex flex-row items-center">
                     <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
                     <h1>Scan</h1>
                   </div>
                 </button>
-
-
               </div>
-              <div className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}>
+              <div
+                className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}
+              >
                 {incomingAssets
                   .filter((a) => {
                     const SearchTermMatch =
@@ -351,9 +380,8 @@ const ListsLayout = (props: any) => {
                     <div
                       className="bg-gray-100 hover:bg-gray-300"
                       onClick={() => {
-                        setSearchTerm(asset.asset_name)
-                        setShowOptions(false)
-
+                        setSearchTerm(asset.asset_name);
+                        setShowOptions(false);
                       }}
                     >
                       <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
@@ -366,9 +394,25 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row justify-end mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
+              <select
+                name=""
+                id=""
+                ref={selectRef}
+                onChange={handleSectionSelectChange}
+              >
+                <option value="">All Sections</option>
+                {assetSections
+                  .sort((a, b) => a.section_name.localeCompare(b.section_name))
+                  .map((section: AssetSection, index: number) => (
+                    <option key={index} value={section.section_name}>
+                      {section.section_name}
+                    </option>
+                  ))}
+              </select>
               <button
                 className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
                 onClick={() => setFitlersOpen(true)}
@@ -384,14 +428,12 @@ const ListsLayout = (props: any) => {
             <div className="mt-10">
               <FilterOptions
                 filterClose={() => setFitlersOpen(false)}
-                sections={assetSections}
                 placements={assetPlacements}
-                selectedButtonsSection={selectedButtonsSection}
-                setSelectedButtonsSection={setSelectedButtonsSection}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
                 selectedButtonsStatus={selectedButtonsStatus}
                 setSelectedButtonsStatus={setSelectedButtonsStatus}
+                handleSectionReset={handleSectionReset}
               />
             </div>
           ) : (
@@ -410,7 +452,7 @@ const ListsLayout = (props: any) => {
 
                   const statusFilterMatch =
                     selectedStatusIds.length === 0 ||
-                    selectedStatusIds.includes(asset.asset_status)
+                    selectedStatusIds.includes(asset.asset_status);
 
                   const sectionFilterMatch =
                     selectedSectionNames.length === 0 ||
@@ -420,8 +462,11 @@ const ListsLayout = (props: any) => {
                     selectedPlacementNames.length === 0 ||
                     selectedPlacementNames.includes(asset.placement_name);
 
+                  /* sectionFilterMatch AND placementFilterMatch */
                   const intersectionFilterMatch =
                     sectionFilterMatch && placementFilterMatch;
+
+                  /* sectionFilterMatch OR placementFilterMatch */
                   const unionFilterMatch =
                     sectionFilterMatch || placementFilterMatch;
 
@@ -429,9 +474,9 @@ const ListsLayout = (props: any) => {
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                    selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
-                      : unionFilterMatch)
+                      : intersectionFilterMatch)
                   );
                 })
                 .map((asset) => (
