@@ -80,34 +80,32 @@ const EditDocumentsForm = ({
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const { id, value } = e.target;
-
-    console.log("e.target.value ==>> ", String(e.target.value));
+    console.log(e.target.value);
 
     setFormData((prevState) => ({
       ...prevState,
-      [id]: value,
+      //"id" and "name" of <elements> in <form> has to be same for this to work
+      [e.target.id]: e.target.value,
     }));
   };
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedStartDate(String(e.target.value));
+    setSelectedStartDate(e.target.value);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      start_date: e.target.value,
+    }));
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedEndDate(String(e.target.value));
-  };
+    setSelectedEndDate(e.target.value);
 
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //     // Perform form submission logic here
-  //     console.log('Form data:', formData);
-  //     // Reset the form data if needed
-  //     setFormData({
-  //       documentName: '',
-  //       // Reset other form fields as needed
-  //     });
-  //   };
+    setFormData((prevState) => ({
+      ...prevState,
+      end_date: e.target.value,
+    }));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
@@ -209,8 +207,8 @@ const EditDocumentsForm = ({
                   </label>
                   <input
                     type="text"
-                    id="documentName"
-                    name="documentName"
+                    id="document_name"
+                    name="document_name"
                     value={formData.document_name}
                     onChange={(e) => {
                       handleFormDataChange(e);
@@ -223,8 +221,8 @@ const EditDocumentsForm = ({
                     Document Type
                   </label>
                   <select
-                    id="documentTypeID"
-                    name="documentTypeID"
+                    id="document_type_id"
+                    name="document_type_id"
                     value={formData.document_type_id}
                     onChange={(e) => handleFormDataChange(e)}
                     className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
@@ -248,8 +246,8 @@ const EditDocumentsForm = ({
                       </label>
                       <input
                         type="date"
-                        id="startDate"
-                        name="startDate"
+                        id="start_date"
+                        name="start_date"
                         defaultValue={String(formData.start_date).substring(
                           0,
                           10
@@ -280,8 +278,8 @@ const EditDocumentsForm = ({
                   </label>
                   <input
                     type="text"
-                    id="documentDescription"
-                    name="documentDescription"
+                    id="document_description"
+                    name="document_description"
                     value={formData.document_description}
                     onChange={(e) => {
                       handleFormDataChange(e);
@@ -295,9 +293,9 @@ const EditDocumentsForm = ({
                     htmlFor="file_input"
                     className="font-sans font-semibold text-sm text-black dark:text-white"
                   >
-                    Upload File
+                    Add a New File
                     <h1
-                      className="text-xs text-blue-800"
+                      className="text-xs text-blue-800 underline"
                       onClick={() =>
                         window.open(
                           documentFile.file_array[
@@ -307,7 +305,7 @@ const EditDocumentsForm = ({
                         )
                       }
                     >
-                      {`(Latest: ${
+                      {`(Latest File: ${
                         documentFile.file_array.length > 0
                           ? String(
                               documentFile.file_array[
@@ -364,8 +362,8 @@ const EditDocumentsForm = ({
                   </label>
                   <input
                     type="text"
-                    id="documentNotes"
-                    name="documentNotes"
+                    id="document_notes"
+                    name="document_notes"
                     value={formData.document_notes}
                     onChange={(e) => {
                       handleFormDataChange(e);
