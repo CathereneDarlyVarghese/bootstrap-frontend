@@ -38,7 +38,6 @@ const AddDocumentsForm = ({
     documentNotes,
   } = formData;
 
-
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -70,7 +69,9 @@ const AddDocumentsForm = ({
     // Step 3: Prepare the document data
     // const formData = new FormData(event.target);
 
-    const selectedSelectTag = document.querySelector("#documentType") as HTMLSelectElement;
+    const selectedSelectTag = document.querySelector(
+      "#documentType"
+    ) as HTMLSelectElement;
     const selectedDocumentTypeID = selectedSelectTag.value;
     console.log("Selected document type: ", selectedDocumentTypeID);
 
@@ -79,8 +80,8 @@ const AddDocumentsForm = ({
       document_name: formData.documentName,
       document_description: formData.documentDescription,
       document_type_id: selectedDocumentTypeID,
-      start_date: (formData.startDate).toString(),
-      end_date: (formData.endDate).toString(),
+      start_date: formData.startDate.toString(),
+      end_date: formData.endDate.toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
       modified_by: "John Doe",
@@ -88,7 +89,7 @@ const AddDocumentsForm = ({
       org_id: null,
       asset_id: assetID,
       location_id: locationID,
-      document_type: selectedDocumentTypeID
+      document_type: selectedDocumentTypeID,
     };
 
     console.log("Document Data ==>> ", documentData);
@@ -212,7 +213,8 @@ const AddDocumentsForm = ({
                   Select Document Type
                 </option>
                 {documentTypes.map((documentType) => (
-                  <option className="text-black bg-white dark:text-white dark:bg-gray-800"
+                  <option
+                    className="text-black bg-white dark:text-white dark:bg-gray-800"
                     key={documentType.document_type_id}
                     value={documentType.document_type_id}
                   >
@@ -279,20 +281,39 @@ const AddDocumentsForm = ({
                 id="file"
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
+                className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
 
               />
-              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2">
-                <input type="text" value={`${file ? file.name : "No file chosen"}`} className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file ? "text-black dark:text-white" : "text-gray-400"}`} />
-                <button className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto" onClick={(e) => {
-                  e.preventDefault()
-                  const uploadButton = document.querySelector("#file") as HTMLElement
-                  uploadButton.click()
-                }}>
+              {/* <input
+                type="file"
+                required
+                id="file"
+                name="file"
+                onChange={(e) => setFile(e.target.files[0])}
+              /> */}
+              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2 hidden">
+                <input
+                  type="text"
+                  value={`${file ? file.name : "No file chosen"}`}
+                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
+                />
+                <button
+                  className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const uploadButton = document.querySelector(
+                      "#file"
+                    ) as HTMLElement;
+                    uploadButton.click();
+                  }}
+                >
                   <AiOutlinePaperClip className="text-lg" />
-                  Choose File</button>
+                  Choose File
+                </button>
               </div>
-
 
               <label className="font-sans font-semibold text-sm text-black dark:text-white">
                 Notes

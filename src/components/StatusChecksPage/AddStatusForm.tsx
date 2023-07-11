@@ -185,23 +185,24 @@ const AddStatusForm = ({
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal">
-        <div className="modal-box p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
-          {/* Modal header */}
-          <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
-            <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
-              Status Check {now.toLocaleDateString()}
-            </h3>
-            <button
-              className="ml-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                setAddFormOpen(false);
-              }}
-            >
-              <TfiClose className="font-bold text-blue-800 dark:text-blue-500" />
-            </button>
-          </div>
+      <div className="modal z-50">
+        <div className="modal-box z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
+          <form method="post" onSubmit={handleSubmit} ref={formRef}>
+            {/* Modal header */}
+            <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
+              <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
+                Status Check {now.toLocaleDateString()}
+              </h3>
+              <button
+                className="ml-auto"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setAddFormOpen(false);
+                }}
+              >
+                <TfiClose className="font-bold text-blue-800 dark:text-blue-500" />
+              </button>
+            </div>
 
           <div className="flex flex-col p-5">
             {/* The form generated from the JSON Schema */}
@@ -249,6 +250,7 @@ const AddStatusForm = ({
               </button>
             </div>
           </div>
+          </form>
         </div>
       </div>
     </>

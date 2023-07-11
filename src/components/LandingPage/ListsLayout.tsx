@@ -275,7 +275,7 @@ const ListsLayout = (props: any) => {
             <div className="flex flex-col absolute z-10 w-1/3 lg:w-full">
               <div
                 style={{ display: "flex", flexDirection: "row" }}
-                className=" justify-center"
+                className=" justify-center bg-white dark:bg-gray-800 py-2"
               >
                 {/* Search input field */}
                 <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full">
@@ -472,7 +472,7 @@ const ListsLayout = (props: any) => {
         </div>
       </div>
       <div
-        className={`w-2/3 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700  lg:hidden asset-details-card md:pb-14`}
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700  lg:hidden asset-details-card md:pb-14`}
         id="style-7"
       >
         {/* Render asset details */}

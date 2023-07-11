@@ -178,33 +178,33 @@ const AssetDetails: React.FC<
               </div>
             </div>
 
-            <button
-              className="ml-auto 2xl:block lg:hidden"
-              onClick={() => setAssetId(null)}
-            >
-              <TfiClose
-                onClick={closeAsset}
-                className="font-bold text-black dark:text-white"
-              />
-            </button>
-          </div>
-          {tabIndex === 0 ? (
-            <>
-              <figure className="rounded-none">
-                <img
-                  src={cardImage}
-                  alt="an image"
-                  className="rounded-xl h-48 object-cover mx-auto"
+              <button
+                className="ml-auto 2xl:block lg:hidden"
+                onClick={() => setAssetId(null)}
+              >
+                <TfiClose
+                  onClick={closeAsset}
+                  className="font-bold text-black dark:text-white"
                 />
-              </figure>
-              <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
-                <div className="flex 2xl:flex-row lg:flex-col">
-                  <h2
-                    className="flex text-gray-800 dark:text-gray-300 text-xl font-semibold font-sans tracking-wide xl:text-sm"
-                    style={{ wordSpacing: 3 }}
-                  >
-                    {cardTitle}
-                  </h2>
+              </button>
+            </div>
+            {tabIndex === 0 ? (
+              <>
+                <figure className="rounded-none">
+                  <img
+                    src={cardImage}
+                    alt="an image"
+                    className="rounded-xl h-48 object-cover mx-auto"
+                  />
+                </figure>
+                <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
+                  <div className="flex 2xl:flex-row items-center lg:flex-col">
+                    <h2
+                      className="flex text-gray-800 dark:text-gray-300 text-xl font-semibold font-sans tracking-wide xl:text-sm"
+                      style={{ wordSpacing: 3 }}
+                    >
+                      {cardTitle}
+                    </h2>
 
                   <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
                     <button className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
@@ -218,41 +218,42 @@ const AssetDetails: React.FC<
                       {getStatusText(selectedAsset1?.asset_status)}
                     </button>
 
-                    {assetCheckDate ? (
-                      <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                        <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                        {assetCheckDate.toLocaleString()}
-                      </button>
-                    ) : (
-                      <span className="text-gray-400">
-                        No status check date available
-                      </span>
-                    )}
+                      {assetCheckDate ? (
+                        <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
+                          <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
+                          {assetCheckDate.toLocaleString().slice(0, 10)}
+                        </button>
+                      ) : (
+                        <span className="text-gray-400 mx-1">
+                          {/* No status check date available */}
+                          Date not available
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h1 className="text-blue-900 dark:text-white font-semibold my-1">
-                    More Information:
-                  </h1>
-                </div>
-                <div>
-                  <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Section: {sectionName}
-                  </p>
-                  <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Placement: {placementName}
-                  </p>
-                  <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Purchase Price: {purchasePrice}
-                  </p>
-                  <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Current Value: {currentValue}
-                  </p>
-                  <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Notes: {notes}
-                  </p>
-                </div>
-                {/* <div className="my-2">
+                  <div>
+                    <h1 className="text-blue-900 dark:text-white font-semibold my-1">
+                      More Information:
+                    </h1>
+                  </div>
+                  <div>
+                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                      Section: {sectionName}
+                    </p>
+                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                      Placement: {placementName}
+                    </p>
+                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                      Purchase Price: {parseInt(purchasePrice)}
+                    </p>
+                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                      Current Value: {parseInt(currentValue)}
+                    </p>
+                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                      Notes: {notes}
+                    </p>
+                  </div>
+                  {/* <div className="my-2">
                     <h1 className="text-blue-900 dark:text-white font-semibold my-1">
                       Document:
                     </h1>
@@ -332,27 +333,29 @@ const AssetDetails: React.FC<
                     throw new Error("Function not implemented.");
                   }}
                 /> */}
+                </div>
+              </>
+            ) : tabIndex === 1 ? (
+              <div>
+                <AssetDocumentsPage selectedAsset={selectedAsset1} />
               </div>
-            </>
-          ) : tabIndex === 1 ? (
-            <div>
-              <AssetDocumentsPage selectedAsset={selectedAsset1} />
-            </div>
-          ) : tabIndex === 2 ? (
-            <div>
-              <AssetStatusChecksPage
-                sessionToken={sessionToken}
-                assetId={assetId}
-                setAssetId={setAssetId}
-                assetType={assetType}
-                assetTypeId={assetTypeId}
-              />
-            </div>
-          ) : (
-            <p className="text-black dark:text-white">Page Coming Soon</p>
-          )}
-        </div>
-        {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
+            ) : tabIndex === 2 ? (
+              <div>
+                <AssetStatusChecksPage
+                  sessionToken={sessionToken}
+                  assetId={assetId}
+                  setAssetId={setAssetId}
+                  assetType={assetType}
+                  assetTypeId={assetTypeId}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-row justify-center h-28 items-center">
+                <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">Page Coming Soon</p>
+              </div>
+            )}
+          </div>
+          {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
               onClick={() => {
