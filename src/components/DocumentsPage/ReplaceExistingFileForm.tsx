@@ -75,9 +75,9 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box">
+        <div className="modal-box bg-white dark:bg-gray-900">
           <div className="flex flex-row">
-            <h3 className="font-bold text-lg text-blue-900">
+            <h3 className="font-bold text-lg text-blue-900 dark:text-blue-700">
               Replace Existing File
             </h3>
             <svg
@@ -97,12 +97,26 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
           </div>
           <div className="my-5">
             <form method="post" onSubmit={(e) => handleSubmit(e)}>
-              <label
-                htmlFor="file_input"
-                className="font-sans font-semibold text-sm text-black dark:text-white"
-              >
-                Upload File
-              </label>
+              <div className="flex flex-col gap-3">
+                <label
+                  htmlFor="file_input"
+                  className="font-sans font-semibold text-sm text-black dark:text-white"
+                >
+                  Upload File
+                </label>
+
+                <input
+                  type="file"
+                  required
+                  id="file"
+                  name="file"
+                  onChange={(e) => handleFileChange(e)}
+                  className="text-black dark:text-white"
+                />
+
+
+              </div>
+
               {/* <input
                 type="file"
                 required
@@ -136,13 +150,7 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
                   Choose File
                 </button>
               </div> */}
-              <input
-                type="file"
-                required
-                id="file"
-                name="file"
-                onChange={(e) => handleFileChange(e)}
-              />
+
               <div className="w-full flex flex-row justify-center">
                 <button
                   className="btn btn-sm bg-blue-900 hover:bg-blue-900"

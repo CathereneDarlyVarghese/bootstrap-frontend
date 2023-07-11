@@ -281,7 +281,7 @@ const AddDocumentsForm = ({
                 id="file"
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                className="w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
+                className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
 
               />
               {/* <input
@@ -291,18 +291,17 @@ const AddDocumentsForm = ({
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
               /> */}
-              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2">
+              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2 hidden">
                 <input
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
-                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                 />
                 <button
-                  className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto"
+                  className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(

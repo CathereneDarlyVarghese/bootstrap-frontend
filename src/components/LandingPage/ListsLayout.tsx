@@ -292,8 +292,8 @@ const ListsLayout = (props: any) => {
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
-                      handleSearchInputChange(e)
-                      setShowOptions(true)
+                      handleSearchInputChange(e);
+                      setShowOptions(true);
                     }}
                   />
                   {searchTerm !== "" && (
@@ -326,16 +326,23 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
+<<<<<<< HEAD
                 <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none hidden" onClick={() => navigate("/scan")}>
+=======
+                <button
+                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block"
+                  onClick={() => navigate("/scan")}
+                >
+>>>>>>> 984277ea2048c5a0ea7997b000989efd5ee52daa
                   <div className="flex flex-row items-center">
                     <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
                     <h1>Scan</h1>
                   </div>
                 </button>
-
-
               </div>
-              <div className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}>
+              <div
+                className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}
+              >
                 {incomingAssets
                   .filter((a) => {
                     const SearchTermMatch =
@@ -351,9 +358,8 @@ const ListsLayout = (props: any) => {
                     <div
                       className="bg-gray-100 hover:bg-gray-300"
                       onClick={() => {
-                        setSearchTerm(asset.asset_name)
-                        setShowOptions(false)
-
+                        setSearchTerm(asset.asset_name);
+                        setShowOptions(false);
                       }}
                     >
                       <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
@@ -366,8 +372,9 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row justify-end mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row justify-end mt-10 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
               <button
                 className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
@@ -410,7 +417,7 @@ const ListsLayout = (props: any) => {
 
                   const statusFilterMatch =
                     selectedStatusIds.length === 0 ||
-                    selectedStatusIds.includes(asset.asset_status)
+                    selectedStatusIds.includes(asset.asset_status);
 
                   const sectionFilterMatch =
                     selectedSectionNames.length === 0 ||
@@ -429,7 +436,7 @@ const ListsLayout = (props: any) => {
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                    selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : unionFilterMatch)
                   );
@@ -507,6 +514,7 @@ const ListsLayout = (props: any) => {
                 setTabIndex={setDetailsTab}
                 assetCheckDate={selectedAsset.next_asset_check_date}
                 assetCondition={selectedAsset.asset_condition}
+                assetTypeId={selectedAsset.asset_type_id}
               />
             )}
           </>

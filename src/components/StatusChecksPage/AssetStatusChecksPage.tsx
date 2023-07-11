@@ -5,6 +5,7 @@ import AddStatusForm from "./AddStatusForm";
 import { getAssetCheckById } from "services/assetCheckServices";
 import { IncomingAssetCheck } from "types";
 import { Auth } from "aws-amplify";
+import { getAssetTypeById } from "services/assetTypeServices";
 
 // interface AssetCheck {
 //   uptime_check_id: string;
@@ -31,12 +32,16 @@ interface AssetStatusChecksPageProps {
   sessionToken: string;
   assetId: string;
   setAssetId: React.Dispatch<React.SetStateAction<string | null>>;
+  assetType: string;
+  assetTypeId: string;
 }
 
 const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   sessionToken,
   assetId,
   setAssetId,
+  assetType,
+  assetTypeId,
 }) => {
   const [statusCheckId, setStatusCheckId] = useState<string | null>(null);
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
@@ -103,7 +108,12 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
       </div>
       {/* Map Status Cards here */}
       <div className={`${detailsOpen ? "hidden" : ""}`}>
-        {assetChecks.sort((a, b) => new Date(b.modified_date).getTime() - new Date(a.modified_date).getTime())
+        {assetChecks
+          .sort(
+            (a, b) =>
+              new Date(b.modified_date).getTime() -
+              new Date(a.modified_date).getTime()
+          )
           .map((assetCheck) => (
             <StatusCard
               status={assetCheck.status_check}
@@ -131,6 +141,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           closeAsset={() => {
             setDetailsOpen(false);
           }}
+          status_check_data={selectedAssetCheck?.status_check_data}
         />
       </div>
       <div>
@@ -139,6 +150,8 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           setAddFormOpen={() => setAddFormOpen(false)}
           assetId={assetId || ""}
           onStatusAdded={() => console.log("")}
+          assetType={assetType}
+          assetTypeId={assetTypeId}
         />
       </div>
     </div>

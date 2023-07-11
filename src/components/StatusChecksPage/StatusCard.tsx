@@ -43,7 +43,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
           </div>
         </div>
         <div className="flex flex-row items-center">
-          <p className="text-gray-500 dark:text-gray-400">{uptime_notes}</p>
+          {/* <p className="text-gray-500 dark:text-gray-400">{uptime_notes}</p> */}
         </div>
       </div>
     </div>

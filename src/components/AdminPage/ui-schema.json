@@ -1,0 +1,20 @@
+{
+  "temperature": {
+    "ui:widget": "updown",
+    "ui:title": "Temperature",
+    "ui:description": "Enter the current temperature of the freezer."
+  },
+  "status": {
+    "ui:widget": "select",
+    "ui:title": "Current Status",
+    "ui:description": "Select the current status of the freezer.",
+    "ui:options": {
+      "enum": ["Working", "Not Working"]
+    }
+  },
+  "comments": {
+    "ui:widget": "textarea",
+    "ui:title": "Comments",
+    "ui:description": "If you have any comments, please write them here."
+  }
+}
