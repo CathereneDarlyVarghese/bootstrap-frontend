@@ -74,6 +74,7 @@ export interface IncomingAsset {
   images_array: string;
   next_asset_check_date: Date;
   asset_condition: string;
+  asset_type_id: string;
 }
 
 export interface Document {
@@ -113,22 +114,24 @@ export interface IncomingDocument {
 export interface AssetCheck {
   uptime_check_id: string;
   asset_id: string;
-  status_check: string;
-  file_id: string;
-  uptime_notes: string;
-  modified_by: string;
-  modified_date: Date;
+  status_check?: string;
+  file_id?: string;
+  uptime_notes?: string;
+  modified_by?: string;
+  modified_date?: Date;
+  status_check_data: JSON;
 }
 
 export interface IncomingAssetCheck {
   uptime_check_id: string;
   asset_id: string;
-  status_check: string;
-  file_id: string;
-  uptime_notes: string;
-  modified_by: string;
-  modified_date: string;
-  images_array: string[][];
+  status_check?: string;
+  file_id?: string;
+  uptime_notes?: string;
+  modified_by?: string;
+  modified_date?: string;
+  images_array?: string[][];
+  status_check_data: JSON;
 }
 
 export interface AssetLocation {
@@ -163,4 +166,15 @@ export interface AssetType {
 export interface DocumentType {
   document_type_id: string;
   document_type: string;
+}
+
+export interface AssetCheckForm {
+  form_id?: string;
+  asset_type_id: string;
+  form_json: object;
+}
+
+export interface IncomingAssetCheckForm
+  extends Omit<AssetCheckForm, "form_json"> {
+  form_json: JSON;
 }

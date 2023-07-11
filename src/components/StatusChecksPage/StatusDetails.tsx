@@ -20,6 +20,7 @@ interface StatusDetailsProps {
   uptimeNotes: string;
   refreshAssets: () => void;
   closeAsset: () => void;
+  status_check_data: JSON;
 }
 
 const StatusDetails: React.FC<StatusDetailsProps> = ({
@@ -33,6 +34,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   uptimeNotes,
   refreshAssets,
   closeAsset,
+  status_check_data,
 }) => {
   console.log(
     "imageArray[0]:",
@@ -104,12 +106,15 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
           <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
             Modified By: {modifiedBy}
           </p>
-          <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-            Modified Date: {modifiedDate}
-          </p>
-          <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-            Notes: {uptimeNotes}
-          </p>
+          {status_check_data &&
+            Object.entries(status_check_data).map(([key, value], index) => (
+              <p
+                key={index}
+                className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm"
+              >
+                {key}: {value}
+              </p>
+            ))}
         </div>
       </div>
     </div>
