@@ -556,6 +556,7 @@ const ListsLayout = (props: any) => {
                 setTabIndex={setDetailsTab}
                 assetCheckDate={selectedAsset.next_asset_check_date}
                 assetCondition={selectedAsset.asset_condition}
+                assetTypeId={selectedAsset.asset_type_id}
               />
             )}
           </>

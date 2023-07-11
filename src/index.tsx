@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -7,6 +6,7 @@ import { ThemeProvider } from "@ui5/webcomponents-react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "jotai";
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import ReactDOM from "react-dom";
 
 // Check if service workers are supported by the browser
 if ("serviceWorker" in navigator) {
@@ -41,11 +41,7 @@ beamsClient
     console.error("Error starting Pusher Beams client:", e);
   });
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-
-root.render(
+ReactDOM.render(
   <Provider>
     <React.StrictMode>
       <ThemeProvider>
@@ -54,7 +50,8 @@ root.render(
         </GoogleOAuthProvider>
       </ThemeProvider>
     </React.StrictMode>
-  </Provider>
+  </Provider>,
+  document.getElementById("root")
 );
 
 reportWebVitals();
