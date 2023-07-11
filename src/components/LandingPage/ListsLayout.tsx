@@ -326,14 +326,10 @@ const ListsLayout = (props: any) => {
                 >
                   + Add
                 </button>
-<<<<<<< HEAD
-                <button className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none hidden" onClick={() => navigate("/scan")}>
-=======
                 <button
                   className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block"
                   onClick={() => navigate("/scan")}
                 >
->>>>>>> 984277ea2048c5a0ea7997b000989efd5ee52daa
                   <div className="flex flex-row items-center">
                     <AiOutlineScan style={{ marginRight: 5, fontSize: 25 }} />
                     <h1>Scan</h1>
@@ -372,9 +368,8 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row justify-end mt-10 ${
-                filtersOpen ? "hidden" : ""
-              }`}
+              className={`flex flex-row justify-end mt-10 ${filtersOpen ? "hidden" : ""
+                }`}
             >
               <button
                 className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
@@ -436,7 +431,7 @@ const ListsLayout = (props: any) => {
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                    selectedPlacementNames.length === 0
+                      selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : unionFilterMatch)
                   );
