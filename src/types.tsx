@@ -112,7 +112,6 @@ export interface IncomingDocument {
 }
 
 export interface AssetCheck {
-  uptime_check_id: string;
   asset_id: string;
   status_check?: string;
   file_id?: string;
