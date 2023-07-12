@@ -74,23 +74,29 @@ const AdminPage = () => {
       <Helmet>
         <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
       </Helmet>
-      <h1>Admin Page</h1>
-      <select
-        value={selectedAssetType}
-        onChange={(e) => setSelectedAssetType(e.target.value)}
-      >
-        {assetTypes.map((type) => (
-          <option
-            key={type.asset_type_id}
-            value={type.asset_type_id}
-            className="text-black"
+      <div>
+        {/* <h1>Admin Page</h1> */}
+        <div className="flex flex-col justify-center">
+          <select
+            value={selectedAssetType}
+            onChange={(e) => setSelectedAssetType(e.target.value)}
+            className="select border border-slate-300 w-5/12 mx-auto my-5"
           >
-            {type.asset_type}
-          </option>
-        ))}
-      </select>
+            {assetTypes.map((type) => (
+              <option
+                key={type.asset_type_id}
+                value={type.asset_type_id}
+                className="text-black"
+              >
+                {type.asset_type}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {jsonForm && <Form schema={jsonForm} />}
+
+        {jsonForm && <Form schema={jsonForm} />}
+      </div>
     </div>
   );
 };

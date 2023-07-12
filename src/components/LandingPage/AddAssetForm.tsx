@@ -27,6 +27,7 @@ import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
+import AddSectionModal from "./AddSectionModal";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -49,6 +50,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
@@ -366,11 +368,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -511,7 +512,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          // setAddSection(true);
+                          setAddSection(true);
                           handleAddSection(e);
 
                           // (window as any).addSectionModal.showModal();
@@ -554,7 +555,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          // setAddPlacement(true);
+                          setAddPlacement(true);
                           handleAddPlacement();
                         }}
                       >
@@ -565,63 +566,65 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </div>
               </div>
 
-              {/* Adding Section */}
+              {/* Adding Section Modal */}
               <input
                 type="checkbox"
                 checked={addSection}
                 id="my_modal_6"
                 className="modal-toggle"
               />
-              <div id="addSectionModal" className="modal">
-                <form
-                  method="dialog"
-                  className="modal-box bg-white dark:bg-gray-800"
-                >
-                  <div className="flex flex-row mb-5">
-                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                      Add Section
-                    </h3>
-                    <button
-                      className="ml-auto"
-                      onClick={() => {
-                        setAddSection(false);
-                      }}
-                    >
-                      <TfiClose className="font-bold text-black dark:text-white" />
-                    </button>
-                  </div>
-                  <div>
-                    <div className={`flex flex-col my-2 gap-3`}>
-                      <form className="">
-                        <div className="flex flex-col w-full">
-                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                            New Section Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                          />
-                        </div>
-
-                        <div className="w-full mt-4 flex justify-center">
-                          <button
-                            className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setAddSection(false);
-                            }}
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </form>
+              <div id="addSectionModal" className="modal ">
+                <div className="modal-box bg-white dark:bg-gray-800">
+                  <form
+                    method="dialog"
+                  >
+                    <div className="flex flex-row mb-5">
+                      <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                        Add Section
+                      </h3>
+                      <button
+                        className="ml-auto"
+                        onClick={() => {
+                          setAddSection(false);
+                        }}
+                      >
+                        <TfiClose className="font-bold text-black dark:text-white" />
+                      </button>
                     </div>
-                  </div>
-                </form>
+                    <div>
+                      <div className={`flex flex-col my-2 gap-3`}>
+                        <form className="">
+                          <div className="flex flex-col w-full">
+                            <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                              New Section Name
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                            />
+                          </div>
+
+                          <div className="w-full mt-4 flex justify-center">
+                            <button
+                              className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setAddSection(false);
+                              }}
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
               </div>
 
-              {/* adding placement modal */}
+              {/* adding placement Modal */}
               <input
                 type="checkbox"
                 checked={addPlacement}
@@ -748,6 +751,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
             </div>
           </form>
+          <div>
+            <AddSectionModal />
+          </div>
         </div>
       </div>
     </>

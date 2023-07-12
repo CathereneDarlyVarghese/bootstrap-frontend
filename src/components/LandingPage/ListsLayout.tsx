@@ -327,7 +327,7 @@ const ListsLayout = (props: any) => {
                   + Add
                 </button>
                 <button
-                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block"
+                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none hidden"
                   onClick={() => navigate("/scan")}
                 >
                   <div className="flex flex-row items-center">

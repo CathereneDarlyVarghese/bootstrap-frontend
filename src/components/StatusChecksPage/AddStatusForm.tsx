@@ -20,6 +20,28 @@ import {
 import { withTheme } from "@rjsf/core";
 import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme you prefer
 import { Auth } from "aws-amplify";
+import "./formstyles.css"
+
+
+const AddStatusFormSchema = {
+  "operational": {
+    "ui:widget": "radio"
+  },
+  "clean": {
+    "ui:widget": "radio"
+  },
+  "defrost": {
+    "ui:widget": "radio"
+  },
+  "condition": {
+    "ui:widget": "radio"
+  },
+  "cleanliness": {
+    "ui:widget": "radio"
+  }
+
+
+}
 
 const AddStatusForm = ({
   addFormOpen,
@@ -204,25 +226,26 @@ const AddStatusForm = ({
               </button>
             </div>
 
-          <div className="flex flex-col p-5">
-            {/* The form generated from the JSON Schema */}
-            {jsonForm && (
-              <Form
-                schema={jsonForm}
-                validator={validator}
-                onSubmit={({ formData }) => {
-                  console.log("Data submitted: ", formData);
-                  setFormDataState(formData);
-                  handleSubmit(formData);
-                  setAddFormOpen(false);
-                  setReportIssue(false);
-                }}
-              />
-            )}
-          </div>
+            <div className="px-5">
+              {/* The form generated from the JSON Schema */}
+              {jsonForm && (
+                <Form
+                  schema={jsonForm}
+                  validator={validator}
+                  uiSchema={AddStatusFormSchema}
+                  onSubmit={({ formData }) => {
+                    console.log("Data submitted: ", formData);
+                    setFormDataState(formData);
+                    handleSubmit(formData);
+                    setAddFormOpen(false);
+                    setReportIssue(false);
+                  }}
+                />
+              )}
+            </div>
 
-          {/* Modal action */}
-          <div className=" m-0 p-5 flex justify-center gap-5">
+            {/* Modal action */}
+            {/* <div className=" m-0 p-5 flex justify-center gap-5">
             <div>
               {reportIssue || (
                 <button
@@ -249,7 +272,7 @@ const AddStatusForm = ({
                 {reportIssue ? "Submit" : "Fine"}
               </button>
             </div>
-          </div>
+          </div> */}
           </form>
         </div>
       </div>
