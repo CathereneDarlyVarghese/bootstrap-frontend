@@ -49,7 +49,7 @@ const EditDocumentsForm = ({
   const [selectedEndDate, setSelectedEndDate] = useState<string>(
     formData.end_date
   );
-  const defaultDocumentFile: File = { file_id: "", file_array: [] };
+  const defaultDocumentFile: File = { file_id: "", file_array: [], modified_by_array: [], modified_date_array: [] };
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
 
   // useEffect hook to retrieve the session token from localStorage
@@ -118,14 +118,19 @@ const EditDocumentsForm = ({
       const documentLocation = await uploadFiletoS3(file, "document");
       console.log("documentLocation ==>> ", documentLocation);
 
-      const newEntry: string = documentLocation.location;
-      console.log("newEntry ==>> ", newEntry);
+      const newFileArrayEntry: string = documentLocation.location;
+      console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
+
+      const newModifiedByArrayEntry = userData.attributes.given_name;
+      const newModifiedDateArrayEntry = String(new Date()).substring(0, 10);
 
       // Step 2: Append this file location into file_array of existing File object in the backend
       const appendedFile = await appendToFileArray(
         token,
         formData.file_id,
-        newEntry
+        newFileArrayEntry,
+        newModifiedByArrayEntry,
+        newModifiedDateArrayEntry
       );
       console.log(
         "Return from appendFile (Success/Error Message) ==>> ",

@@ -38,7 +38,7 @@ const DocumentsCard = ({
   locationID
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const defaultDocumentFile: File = { file_id: "", file_array: [] };
+  const defaultDocumentFile: File = { file_id: "", file_array: [], modified_by_array: [], modified_date_array: [] };
   const [documentType, setDocumentType] = useState<string | null>(null);
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);

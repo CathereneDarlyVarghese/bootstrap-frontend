@@ -93,9 +93,16 @@ const AddStatusForm = ({
       try {
         // Upload file to S3 bucket
         const imageLocation = await uploadFiletoS3(file, "assetCheck");
+
+        const userData = await Auth.currentAuthenticatedUser();
+        const modifiedBy = userData.attributes.given_name;
+        const modifiedDate = String(new Date()).substring(0, 10);
+
         const createdFile = await createFile(token, {
           file_id: "",
           file_array: [imageLocation.location],
+          modified_by_array: [modifiedBy],
+          modified_date_array: [modifiedDate]
         });
 
         const assetCheck = {
