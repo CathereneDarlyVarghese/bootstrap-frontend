@@ -122,7 +122,7 @@ const EditDocumentsForm = ({
       console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
       const newModifiedByArrayEntry = userData.attributes.given_name;
-      const newModifiedDateArrayEntry = String(new Date()).substring(0, 10);
+      const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
       // Step 2: Append this file location into file_array of existing File object in the backend
       const appendedFile = await appendToFileArray(

@@ -93,7 +93,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
     const userData = await Auth.currentAuthenticatedUser();
     const modifiedBy = userData.attributes.given_name;
-    const modifiedDate = String(new Date()).substring(0, 10);
+    const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 2: Create a file in the backend
     const createdFile = await createFile(token, {

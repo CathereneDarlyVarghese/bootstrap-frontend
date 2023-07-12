@@ -57,7 +57,7 @@ const AddDocumentsForm = ({
 
     const userData = await Auth.currentAuthenticatedUser();
     const modifiedBy = userData.attributes.given_name;
-    const modifiedDate = String(new Date()).substring(0, 10);
+    const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
@@ -91,8 +91,8 @@ const AddDocumentsForm = ({
       end_date: formData.endDate.toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
-      modified_by: "John Doe",
-      modified_date: "2023-06-15",
+      modified_by: userData.attributes.given_name,
+      modified_date: (new Date()).toLocaleDateString(),
       org_id: null,
       asset_id: assetID,
       location_id: locationID,

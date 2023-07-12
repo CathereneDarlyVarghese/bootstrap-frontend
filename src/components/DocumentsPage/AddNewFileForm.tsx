@@ -35,7 +35,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
     console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
     const newModifiedByArrayEntry = userData.attributes.given_name;
-    const newModifiedDateArrayEntry = String(new Date()).substring(0, 10);
+    const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
       const appendedFile = await appendToFileArray(
