@@ -34,6 +34,8 @@ const DocumentsCard = ({
   fileStatus,
   documentStatus,
   fileID,
+  assetID,
+  locationID
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const defaultDocumentFile: File = { file_id: "", file_array: [] };
@@ -383,6 +385,8 @@ const DocumentsCard = ({
               fileStatus={fileStatus}
               documentStatus={documentStatus}
               fileID={fileID}
+              assetID={assetID}
+              locationID={locationID}
             />
           </div>
           <div>
