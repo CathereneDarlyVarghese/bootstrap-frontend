@@ -37,7 +37,24 @@ function AppContent() {
 
       <div className="h-screen" style={{ overflow: "scroll" }}>
         <Routes>
-          <Route path="/scan" element={<ScanInventory />} />
+          <Route
+            path="/scan"
+            element={
+              <ScanInventory
+                onScanSuccess={(decodedText, result) => {
+                  // Redirect to the decodedText if it's a URL
+                  if (decodedText.startsWith("http")) {
+                    window.location.href = decodedText;
+                  } else {
+                    console.log(`Decoded text is not a URL: ${decodedText}`);
+                  }
+                }}
+                onScanError={(errorMessage) => {
+                  // You can leave this function empty if you don't want to do anything on error
+                }}
+              />
+            }
+          />
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<ListsLayout />} />
           <Route path="/builder" element={<Builder />} />
