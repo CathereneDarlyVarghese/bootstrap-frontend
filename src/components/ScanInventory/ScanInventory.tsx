@@ -1,41 +1,56 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import useLocalStorage from "hooks/useLocalStorage";
 import { Html5Qrcode } from "html5-qrcode";
 
-interface QRScannerProps {
-  onScanSuccess: (decodedText: string, result: any) => void;
-  onScanError: (errorMessage: string) => void;
+interface CameraDevice {
+  id: string;
+  label: string;
 }
 
-const ScanInventory: React.FC<QRScannerProps> = ({
-  onScanSuccess,
-  onScanError,
-}) => {
-  const scannerRef = useRef(null);
+function ScanInventory() {
+  const [cameraId, setCameraId] = useLocalStorage<string>(
+    "last_used_camera_id",
+    null
+  );
+  const [devices, setDevices] = useState<CameraDevice[]>(null);
 
   useEffect(() => {
-    const scanner = new Html5Qrcode(scannerRef.current as string);
-    scanner
-      .start(
-        { facingMode: "environment" }, // Use the rear camera (if one is available)
-        { fps: 10, qrbox: { width: 250, height: 250 } }, // Configuration options
-        (decodedText: string, result: any) => {
-          // This callback is called when a QR code is successfully scanned
-          onScanSuccess(decodedText, result);
-        },
-        (errorMessage: string) => {
-          // This callback is called in case of errors
-          onScanError(errorMessage);
-        }
-      )
-      .catch((err: any) => console.log(err));
+    Html5Qrcode.getCameras().then((ds) => setDevices(ds));
+  }, []);
 
-    return () => {
-      // Cleanup
-      scanner.stop();
-    };
-  }, [onScanSuccess, onScanError]);
+  useEffect(() => {
+    if (cameraId) {
+      const scanner = new Html5Qrcode("reader");
 
-  return <div id="scanner" ref={scannerRef} />;
-};
+      const startPromise = scanner.start(
+        cameraId,
+        { fps: 10 },
+        console.log,
+        () => {}
+      );
+
+      return () => {
+        startPromise.then(() => {
+          if (scanner.isScanning) {
+            scanner.stop();
+          }
+        });
+      };
+    }
+    return undefined;
+  }, [cameraId]);
+
+  return (
+    <>
+      <div id="reader" />
+      {devices &&
+        devices.map((d) => (
+          <button key={d.id} onClick={() => setCameraId(d.id)}>
+            {d.label}
+          </button>
+        ))}
+    </>
+  );
+}
 
 export default ScanInventory;
