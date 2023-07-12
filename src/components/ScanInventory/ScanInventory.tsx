@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import useLocalStorage from "hooks/useLocalStorage";
 import { Html5Qrcode } from "html5-qrcode";
-import { CameraDevice } from "html5-qrcode/esm/core";
+// import { CameraDevice } from "html5-qrcode/esm/core";
 
 function ScanInventory() {
   const [cameraId, setCameraId] = useLocalStorage("last_used_camera_id", null);
-  const [devices, setDevices] = useState<CameraDevice[]>(null);
+  // const [devices, setDevices] = useState<CameraDevice[]>(null);
   const [scannerActive, setScannerActive] = useState(false);
   const [cameraAvailable, setCameraAvailable] = useState(true);
 
   useEffect(() => {
     Html5Qrcode.getCameras()
       .then((ds) => {
-        setDevices(ds);
+        // setDevices(ds);
         if (ds.length === 0) {
           setCameraAvailable(false);
         }
@@ -55,7 +55,7 @@ function ScanInventory() {
 
   return (
     <>
-      {scannerActive && <div id="reader" />}
+      {/* {scannerActive && <div id="reader" />}
       {!scannerActive && devices && devices.length > 0 ? (
         devices.map((d) => (
           <button key={d.id} onClick={() => setScannerActive(!scannerActive)}>
@@ -66,7 +66,7 @@ function ScanInventory() {
         <p>
           {cameraAvailable ? "No camera available" : "Error retrieving cameras"}
         </p>
-      )}
+      )} */}
     </>
   );
 }
