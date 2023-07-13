@@ -202,7 +202,7 @@ const DocumentsCard = ({
           <div>
             <h1 className="font-sans">Document History</h1>
             <div
-              className="flex flex-row gap-2 items-center md:w-1/3 my-3 overflow-x-hidden"
+              className="flex flex-row gap-2 items-center my-3 "
               onClick={() => {
                 console.log("clicked");
               }}
@@ -328,7 +328,8 @@ const DocumentsCard = ({
           </div>
           <div className="mt-4 flex flex-row md:flex-col gap-5 items-center">
             <div
-              className="flex flex-row gap-2 items-center md:mr-auto overflow-x-hidden"
+              className="flex flex-row gap-2  items-center md:mr-auto w-full"
+
               onClick={() => {
                 console.log("clicked");
               }}
@@ -337,7 +338,7 @@ const DocumentsCard = ({
               {tableRows.length === 0 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto w-full inline-block">
                   <table className="table table-zebra">
                     {/* head */}
                     <thead>

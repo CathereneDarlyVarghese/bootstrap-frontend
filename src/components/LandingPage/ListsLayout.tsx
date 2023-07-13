@@ -387,7 +387,7 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row justify-around mt-12 ${filtersOpen ? "hidden" : ""
+              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
                 }`}
             >
               <select
@@ -395,6 +395,7 @@ const ListsLayout = (props: any) => {
                 id=""
                 ref={selectRef}
                 onChange={handleSectionSelectChange}
+                className="select select-sm border border-slate-300 w-8/12"
               >
                 <option value="">All Sections</option>
                 {assetSections
