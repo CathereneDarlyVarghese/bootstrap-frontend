@@ -143,7 +143,7 @@ const DocumentsCard = ({
           onClick={() => window.open(file, "_blank")}
         >
           <img src={documentIcon} />
-          {file.substring(51)}
+          {String(file).substring(51)}
         </td>
         <td>{modifiedBy}</td>
         <td>{modifiedDate}</td>
