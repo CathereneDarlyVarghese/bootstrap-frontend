@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+// import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 
 const QRCodeReader = () => {
   const resultRef = useRef(null);
@@ -19,7 +20,7 @@ const QRCodeReader = () => {
 
     const html5QrcodeScanner = new Html5QrcodeScanner(
       qrRef.current.id,
-      { fps: 10, qrbox: 250 },
+      { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], },
       false
     );
 

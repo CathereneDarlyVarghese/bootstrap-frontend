@@ -1,0 +1,34 @@
+form.rjsf {
+  /* background-color: #f8f9fa; */
+  background-color: transparent;
+  padding: 1em;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+form.rjsf .form-control select {
+  position: relative;
+  z-index: 10;
+  background-color: black;
+}
+
+form.rjsf .field-string label {
+  /* color: #495057; */
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+form.rjsf .field-string .field-title[for="root_operational"] {
+  margin-bottom: 2em;
+}
+
+form.rjsf .field-string .radio-group {
+  display: flex;
+  flex-direction: row;
+}
+
+form.rjsf button[type="submit"] {
+  background-color: rgb(30 58 138); /* bg-blue-900 */
+}
