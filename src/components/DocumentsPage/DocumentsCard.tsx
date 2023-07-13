@@ -35,10 +35,15 @@ const DocumentsCard = ({
   documentStatus,
   fileID,
   assetID,
-  locationID
+  locationID,
 }) => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const defaultDocumentFile: File = { file_id: "", file_array: [] };
+  const defaultDocumentFile: File = {
+    file_id: "",
+    file_array: [],
+    modified_by_array: [],
+    modified_date_array: [],
+  };
   const [documentType, setDocumentType] = useState<string | null>(null);
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
@@ -113,6 +118,39 @@ const DocumentsCard = ({
     }
   };
 
+  // Latest Document and Document History Table Data
+  const fileArray = documentFile.file_array.slice(0).reverse();
+  const modifiedByArray = documentFile.modified_by_array.slice(0).reverse();
+  const modifiedDateArray = documentFile.modified_date_array.slice(0).reverse();
+  let maxLength = Math.max(
+    fileArray.length,
+    modifiedByArray.length,
+    modifiedDateArray.length
+  );
+  const tableRows = [];
+
+  for (let i = 0; i < maxLength; i++) {
+    let serialNumber = maxLength - i;
+    const file = fileArray[i] ? fileArray[i][0] : "Null";
+    const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
+    const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
+
+    tableRows.push(
+      <tr key={i}>
+        <td>{serialNumber}</td>
+        <td
+          className="flex flex-row gap-1 text-blue-800 underline"
+          onClick={() => window.open(file, "_blank")}
+        >
+          <img src={documentIcon} />
+          {file.substring(51)}
+        </td>
+        <td>{modifiedBy}</td>
+        <td>{modifiedDate}</td>
+      </tr>
+    );
+  }
+
   return (
     <>
       {showHistory ? (
@@ -171,23 +209,22 @@ const DocumentsCard = ({
               }}
             >
               {/* Document History */}
-              {documentFile.file_array
-                .slice(0, -1)
-                .reverse()
-                .map((element, index) => (
-                  <>
-                    <img src={documentIcon} />
-                    <h1
-                      className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
-                      onClick={() => window.open(element[0], "_blank")}
-                    >
-                      {element[0] ? element[0].substring(51): "Null"}
-                    </h1>
-                  </>
-                ))}
-
-              {documentFile.file_array.slice(0, -1).length === 0 && (
+              {tableRows.length === 1 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="table table-zebra">
+                    <thead>
+                      <tr>
+                        <th>No.</th>
+                        <th>File Name</th>
+                        <th>Modified By</th>
+                        <th>Modified Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>{tableRows.slice(1)}</tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>
@@ -297,29 +334,25 @@ const DocumentsCard = ({
                 console.log("clicked");
               }}
             >
-              <img src={documentIcon} />
-              {/* Display Latest Entry in file_array */}
-              <h1
-                className="font-sans text-gray-500 dark:text-gray-400 text-md md:text-xs"
-                onClick={() => {
-                  if (documentFile.file_array.length > 0) {
-                    window.open(
-                      documentFile.file_array[
-                        documentFile.file_array.length - 1
-                      ][0],
-                      "_blank"
-                    );
-                  }
-                }}
-              >
-                {documentFile.file_array.length > 0
-                  ? String(
-                      documentFile.file_array[
-                        documentFile.file_array.length - 1
-                      ][0]
-                    ).substring(51)
-                  : ""}
-              </h1>
+              {/* Display Latest Entry in file table */}
+              {tableRows.length === 0 ? (
+                <p className="text-xl text-slate-400">Unavailable</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="table table-zebra">
+                    {/* head */}
+                    <thead>
+                      <tr>
+                        <th>No.</th>
+                        <th>File Name</th>
+                        <th>Modified By</th>
+                        <th>Modified Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>{tableRows[0]}</tbody>
+                  </table>
+                </div>
+              )}
             </div>
             {/* <div className="flex flex-row gap-2 items-center sm:ml-auto">
               {fileStatus === "File Uploaded" ? (
@@ -391,7 +424,7 @@ const DocumentsCard = ({
           </div>
           <div>
             <ReplaceExistingFileForm
-            fileID={fileID}
+              fileID={fileID}
               open={replaceFileForm}
               closeForm={() => setReplaceFileForm(false)}
             />

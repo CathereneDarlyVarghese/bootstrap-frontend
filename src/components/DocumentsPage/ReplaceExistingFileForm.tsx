@@ -25,20 +25,25 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
     const userData = await Auth.currentAuthenticatedUser();
     const token = userData.signInUserSession.accessToken.jwtToken;
 
+    console.log("File ID ==>> ", fileID);
+
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
     console.log("documentLocation ==>> ", documentLocation);
 
-    const newEntry: string = documentLocation.location;
-    console.log("newEntry ==>> ", newEntry);
+    const newFileArrayEntry: string = documentLocation.location;
+    console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
-    console.log("File ID ==>> ", fileID);
+    const newModifiedByArrayEntry = userData.attributes.given_name;
+    const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
       const replacedFile = await replaceLatestInFileArray(
         token,
         fileID,
-        newEntry
+        newFileArrayEntry,
+        newModifiedByArrayEntry,
+        newModifiedDateArrayEntry
       );
       console.log("New File ==>> ", replacedFile);
       toast.success("Existing File Replaced Successfully", {
