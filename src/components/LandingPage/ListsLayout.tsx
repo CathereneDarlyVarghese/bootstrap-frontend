@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
@@ -22,7 +22,7 @@ import { AiOutlineScan } from "react-icons/ai";
 import {
   FilterOptions,
   selectedStatusIds,
-  selectedSectionNames,
+  // selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
 import ScanButton from "components/widgets/ScanButton";
@@ -45,6 +45,9 @@ const ListsLayout = (props: any) => {
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
+  const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
+    []
+  );
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -232,20 +235,47 @@ const ListsLayout = (props: any) => {
         const fetchedAssetPlacements = await getAssetPlacements(
           userData.signInUserSession.accessToken.jwtToken
         );
-        setAssetPlacements(fetchedAssetPlacements);
 
-        console.log("Fetched Asset Placement ==>> ", fetchedAssetPlacements);
+        // Filtering fetched Asset Placements on the basis of selected Location
+        const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
+          (placement: AssetPlacement) => placement.location_id === location.locationId
+        );
 
-        setAssetPlacements(fetchedAssetPlacements);
+        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetPlacements);
+
+        setAssetPlacements(filteredFetchedAssetPlacements);
       } catch (error) {
         console.log(error);
       }
     };
     fetchAssetPlacements();
-  }, [selectedAssetSection.section_id, selectedAssetPlacementName]);
+  }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
   const detailsTabIndexRefresh = (tabIndex) => {
     setDetailsTab(0);
+  };
+
+  const handleSectionSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+
+    if (selectedValue === "") {
+      // When "All Sections" is selected, reset selectedSectionNames to []
+      setSelectedSectionNames([]);
+    } else {
+      // When any other option is selected, include only that section_name
+      setSelectedSectionNames([selectedValue]);
+    }
+  };
+
+  const selectRef = useRef<HTMLSelectElement>(null);
+
+  const handleSectionReset = () => {
+    if (selectRef.current) {
+      selectRef.current.value = "";
+      setSelectedSectionNames([]);
+    }
   };
 
   return (
@@ -327,7 +357,7 @@ const ListsLayout = (props: any) => {
                   + Add
                 </button>
                 <button
-                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none 2xl:hidden md:block"
+                  className="btn w-28 mt-1 h-fit ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none hidden"
                   onClick={() => navigate("/scan")}
                 >
                   <div className="flex flex-row items-center">
@@ -368,9 +398,24 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row justify-end mt-10 ${filtersOpen ? "hidden" : ""
+              className={`flex flex-row justify-around mt-12 ${filtersOpen ? "hidden" : ""
                 }`}
             >
+              <select
+                name=""
+                id=""
+                ref={selectRef}
+                onChange={handleSectionSelectChange}
+              >
+                <option value="">All Sections</option>
+                {assetSections
+                  .sort((a, b) => a.section_name.localeCompare(b.section_name))
+                  .map((section: AssetSection, index: number) => (
+                    <option key={index} value={section.section_name}>
+                      {section.section_name}
+                    </option>
+                  ))}
+              </select>
               <button
                 className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
                 onClick={() => setFitlersOpen(true)}
@@ -386,14 +431,12 @@ const ListsLayout = (props: any) => {
             <div className="mt-10">
               <FilterOptions
                 filterClose={() => setFitlersOpen(false)}
-                sections={assetSections}
                 placements={assetPlacements}
-                selectedButtonsSection={selectedButtonsSection}
-                setSelectedButtonsSection={setSelectedButtonsSection}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
                 selectedButtonsStatus={selectedButtonsStatus}
                 setSelectedButtonsStatus={setSelectedButtonsStatus}
+                handleSectionReset={handleSectionReset}
               />
             </div>
           ) : (
@@ -422,8 +465,11 @@ const ListsLayout = (props: any) => {
                     selectedPlacementNames.length === 0 ||
                     selectedPlacementNames.includes(asset.placement_name);
 
+                  /* sectionFilterMatch AND placementFilterMatch */
                   const intersectionFilterMatch =
                     sectionFilterMatch && placementFilterMatch;
+
+                  /* sectionFilterMatch OR placementFilterMatch */
                   const unionFilterMatch =
                     sectionFilterMatch || placementFilterMatch;
 
@@ -433,7 +479,7 @@ const ListsLayout = (props: any) => {
                     (selectedSectionNames.length === 0 ||
                       selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
-                      : unionFilterMatch)
+                      : intersectionFilterMatch)
                   );
                 })
                 .map((asset) => (

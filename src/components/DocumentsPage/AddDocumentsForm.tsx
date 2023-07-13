@@ -6,6 +6,7 @@ import { createFile } from "services/fileServices";
 import { createDocument } from "services/documentServices";
 import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
+import { Auth } from "aws-amplify";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -54,6 +55,10 @@ const AddDocumentsForm = ({
     event.preventDefault();
     setAddDocumentsOpen(false);
 
+    const userData = await Auth.currentAuthenticatedUser();
+    const modifiedBy = userData.attributes.given_name;
+    const modifiedDate = new Date().toISOString().substring(0, 10);
+
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
     console.log("documentLocation ==>> ", documentLocation);
@@ -62,6 +67,8 @@ const AddDocumentsForm = ({
     const createdFile = await createFile(token, {
       file_id: null,
       file_array: [documentLocation.location],
+      modified_by_array: [modifiedBy],
+      modified_date_array: [modifiedDate]
     });
     console.log("Return from createFile (file_id) ==>> ", createdFile);
     const fileId = String(createdFile);
@@ -84,8 +91,8 @@ const AddDocumentsForm = ({
       end_date: formData.endDate.toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
-      modified_by: "John Doe",
-      modified_date: "2023-06-15",
+      modified_by: userData.attributes.given_name,
+      modified_date: (new Date()).toLocaleDateString(),
       org_id: null,
       asset_id: assetID,
       location_id: locationID,
@@ -130,10 +137,11 @@ const AddDocumentsForm = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = window.localStorage.getItem("sessionToken");
-        const fetchedDocumentTypes = await getAllDocumentTypes(data);
+        const userData = await Auth.currentAuthenticatedUser();
+        const token = userData.signInUserSession.accessToken.jwtToken;
+        const fetchedDocumentTypes = await getAllDocumentTypes(token);
 
-        setToken(data);
+        setToken(token);
         setDocumentTypes(fetchedDocumentTypes);
       } catch (error) {
         console.error(

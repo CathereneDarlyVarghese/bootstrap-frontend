@@ -10,6 +10,7 @@ import Form from "react-jsonschema-form";
 // import "./AdminPage.module.css";
 import { Helmet } from "react-helmet";
 import "./MyStyle.css";
+import { TfiClose } from "react-icons/tfi";
 
 const AdminPage = () => {
   const [token, setToken] = useState("");
@@ -17,6 +18,7 @@ const AdminPage = () => {
   const [selectedAssetType, setSelectedAssetType] = useState(null);
   const [jsonForm, setJsonForm] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -74,23 +76,54 @@ const AdminPage = () => {
       <Helmet>
         <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
       </Helmet>
-      <h1>Admin Page</h1>
-      <select
-        value={selectedAssetType}
-        onChange={(e) => setSelectedAssetType(e.target.value)}
-      >
-        {assetTypes.map((type) => (
-          <option
-            key={type.asset_type_id}
-            value={type.asset_type_id}
-            className="text-black"
-          >
-            {type.asset_type}
-          </option>
-        ))}
-      </select>
+      <div >
+        <div className="flex flex-col justify-center">
+          {/* <h1 className="mx-auto my-3">Select Form</h1> */}
+          <button className="btn bg-blue-900 hover:bg-blue-900 w-fit mx-auto my-3" onClick={() => setShowForm(true)}>Add Asset Type</button>
 
-      {jsonForm && <Form schema={jsonForm} />}
+          <select
+            value={selectedAssetType}
+            onChange={(e) => setSelectedAssetType(e.target.value)}
+            className="select border border-slate-300 w-5/12 mx-auto my-5"
+          >
+            {assetTypes.map((type) => (
+              <option
+                key={type.asset_type_id}
+                value={type.asset_type_id}
+                className="text-black"
+              >
+                {type.asset_type}
+              </option>
+            ))}
+          </select>
+        </div>
+        {jsonForm && <Form schema={jsonForm} />}
+
+        {/* add asset type */}
+        <div>
+          <input type="checkbox" checked={showForm} id="my_modal_6" className="modal-toggle" />
+          <div className="modal">
+            <div className="modal-box">
+              <div className="flex flex-row items-center">
+                <h3 className="font-bold text-lg">Add Asset Type</h3>
+                <button className="ml-auto" onClick={() => setShowForm(false)}>
+                  <TfiClose />
+                </button>
+              </div>
+              <form>
+                <input type="text" required placeholder="Enter Asset Type" className="input input-sm w-full border border-slate-300 my-5" />
+                <div className="flex flex-row justify-center">
+                  <button className="btn btn-sm bg-blue-900 hover:bg-blue-900" onClick={() => setShowForm(false)}>Submit</button>
+                </div>
+              </form>
+              {/* <div className="modal-action">
+                <label htmlFor="my_modal_6" className="btn">Close!</label>
+              </div> */}
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };

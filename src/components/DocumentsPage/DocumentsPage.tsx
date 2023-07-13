@@ -79,7 +79,7 @@ const DocumentsPage = () => {
         selectedDocument.file_id
       );
 
-      setFileName(fetchedFile.file_array[0]);
+      setFileName(fetchedFile.file_array && fetchedFile.file_array[0] ? fetchedFile.file_array[0] : "");
     };
     fetchFile();
   }, [selectedDocument]);
@@ -148,6 +148,8 @@ const DocumentsPage = () => {
                   documentStatus="active"
                   // FIX THIS - For now we are only displaying one file name
                   fileID={document.file_id}
+                  assetID={document.asset_id}
+                  locationID={document.location_id}
                 />
               </div>
             ))}

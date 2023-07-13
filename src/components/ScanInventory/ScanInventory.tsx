@@ -1,74 +1,55 @@
-import React, { useEffect, useState } from "react";
-import useLocalStorage from "hooks/useLocalStorage";
-import { Html5Qrcode } from "html5-qrcode";
-import { CameraDevice } from "html5-qrcode/esm/core";
+import React, { useEffect, useRef } from "react";
+// import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 
-function ScanInventory() {
-  const [cameraId, setCameraId] = useLocalStorage("last_used_camera_id", null);
-  const [devices, setDevices] = useState<CameraDevice[]>(null);
-  const [scannerActive, setScannerActive] = useState(false);
-  const [cameraAvailable, setCameraAvailable] = useState(true);
+const QRCodeReader = () => {
+  const resultRef = useRef(null);
+  const qrRef = useRef(null);
 
   useEffect(() => {
-    Html5Qrcode.getCameras()
-      .then((ds) => {
-        setDevices(ds);
-        if (ds.length === 0) {
-          setCameraAvailable(false);
+    let lastResult;
+    let countResults = 0;
+
+    const onScanSuccess = (decodedText, decodedResult) => {
+      if (decodedText !== lastResult) {
+        ++countResults;
+        lastResult = decodedText;
+        console.log(`Scan result ${decodedText}`, decodedResult);
+      }
+    };
+
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      qrRef.current.id,
+      { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], },
+      false
+    );
+
+    html5QrcodeScanner.render(
+      (decodedText, decodedResult) => {
+        // This will be called when a QR code is successfully scanned
+        if (decodedText !== lastResult) {
+          ++countResults;
+          lastResult = decodedText;
+          console.log(`Scan result ${decodedText}`, decodedResult);
         }
-      })
-      .catch((error) => {
-        console.error("Error retrieving cameras:", error);
-        setCameraAvailable(false);
-      });
+      },
+      (errorMessage) => {
+        // This will be called in case of errors
+        console.log(`Error scanning: ${errorMessage}`);
+      }
+    );
+
+    return () => {
+      html5QrcodeScanner.clear();
+    };
   }, []);
 
-  useEffect(() => {
-    if (cameraId && scannerActive) {
-      const scanner = new Html5Qrcode("reader");
-
-      const startPromise = scanner.start(
-        cameraId,
-        { fps: 10 },
-        (result) => {
-          // Handle the scanned QR code result
-          console.log("Scanned result:", result);
-        },
-        (error) => {
-          // Handle any scanning errors
-          console.error("Scanning error:", error);
-        }
-      );
-
-      return () => {
-        startPromise.then(() => {
-          if (scanner.isScanning) {
-            scanner.stop().catch((error) => {
-              console.error("Scanner stop error:", error);
-            });
-          }
-        });
-      };
-    }
-    return undefined;
-  }, [cameraId, scannerActive]);
-
   return (
-    <>
-      {scannerActive && <div id="reader" />}
-      {!scannerActive && devices && devices.length > 0 ? (
-        devices.map((d) => (
-          <button key={d.id} onClick={() => setScannerActive(!scannerActive)}>
-            {d.label}
-          </button>
-        ))
-      ) : (
-        <p>
-          {cameraAvailable ? "No camera available" : "Error retrieving cameras"}
-        </p>
-      )}
-    </>
+    <div>
+      <div id="qr-reader" ref={qrRef} style={{ width: "500px" }} />
+      <div id="qr-reader-results" ref={resultRef} />
+    </div>
   );
-}
+};
 
-export default ScanInventory;
+export default QRCodeReader;

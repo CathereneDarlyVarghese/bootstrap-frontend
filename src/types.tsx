@@ -112,7 +112,6 @@ export interface IncomingDocument {
 }
 
 export interface AssetCheck {
-  uptime_check_id: string;
   asset_id: string;
   status_check?: string;
   file_id?: string;
@@ -156,6 +155,8 @@ export interface AssetSection {
 export interface File {
   file_id: string;
   file_array: string[];
+  modified_by_array: string[];
+  modified_date_array: string[];
 }
 
 export interface AssetType {
