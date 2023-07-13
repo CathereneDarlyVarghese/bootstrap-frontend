@@ -31,10 +31,7 @@ import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
-  // Custom hook to fetch asset type names
   const assetTypeNames = useAssetTypeNames();
-
-  // State variables
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
@@ -43,6 +40,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedSection, setSelectedSection] = useState<string>("");
+  const [selectedPlacement, setSelectedPlacement] = useState<string>("");
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
@@ -51,7 +49,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
-
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
@@ -62,7 +59,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const handleConditionChange = (event) => {
     setSelectedCondition(event.target.value);
-    console.log("selected condition ->", event.target.value);
   };
 
   const handleLocationChange = (locationId: string) => {
@@ -102,7 +98,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       file_id: "",
       file_array: [imageLocation.location],
       modified_by_array: [modifiedBy],
-      modified_date_array: [modifiedDate]
+      modified_date_array: [modifiedDate],
     });
     console.log("return from createFile==>>", createdFile);
     const fileId = String(createdFile);
@@ -186,29 +182,29 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       setLocations(locations);
       setAssetPlacements(placements);
       setAssetSections(sections);
-
-      console.log("Asset Types:", types);
-      console.log("Asset Locations:", locations);
-      console.log("Asset Placements:", placements);
-      console.log("Asset Sections:", sections);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
   };
 
   useEffect(() => {
+    console.log(selectedSection);
+  }, [selectedSection]);
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   // Function to handle adding a section
-  const handleAddSection = async (event) => {
-    const formData = new FormData(event.target);
+  const handleAddSection = async () => {
+    // event.preventDefault();
+    console.log("inside handleAddSection");
     if (selectedLocation) {
-      const sectionName = prompt("Enter Section Name");
-      if (sectionName) {
+      console.log("Section submitted==>", selectedSection);
+      if (selectedSection) {
         const newSection: AssetSection = {
           section_id: "",
-          section_name: sectionName,
+          section_name: selectedSection,
           location_id: selectedLocation,
         };
         try {
@@ -232,11 +228,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const handleAddPlacement = async () => {
     if (selectedLocation && selectedSection) {
-      const placementName = prompt("Enter Placement Name");
-      if (placementName) {
+      if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
-          placement_name: placementName,
+          placement_name: selectedPlacement,
           section_id: selectedSection,
           location_id: selectedLocation,
         };
@@ -375,10 +370,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
-                    ? "text-black dark:text-white"
-                    : "text-gray-400"
-                    }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -519,10 +515,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          setAddSection(true);
-                          handleAddSection(e);
-
-                          // (window as any).addSectionModal.showModal();
+                          if (selectedLocation) {
+                            setAddSection(true);
+                          } else {
+                            alert("Please select a location first.");
+                          }
                         }}
                       >
                         +
@@ -562,8 +559,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          setAddPlacement(true);
-                          handleAddPlacement();
+                          if (selectedLocation && selectedSection) {
+                            setAddPlacement(true);
+                          } else {
+                            alert(
+                              "Please select a location and section first."
+                            );
+                          }
                         }}
                       >
                         +
@@ -582,53 +584,68 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               />
               <div id="addSectionModal" className="modal ">
                 <div className="modal-box bg-white dark:bg-gray-800">
-                  <form
-                    method="dialog"
-                  >
-                    <div className="flex flex-row mb-5">
-                      <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                        Add Section
-                      </h3>
-                      <button
-                        className="ml-auto"
-                        onClick={() => {
-                          setAddSection(false);
-                        }}
-                      >
-                        <TfiClose className="font-bold text-black dark:text-white" />
-                      </button>
-                    </div>
-                    <div>
-                      <div className={`flex flex-col my-2 gap-3`}>
-                        <form className="">
-                          <div className="flex flex-col w-full">
-                            <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                              New Section Name
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                            />
-                          </div>
-
-                          <div className="w-full mt-4 flex justify-center">
-                            <button
-                              className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setAddSection(false);
-                              }}
-                            >
-                              Submit
-                            </button>
-                          </div>
-                        </form>
+                  {selectedLocation && (
+                    <form>
+                      <div className="flex flex-row mb-5">
+                        <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                          Add Section
+                        </h3>
+                        <button
+                          className="ml-auto"
+                          type="button"
+                          onClick={() => {
+                            setAddSection(false);
+                          }}
+                        >
+                          <TfiClose className="font-bold text-black dark:text-white" />
+                        </button>
                       </div>
-                    </div>
-                  </form>
-                </div>
 
+                      <div className="flex flex-col w-full">
+                        <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                          New Section Name
+                        </label>
+                        <input
+                          type="text"
+                          name="section"
+                          required
+                          onChange={(e) => setSelectedSection(e.target.value)}
+                          className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                        />
+                      </div>
+
+                      <div className="w-full mt-4 flex justify-center">
+                        <button
+                          onClick={() => {
+                            handleAddSection();
+                            setAddSection(false);
+                          }}
+                          type="button"
+                          className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                    // <form>
+                    //   <input
+                    //     type="text"
+                    //     name="section"
+                    //     required
+                    //     onChange={(e) => setSelectedSection(e.target.value)}
+                    //   />
+                    // <button
+                    //   onClick={() => {
+                    //     handleAddSection();
+                    //     setAddSection(false);
+                    //   }}
+                    //   type="button"
+                    // >
+                    //   Submit now
+                    // </button>
+                    // </form>
+                  )}
+                </div>
               </div>
 
               {/* adding placement Modal */}
@@ -638,53 +655,53 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 id="my_modal_6"
                 className="modal-toggle"
               />
-              <div id="addSectionModal" className="modal">
-                <form
-                  method="dialog"
-                  className="modal-box bg-white dark:bg-gray-800"
-                >
-                  <div className="flex flex-row mb-5">
-                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                      Add Placement
-                    </h3>
-                    <button
-                      className="ml-auto"
-                      onClick={() => {
-                        setAddPlacement(false);
-                      }}
-                    >
-                      <TfiClose className="font-bold text-black dark:text-white" />
-                    </button>
-                  </div>
-                  <div>
-                    <div className={`flex flex-col my-2 gap-3`}>
-                      <form className="">
-                        <div className="flex flex-col w-full">
-                          <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                            New Placement Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            className="block w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                          />
-                        </div>
+              <div id="addPlacementModal" className="modal ">
+                <div className="modal-box bg-white dark:bg-gray-800">
+                  {selectedSection && (
+                    <form>
+                      <div className="flex flex-row mb-5">
+                        <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                          Add Placement
+                        </h3>
+                        <button
+                          className="ml-auto"
+                          type="button"
+                          onClick={() => {
+                            setAddPlacement(false);
+                          }}
+                        >
+                          <TfiClose className="font-bold text-black dark:text-white" />
+                        </button>
+                      </div>
 
-                        <div className="w-full mt-4 flex justify-center">
-                          <button
-                            className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setAddPlacement(false);
-                            }}
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </form>
+                      <div className="flex flex-col w-full">
+                        <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                          New Placement Name
+                        </label>
+                        <input
+                          type="text"
+                          name="placement"
+                          required
+                          onChange={(e) => setSelectedPlacement(e.target.value)}
+                          className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                        />
+                      </div>
+
+                      <div className="w-full mt-4 flex justify-center">
+                        <button
+                          onClick={() => {
+                            handleAddPlacement();
+                            setAddPlacement(false);
+                          }}
+                          type="button"
+                          className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
               </div>
 
               {/* Toggle for status check enabled */}
