@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
-import { Document, IncomingDocument } from "types";
+import { IncomingDocument } from "types";
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
-  const location = useLocation();
   // const searchParams = new URLSearchParams(location.search);
   const selectedAssetID = selectedAsset.asset_id;
 
@@ -44,16 +42,14 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   return (
     <>
       <div
-        className={`h-full overflow-y-auto p-5 pb-20 ${
-          addDocumentsOpen && !fileOpen
-            ? "2xl:bg-white dark:2xl:bg-gray-800 xl:bg-white dark:xl:bg-gray-800"
-            : "bg-white dark:bg-gray-800"
-        }`}
+        className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen && !fileOpen
+          ? "2xl:bg-white dark:2xl:bg-gray-800 xl:bg-white dark:xl:bg-gray-800"
+          : "bg-white dark:bg-gray-800"
+          }`}
       >
         <div
-          className={`flex flex-grow items-center ${
-            addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
-          } `}
+          className={`flex flex-grow items-center ${addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
+            } `}
         >
           <h1 className="text-blue-800 dark:text-blue-700 text-xl font-sans font-semibold">
             Documents
@@ -68,20 +64,18 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
           </button>
         </div>
         <div
-          className={`flex ${
-            addDocumentsOpen || fileOpen ? "flex-row" : "flex-col"
-          } items-start gap-2 mt-5`}
+          className={`flex ${addDocumentsOpen || fileOpen ? "flex-row" : "flex-col"
+            } items-start gap-2 mt-5`}
         >
           <div
-            className={`${
-              addDocumentsOpen
-                ? "w-3/5 hidden"
-                : fileOpen
+            className={`${addDocumentsOpen
+              ? "w-3/5 hidden"
+              : fileOpen
                 ? "w-3/5 hidden"
                 : !fileOpen
-                ? "w-full"
-                : "w-full"
-            }`}
+                  ? "w-full"
+                  : "w-full"
+              }`}
           >
             {incomingDocuments.map((document) => (
               <div
@@ -111,15 +105,14 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
           </div>
         </div>
         <div
-          className={`border border-gray-300 dark:border-gray-600 rounded-xl ${
-            addDocumentsOpen && !fileOpen ? "w-full" : "hidden"
-          }`}
+          className={`border border-gray-300 dark:border-gray-600 rounded-xl ${addDocumentsOpen && !fileOpen ? "w-full" : "hidden"
+            }`}
         >
           <AddDocumentsForm
             addDocumentsOpen={addDocumentsOpen}
             setAddDocumentsOpen={setAddDocumentsOpen}
             assetID={selectedAssetID}
-            // locationID={selectedLocation}
+          // locationID={selectedLocation}
           />
         </div>
       </div>

@@ -127,13 +127,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           />
         </div>
 
-        {/* <div className="flex items-center">
-          {props.assetCondition === "INACTIVE" ? (
-            <span className="text-sm text-red-500 mr-2">Inactive</span>
-          ) : (
-            <span className="text-sm text-green-500 mr-2">Active</span>
-          )}
-        </div> */}
+
       </div>
     </div>
   );

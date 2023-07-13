@@ -1,6 +1,5 @@
 import { Auth } from "aws-amplify";
 import React, { useState } from "react";
-import { AiOutlinePaperClip } from "react-icons/ai";
 import { appendToFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
@@ -118,6 +117,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
 
               </div>
 
+              {/* upload file button as design */}
               {/* <input
                 type="file"
                 required

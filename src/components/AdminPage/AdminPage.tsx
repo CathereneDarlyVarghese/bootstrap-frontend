@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { Auth } from "aws-amplify";
 import {
@@ -12,6 +11,15 @@ import { Helmet } from "react-helmet";
 import "./MyStyle.css";
 import { TfiClose } from "react-icons/tfi";
 
+const uiSchema = {
+  "operational": {
+    "ui:widget": "radio"
+  },
+  "clean": {
+    "ui:widget": "radio"
+  }
+}
+
 const AdminPage = () => {
   const [token, setToken] = useState("");
   const [assetTypes, setAssetTypes] = useState([]);
@@ -20,7 +28,6 @@ const AdminPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
   useEffect(() => {
@@ -76,7 +83,7 @@ const AdminPage = () => {
       <Helmet>
         <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
       </Helmet>
-      <div >
+      <div>
         <div className="flex flex-col justify-center">
           {/* <h1 className="mx-auto my-3">Select Form</h1> */}
           <button className="btn bg-blue-900 hover:bg-blue-900 w-fit mx-auto my-3" onClick={() => setShowForm(true)}>Add Asset Type</button>
@@ -97,7 +104,9 @@ const AdminPage = () => {
             ))}
           </select>
         </div>
-        {jsonForm && <Form schema={jsonForm} />}
+        <div style={{ marginBottom: 70 }}>
+          {jsonForm && <Form schema={jsonForm} uiSchema={uiSchema} />}
+        </div>
 
         {/* add asset type */}
         <div>
@@ -116,9 +125,6 @@ const AdminPage = () => {
                   <button className="btn btn-sm bg-blue-900 hover:bg-blue-900" onClick={() => setShowForm(false)}>Submit</button>
                 </div>
               </form>
-              {/* <div className="modal-action">
-                <label htmlFor="my_modal_6" className="btn">Close!</label>
-              </div> */}
             </div>
           </div>
         </div>

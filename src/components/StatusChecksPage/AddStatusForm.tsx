@@ -1,17 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import WorkOrderButton from "components/widgets/WorkOrderButton";
-import useAssetTypeNames from "hooks/useAssetTypeNames";
-import { Asset, AssetCheck } from "types";
+import { useEffect, useState } from "react";
 import validator from "@rjsf/validator-ajv8";
-import { AssetTypes } from "enums";
-import Form from "react-jsonschema-form";
 import { uploadFiletoS3 } from "utils";
-import { addInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { createAssetCheck } from "services/assetCheckServices";
 import { createFile } from "services/fileServices";
-import useStatusTypeNames from "hooks/useStatusTypes";
-import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import {
   createAssetCheckForm,
@@ -52,16 +44,12 @@ const AddStatusForm = ({
   assetTypeId,
 }) => {
   const Form = withTheme(AntDTheme);
-  // Custom hook to fetch asset type names
-  const assetTypeNames = useAssetTypeNames();
   const [formDataState, setFormDataState] = useState<any>({});
   const [token, setToken] = useState<string>("");
   const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
-  const statusTypeNames = useStatusTypeNames();
   const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const formRef = useRef<HTMLFormElement>(null);
   const [file, setFile] = useState<any>();
   const [name, setName] = useState<string>("");
 
@@ -101,14 +89,8 @@ const AddStatusForm = ({
     }
   }, [assetType, token]);
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedStatus(event.target.value);
-  };
 
   const handleSubmit = async (formData: any) => {
-    // event.preventDefault();
-
-    // const formData = new FormData(formRef.current);
 
     if (reportIssue) {
       // Case when reporting an issue
@@ -192,18 +174,7 @@ const AddStatusForm = ({
     console.log("Form submitted:", formData);
   };
 
-  // Function to close the add asset form
-  const closeAddForm = () => {
-    setAddFormOpen(false);
-  };
 
-  //function to add and remove class for UI
-  const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
-  };
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
 
   return (
     <>
@@ -249,37 +220,6 @@ const AddStatusForm = ({
               />
             )}
           </div>
-
-          {/* Modal action */}
-          {/* <div className=" m-0 p-5 flex justify-center gap-5">
-            <div>
-              {reportIssue || (
-                <button
-                  className="btn bg-blue-900 hover:bg-blue-900 capitalize"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setReportIssue(true);
-                  }}
-                >
-                  Report Issue
-                </button>
-              )}
-            </div>
-            <div>
-              <button
-                className="btn bg-blue-900 hover:bg-blue-900 capitalize"
-                type="submit"
-                onClick={(e) => {
-                  handleSubmit(e);
-                  setAddFormOpen(false);
-                  setReportIssue(false);
-                }}
-              >
-                {reportIssue ? "Submit" : "Fine"}
-              </button>
-            </div>
-          </div> 
-        </form> */}
         </div>
       </div >
     </>

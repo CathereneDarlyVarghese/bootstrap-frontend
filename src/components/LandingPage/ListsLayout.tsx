@@ -8,12 +8,12 @@ import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import SearchIcon from "../../icons/circle2017.png";
 
-import { getAllAssets, getAssets } from "services/assetServices";
+import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
@@ -25,13 +25,11 @@ import {
   // selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
-import ScanButton from "components/widgets/ScanButton";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const ListsLayout = (props: any) => {
   const navigate = useNavigate();
   const [location, setLocation] = useSyncedAtom(locationAtom);
-  const [assets, setAssets] = useState<Asset[]>([]);
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
   const [assetId, setAssetId] = useState(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -39,11 +37,9 @@ const ListsLayout = (props: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [filteredAssets, setFilteredAssets] = useState<IncomingAsset[]>([]);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [filtersOpen, setFitlersOpen] = useState(false);
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
-  const [selectedButtonsSection, setSelectedButtonsSection] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     []
@@ -52,8 +48,6 @@ const ListsLayout = (props: any) => {
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
 
-  // Used just for passing props to WorkOrderForm.tsx WITHOUT HAVING TO RENDER IT
-  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
 
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
@@ -74,11 +68,6 @@ const ListsLayout = (props: any) => {
 
   const [selectedAssetPlacementName, setSelectedAssetPlacementName] =
     useState<string>("");
-  const [filterButton, setFilterButton] = useState(true);
-
-  const handleAddWorkOrder = () => {
-    setShowWorkOrderForm(true);
-  };
 
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
@@ -311,7 +300,7 @@ const ListsLayout = (props: any) => {
                 <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full h-12">
                   <button>
                     <img
-                      src={SearchIcon}
+                      src={SearchIcon} alt="search"
                       className="h-fit justify-center items-center ml-3"
                     />
                   </button>
@@ -469,9 +458,6 @@ const ListsLayout = (props: any) => {
                   const intersectionFilterMatch =
                     sectionFilterMatch && placementFilterMatch;
 
-                  /* sectionFilterMatch OR placementFilterMatch */
-                  const unionFilterMatch =
-                    sectionFilterMatch || placementFilterMatch;
 
                   return (
                     searchTermMatch &&
@@ -578,31 +564,19 @@ const ListsLayout = (props: any) => {
         )}
       </div>
 
-      {/* Render work order form */}
-      {/* <WorkOrderForm /> */}
-      {/* {showWorkOrderForm ? (
-        <WorkOrderForm
-          assetId1={assetId}
-          closeModal={function (): void {
-            throw new Error("Function not implemented.");
-          }}
-        />
-      ) : (
-        ""
-      )} */}
-      {/* Render add asset form */}
+
     </div>
   );
 };
 
-{
-  /* ListsLayout.propTypes = {
-  searchType: PropTypes.string,
-};
+// {
+//    ListsLayout.propTypes = {
+//   searchType: PropTypes.string,
+// };
 
-ListsLayout.defaultProps = {
-  searchType: "Item",
-}; */
-}
+// ListsLayout.defaultProps = {
+//   searchType: "Item",
+// }; 
+// }
 
 export default ListsLayout;

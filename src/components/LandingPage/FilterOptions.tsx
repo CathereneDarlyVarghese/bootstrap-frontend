@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { Auth } from "aws-amplify";
 import { getAssetPlacements } from "services/assetPlacementServices";
@@ -163,7 +163,7 @@ export const FilterOptions = ({
             placements = fetchedPlacements;
           }
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     getPlacements();
   }, []);
@@ -193,22 +193,20 @@ export const FilterOptions = ({
       <div className="my-3">
         <h1 className="font-sans">Status</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-            selectedButtonsStatus.includes(-1)
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(-1)
               ? "bg-blue-200 hover:bg-blue-200"
               : "bg-white hover:bg-white"
-          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handleStatusClick(-1)}
         >
           All
         </button>
         {statuses.map((status, index) => (
           <button
-            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-              selectedButtonsStatus.includes(index)
+            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(index)
                 ? "bg-blue-200 hover:bg-blue-200"
                 : "bg-white hover:bg-white"
-            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
             onClick={() => handleStatusClick(index)}
           >
             {status.status_name}
@@ -244,11 +242,10 @@ export const FilterOptions = ({
       <div>
         <h1 className="font-sans">Placement</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-            selectedButtonsPlacement.includes(-1)
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(-1)
               ? "bg-blue-200 hover:bg-blue-200"
               : "bg-white hover:bg-white"
-          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handlePlacementClick(-1)}
         >
           All
@@ -258,11 +255,10 @@ export const FilterOptions = ({
           .map((placement, index) => (
             <button
               key={index}
-              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
-                selectedButtonsPlacement.includes(index)
+              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(index)
                   ? "bg-blue-200 hover:bg-blue-200"
                   : "bg-white hover:bg-white"
-              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+                } border-blue-500 hover:border-blue-500 rounded-full m-1`}
               onClick={() => handlePlacementClick(index)}
             >
               {placement.placement_name}

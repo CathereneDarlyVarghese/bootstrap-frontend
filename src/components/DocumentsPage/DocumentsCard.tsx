@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { TbListDetails } from "react-icons/tb";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { MdAutorenew } from "react-icons/md";

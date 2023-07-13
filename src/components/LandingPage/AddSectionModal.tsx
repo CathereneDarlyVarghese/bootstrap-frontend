@@ -24,4 +24,4 @@ const AddSectionModal = () => {
     )
 }
 
-export default AddSectionModal
+export default AddSectionModal;

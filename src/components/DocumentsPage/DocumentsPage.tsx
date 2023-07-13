@@ -4,14 +4,9 @@ import { locationAtom, useSyncedAtom } from "store/locationStore";
 import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByLocationIdOnly } from "services/documentServices";
-import { Document, IncomingDocument } from "types";
+import { IncomingDocument } from "types";
 import { getFileById } from "services/fileServices";
 
-const testDescription =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque feugiat quam et fringilla dictum. Nunc facilisis vitae augue a";
-
-const testNotes =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque feugiat quam et fringilla dictum. Nunc facilisis vitae augue a fermentum. Quisque vel feugiat diam. Cras commodo elementum euismod. Suspendisse eleifend nulla elementum nulla cursus malesuada. Cras dapibus ipsum vitae venenatis scelerisque. Pellentesque dictum ";
 
 const DocumentsPage = () => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);

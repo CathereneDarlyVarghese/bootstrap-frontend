@@ -141,8 +141,8 @@ const AssetDetails: React.FC<
                 <div className="flex flex-row">
                   <button
                     className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                      : "text-gray-400 font-normal"
                       }`}
                     onClick={() => {
                       setTabIndex(1);
@@ -152,8 +152,8 @@ const AssetDetails: React.FC<
                   </button>
                   <button
                     className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                      : "text-gray-400 font-normal"
                       }`}
                     onClick={() => {
                       setTabIndex(2);
@@ -163,8 +163,8 @@ const AssetDetails: React.FC<
                   </button>
                   <button
                     className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                      : "text-gray-400 font-normal"
                       }`}
                     onClick={() => {
                       setTabIndex(3);
@@ -352,35 +352,7 @@ const AssetDetails: React.FC<
               </div>
             )}
           </div>
-          {/* <div className="flex flex-row md:flex-col items-center gap-5 p-2 justify-around">
-            <button
-              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-              onClick={() => {
-                navigate(
-                  `/document/asset?selectedAssetID=${encodeURIComponent(
-                    JSON.stringify(selectedAsset1.asset_id)
-                  )}`,
-                  {
-                    state: { from: location.pathname },
-                  }
-                );
-              }}
-            >
-              Documents
-            </button>
-            <button
-              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-              onClick={() => navigate("/work-orders")}
-            >
-              Maintenance
-            </button>
-            <button
-              className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white font-sans capitalize md:w-40"
-              onClick={() => navigate("/status-checks", { state: { assetId } })}
-            >
-              Status Checks
-            </button>
-          </div> */}
+
         </div>
       </>
     );

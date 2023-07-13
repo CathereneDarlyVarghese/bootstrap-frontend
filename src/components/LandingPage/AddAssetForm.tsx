@@ -8,7 +8,6 @@ import {
   AssetSection,
   AssetType,
 } from "types";
-import { AssetTypes } from "enums";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
