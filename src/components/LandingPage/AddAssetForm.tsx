@@ -27,6 +27,7 @@ import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
+import { Auth } from "aws-amplify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Custom hook to fetch asset type names
@@ -90,10 +91,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     const imageLocation = await uploadFiletoS3(file, "inventory");
     console.log(imageLocation);
 
+    const userData = await Auth.currentAuthenticatedUser();
+    const modifiedBy = userData.attributes.given_name;
+    const modifiedDate = new Date().toISOString().substring(0, 10);
+
     // Step 2: Create a file in the backend
     const createdFile = await createFile(token, {
       file_id: "",
       file_array: [imageLocation.location],
+      modified_by_array: [modifiedBy],
+      modified_date_array: [modifiedDate]
     });
     console.log("return from createFile==>>", createdFile);
     const fileId = String(createdFile);

@@ -96,8 +96,10 @@ export async function deleteFile(
 
 export async function appendToFileArray(
   accessToken: string,
-  fileId: string,
-  newEntry: string
+  file_id: string,
+  new_file_array_entry: string,
+  new_modified_by_array_entry: string,
+  new_modified_date_array_entry: string
 ): Promise<void> {
   const config = {
     headers: {
@@ -107,12 +109,14 @@ export async function appendToFileArray(
   };
 
   const requestObject = {
-    fileId,
-    newEntry
-  }
+    file_id,
+    new_file_array_entry,
+    new_modified_by_array_entry,
+    new_modified_date_array_entry,
+  };
 
   const response = await axios.post(
-    `${BASE_URL}/protected/file/${fileId}/append`,
+    `${BASE_URL}/protected/file/${file_id}/append`,
     requestObject,
     config
   );
@@ -121,8 +125,10 @@ export async function appendToFileArray(
 
 export async function replaceLatestInFileArray(
   accessToken: string,
-  fileId: string,
-  newEntry: string
+  file_id: string,
+  new_file_array_entry: string,
+  new_modified_by_array_entry: string,
+  new_modified_date_array_entry: string
 ): Promise<void> {
   const config = {
     headers: {
@@ -132,12 +138,14 @@ export async function replaceLatestInFileArray(
   };
 
   const requestObject = {
-    fileId,
-    newEntry
-  }
+    file_id,
+    new_file_array_entry,
+    new_modified_by_array_entry,
+    new_modified_date_array_entry,
+  };
 
   const response = await axios.put(
-    `${BASE_URL}/protected/file/${fileId}/replace-latest`,
+    `${BASE_URL}/protected/file/${file_id}/replace-latest`,
     requestObject,
     config
   );

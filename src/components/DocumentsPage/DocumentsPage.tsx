@@ -79,7 +79,7 @@ const DocumentsPage = () => {
         selectedDocument.file_id
       );
 
-      setFileName(fetchedFile.file_array[0]);
+      setFileName(fetchedFile.file_array && fetchedFile.file_array[0] ? fetchedFile.file_array[0] : "");
     };
     fetchFile();
   }, [selectedDocument]);
