@@ -20,6 +20,28 @@ import {
 import { withTheme } from "@rjsf/core";
 import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme you prefer
 import { Auth } from "aws-amplify";
+import "./formstyles.css"
+
+
+const AddStatusFormSchema = {
+  "operational": {
+    "ui:widget": "radio"
+  },
+  "clean": {
+    "ui:widget": "radio"
+  },
+  "defrost": {
+    "ui:widget": "radio"
+  },
+  "condition": {
+    "ui:widget": "radio"
+  },
+  "cleanliness": {
+    "ui:widget": "radio"
+  }
+
+
+}
 
 const AddStatusForm = ({
   addFormOpen,
@@ -210,12 +232,13 @@ const AddStatusForm = ({
             </button>
           </div>
 
-          <div className="flex flex-col p-5">
+          <div className="px-5">
             {/* The form generated from the JSON Schema */}
             {jsonForm && (
               <Form
                 schema={jsonForm}
                 validator={validator}
+                uiSchema={AddStatusFormSchema}
                 onSubmit={({ formData }) => {
                   console.log("Data submitted: ", formData);
                   setFormDataState(formData);
@@ -226,8 +249,39 @@ const AddStatusForm = ({
               />
             )}
           </div>
+
+          {/* Modal action */}
+          {/* <div className=" m-0 p-5 flex justify-center gap-5">
+            <div>
+              {reportIssue || (
+                <button
+                  className="btn bg-blue-900 hover:bg-blue-900 capitalize"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setReportIssue(true);
+                  }}
+                >
+                  Report Issue
+                </button>
+              )}
+            </div>
+            <div>
+              <button
+                className="btn bg-blue-900 hover:bg-blue-900 capitalize"
+                type="submit"
+                onClick={(e) => {
+                  handleSubmit(e);
+                  setAddFormOpen(false);
+                  setReportIssue(false);
+                }}
+              >
+                {reportIssue ? "Submit" : "Fine"}
+              </button>
+            </div>
+          </div> 
+        </form> */}
         </div>
-      </div>
+      </div >
     </>
   );
 };
