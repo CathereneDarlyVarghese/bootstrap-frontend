@@ -7,26 +7,6 @@ import { IncomingAssetCheck } from "types";
 import { Auth } from "aws-amplify";
 import { getAssetTypeById } from "services/assetTypeServices";
 
-// interface AssetCheck {
-//   uptime_check_id: string;
-//   asset_id: string;
-//   status_check: string;
-//   images_array: string[];
-//   modified_by: string;
-//   modified_date: string;
-//   uptime_notes: string;
-// }
-
-// const selectedAssetCheck: IncomingAssetCheck = {
-//     uptime_check_id: "",
-//     asset_id: "",
-//     status_check: "",
-//     images_array: [][],
-//     modified_by: "",
-//     modified_date: "",
-//     uptime_notes: "",
-//     file_id: ""
-// };
 
 interface AssetStatusChecksPageProps {
   sessionToken: string;

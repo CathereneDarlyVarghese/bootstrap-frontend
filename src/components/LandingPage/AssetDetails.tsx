@@ -320,16 +320,7 @@ const AssetDetails: React.FC<
                   >
                     <AiOutlineDelete className="text-2xl mx-3 text-black dark:text-white" />
                   </button>
-                  {/* <button className="mx-3">
-                <BsQrCode className="text-xl" />
-              </button> */}
 
-                  {/* <WorkOrderForm
-                  assetId1={assetId}
-                  closeModal={() => {
-                    throw new Error("Function not implemented.");
-                  }}
-                /> */}
                 </div>
               </>
             ) : tabIndex === 1 ? (
@@ -358,4 +349,4 @@ const AssetDetails: React.FC<
     );
   };
 
-export default AssetDetails;
+export default AssetDetails; 
