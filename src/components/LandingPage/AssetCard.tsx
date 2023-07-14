@@ -9,6 +9,7 @@ import { BsQrCode } from "react-icons/bs";
 import { BsCircleFill } from "react-icons/bs";
 import DisplayQR from "./DisplayQR";
 import { AssetCondition, StatusTypes } from "enums";
+import { opacity } from "html2canvas/dist/types/css/property-descriptors/opacity";
 
 let status = "expire_soon";
 
@@ -54,13 +55,14 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   const locationColor = "bg-gray-100";
 
   const assetCardStyle = {
-    backgroundColor: props.assetCondition === "INACTIVE" ? "gray" : "",
-    color: props.assetCondition === "INACTIVE" ? "#a3a8a5" : ""
+    backgroundColor: props.assetCondition === "INACTIVE" ? "#cdcfd1" : "",
+    color: props.assetCondition === "INACTIVE" ? "#a3a8a5" : "",
+    opacity: props.assetCondition === "INACTIVE" ? 0.3 : 1
   };
 
   return (
     <div
-      className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:bg-gray-700 ${props.assetCondition === "INACTIVE" ? "bg-gray-500 dark:bg-gray-500" : "bg-gray-100 dark:bg-gray-700"} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
+      className={`flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 dark:bg-gray-700 ${props.assetCondition === "INACTIVE" ? "bg-[#cdcfd1] dark:bg-[#1f2937] dark:border dark:border-gray-500" : "bg-gray-100 dark:bg-gray-700"} max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
       // style={{ backgroundColor: assetCardStyle.backgroundColor }}
       onClick={handleClick}
     >
@@ -69,6 +71,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           src={props.imageLocation}
           alt={props.imagePlaceholder}
           className="h-32 w-32"
+          style={{ opacity: assetCardStyle.opacity }}
         />
       </figure>
       <div
@@ -78,6 +81,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
         <div className="flex flex-row">
           <button
             className={`badge w-fit bg-gray-200 dark:${badgeBgColor} text-blue-700 dark:text-blue-500 font-semibold font-sans capitalize border-white border-none mr-auto ml-1 p-4 text-md xl:text-xs`}
+
           >
             {props.assetType}
           </button>
@@ -90,7 +94,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           )}
         </div>
         <h1
-          className={`flex ml-2 ${props.assetCondition === "INACTIVE" ? "text-gray-400 dark:text-gray-400" : "text-gray-800 dark:text-white"} ${props.assetName.length > 10 ? "text-md" : "text-lg"}  font-semibold font-sans tracking-wide xl:text-sm`}
+          className={`flex ml-2 ${props.assetCondition === "INACTIVE" ? "text-gray-400 dark:text-gray-600" : "text-gray-800 dark:text-white"} ${props.assetName.length > 10 ? "text-md" : "text-lg"}  font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
         >
           {props.assetName}
@@ -99,7 +103,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           <img src={MapIcon} className="h-6 mr-3 ml-2" />
           {/* <PinIcon /> */}
           <p
-            className={`text-sm text-start text-gray-500 dark:text-gray-300 font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
+            className={`text-sm text-start ${props.assetCondition === "INACTIVE" ? "text-gray-500 dark:text-gray-400" : "text-gray-500 dark:text-gray-300"}  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
           >
             {props.assetAddress === "tsd"
               ? "The Spiffy Dapper"

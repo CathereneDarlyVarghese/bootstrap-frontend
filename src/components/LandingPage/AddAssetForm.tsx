@@ -420,7 +420,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         <option
                           key={statusId}
                           value={statusId}
-                          className="text-black bg-white dark:text-white dark:bg-gray-800"
+                          className="text-black bg-white dark:text-white dark:bg-gray-800 uppercase"
                         >
                           {statusName}
                         </option>

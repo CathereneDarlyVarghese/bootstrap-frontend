@@ -105,7 +105,7 @@ const AdminPage = () => {
           </select>
         </div>
         <div style={{ marginBottom: 70 }}>
-          {jsonForm && <Form schema={jsonForm} uiSchema={uiSchema} />}
+          {jsonForm && <Form schema={jsonForm} />}
         </div>
 
         {/* add asset type */}
