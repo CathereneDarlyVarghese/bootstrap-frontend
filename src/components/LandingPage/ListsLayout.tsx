@@ -395,7 +395,7 @@ const ListsLayout = (props: any) => {
                 id=""
                 ref={selectRef}
                 onChange={handleSectionSelectChange}
-                className="select select-sm border border-slate-300 w-8/12"
+                className="select select-sm bg-white dark:bg-gray-700 text-black dark:text-white border border-slate-300 dark:border-slate-600 w-8/12"
               >
                 <option value="">All Sections</option>
                 {assetSections
@@ -407,7 +407,7 @@ const ListsLayout = (props: any) => {
                   ))}
               </select>
               <button
-                className="btn btn-sm bg-white hover:bg-white border-gray-400 hover:border-gray-400 rounded-3xl font-sans font-normal capitalize text-black"
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize text-black"
                 onClick={() => setFitlersOpen(true)}
               >
                 <div className="flex flex-row">
