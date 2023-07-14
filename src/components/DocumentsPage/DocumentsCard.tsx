@@ -326,9 +326,9 @@ const DocumentsCard = ({
               </div>
             </div>
           </div>
-          <div className="mt-4 flex flex-row md:flex-col gap-5 items-center">
+          <div className="mt-4 flex flex-col lg:flex-col gap-5 ">
             <div
-              className="flex flex-row gap-2  items-center md:mr-auto w-full"
+              className="flex flex-row gap-2 items-center md:mr-auto lg:w-full"
 
               onClick={() => {
                 console.log("clicked");
@@ -341,7 +341,7 @@ const DocumentsCard = ({
                 <div className="overflow-x-auto w-full inline-block">
                   <table className="table table-zebra">
                     {/* head */}
-                    <thead>
+                    <thead >
                       <tr>
                         <th>No.</th>
                         <th>File Name</th>
@@ -371,28 +371,31 @@ const DocumentsCard = ({
                 </>
               )}
             </div> */}
-            <div className="md:w-full">
-              <button
-                className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full"
-                onClick={() => setReplaceFileForm(true)}
-              >
-                <div className="flex flex-row items-center gap-2">
-                  <MdAutorenew className="text-lg" />
-                  <p>Replace Exisiting File</p>
-                </div>
-              </button>
+            <div className="flex flex-row md:flex-col gap-5">
+              <div className="lg:w-full">
+                <button
+                  className="btn btn-sm bg-blue-900 hover:bg-blue-900 normal-case font-sans w-full"
+                  onClick={() => setReplaceFileForm(true)}
+                >
+                  <div className="flex flex-row items-center gap-2">
+                    <MdAutorenew className="text-lg" />
+                    <p>Replace Exisiting File</p>
+                  </div>
+                </button>
+              </div>
+              <div className="lg:w-full">
+                <button
+                  className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full"
+                  onClick={() => setAddFileForm(true)}
+                >
+                  <div className="flex flex-row items-center gap-2">
+                    <AiFillPlusCircle />
+                    <p>Add a New File</p>
+                  </div>
+                </button>
+              </div>
             </div>
-            <div className="md:w-full">
-              <button
-                className="btn btn-sm bg-green-600 hover:bg-green-600 border-0 normal-case font-sans w-full"
-                onClick={() => setAddFileForm(true)}
-              >
-                <div className="flex flex-row items-center gap-2">
-                  <AiFillPlusCircle />
-                  <p>Add a New File</p>
-                </div>
-              </button>
-            </div>
+
             <div className="ml-auto">
               {documentStatus === "active" ? (
                 <BsFillCheckCircleFill className="text-green-600 text-3xl md:text-2xl " />
