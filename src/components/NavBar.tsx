@@ -5,6 +5,7 @@ import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { useAtom } from "jotai";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { getAllAssetLocations } from "../services/locationServices";
+import { resetFilterOptions } from "./LandingPage/FilterOptions";
 
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
@@ -108,6 +109,7 @@ const NavBar = () => {
           <a
             onClick={() => {
               navigate("/");
+              resetFilterOptions();
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
@@ -122,6 +124,7 @@ const NavBar = () => {
               className="tab text-white border border-transparent border-b-white font-sans mx-3 asset-tab"
               onClick={() => {
                 navigate("/home");
+                resetFilterOptions();
               }}
             >
               Assets

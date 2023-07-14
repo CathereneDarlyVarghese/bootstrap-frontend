@@ -7,6 +7,11 @@ export let selectedStatusIds: string[] = [];
 // export var selectedSectionNames: string[] = [];
 export let selectedPlacementNames: string[] = [];
 
+export const resetFilterOptions = () => {
+  selectedStatusIds = [];
+  selectedPlacementNames = [];
+}
+
 export const FilterOptions = ({
   filterClose,
   /*sections, */ placements,
