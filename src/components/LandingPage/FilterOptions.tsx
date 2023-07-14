@@ -171,7 +171,7 @@ export const FilterOptions = ({
   return (
     <div className="p-2">
       <div className="flex flex-row">
-        <h1 className="font-sans font-semibold">Filter</h1>
+        <h1 className="font-sans font-semibold">Filters</h1>
         <div className="flex flex-row gap-2 ml-auto">
           <button
             onClick={filterClose}

@@ -411,7 +411,7 @@ const ListsLayout = (props: any) => {
                 onClick={() => setFitlersOpen(true)}
               >
                 <div className="flex flex-row">
-                  Filter
+                  Filters
                   <BsFilter />
                 </div>
               </button>
