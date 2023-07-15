@@ -48,10 +48,10 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
     try {
       await deleteAssetCheck(sessionToken, uptimeCheckId);
       refreshAssets();
-      toast.success("Asset deleted successfully");
+      toast.success("Asset's Status Check Deleted Successfully");
     } catch (error) {
-      console.log("Error deleting asset:", error);
-      toast.error("Failed to delete asset");
+      console.log("Error Deleting Asset's Status Check:", error);
+      toast.error("Failed to Delete Asset's Status Check");
     }
   };
 
