@@ -8,6 +8,7 @@ import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
+import { deleteAssetCheck } from "services/assetCheckServices";
 
 interface StatusDetailsProps {
   sessionToken: string | null;
@@ -45,7 +46,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
 
   const handleDelete = async () => {
     try {
-      await deleteInventory(sessionToken || "", assetId);
+      await deleteAssetCheck(sessionToken, uptimeCheckId);
       refreshAssets();
       toast.success("Asset deleted successfully");
     } catch (error) {
