@@ -12,72 +12,69 @@ import {
 import { withTheme } from "@rjsf/core";
 import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme you prefer
 import { Auth } from "aws-amplify";
-import "./formstyles.css"
-
+import "./formstyles.css";
+import useStatusTypeNames from "hooks/useStatusTypes";
 
 const AddStatusFormSchema = {
   //DishWasher status check form
-  "operational": {
-    "ui:widget": "radio"
+  operational: {
+    "ui:widget": "radio",
   },
-  "clean": {
-    "ui:widget": "radio"
+  clean: {
+    "ui:widget": "radio",
   },
-  "defrost": {
-    "ui:widget": "radio"
+  defrost: {
+    "ui:widget": "radio",
   },
-  "condition": {
-    "ui:widget": "radio"
+  condition: {
+    "ui:widget": "radio",
   },
-  "cleanliness": {
-    "ui:widget": "radio"
+  cleanliness: {
+    "ui:widget": "radio",
   },
-  "hygieneCheck": {
-    "ui:widget": "radio"
+  hygieneCheck: {
+    "ui:widget": "radio",
   },
-  "debrisCheck": {
-    "ui:widget": "radio"
+  debrisCheck: {
+    "ui:widget": "radio",
   },
-  "waterPointsCheck": {
-    "ui:widget": "radio"
+  waterPointsCheck: {
+    "ui:widget": "radio",
   },
-  "testRunCheck": {
-    "ui:widget": "radio"
+  testRunCheck: {
+    "ui:widget": "radio",
   },
 
   // Furniture Status Check
-  "upholstery": {
-    "ui:widget": "radio"
+  upholstery: {
+    "ui:widget": "radio",
   },
-  "stability": {
-    "ui:widget": "radio"
+  stability: {
+    "ui:widget": "radio",
   },
 
   // Chiller Status Check
-  "freshProduceCheck": {
-    "ui:widget": "radio"
+  freshProduceCheck: {
+    "ui:widget": "radio",
   },
-  "productsLabelledAndDated": {
-    "ui:widget": "radio"
+  productsLabelledAndDated: {
+    "ui:widget": "radio",
   },
-  "hygieneAndCleanliness": {
-    "ui:widget": "radio"
+  hygieneAndCleanliness: {
+    "ui:widget": "radio",
   },
 
   //Wine Chiller Status Check
-  "temperatureCheck": {
-    "ui:widget": "radio"
+  temperatureCheck: {
+    "ui:widget": "radio",
   },
-  "productLabelDateCheck": {
-    "ui:widget": "radio"
+  productLabelDateCheck: {
+    "ui:widget": "radio",
   },
-  "cleanlinessCheck": {
-    "ui:widget": "radio"
+  cleanlinessCheck: {
+    "ui:widget": "radio",
   },
-
-
-
-}
+};
 
 const AddStatusForm = ({
   addFormOpen,
@@ -96,6 +93,7 @@ const AddStatusForm = ({
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [file, setFile] = useState<any>();
   const [name, setName] = useState<string>("");
+  const statusTypeNames = useStatusTypeNames();
 
   useEffect(() => {
     const fetchCredentials = async () => {
@@ -133,13 +131,15 @@ const AddStatusForm = ({
     }
   }, [assetType, token]);
 
+  function getKeyByValue(object: Record<string, string>, value: string) {
+    return Object.keys(object).find((key) => object[key] === value);
+  }
 
   const handleSubmit = async (formData: any) => {
-
+    const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
+    console.log("FormData Operational==>>", statusUUID);
     if (reportIssue) {
-      // Case when reporting an issue
       try {
-        // Upload file to S3 bucket
         const imageLocation = await uploadFiletoS3(file, "assetCheck");
 
         const userData = await Auth.currentAuthenticatedUser();
@@ -150,13 +150,13 @@ const AddStatusForm = ({
           file_id: "",
           file_array: [imageLocation.location],
           modified_by_array: [modifiedBy],
-          modified_date_array: [modifiedDate]
+          modified_date_array: [modifiedDate],
         });
 
         const assetCheck = {
           uptime_check_id: "",
           asset_id: assetId,
-          status_check: selectedStatus,
+          status_check: statusUUID,
           file_id: String(createdFile),
           uptime_notes: formData.uptime_notes as string,
           modified_by: name,
@@ -186,14 +186,14 @@ const AddStatusForm = ({
       const assetCheck = {
         uptime_check_id: "",
         asset_id: assetId,
-        status_check: "ca879fb3-2f94-41b0-afb2-dea1448aaed3",
+        status_check: statusUUID,
         file_id: null,
-        uptime_notes: "Working Fine",
+        uptime_notes: null,
         modified_by: name,
         modified_date: new Date(),
         status_check_data: JSON.parse(JSON.stringify(formData)),
       };
-      console.log("Token >>", token);
+      console.log("Submitted Check >>", assetCheck);
 
       try {
         // Add inventory using the API service
@@ -217,8 +217,6 @@ const AddStatusForm = ({
     // Log the form submission
     console.log("Form submitted:", formData);
   };
-
-
 
   return (
     <>
@@ -265,7 +263,7 @@ const AddStatusForm = ({
             )}
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 };
