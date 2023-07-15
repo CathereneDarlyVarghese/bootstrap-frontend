@@ -77,13 +77,14 @@ export const deleteAssetCheck = async (
   accessToken: string,
   id: string
 ): Promise<void> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  };
   await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
+    config
   );
 };
