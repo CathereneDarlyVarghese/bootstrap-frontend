@@ -87,7 +87,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             {statusCheck}
           </h2>
           <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
-            <Link to={`/qr-code/${assetId}`}>
+            {/* <Link to={`/qr-code/${assetId}`}>
               <BsQrCode className="text-blue-500 text-xl" />
             </Link>
             <Link to={`/work-orders/${assetId}`}>
@@ -95,7 +95,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             </Link>
             <Link to={`/edit-asset/${assetId}`}>
               <FiEdit3 className="text-blue-500 text-xl" />
-            </Link>
+            </Link> */}
             <AiOutlineDelete
               className="text-red-500 text-xl ml-2 cursor-pointer"
               onClick={handleDelete}

@@ -176,7 +176,7 @@ export const FilterOptions = ({
   return (
     <div className="p-2">
       <div className="flex flex-row">
-        <h1 className="font-sans font-semibold">Filters</h1>
+        <h1 className="font-sans font-semibold text-black dark:text-white">Filters</h1>
         <div className="flex flex-row gap-2 ml-auto">
           <button
             onClick={filterClose}
@@ -199,8 +199,8 @@ export const FilterOptions = ({
         <h1 className="font-sans">Status</h1>
         <button
           className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(-1)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
+            ? "bg-blue-200 hover:bg-blue-200"
+            : "bg-white hover:bg-white"
             } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handleStatusClick(-1)}
         >
@@ -209,8 +209,8 @@ export const FilterOptions = ({
         {statuses.map((status, index) => (
           <button
             className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(index)
-                ? "bg-blue-200 hover:bg-blue-200"
-                : "bg-white hover:bg-white"
+              ? "bg-blue-200 hover:bg-blue-200"
+              : "bg-white hover:bg-white"
               } border-blue-500 hover:border-blue-500 rounded-full m-1`}
             onClick={() => handleStatusClick(index)}
           >
@@ -248,8 +248,8 @@ export const FilterOptions = ({
         <h1 className="font-sans">Placement</h1>
         <button
           className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(-1)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
+            ? "bg-blue-200 hover:bg-blue-200"
+            : "bg-white hover:bg-white"
             } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handlePlacementClick(-1)}
         >
@@ -261,8 +261,8 @@ export const FilterOptions = ({
             <button
               key={index}
               className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(index)
-                  ? "bg-blue-200 hover:bg-blue-200"
-                  : "bg-white hover:bg-white"
+                ? "bg-blue-200 hover:bg-blue-200"
+                : "bg-white hover:bg-white"
                 } border-blue-500 hover:border-blue-500 rounded-full m-1`}
               onClick={() => handlePlacementClick(index)}
             >

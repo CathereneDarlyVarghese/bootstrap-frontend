@@ -16,6 +16,7 @@ import "./formstyles.css"
 
 
 const AddStatusFormSchema = {
+  //DishWasher status check form
   "operational": {
     "ui:widget": "radio"
   },
@@ -30,7 +31,50 @@ const AddStatusFormSchema = {
   },
   "cleanliness": {
     "ui:widget": "radio"
-  }
+  },
+  "hygieneCheck": {
+    "ui:widget": "radio"
+  },
+  "debrisCheck": {
+    "ui:widget": "radio"
+  },
+  "waterPointsCheck": {
+    "ui:widget": "radio"
+  },
+  "testRunCheck": {
+    "ui:widget": "radio"
+  },
+
+  // Furniture Status Check
+  "upholstery": {
+    "ui:widget": "radio"
+  },
+  "stability": {
+    "ui:widget": "radio"
+  },
+
+  // Chiller Status Check
+  "freshProduceCheck": {
+    "ui:widget": "radio"
+  },
+  "productsLabelledAndDated": {
+    "ui:widget": "radio"
+  },
+  "hygieneAndCleanliness": {
+    "ui:widget": "radio"
+  },
+
+  //Wine Chiller Status Check
+  "temperatureCheck": {
+    "ui:widget": "radio"
+  },
+  "productLabelDateCheck": {
+    "ui:widget": "radio"
+  },
+  "cleanlinessCheck": {
+    "ui:widget": "radio"
+  },
+
 
 
 }
