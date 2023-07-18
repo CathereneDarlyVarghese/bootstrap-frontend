@@ -369,11 +369,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
                       ? "text-black dark:text-white"
                       : "text-gray-400"
-                  }`}
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -449,35 +448,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     ))}
                   </select>
                 </div>
-              </div>
-
-              {/* Dropdown for selecting asset condition */}
-              <div className="flex flex-col w-1/2 md:w-auto">
-                <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                  Asset Condition
-                </label>
-                <select
-                  required
-                  name="condition"
-                  className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
-                  value={selectedCondition}
-                  onChange={handleConditionChange}
-                >
-                  <option value="" disabled hidden>
-                    Select Asset Condition
-                  </option>
-                  {Object.entries(AssetCondition).map(
-                    ([conditionKey, conditionValue]) => (
-                      <option
-                        key={conditionKey}
-                        value={conditionKey}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800"
-                      >
-                        {conditionValue}
-                      </option>
-                    )
-                  )}
-                </select>
               </div>
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
@@ -572,6 +542,35 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Dropdown for selecting asset condition */}
+              <div className="flex flex-col w-1/2 md:w-auto">
+                <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                  Asset Condition
+                </label>
+                <select
+                  required
+                  name="condition"
+                  className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
+                  value={selectedCondition}
+                  onChange={handleConditionChange}
+                >
+                  <option value="" disabled hidden>
+                    Select Asset Condition
+                  </option>
+                  {Object.entries(AssetCondition).map(
+                    ([conditionKey, conditionValue]) => (
+                      <option
+                        key={conditionKey}
+                        value={conditionKey}
+                        className="text-black bg-white dark:text-white dark:bg-gray-800"
+                      >
+                        {conditionValue}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
 
               {/* Adding Section Modal */}

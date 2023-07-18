@@ -45,8 +45,8 @@ const QRCodeReader = () => {
   }, []);
 
   return (
-    <div>
-      <div id="qr-reader" ref={qrRef} style={{ width: "500px" }} />
+    <div className="flex flex-col items-center mt-5">
+      <div id="qr-reader" ref={qrRef} className="w-1/2 md:w-10/12" />
       <div id="qr-reader-results" ref={resultRef} />
     </div>
   );

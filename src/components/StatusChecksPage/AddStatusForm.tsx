@@ -245,7 +245,7 @@ const AddStatusForm = ({
             </button>
           </div>
 
-          <div className="px-5">
+          <div className="px-5 bg-white dark:bg-transparent text-black dark:text-white">
             {/* The form generated from the JSON Schema */}
             {jsonForm && (
               <Form
