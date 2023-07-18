@@ -7,7 +7,9 @@ const ThemeSwitcher = () => {
         const preferThemeMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         return preferThemeMode
     }
-    const [isDarkMode, setIsDarkMode] = useState(getDefaultTheme());
+
+    const [isDarkMode, setIsDarkMode] = useState(getDefaultTheme())
+
 
 
     const toggleTheme = () => {
