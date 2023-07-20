@@ -21,7 +21,7 @@ import {
   getAssetSections,
 } from "services/assetSectionServices";
 import { createFile } from "services/fileServices";
-import { createAsset } from "services/assetServices";
+import { updateAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
@@ -29,7 +29,7 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 
-const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
+const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
   const assetTypeNames = useAssetTypeNames();
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
@@ -48,6 +48,8 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+
+  const [formData, setFormData] = useState(asset);
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
@@ -109,7 +111,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
     console.log("Name from form ==>>", formData.get("name"));
 
     const assetData = {
-      asset_id: null,
+      asset_id: asset.asset_id,
       asset_name: formData.get("name") as string,
       asset_type_id: formData.get("type") as string,
       asset_notes: formData.get("notes") as string,
@@ -132,9 +134,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
 
     // Step 4: Create the asset in the backend
     try {
-      const createdAsset = await createAsset(token, assetData);
-      console.log("Created Asset:", createdAsset);
-      toast.success("Asset Added Successfully", {
+      const updatedAsset = await updateAsset(token, asset.asset_id, assetData);
+      console.log("Updated Asset:", updatedAsset);
+      toast.success("Asset Edited Successfully", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
@@ -146,8 +148,8 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
       });
       setEditFormOpen(false);
     } catch (error) {
-      console.error("Failed to create asset:", error);
-      toast.error("Failed to create asset", {
+      console.error("Failed to update asset:", error);
+      toast.error("Failed to update asset", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
@@ -261,9 +263,23 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
     }
   };
 
-  // Function to close the add asset form
-  const closeAddForm = () => {
+  // Function to close the edit asset form
+  const closeEditForm = () => {
     setEditFormOpen(false);
+  };
+
+  const handleFormDataChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    console.log(e.target.value);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      //"id" and "name" of <elements> in <form> has to be same for this to work
+      [e.target.id]: e.target.value,
+    }));
   };
 
   return (
@@ -288,7 +304,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                 fill="none"
                 strokeWidth="1.5"
                 className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
-                onClick={closeAddForm}
+                onClick={closeEditForm}
               >
                 <path
                   d="M18 6L6 18M6 6l12 12"
@@ -303,12 +319,15 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                 {/* Input field for asset name */}
                 <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-black dark:text-white text-sm">
-                    Name of Assets
+                    Name of Asset
                   </label>
                   <input
                     type="text"
-                    name="name"
+                    id="asset_name"
+                    name="asset_name"
                     placeholder="Enter Asset Name"
+                    value={formData.asset_name}
+                    onChange={(e) => {handleFormDataChange(e)}}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
@@ -319,7 +338,10 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                     Asset Type
                   </label>
                   <select
-                    name="type"
+                  id="asset_type"
+                    name="asset_type"
+                    value={formData.asset_type}
+                    onChange={(e) => handleFormDataChange(e)}
                     className="select select-sm font-normal my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   >
                     {/* Map through the asset types */}
@@ -342,8 +364,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
               </label>
               <input
                 type="text"
-                name="notes"
+                id="asset_notes"
+                name="asset_notes"
                 placeholder="Enter Description"
+                value={formData.asset_notes}
+                onChange={(e) => {handleFormDataChange(e)}}
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
@@ -402,10 +427,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                   </label>
                   <select
                     required
-                    name="status"
+                    id="asset_status"
+                    name="asset_status"
                     className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
+                    value={formData.asset_status}
+                    onChange={(e) => handleFormDataChange(e)}
                   >
                     <option value="" disabled hidden>
                       Select Asset Status
@@ -426,7 +452,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                 <div className="flex flex-col w-1/2 md:w-auto">
                   {/* Dropdown for selecting location */}
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select location
+                    Select Location
                   </label>
                   <select
                     required
@@ -454,15 +480,15 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                 {/* Dropdown for selecting section */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select section
+                    Select Section
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12">
                       <select
                         required
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                        onChange={(e) => handleSectionChange(e.target.value)}
-                        value={selectedSection}
+                        onChange={(e) => handleFormDataChange(e)}
+                        value={formData.asset_section}
                       >
                         <option value="" disabled hidden>
                           Select Section
@@ -500,7 +526,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select placement
+                    Select Placement
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12 ">
@@ -723,9 +749,12 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
               </label>
               <input
                 type="number"
+                id="status_check_interval"
                 name="status_check_interval"
                 placeholder="Enter Status Check Interval"
-                min="1"
+                value={formData.status_check_interval}
+                onChange={(e) => {handleFormDataChange(e)}}
+                // min="1"
                 className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
               />
 
@@ -737,8 +766,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                   </label>
                   <input
                     type="number"
+                    id="finance_purchase"
                     name="finance_purchase"
                     placeholder="Enter Finance Purchase"
+                    value={formData.asset_finance_purchase}
+                    onChange={(e) => {handleFormDataChange(e)}}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
@@ -751,6 +783,8 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen }) => {
                     type="number"
                     name="finance_current_value"
                     placeholder="Enter Finance Current Value"
+                    value={formData.asset_finance_current_value}
+                    onChange={(e) => {handleFormDataChange(e)}}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>

@@ -126,7 +126,7 @@ const AssetDetails: React.FC<
   return (
     <>
       {editFormOpen ? (
-        <EditAssetForm editFormOpen={editFormOpen} setEditFormOpen={setEditFormOpen}/>
+        <EditAssetForm editFormOpen={editFormOpen} setEditFormOpen={setEditFormOpen} asset={selectedAsset1}/>
       ) : (
         <div
           className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
