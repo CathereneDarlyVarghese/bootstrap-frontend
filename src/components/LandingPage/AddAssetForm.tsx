@@ -303,7 +303,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Input field for asset name */}
                 <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-black dark:text-white text-sm">
-                    Name of Assets
+                    Name of Asset
                   </label>
                   <input
                     type="text"
@@ -426,7 +426,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <div className="flex flex-col w-1/2 md:w-auto">
                   {/* Dropdown for selecting location */}
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select location
+                    Select Location
                   </label>
                   <select
                     required
@@ -454,7 +454,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Dropdown for selecting section */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select section
+                    Select Section
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12">
@@ -500,7 +500,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select placement
+                    Select Placement
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12 ">
