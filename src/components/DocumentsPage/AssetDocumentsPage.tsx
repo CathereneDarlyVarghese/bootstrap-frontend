@@ -79,7 +79,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
           >
             {incomingDocuments.map((document) => (
               <div
-                className="border border-gray-300 dark:border-gray-600 rounded-xl"
+                className="border border-gray-300 dark:border-gray-600 rounded-xl my-3"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   setDocumentID(document.document_id);
