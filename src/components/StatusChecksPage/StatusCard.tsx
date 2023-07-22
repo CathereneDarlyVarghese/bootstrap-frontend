@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
+import { BsFillCheckCircleFill, BsFillXCircleFill, BsInfoCircleFill } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs"
 
 interface StatusCardProps {
   status: string;
@@ -16,34 +17,42 @@ const StatusCard: React.FC<StatusCardProps> = ({
   uptime_notes,
   onClick,
 }) => {
+
+
   const formattedDate = date.toLocaleDateString();
   return (
     <div
-      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-40 border hover:border hover:border-blue-900 dark:border-gray-600 hover:dark:border-gray-400 dark:bg-gray-800 hide-scrollbar overflow-y-hidden overflow-hidden"
-      onClick={onClick}
+      className="flex flex-row justify-between card card-side w-auto my-3 p-5 bg-gray-100 max-h-32 border hover:border hover:border-blue-900 dark:border-gray-600 hover:dark:border-gray-400 dark:bg-gray-800 hide-scrollbar overflow-y-hidden overflow-hidden"
+    // onClick={onClick}
     >
       <div className="card-body overflow-auto px-0 py-0 w-11/12 overflow-hidden">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row gap-5">
           <h1
             className="flex text-gray-800 dark:text-white text-lg font-semibold font-sans tracking-wide xl:text-sm"
             style={{ wordSpacing: 3 }}
           >
             {formattedDate}
           </h1>
-          <div className="flex items-center">
+          <h1 className="text-gray-500 dark:text-gray-400 text-lg font-semibold font-sans xl:text-sm ">
+            {status === "WORKING" ? "Working" : status === "DOWN" ? "Down" : "Needs Attention"}
+          </h1>
+          <div className="flex items-center ml-auto">
             {status === "DOWN" && (
-              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
+              <BsFillXCircleFill className="text-gray-500 text-xl mr-2" />
+
             )}
             {status === "WORKING" && (
               <BsFillCheckCircleFill className="text-green-500 text-xl mr-2" />
             )}
             {status === "UNDER MAINTENANCE" && (
-              <BsFillXCircleFill className="text-gray-500 text-xl mr-2" />
+              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
             )}
           </div>
         </div>
-        <div className="flex flex-row items-center">
-          {/* <p className="text-gray-500 dark:text-gray-400">{uptime_notes}</p> */}
+        <div className="flex flex-row items-center mt-auto ml-auto mr-2">
+          <button onClick={onClick}>
+            <BsInfoCircleFill className="text-xl" />
+          </button>
         </div>
       </div>
     </div>
