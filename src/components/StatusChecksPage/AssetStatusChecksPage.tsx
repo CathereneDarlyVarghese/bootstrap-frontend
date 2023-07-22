@@ -14,6 +14,7 @@ interface AssetStatusChecksPageProps {
   setAssetId: React.Dispatch<React.SetStateAction<string | null>>;
   assetType: string;
   assetTypeId: string;
+  selectedAsset: any;
 }
 
 const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
@@ -22,6 +23,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   setAssetId,
   assetType,
   assetTypeId,
+  selectedAsset
 }) => {
   const [statusCheckId, setStatusCheckId] = useState<string | null>(null);
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
@@ -76,8 +78,8 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   return (
     <div className="w-full">
       <div className="flex flex-row items-center">
-        <h1 className="text-blue-900 dark:text-blue-600 font-sans font-semibold">
-          Status Checks
+        <h1 className="text-blue-900 dark:text-blue-600 text-lg md:text-sm font-sans font-semibold">
+          Status Checks - {selectedAsset.asset_name}
         </h1>
         <button
           className="btn bg-blue-900 ml-auto"

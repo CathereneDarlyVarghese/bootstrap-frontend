@@ -104,18 +104,36 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
           </div>
         </div>
         <div>
-          <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-            Modified By: {modifiedBy}
-          </p>
-          {status_check_data &&
-            Object.entries(status_check_data).map(([key, value], index) => (
-              <p
-                key={index}
-                className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm"
-              >
-                {key}: {value}
-              </p>
-            ))}
+          <table>
+            <tr className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+              <td className="w-24">Modified By</td>
+              <td className="w-5">:</td>
+              <td>{modifiedBy}</td>
+            </tr>
+            {status_check_data &&
+              Object.entries(status_check_data).map(([key, value], index) => (
+                // <div
+                //   key={index}
+                // >
+                //   <div className="flex flex-row ">
+                //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                //       {key} :
+                //     </p>
+                //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                //       {value}
+                //     </p>
+                //   </div>
+
+                // </div>
+                <tr key={index} className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                  <td>{key}</td>
+                  <td>:</td>
+                  <td>{value}</td>
+                </tr>
+
+              ))}
+          </table>
+
         </div>
       </div>
     </div>
