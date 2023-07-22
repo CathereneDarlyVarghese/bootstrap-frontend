@@ -330,6 +330,7 @@ const AssetDetails: React.FC<
             ) : tabIndex === 2 ? (
               <div>
                 <AssetStatusChecksPage
+                  selectedAsset={selectedAsset1}
                   sessionToken={sessionToken}
                   assetId={assetId}
                   setAssetId={setAssetId}

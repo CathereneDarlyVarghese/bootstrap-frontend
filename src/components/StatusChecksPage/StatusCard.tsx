@@ -38,13 +38,14 @@ const StatusCard: React.FC<StatusCardProps> = ({
           </h1>
           <div className="flex items-center ml-auto">
             {status === "DOWN" && (
-              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
+              <BsFillXCircleFill className="text-gray-500 text-xl mr-2" />
+
             )}
             {status === "WORKING" && (
               <BsFillCheckCircleFill className="text-green-500 text-xl mr-2" />
             )}
             {status === "UNDER MAINTENANCE" && (
-              <BsFillXCircleFill className="text-gray-500 text-xl mr-2" />
+              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
             )}
           </div>
         </div>

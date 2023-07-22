@@ -8,6 +8,7 @@ import { IncomingDocument } from "types";
 const AssetDocumentsPage = ({ selectedAsset }) => {
   // const searchParams = new URLSearchParams(location.search);
   const selectedAssetID = selectedAsset.asset_id;
+  const assetName = selectedAsset.asset_name;
 
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -42,7 +43,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   return (
     <>
       <div
-        className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen && !fileOpen
+        className={`h-full overflow-y-auto p-2 pb-20 ${addDocumentsOpen && !fileOpen
           ? "2xl:bg-white dark:2xl:bg-gray-800 xl:bg-white dark:xl:bg-gray-800"
           : "bg-white dark:bg-gray-800"
           }`}
@@ -51,11 +52,11 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
           className={`flex flex-grow items-center ${addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
             } `}
         >
-          <h1 className="text-blue-800 dark:text-blue-700 text-xl font-sans font-semibold">
-            Documents
+          <h1 className="text-blue-800 dark:text-blue-700 text-lg md:text-sm font-sans font-semibold">
+            Documents - {assetName}
           </h1>
           <button
-            className="btn btn-sm bg-blue-900 hover:bg-blue-900 capitalize w-32 ml-auto"
+            className="btn bg-blue-900 hover:bg-blue-900 ml-auto"
             onClick={() => {
               setAddDocumentsOpen(true);
             }}
