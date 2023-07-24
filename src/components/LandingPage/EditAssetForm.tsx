@@ -7,6 +7,7 @@ import {
   AssetPlacement,
   AssetSection,
   AssetType,
+  IncomingAsset,
 } from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
@@ -29,17 +30,28 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 
-const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
+const EditAssetForm = ({
+  editFormOpen,
+  setEditFormOpen,
+  asset,
+  assetImage,
+  assetTypes,
+  assetLocations,
+  assetLocation,
+  assetSections,
+  assetSection,
+  assetPlacements,
+  assetPlacement,
+}) => {
   const assetTypeNames = useAssetTypeNames();
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
-  const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
-  const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
-  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedPlacement, setSelectedPlacement] = useState<string>("");
+  // const [locations, setLocations] = useState<AssetLocation[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>(
+    assetLocation.locationId
+  );
+  const [selectedSectionId, setSelectedSectionId] = useState<string>(assetSection.section_id);
+  const [selectedPlacementId, setSelectedPlacementId] = useState<string>(assetPlacement.placement_id);
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
@@ -49,39 +61,93 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
 
-  const [formData, setFormData] = useState(asset);
+  const defaultFormData: Asset = {
+    asset_id: asset.asset_id,
+    asset_name: asset.asset_name,
+    asset_type_id: asset.asset_type_id,
+    asset_notes: asset.asset_notes,
+    asset_location: assetLocation.locationId,
+    asset_placement: assetPlacement.placement_id,
+    asset_section: assetSection.section_id,
+    asset_status: asset.asset_status,
+    asset_finance_purchase: asset.asset_finance_purchase,
+    asset_finance_current_value: asset.asset_finance_current_value,
+    modified_date: asset.modified_date,
+    modified_by: asset.modified_by,
+    org_id: null,
+    status_check_enabled: false,
+    images_id: assetImage,
+    status_check_interval: 0,
+    asset_condition: asset.asset_condition,
+  };
+  const [formData, setFormData] = useState<Asset>(defaultFormData);
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedStatus(event.target.value);
-  };
+  useEffect(() => {
+    const handleLocationChange = async () => {
+      //formData has latest Asset Location ID, store it in selectedLocation state
+      setSelectedLocation(formData.asset_location);
 
-  const handleConditionChange = (event) => {
-    setSelectedCondition(event.target.value);
-  };
+      // Filter all sections based on the selected location
+      const filteredSections = assetSections.filter(
+        (section) => section.location_id === formData.asset_location
+      );
 
-  const handleLocationChange = (locationId: string) => {
-    setSelectedLocation(locationId);
-    // Filter sections based on the selected location
-    const sections = assetSections.filter(
-      (section) => section.location_id === locationId
-    );
-    setFilteredSections(sections);
-    // Reset selected section and filtered placements
-    setSelectedSection("");
-    setFilteredPlacements([]);
-  };
+      // Reset filtered placements, set filtered sections, set selected section as first one
+      setFilteredSections(filteredSections);
 
-  const handleSectionChange = (sectionId: string) => {
-    setSelectedSection(sectionId);
-    // Filter placements based on the selected section
-    const placements = assetPlacements.filter(
-      (placement) => placement.section_id === sectionId
-    );
-    setFilteredPlacements(placements);
-  };
+      if(formData.asset_location != defaultFormData.asset_location) {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_section"]: filteredSections[0].section_id,
+        }));
+        setSelectedSectionId(filteredSections[0].section_id);
+      } else {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_section"]: defaultFormData.asset_section,
+          ["asset_placement"]: defaultFormData.asset_placement
+        }));
+        setSelectedSectionId(defaultFormData.asset_section);
+        setSelectedPlacementId(defaultFormData.asset_placement);
+      }
+    };
+
+    handleLocationChange();
+  }, [formData.asset_location]);
+
+  useEffect(() => {
+    const handleSectionChange = async () => {
+      setSelectedSectionId(formData.asset_section);
+
+      // Filter placements based on the selected section
+      const placements = assetPlacements.filter(
+        (placement) => placement.section_id === formData.asset_section
+      );
+      setFilteredPlacements(placements);
+      setSelectedPlacementId(formData.asset_placement);
+
+      if(formData.asset_section != defaultFormData.asset_section) {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_placement"]: filteredPlacements[0].placement_id,
+        }));
+        setSelectedSectionId(filteredPlacements[0].placement_id);
+      } else {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_section"]: defaultFormData.asset_section,
+          ["asset_placement"]: defaultFormData.asset_placement
+        }));
+        setSelectedSectionId(defaultFormData.asset_section);
+        setSelectedPlacementId(defaultFormData.asset_placement);
+      }
+    };
+
+    handleSectionChange();
+  }, [formData.asset_section]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -104,37 +170,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
     console.log("return from createFile==>>", createdFile);
     const fileId = String(createdFile);
 
-    // Step 3: Prepare the asset data
-    const formData = new FormData(event.target);
-
-    //
-    console.log("Name from form ==>>", formData.get("name"));
-
-    const assetData = {
-      asset_id: asset.asset_id,
-      asset_name: formData.get("name") as string,
-      asset_type_id: formData.get("type") as string,
-      asset_notes: formData.get("notes") as string,
-      asset_location: selectedLocation,
-      asset_placement: formData.get("placement") as string,
-      asset_section: selectedSection,
-      asset_status: selectedStatus,
-      asset_condition: selectedCondition,
-      asset_finance_purchase: parseFloat(
-        formData.get("finance_purchase") as string
-      ),
-      asset_finance_current_value: parseFloat(
-        formData.get("finance_current_value") as string
-      ),
-      images_id: fileId,
-      status_check_interval: parseInt(
-        formData.get("status_check_interval") as string
-      ),
-    };
-
-    // Step 4: Create the asset in the backend
+    // Step 3: Update the asset in the backend
     try {
-      const updatedAsset = await updateAsset(token, asset.asset_id, assetData);
+      const updatedAsset = await updateAsset(token, asset.asset_id, formData);
       console.log("Updated Asset:", updatedAsset);
       toast.success("Asset Edited Successfully", {
         position: "bottom-left",
@@ -168,56 +206,31 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
     setToken(data);
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const accessToken = window.localStorage.getItem("sessionToken");
-
-      const [types, locations, placements, sections] = await Promise.all([
-        getAllAssetTypes(accessToken),
-        getAllAssetLocations(accessToken),
-        getAssetPlacements(accessToken),
-        getAssetSections(accessToken),
-      ]);
-
-      setAssetTypes(types);
-      setLocations(locations);
-      setAssetPlacements(placements);
-      setAssetSections(sections);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
-
   useEffect(() => {
-    console.log(selectedSection);
-  }, [selectedSection]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+    console.log(selectedSectionId);
+  }, [selectedSectionId]);
 
   // Function to handle adding a section
   const handleAddSection = async () => {
     // event.preventDefault();
     console.log("inside handleAddSection");
     if (selectedLocation) {
-      console.log("Section submitted==>", selectedSection);
-      if (selectedSection) {
+      console.log("Section submitted==>", selectedSectionId);
+      if (selectedSectionId) {
         const newSection: AssetSection = {
           section_id: "",
-          section_name: selectedSection,
+          section_name: selectedSectionId,
           location_id: selectedLocation,
         };
         try {
           const createdSection = await createAssetSection(token, newSection);
           console.log("Created Section:", createdSection);
           const updatedSections = [...assetSections, createdSection];
-          setAssetSections(updatedSections);
+          // setAssetSections(updatedSections);
           setFilteredSections(updatedSections);
 
-          // Fetch updated data and call handleLocationChange
-          fetchData();
-          handleLocationChange(selectedLocation);
+          // Fetch updated data and call handleLocationChanges
+          // handleLocationChange(selectedLocation);
         } catch (error) {
           console.error("Failed to create section:", error);
         }
@@ -228,12 +241,12 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
   };
 
   const handleAddPlacement = async () => {
-    if (selectedLocation && selectedSection) {
-      if (selectedPlacement) {
+    if (selectedLocation && selectedSectionId) {
+      if (selectedPlacementId) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
-          placement_name: selectedPlacement,
-          section_id: selectedSection,
+          placement_name: selectedPlacementId,
+          section_id: selectedSectionId,
           location_id: selectedLocation,
         };
         try {
@@ -243,17 +256,17 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
           );
           console.log("Created Placement:", createdPlacement);
           const updatedPlacements = [...assetPlacements, createdPlacement];
-          setAssetPlacements(updatedPlacements);
+          // setAssetPlacements(updatedPlacements);
 
           // Update filtered placements
           const filteredPlacements = updatedPlacements.filter(
-            (placement) => placement.section_id === selectedSection
+            (placement) => placement.section_id === selectedSectionId
           );
           setFilteredPlacements(filteredPlacements);
 
           // Fetch updated data and call handleSectionChange
-          fetchData();
-          handleSectionChange(selectedSection);
+          // fetchData();
+          // handleSectionChange(selectedSection);
         } catch (error) {
           console.error("Failed to create placement:", error);
         }
@@ -280,7 +293,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
       //"id" and "name" of <elements> in <form> has to be same for this to work
       [e.target.id]: e.target.value,
     }));
+
+    console.log("Form Data Field ==>> ", e.target.value);
   };
+
+  console.log("Form Data ==>> ", formData);
 
   return (
     <>
@@ -327,7 +344,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     name="asset_name"
                     placeholder="Enter Asset Name"
                     value={formData.asset_name}
-                    onChange={(e) => {handleFormDataChange(e)}}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
@@ -338,9 +357,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     Asset Type
                   </label>
                   <select
-                  id="asset_type"
-                    name="asset_type"
-                    value={formData.asset_type}
+                    id="asset_type_id"
+                    name="asset_type_id"
+                    value={formData.asset_type_id}
                     onChange={(e) => handleFormDataChange(e)}
                     className="select select-sm font-normal my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   >
@@ -368,7 +387,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                 name="asset_notes"
                 placeholder="Enter Description"
                 value={formData.asset_notes}
-                onChange={(e) => {handleFormDataChange(e)}}
+                onChange={(e) => {
+                  handleFormDataChange(e);
+                }}
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
               />
 
@@ -378,6 +399,14 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                 className="font-sans font-semibold text-sm text-black dark:text-white"
               >
                 Add Image
+                <h1
+                  className="text-xs text-blue-800 underline"
+                  onClick={() => window.open(assetImage, "_blank")}
+                >
+                  {`(Latest File: ${
+                    assetImage ? String(assetImage).substring(52) : ""
+                  })`}
+                </h1>
               </label>
 
               <div className="flex flex-row bg-transparent border border-gray-300 dark:border-gray-500 rounded-xl p-2 my-3">
@@ -394,10 +423,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
                       ? "text-black dark:text-white"
                       : "text-gray-400"
-                    }`}
+                  }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -456,20 +486,22 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                   </label>
                   <select
                     required
+                    id="asset_location"
+                    name="asset_location"
+                    value={formData.asset_location}
+                    onChange={(e) => handleFormDataChange(e)}
                     className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                    onChange={(e) => handleLocationChange(e.target.value)}
-                    value={selectedLocation}
                   >
                     <option value="" disabled hidden>
                       Select Location
                     </option>
-                    {locations.map((location) => (
+                    {assetLocations.map((assetLocation) => (
                       <option
-                        key={location.location_id}
-                        value={location.location_id}
+                        key={assetLocation.location_id}
+                        value={assetLocation.location_id}
                         className="text-black bg-white dark:text-white dark:bg-gray-800"
                       >
-                        {location.location_name}
+                        {assetLocation.location_name}
                       </option>
                     ))}
                   </select>
@@ -486,20 +518,22 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     <div className="w-11/12">
                       <select
                         required
-                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                        onChange={(e) => handleFormDataChange(e)}
+                        id="asset_section"
+                        name="asset_section"
                         value={formData.asset_section}
+                        onChange={(e) => handleFormDataChange(e)}
+                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
                         <option value="" disabled hidden>
                           Select Section
                         </option>
-                        {filteredSections.map((section) => (
+                        {filteredSections.map((assetSection) => (
                           <option
-                            key={section.section_id}
-                            value={section.section_id}
+                            key={assetSection.section_id}
+                            value={assetSection.section_id}
                             className="text-black bg-white dark:text-white dark:bg-gray-800"
                           >
-                            {section.section_name}
+                            {assetSection.section_name}
                           </option>
                         ))}
                       </select>
@@ -532,19 +566,22 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     <div className="w-11/12 ">
                       <select
                         required
-                        name="placement"
+                        id="asset_placement"
+                        name="asset_placement"
+                        value={formData.asset_placement}
+                        onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
                         <option value="" disabled hidden>
                           Select Placement
                         </option>
-                        {filteredPlacements.map((placement) => (
+                        {filteredPlacements.map((assetPlacement) => (
                           <option
-                            key={placement.placement_id}
-                            value={placement.placement_id}
+                            key={assetPlacement.placement_id}
+                            value={assetPlacement.placement_id}
                             className="text-black bg-white dark:text-white dark:bg-gray-800"
                           >
-                            {placement.placement_name}
+                            {assetPlacement.placement_name}
                           </option>
                         ))}
                       </select>
@@ -554,7 +591,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (selectedLocation && selectedSection) {
+                          if (selectedLocation && selectedSectionId) {
                             setAddPlacement(true);
                           } else {
                             alert(
@@ -577,10 +614,11 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                 </label>
                 <select
                   required
-                  name="condition"
+                  id="asset_condition"
+                  name="asset_condition"
+                  value={formData.asset_condition}
+                  onChange={(e) => handleFormDataChange(e)}
                   className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
-                  value={selectedCondition}
-                  onChange={handleConditionChange}
                 >
                   <option value="" disabled hidden>
                     Select Asset Condition
@@ -633,7 +671,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                           type="text"
                           name="section"
                           required
-                          onChange={(e) => setSelectedSection(e.target.value)}
+                          onChange={(e) => setSelectedSectionId(e.target.value)}
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
                       </div>
@@ -681,7 +719,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
               />
               <div id="addPlacementModal" className="modal ">
                 <div className="modal-box bg-white dark:bg-gray-800">
-                  {selectedSection && (
+                  {selectedSectionId && (
                     <form>
                       <div className="flex flex-row mb-5">
                         <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
@@ -706,7 +744,7 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                           type="text"
                           name="placement"
                           required
-                          onChange={(e) => setSelectedPlacement(e.target.value)}
+                          onChange={(e) => setSelectedPlacementId(e.target.value)}
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
                       </div>
@@ -752,8 +790,10 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                 id="status_check_interval"
                 name="status_check_interval"
                 placeholder="Enter Status Check Interval"
-                value={formData.status_check_interval}
-                onChange={(e) => {handleFormDataChange(e)}}
+                value={asset.status_check_interval}
+                onChange={(e) => {
+                  handleFormDataChange(e);
+                }}
                 // min="1"
                 className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
               />
@@ -770,7 +810,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     name="finance_purchase"
                     placeholder="Enter Finance Purchase"
                     value={formData.asset_finance_purchase}
-                    onChange={(e) => {handleFormDataChange(e)}}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>
@@ -784,7 +826,9 @@ const EditAssetForm = ({ editFormOpen, setEditFormOpen, asset }) => {
                     name="finance_current_value"
                     placeholder="Enter Finance Current Value"
                     value={formData.asset_finance_current_value}
-                    onChange={(e) => {handleFormDataChange(e)}}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
                 </div>

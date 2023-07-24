@@ -6,7 +6,15 @@ import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { AssetCondition, StatusTypes } from "enums";
-import { Asset, IncomingAsset, IncomingAssetCheck } from "types";
+import {
+  Asset,
+  AssetLocation,
+  AssetPlacement,
+  AssetSection,
+  AssetType,
+  IncomingAsset,
+  IncomingAssetCheck,
+} from "types";
 import { deleteAsset, toggleAssetCondition } from "services/assetServices";
 import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
@@ -15,6 +23,10 @@ import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecks
 import { getAssetCheckById } from "services/assetCheckServices";
 import useAssetCondition from "hooks/useAssetCondition";
 import EditAssetForm from "./EditAssetForm";
+import { getAllAssetTypes } from "services/assetTypeServices";
+import { getAllAssetLocations } from "services/locationServices";
+import { getAssetSections } from "services/assetSectionServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -35,6 +47,7 @@ interface AssetDetailsProps {
   assetCheckDate: Date | null;
   assetCondition: string | null;
   assetTypeId: string | null;
+  assetLocation: any;
 }
 
 const AssetDetails: React.FC<
@@ -59,9 +72,17 @@ const AssetDetails: React.FC<
   assetCheckDate,
   assetCondition,
   assetTypeId,
+  assetLocation,
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [editFormOpen, setEditFormOpen] = useState(false);
+  const [assetTypes, setAssetTypes] = useState<AssetType[]>();
+  const [assetLocations, setAssetLocations] = useState<AssetLocation[]>();
+  const [assetSections, setAssetSections] = useState<AssetSection[]>();
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>();
+  const [assetSection, setAssetSection] = useState<AssetSection>();
+  const [assetPlacement, setAssetPlacement] = useState<AssetPlacement>();
+
   const navigate = useNavigate();
   const location = useLocation();
   const assetConditions = useAssetCondition();
@@ -123,10 +144,72 @@ const AssetDetails: React.FC<
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
+  useEffect(() => {
+    const fetchAssetData = async () => {
+      const data = window.localStorage.getItem("sessionToken");
+
+      const [
+        fetchedAssetTypes,
+        fetchedAssetLocations,
+        fetchedAssetSections,
+        fetchedAssetPlacements,
+      ] = await Promise.all([
+        getAllAssetTypes(data),
+        getAllAssetLocations(data),
+        getAssetSections(data),
+        getAssetPlacements(data),
+      ]);
+
+      setAssetTypes(fetchedAssetTypes);
+      setAssetLocations(fetchedAssetLocations);
+      setAssetSections(fetchedAssetSections);
+      setAssetPlacements(fetchedAssetPlacements);
+
+      // Find the relevant section based on assetSectionName
+      const relevantSection = fetchedAssetSections.find(
+        (section) => section.section_name === selectedAsset1.section_name
+      );
+
+      console.log("Relevant Section => ", relevantSection);
+
+      // Use setAssetSection to update the state with the relevant section
+      if (relevantSection) {
+        setAssetSection(relevantSection);
+      }
+
+      // Find the relevant placement based on assetPlacementName
+      const relevantPlacement = fetchedAssetPlacements.find(
+        (placement) =>
+          placement.placement_name === selectedAsset1.placement_name
+      );
+
+      console.log("Relevant Placement => ", relevantPlacement);
+
+      // Use assetPlacementName to update the state with the relevant placement
+      if (relevantPlacement) {
+        setAssetPlacement(relevantPlacement);
+      }
+    };
+
+    fetchAssetData();
+  }, [location]);
+
   return (
     <>
       {editFormOpen ? (
-        <EditAssetForm editFormOpen={editFormOpen} setEditFormOpen={setEditFormOpen} asset={selectedAsset1}/>
+        <EditAssetForm
+          editFormOpen={editFormOpen}
+          setEditFormOpen={setEditFormOpen}
+          asset={selectedAsset1}
+          assetImage={cardImage}
+          assetTypes={assetTypes}
+          assetLocations={assetLocations}
+          assetLocation={assetLocation}
+          assetSections={assetSections}
+          assetSection={assetSection}
+          assetPlacements={assetPlacements}
+          assetPlacement={assetPlacement}
+        />
       ) : (
         <div
           className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
@@ -336,12 +419,12 @@ const AssetDetails: React.FC<
             ) : tabIndex === 2 ? (
               <div>
                 <AssetStatusChecksPage
-                  selectedAsset={selectedAsset1}
                   sessionToken={sessionToken}
                   assetId={assetId}
                   setAssetId={setAssetId}
                   assetType={assetType}
                   assetTypeId={assetTypeId}
+                  selectedAsset={selectedAsset1}
                 />
               </div>
             ) : (
