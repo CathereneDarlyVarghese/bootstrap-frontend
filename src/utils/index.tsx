@@ -11,16 +11,16 @@ type Props = {
 
 export async function uploadFiletoS3(file, dir) {
   const config = {
-    bucketName: "dube-filestorage",
+    bucketName: `${process.env.REACT_APP_S3_BUCKET_NAME}`,
     dirName: dir,
     region: "ap-southeast-1",
     accessKeyId: `${process.env.REACT_APP_S3_KEY}`,
     secretAccessKey: `${process.env.REACT_APP_S3_SECRET_KEY}`,
   };
 
-  const result =  uploadFile(file, config)
+  const result = uploadFile(file, config)
     .then((data) => data)
     .catch((err) => console.error(err));
 
-    return result
+  return result;
 }
