@@ -600,7 +600,7 @@ const EditAssetForm = ({
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        {/* Render "Select Placement" if selected section is not fetched section */}
+                        {/* Render "Select Placement" if selected section is not fetched section OR if formData.asset_placement === null */}
                         <option
                           value=""
                           hidden
