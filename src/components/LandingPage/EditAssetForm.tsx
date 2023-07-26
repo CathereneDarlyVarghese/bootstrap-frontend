@@ -91,7 +91,7 @@ const EditAssetForm = ({
 
   useEffect(() => {
     const handleLocationChange = async () => {
-      //formData has latest Asset Location ID, store it in selectedLocation state
+      //formData has latest selected Asset Location ID, store it in selectedLocation state
       setSelectedLocation(formData.asset_location);
 
       // Filter all sections based on the selected location
@@ -99,29 +99,22 @@ const EditAssetForm = ({
         (section) => section.location_id === formData.asset_location
       );
 
-      // Reset filtered placements, set filtered sections, set selected section as first one
+      // Reset filtered sections
       setFilteredSections(filteredSections);
 
-      // if (formData.asset_location != defaultFormData.asset_location) {
-      //   setFormData((prevState) => ({
-      //     ...prevState,
-      //     ["asset_section"]: filteredSections[0].section_id,
-      //   }));
-      //   setSelectedSectionId(filteredSections[0].section_id);
-      // } else {
-      //   setFormData((prevState) => ({
-      //     ...prevState,
-      //     ["asset_section"]: defaultFormData.asset_section,
-      //     ["asset_placement"]: defaultFormData.asset_placement,
-      //   }));
-      //   setSelectedSectionId(defaultFormData.asset_section);
-      //   setSelectedPlacementId(defaultFormData.asset_placement);
-      // }
-
-      setFormData((prevState) => ({
-        ...prevState,
-        ["asset_section"]: null,
-      }));
+      if (formData.asset_location != defaultFormData.asset_location) {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_section"]: null,
+        }));
+        setSelectedSectionId(formData.asset_section);
+      } else {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_section"]: defaultFormData.asset_section,
+        }));
+        setSelectedSectionId(defaultFormData.asset_section);
+      }
     };
 
     handleLocationChange();
@@ -136,27 +129,20 @@ const EditAssetForm = ({
         (placement) => placement.section_id === formData.asset_section
       );
       setFilteredPlacements(placements);
-      // setSelectedPlacementId(formData.asset_placement);
 
-      // if (formData.asset_section != defaultFormData.asset_section) {
-      //   setFormData((prevState) => ({
-      //     ...prevState,
-      //     ["asset_placement"]: filteredPlacements[0].placement_id,
-      //   }));
-      //   setSelectedSectionId(filteredPlacements[0].placement_id);
-      // } else {
-      //   setFormData((prevState) => ({
-      //     ...prevState,
-      //     ["asset_section"]: defaultFormData.asset_section,
-      //     ["asset_placement"]: defaultFormData.asset_placement,
-      //   }));
-      //   setSelectedSectionId(defaultFormData.asset_section);
-      //   setSelectedPlacementId(defaultFormData.asset_placement);
-      // }
-      setFormData((prevState) => ({
-        ...prevState,
-        ["asset_placement"]: null,
-      }));
+      if (formData.asset_section != defaultFormData.asset_section) {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_placement"]: null,
+        }));
+        setSelectedSectionId(formData.asset_placement);
+      } else {
+        setFormData((prevState) => ({
+          ...prevState,
+          ["asset_placement"]: defaultFormData.asset_placement,
+        }));
+        setSelectedPlacementId(defaultFormData.asset_placement);
+      }
 
       setSelectedPlacementId(formData.asset_placement);
     };
@@ -539,9 +525,10 @@ const EditAssetForm = ({
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
+                        {/* Render "Select Section" if selected location is not fetched location */}
                         {formData.asset_location !==
                         defaultFormData.asset_location ? (
-                          <option value="Select Section" selected>
+                          <option value="Select Section" selected hidden>
                             Select Section
                           </option>
                         ) : null}
@@ -590,9 +577,10 @@ const EditAssetForm = ({
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        {formData.asset_location !==
-                        defaultFormData.asset_location ? (
-                          <option value="Select Placement" selected>
+                        {/* Render "Select Placement" if selected section is not fetched section */}
+                        {formData.asset_section !==
+                        defaultFormData.asset_section ? (
+                          <option value="Select Placement" selected hidden>
                             Select Placement
                           </option>
                         ) : null}
