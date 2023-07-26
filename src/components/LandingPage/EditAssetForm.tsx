@@ -29,6 +29,7 @@ import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
+import { AssetCondition } from "enums";
 
 const EditAssetForm = ({
   editFormOpen,
@@ -64,6 +65,19 @@ const EditAssetForm = ({
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+  
+  const assetConditionOptionsReverse = {
+    ACTIVE: AssetCondition.ACTIVE,
+    INACTIVE: AssetCondition.INACTIVE,
+  };
+  // Custom function to get the correct label ("ACTIVE" or "INACTIVE") based on the UUID
+  const getAssetConditionLabel = (uuid: string) => {
+    return (
+      Object.keys(assetConditionOptionsReverse).find(
+        (key) => assetConditionOptionsReverse[key] === uuid
+      ) || ""
+    );
+  };
 
   const defaultFormData: Asset = {
     asset_id: asset.asset_id,
@@ -82,12 +96,15 @@ const EditAssetForm = ({
     status_check_enabled: false,
     images_id: assetImage,
     status_check_interval: 0,
-    asset_condition: asset.asset_condition,
+    asset_condition:
+      asset.asset_condition === "ACTIVE"
+        ? AssetCondition.ACTIVE
+        : AssetCondition.INACTIVE,
   };
   const [formData, setFormData] = useState<Asset>(defaultFormData);
 
   const statusTypeNames = useStatusTypeNames();
-  const AssetCondition = useAssetCondition();
+  const assetConditionOptions = useAssetCondition();
 
   useEffect(() => {
     const handleLocationChange = async () => {
@@ -622,28 +639,34 @@ const EditAssetForm = ({
                   Asset Condition
                 </label>
                 <select
-                  required
-                  id="asset_condition"
-                  name="asset_condition"
-                  value={formData.asset_condition}
-                  onChange={(e) => handleFormDataChange(e)}
-                  className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
-                >
-                  <option value="" disabled hidden>
-                    Select Asset Condition
-                  </option>
-                  {Object.entries(AssetCondition).map(
-                    ([conditionKey, conditionValue]) => (
-                      <option
-                        key={conditionKey}
-                        value={conditionKey}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800"
-                      >
-                        {conditionValue}
-                      </option>
-                    )
-                  )}
-                </select>
+  required
+  id="asset_condition"
+  name="asset_condition"
+  value={formData.asset_condition}
+  onChange={(e) =>
+    setFormData((prevState) => ({
+      ...prevState,
+      asset_condition: e.target.value,
+    }))
+  }
+  className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+>
+  <option value="" disabled hidden>
+    Select Asset Condition
+  </option>
+  <option
+    value={AssetCondition.ACTIVE}
+    className="text-black bg-white dark:text-white dark:bg-gray-800"
+  >
+    {getAssetConditionLabel(AssetCondition.ACTIVE)}
+  </option>
+  <option
+    value={AssetCondition.INACTIVE}
+    className="text-black bg-white dark:text-white dark:bg-gray-800"
+  >
+    {getAssetConditionLabel(AssetCondition.INACTIVE)}
+  </option>
+</select>
               </div>
 
               {/* Adding Section Modal */}
