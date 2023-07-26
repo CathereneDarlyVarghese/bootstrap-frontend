@@ -52,10 +52,10 @@ const EditAssetForm = ({
     assetLocation.locationId
   );
   const [selectedSectionId, setSelectedSectionId] = useState<string>(
-    assetSection.section_id
+    assetSection ? assetSection.section_id : null
   );
   const [selectedPlacementId, setSelectedPlacementId] = useState<string>(
-    assetPlacement.placement_id
+    assetPlacement ? assetPlacement.placement_id : null
   );
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
@@ -65,7 +65,7 @@ const EditAssetForm = ({
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
-  
+
   const assetConditionOptionsReverse = {
     ACTIVE: AssetCondition.ACTIVE,
     INACTIVE: AssetCondition.INACTIVE,
@@ -85,15 +85,16 @@ const EditAssetForm = ({
     asset_type_id: asset.asset_type_id,
     asset_notes: asset.asset_notes,
     asset_location: assetLocation.locationId,
-    asset_placement: assetPlacement.placement_id,
-    asset_section: assetSection.section_id,
+    asset_placement: assetPlacement ? assetPlacement.placement_id : null,
+    asset_section: assetSection ? assetSection.section_id : null,
     asset_status: asset.asset_status,
     asset_finance_purchase: asset.asset_finance_purchase,
     asset_finance_current_value: asset.asset_finance_current_value,
     modified_date: asset.modified_date,
     modified_by: asset.modified_by,
     org_id: null,
-    status_check_enabled: false,
+    //status_check_enabled: asset.status_check_enabled,
+    status_check_enabled: true,
     images_id: assetImage,
     status_check_interval: 0,
     asset_condition:
@@ -538,17 +539,22 @@ const EditAssetForm = ({
                         required
                         id="asset_section"
                         name="asset_section"
-                        value={formData.asset_section}
+                        value={formData.asset_section || null}
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        {/* Render "Select Section" if selected location is not fetched location */}
-                        {formData.asset_location !==
-                        defaultFormData.asset_location ? (
-                          <option value="Select Section" selected hidden>
-                            Select Section
-                          </option>
-                        ) : null}
+                        {/* Render "Select Section" if selected location is not fetched location OR if formData.asset_section === null */}
+                        <option
+                          value=""
+                          hidden
+                          selected={
+                            formData.asset_section === null &&
+                            formData.asset_location !==
+                              defaultFormData.asset_location
+                          }
+                        >
+                          Select Section
+                        </option>
                         {filteredSections.map((assetSection) => (
                           <option
                             key={assetSection.section_id}
@@ -595,12 +601,17 @@ const EditAssetForm = ({
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
                         {/* Render "Select Placement" if selected section is not fetched section */}
-                        {formData.asset_section !==
-                        defaultFormData.asset_section ? (
-                          <option value="Select Placement" selected hidden>
-                            Select Placement
-                          </option>
-                        ) : null}
+                        <option
+                          value=""
+                          hidden
+                          selected={
+                            formData.asset_placement === null &&
+                            formData.asset_section !==
+                              defaultFormData.asset_section
+                          }
+                        >
+                          Select Placement
+                        </option>
                         {filteredPlacements.map((assetPlacement) => (
                           <option
                             key={assetPlacement.placement_id}
@@ -639,34 +650,34 @@ const EditAssetForm = ({
                   Asset Condition
                 </label>
                 <select
-  required
-  id="asset_condition"
-  name="asset_condition"
-  value={formData.asset_condition}
-  onChange={(e) =>
-    setFormData((prevState) => ({
-      ...prevState,
-      asset_condition: e.target.value,
-    }))
-  }
-  className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
->
-  <option value="" disabled hidden>
-    Select Asset Condition
-  </option>
-  <option
-    value={AssetCondition.ACTIVE}
-    className="text-black bg-white dark:text-white dark:bg-gray-800"
-  >
-    {getAssetConditionLabel(AssetCondition.ACTIVE)}
-  </option>
-  <option
-    value={AssetCondition.INACTIVE}
-    className="text-black bg-white dark:text-white dark:bg-gray-800"
-  >
-    {getAssetConditionLabel(AssetCondition.INACTIVE)}
-  </option>
-</select>
+                  required
+                  id="asset_condition"
+                  name="asset_condition"
+                  value={formData.asset_condition}
+                  onChange={(e) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      asset_condition: e.target.value,
+                    }))
+                  }
+                  className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+                >
+                  <option value="" disabled hidden>
+                    Select Asset Condition
+                  </option>
+                  <option
+                    value={AssetCondition.ACTIVE}
+                    className="text-black bg-white dark:text-white dark:bg-gray-800"
+                  >
+                    {getAssetConditionLabel(AssetCondition.ACTIVE)}
+                  </option>
+                  <option
+                    value={AssetCondition.INACTIVE}
+                    className="text-black bg-white dark:text-white dark:bg-gray-800"
+                  >
+                    {getAssetConditionLabel(AssetCondition.INACTIVE)}
+                  </option>
+                </select>
               </div>
 
               {/* Adding Section Modal */}
@@ -812,61 +823,73 @@ const EditAssetForm = ({
                   type="checkbox"
                   id="status_check_enabled"
                   className="form-checkbox text-blue-600"
+                  checked={formData.status_check_enabled}
+                  onChange={(e) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      status_check_enabled: e.target.checked,
+                    }))
+                  }
                 />
               </div>
 
-              {/* Input field for status check interval */}
-              <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
-                Status Check Interval (in days)
-              </label>
-              <input
-                type="number"
-                id="status_check_interval"
-                name="status_check_interval"
-                placeholder="Enter Status Check Interval"
-                value={asset.status_check_interval}
-                onChange={(e) => {
-                  handleFormDataChange(e);
-                }}
-                // min="1"
-                className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
-              />
+              {formData.status_check_enabled ? (
+                <div>
+                  {/* Input field for status check interval */}
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
+                    Status Check Interval (in days)
+                  </label>
+                  <input
+                    type="number"
+                    id="status_check_interval"
+                    name="status_check_interval"
+                    placeholder="Enter Status Check Interval"
+                    value={asset.status_check_interval}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
+                    // min="1"
+                    className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
+                  />
 
-              <div className="flex flex-row md:flex-col gap-3 md:gap-0">
-                {/* Input field for finance purchase */}
-                <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Finance Purchase
-                  </label>
-                  <input
-                    type="number"
-                    id="finance_purchase"
-                    name="finance_purchase"
-                    placeholder="Enter Finance Purchase"
-                    value={formData.asset_finance_purchase}
-                    onChange={(e) => {
-                      handleFormDataChange(e);
-                    }}
-                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                  />
+                  <div className="flex flex-row md:flex-col gap-3 md:gap-0">
+                    {/* Input field for finance purchase */}
+                    <div className="w-1/2 md:w-auto">
+                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                        Finance Purchase
+                      </label>
+                      <input
+                        type="number"
+                        id="asset_finance_purchase"
+                        name="asset_finance_purchase"
+                        placeholder="Enter Finance Purchase"
+                        value={formData.asset_finance_purchase}
+                        onChange={(e) => {
+                          handleFormDataChange(e);
+                        }}
+                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                      />
+                    </div>
+                    {/* Input field for finance current value */}
+                    <div className="w-1/2 md:w-auto">
+                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                        Finance Current Value
+                      </label>
+                      <input
+                        type="number"
+                        id="asset_finance_current_value"
+                        name="asset_finance_current_value"
+                        placeholder="Enter Finance Current Value"
+                        value={formData.asset_finance_current_value}
+                        onChange={(e) => {
+                          handleFormDataChange(e);
+                        }}
+                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                      />
+                    </div>
+                  </div>
                 </div>
-                {/* Input field for finance current value */}
-                <div className="w-1/2 md:w-auto">
-                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Finance Current Value
-                  </label>
-                  <input
-                    type="number"
-                    name="finance_current_value"
-                    placeholder="Enter Finance Current Value"
-                    value={formData.asset_finance_current_value}
-                    onChange={(e) => {
-                      handleFormDataChange(e);
-                    }}
-                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                  />
-                </div>
-              </div>
+              ) : null}
             </div>
 
             {/* Modal action */}
