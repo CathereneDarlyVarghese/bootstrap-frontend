@@ -50,8 +50,12 @@ const EditAssetForm = ({
   const [selectedLocation, setSelectedLocation] = useState<string>(
     assetLocation.locationId
   );
-  const [selectedSectionId, setSelectedSectionId] = useState<string>(assetSection.section_id);
-  const [selectedPlacementId, setSelectedPlacementId] = useState<string>(assetPlacement.placement_id);
+  const [selectedSectionId, setSelectedSectionId] = useState<string>(
+    assetSection.section_id
+  );
+  const [selectedPlacementId, setSelectedPlacementId] = useState<string>(
+    assetPlacement.placement_id
+  );
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
@@ -98,21 +102,26 @@ const EditAssetForm = ({
       // Reset filtered placements, set filtered sections, set selected section as first one
       setFilteredSections(filteredSections);
 
-      if(formData.asset_location != defaultFormData.asset_location) {
-        setFormData((prevState) => ({
-          ...prevState,
-          ["asset_section"]: filteredSections[0].section_id,
-        }));
-        setSelectedSectionId(filteredSections[0].section_id);
-      } else {
-        setFormData((prevState) => ({
-          ...prevState,
-          ["asset_section"]: defaultFormData.asset_section,
-          ["asset_placement"]: defaultFormData.asset_placement
-        }));
-        setSelectedSectionId(defaultFormData.asset_section);
-        setSelectedPlacementId(defaultFormData.asset_placement);
-      }
+      // if (formData.asset_location != defaultFormData.asset_location) {
+      //   setFormData((prevState) => ({
+      //     ...prevState,
+      //     ["asset_section"]: filteredSections[0].section_id,
+      //   }));
+      //   setSelectedSectionId(filteredSections[0].section_id);
+      // } else {
+      //   setFormData((prevState) => ({
+      //     ...prevState,
+      //     ["asset_section"]: defaultFormData.asset_section,
+      //     ["asset_placement"]: defaultFormData.asset_placement,
+      //   }));
+      //   setSelectedSectionId(defaultFormData.asset_section);
+      //   setSelectedPlacementId(defaultFormData.asset_placement);
+      // }
+
+      setFormData((prevState) => ({
+        ...prevState,
+        ["asset_section"]: null,
+      }));
     };
 
     handleLocationChange();
@@ -127,23 +136,29 @@ const EditAssetForm = ({
         (placement) => placement.section_id === formData.asset_section
       );
       setFilteredPlacements(placements);
-      setSelectedPlacementId(formData.asset_placement);
+      // setSelectedPlacementId(formData.asset_placement);
 
-      if(formData.asset_section != defaultFormData.asset_section) {
-        setFormData((prevState) => ({
-          ...prevState,
-          ["asset_placement"]: filteredPlacements[0].placement_id,
-        }));
-        setSelectedSectionId(filteredPlacements[0].placement_id);
-      } else {
-        setFormData((prevState) => ({
-          ...prevState,
-          ["asset_section"]: defaultFormData.asset_section,
-          ["asset_placement"]: defaultFormData.asset_placement
-        }));
-        setSelectedSectionId(defaultFormData.asset_section);
-        setSelectedPlacementId(defaultFormData.asset_placement);
-      }
+      // if (formData.asset_section != defaultFormData.asset_section) {
+      //   setFormData((prevState) => ({
+      //     ...prevState,
+      //     ["asset_placement"]: filteredPlacements[0].placement_id,
+      //   }));
+      //   setSelectedSectionId(filteredPlacements[0].placement_id);
+      // } else {
+      //   setFormData((prevState) => ({
+      //     ...prevState,
+      //     ["asset_section"]: defaultFormData.asset_section,
+      //     ["asset_placement"]: defaultFormData.asset_placement,
+      //   }));
+      //   setSelectedSectionId(defaultFormData.asset_section);
+      //   setSelectedPlacementId(defaultFormData.asset_placement);
+      // }
+      setFormData((prevState) => ({
+        ...prevState,
+        ["asset_placement"]: null,
+      }));
+
+      setSelectedPlacementId(formData.asset_placement);
     };
 
     handleSectionChange();
@@ -524,9 +539,12 @@ const EditAssetForm = ({
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        <option value="" disabled hidden>
-                          Select Section
-                        </option>
+                        {formData.asset_location !==
+                        defaultFormData.asset_location ? (
+                          <option value="Select Section" selected>
+                            Select Section
+                          </option>
+                        ) : null}
                         {filteredSections.map((assetSection) => (
                           <option
                             key={assetSection.section_id}
@@ -572,9 +590,12 @@ const EditAssetForm = ({
                         onChange={(e) => handleFormDataChange(e)}
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        <option value="" disabled hidden>
-                          Select Placement
-                        </option>
+                        {formData.asset_location !==
+                        defaultFormData.asset_location ? (
+                          <option value="Select Placement" selected>
+                            Select Placement
+                          </option>
+                        ) : null}
                         {filteredPlacements.map((assetPlacement) => (
                           <option
                             key={assetPlacement.placement_id}
@@ -744,7 +765,9 @@ const EditAssetForm = ({
                           type="text"
                           name="placement"
                           required
-                          onChange={(e) => setSelectedPlacementId(e.target.value)}
+                          onChange={(e) =>
+                            setSelectedPlacementId(e.target.value)
+                          }
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
                       </div>
