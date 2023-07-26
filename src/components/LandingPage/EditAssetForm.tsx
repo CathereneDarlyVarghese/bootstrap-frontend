@@ -135,7 +135,7 @@ const EditAssetForm = ({
           ...prevState,
           ["asset_placement"]: null,
         }));
-        setSelectedSectionId(formData.asset_placement);
+        setSelectedPlacementId(formData.asset_placement);
       } else {
         setFormData((prevState) => ({
           ...prevState,
