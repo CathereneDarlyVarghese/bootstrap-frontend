@@ -193,7 +193,9 @@ const NavBar = () => {
                   d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
                 />
               </svg>
-              <div className="md:hidden">{location.locationName}</div>
+              <div className="hidden md:block">
+                {locations ? location.locationName : "No Locations"}
+              </div>
               <svg
                 className="fill-current"
                 xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +206,7 @@ const NavBar = () => {
                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
               </svg>
             </label>
-            {open && (
+            {open && locations && locations.length > 0 && (
               <ul
                 tabIndex={0}
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 dark:bg-gray-700 rounded-box w-52"
