@@ -93,9 +93,10 @@ const EditAssetForm = ({
     modified_date: asset.modified_date,
     modified_by: asset.modified_by,
     org_id: null,
-    //status_check_enabled: asset.status_check_enabled,
+    //status_check_enabled: asset.status_check_enabled, CORRECT VERSION
     status_check_enabled: true,
     images_id: assetImage,
+    // status_check_interval: asset.status_check_interval, CORRECT VERSION
     status_check_interval: 0,
     asset_condition:
       asset.asset_condition === "ACTIVE"
@@ -844,7 +845,7 @@ const EditAssetForm = ({
                     id="status_check_interval"
                     name="status_check_interval"
                     placeholder="Enter Status Check Interval"
-                    value={asset.status_check_interval}
+                    value={formData.status_check_interval}
                     onChange={(e) => {
                       handleFormDataChange(e);
                     }}
