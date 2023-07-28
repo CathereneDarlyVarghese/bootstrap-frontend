@@ -227,8 +227,8 @@ const AddStatusForm = ({
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal z-50">
-        <div className="modal-box z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
+      <div className=" z-50">
+        <div className=" z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
           {/* Modal header */}
           <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
             <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">
