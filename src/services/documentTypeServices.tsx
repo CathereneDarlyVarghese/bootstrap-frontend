@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DocumentType } from "../types"; // Import the DocumentType interface
 
-const BASE_URL = process.env.REACT_APP_BASE_URL_PROD || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
 export async function getAllDocumentTypes(
   accessToken: string
@@ -32,7 +32,7 @@ export async function getDocumentTypeById(
   };
 
   const response = await axios.get<DocumentType>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document-type/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document-type/${id}`,
     config
   );
   return response.data;

@@ -11,7 +11,7 @@ export const getAssetPlacements = async (
   accessToken: string
 ): Promise<AssetPlacement[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-placement/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -27,7 +27,7 @@ export const getAssetPlacementById = async (
   id: string
 ): Promise<AssetPlacement> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-placement/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetPlacement = async (
   assetPlacement: AssetPlacement
 ): Promise<AssetPlacement> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-placement/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
     assetPlacement,
     {
       headers: {
@@ -61,7 +61,7 @@ export const updateAssetPlacement = async (
   assetPlacement: AssetPlacement
 ): Promise<AssetPlacement> => {
   const response = await axios.put(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-placement/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
     assetPlacement,
     {
       headers: {
@@ -78,7 +78,7 @@ export const deleteAssetPlacement = async (
   id: string
 ): Promise<void> => {
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-placement/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

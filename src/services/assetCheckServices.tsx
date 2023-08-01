@@ -11,7 +11,7 @@ export const getAssetChecks = async (
   accessToken: string
 ): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -27,7 +27,7 @@ export const getAssetCheckById = async (
   id: string
 ): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetCheck = async (
   assetCheck: AssetCheck
 ): Promise<AssetCheck> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
     assetCheck,
     {
       headers: {
@@ -61,7 +61,7 @@ export const updateAssetCheck = async (
   assetCheck: AssetCheck
 ): Promise<AssetCheck> => {
   const response = await axios.put(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
     assetCheck,
     {
       headers: {
@@ -84,7 +84,7 @@ export const deleteAssetCheck = async (
     },
   };
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
     config
   );
 };

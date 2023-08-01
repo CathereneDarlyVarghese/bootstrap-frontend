@@ -15,7 +15,7 @@ export async function getInventory(accessToken: string): Promise<Asset[]> {
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/inventory`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
     const response = await axios.get<Asset[]>(url, config);
     return response.data;
   } catch (err) {
@@ -36,7 +36,7 @@ export async function getAsset(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/inventory/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
     const response = await axios.get<Asset>(url, config);
     console.log(response);
     return response.data;
@@ -60,7 +60,7 @@ export async function addInventory(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/inventory`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
     const response = await axios.post<Asset[]>(
       url,
       JSON.stringify(assetData),
@@ -88,7 +88,7 @@ export async function addWorkOrder(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/${inventoryId}/workorder`;
+    const url = `${process.env.REACT_APP_BASE_URL}/${inventoryId}/workorder`;
     const response = await axios.post<WorkOrder>(
       url,
       JSON.stringify(workOrderData),
@@ -113,7 +113,7 @@ export async function deleteInventory(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/inventory/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
     await axios.delete(url, config);
     console.log(`Deleted inventory with id: ${id}`);
   } catch (err) {
@@ -138,7 +138,7 @@ export async function updateWorkOrderStatus(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL_PROD}/inventory/${inventoryId}/workorder/${workOrderId}`;
+    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${inventoryId}/workorder/${workOrderId}`;
     const response = await axios.post<WorkOrder>(
       url,
       JSON.stringify({ status: status }),

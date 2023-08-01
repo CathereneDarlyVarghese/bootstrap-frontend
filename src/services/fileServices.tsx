@@ -1,7 +1,7 @@
 import axios from "axios";
 import { File } from "../types"; // Import the File interface
 
-const BASE_URL = process.env.REACT_APP_BASE_URL_PROD || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
 type Props = {
   accessToken: string;

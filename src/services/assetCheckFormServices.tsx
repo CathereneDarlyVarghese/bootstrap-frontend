@@ -6,7 +6,7 @@ export const getAssetCheckForms = async (
   accessToken: string
 ): Promise<IncomingAssetCheckForm[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check-form/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -23,7 +23,7 @@ export const getAssetCheckFormById = async (
 ): Promise<IncomingAssetCheckForm> => {
   console.log("id at the getAssetCheckFormById", id);
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check-form/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -39,7 +39,7 @@ export const createAssetCheckForm = async (
   assetCheckForm: AssetCheckForm
 ): Promise<AssetCheckForm> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check-form/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/`,
     assetCheckForm,
     {
       headers: {
@@ -57,7 +57,7 @@ export const updateAssetCheckForm = async (
   assetCheckForm: AssetCheckForm
 ): Promise<AssetCheckForm> => {
   const response = await axios.put(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check-form/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/${id}`,
     assetCheckForm,
     {
       headers: {
@@ -74,7 +74,7 @@ export const deleteAssetCheckForm = async (
   id: string
 ): Promise<void> => {
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-check-form//${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form//${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

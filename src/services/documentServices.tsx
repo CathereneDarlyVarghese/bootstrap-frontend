@@ -18,7 +18,7 @@ export async function createDocument(
   };
 
   const response = await axios.post<Document>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     JSON.stringify(documentData),
     config
   );
@@ -37,7 +37,7 @@ export async function getDocumentsByLocationIdOnly(
   };
 
   const response = await axios.get<IncomingDocument[]>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/location/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/location/${id}`,
     config
   );
   return response.data;
@@ -55,7 +55,7 @@ export async function getDocumentsByAssetId(
   };
 
   const response = await axios.get<IncomingDocument[]>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/asset/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/asset/${id}`,
     config
   );
   return response.data;
@@ -72,7 +72,7 @@ export async function getAllDocuments(
   };
 
   const response = await axios.get<IncomingDocument[]>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     config
   );
   return response.data;
@@ -91,7 +91,7 @@ export async function updateDocument(
   };
 
   const response = await axios.put<Document>(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
     JSON.stringify(updatedData),
     config
   );
@@ -110,7 +110,7 @@ export async function deleteDocument(
   };
 
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL_PROD}/protected/document/${id}`,
+    `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
     config
   );
 }
