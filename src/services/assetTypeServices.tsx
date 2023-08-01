@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AssetType } from "../types"; // Import the AssetType interface
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL_PROD || "";
 
 export async function createAssetType(
   accessToken: string,

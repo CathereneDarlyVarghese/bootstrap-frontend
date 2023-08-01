@@ -48,7 +48,6 @@ const ListsLayout = (props: any) => {
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
 
-
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
   ];
@@ -163,14 +162,16 @@ const ListsLayout = (props: any) => {
     const fetchAssets = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+        console.log("The user data ==>>", userData);
+        setSessionToken(userData.signInUserSession.idToken.jwtToken);
+        console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
 
         // Retrieve the location ID from the location state
         const locationId = location.locationId;
 
         // Fetch assets based on the selected location ID
         const assetsData = await getAssets(
-          userData.signInUserSession.accessToken.jwtToken,
+          userData.signInUserSession.idToken.jwtToken,
           locationId
         );
 
@@ -197,7 +198,7 @@ const ListsLayout = (props: any) => {
         const userData = await Auth.currentAuthenticatedUser();
 
         const fetchedAssetSections = await getAssetSections(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
 
         // Filtering fetched Asset Sections on the basis of selected Location
@@ -222,15 +223,19 @@ const ListsLayout = (props: any) => {
         const userData = await Auth.currentAuthenticatedUser();
 
         const fetchedAssetPlacements = await getAssetPlacements(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
 
         // Filtering fetched Asset Placements on the basis of selected Location
         const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
-          (placement: AssetPlacement) => placement.location_id === location.locationId
+          (placement: AssetPlacement) =>
+            placement.location_id === location.locationId
         );
 
-        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetPlacements);
+        console.log(
+          "Fetched Asset Placement (Location Filtered) ==>> ",
+          filteredFetchedAssetPlacements
+        );
 
         setAssetPlacements(filteredFetchedAssetPlacements);
       } catch (error) {
@@ -300,7 +305,8 @@ const ListsLayout = (props: any) => {
                 <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full h-12">
                   <button>
                     <img
-                      src={SearchIcon} alt="search"
+                      src={SearchIcon}
+                      alt="search"
                       className="h-fit justify-center items-center ml-3"
                     />
                   </button>
@@ -387,8 +393,9 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row w-full justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
               <select
                 name=""
@@ -459,12 +466,11 @@ const ListsLayout = (props: any) => {
                   const intersectionFilterMatch =
                     sectionFilterMatch && placementFilterMatch;
 
-
                   return (
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                    selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : intersectionFilterMatch)
                   );
@@ -564,8 +570,6 @@ const ListsLayout = (props: any) => {
           </div>
         )}
       </div>
-
-
     </div>
   );
 };
@@ -577,7 +581,7 @@ const ListsLayout = (props: any) => {
 
 // ListsLayout.defaultProps = {
 //   searchType: "Item",
-// }; 
+// };
 // }
 
 export default ListsLayout;

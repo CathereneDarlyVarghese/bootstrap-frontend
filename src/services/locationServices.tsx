@@ -13,7 +13,7 @@ export async function createAssetLocation(
   };
 
   const response = await axios.post<AssetLocation>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/location/`,
     JSON.stringify(locationData),
     config
   );
@@ -32,7 +32,7 @@ export async function getAssetLocationById(
   };
 
   const response = await axios.get<AssetLocation>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/location/${id}`,
     config
   );
   return response.data;
@@ -49,7 +49,7 @@ export async function getAllAssetLocations(
   };
 
   const response = await axios.get<AssetLocation[]>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location/`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/location/`,
     config
   );
   return response.data;
@@ -68,7 +68,7 @@ export async function updateAssetLocation(
   };
 
   const response = await axios.put<AssetLocation>(
-    `${process.env.REACT_APP_BASE_URL}/protected/location/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/location/${id}`,
     JSON.stringify(updatedData),
     config
   );
@@ -87,7 +87,7 @@ export async function deleteAssetLocation(
   };
 
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/protected/location/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/location/${id}`,
     config
   );
 }

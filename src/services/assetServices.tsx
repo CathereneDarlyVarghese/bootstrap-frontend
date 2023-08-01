@@ -19,7 +19,7 @@ export async function getAllAssets(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+    const url = `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset/`;
     const response = await axios.get<IncomingAsset[]>(url, config);
     return response.data;
   } catch (err) {
@@ -40,7 +40,7 @@ export async function getAssets(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset/${id}`;
     const response = await axios.get<IncomingAsset[]>(url, config);
     console.log(response);
     return response.data;
@@ -64,7 +64,7 @@ export async function createAsset(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+    const url = `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset/`;
     const response = await axios.post<Asset>(
       url,
       JSON.stringify(assetData),
@@ -92,7 +92,7 @@ export async function updateAsset(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset/${id}`;
     const response = await axios.put<Asset>(
       url,
       JSON.stringify(assetData),
@@ -117,7 +117,7 @@ export async function deleteAsset(
   };
 
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+    const url = `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset/${id}`;
     await axios.delete(url, config);
     console.log(`Deleted asset with id: ${id}`);
   } catch (err) {

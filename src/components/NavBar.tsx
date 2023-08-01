@@ -87,9 +87,9 @@ const NavBar = () => {
     const fetchLocations = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+        setSessionToken(userData.signInUserSession.idToken.jwtToken);
         const locationData = await getAllAssetLocations(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
         setLocations(locationData);
         console.log("locations fetched", locationData);

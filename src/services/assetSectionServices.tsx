@@ -11,7 +11,7 @@ export const getAssetSections = async (
   accessToken: string
 ): Promise<AssetSection[]> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-section/`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -27,7 +27,7 @@ export const getAssetSectionById = async (
   id: string
 ): Promise<AssetSection> => {
   const response = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-section/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ export const createAssetSection = async (
   assetSection: AssetSection
 ): Promise<AssetSection> => {
   const response = await axios.post(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-section/`,
     assetSection,
     {
       headers: {
@@ -61,7 +61,7 @@ export const updateAssetSection = async (
   assetSection: AssetSection
 ): Promise<AssetSection> => {
   const response = await axios.put(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-section/${id}`,
     assetSection,
     {
       headers: {
@@ -78,7 +78,7 @@ export const deleteAssetSection = async (
   id: string
 ): Promise<void> => {
   await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
+    `${process.env.REACT_APP_BASE_URL_PROD}/protected/asset-section/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
