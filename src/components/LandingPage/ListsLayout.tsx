@@ -190,7 +190,7 @@ const ListsLayout = (props: any) => {
     };
 
     fetchAssets();
-  }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
+  }, [location]);
 
   useEffect(() => {
     const fetchAssetSections = async () => {
@@ -207,7 +207,6 @@ const ListsLayout = (props: any) => {
         );
 
         setAssetSections(filteredFetchedAssetSections);
-        // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
       } catch (error) {
         console.log(error);
       }
