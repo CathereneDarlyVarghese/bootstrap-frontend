@@ -92,6 +92,12 @@ const NavBar = () => {
           userData.signInUserSession.idToken.jwtToken
         );
         setLocations(locationData);
+        if (locationData.length > 0) {
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
+        }
         console.log("locations fetched", locationData);
       } catch (error) {
         console.log(error);
