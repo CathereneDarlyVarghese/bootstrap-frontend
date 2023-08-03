@@ -3,23 +3,21 @@ import { createAssetLocation } from "../services/locationServices";
 import { Auth } from "aws-amplify";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
-  const [, setSessionToken] = useState<string | null>(null);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const userData = await Auth.currentAuthenticatedUser();
-      const token = userData.signInUserSession.accessToken.jwtToken;
-      setSessionToken(token);
       const assetLocationObj: AssetLocation = {
         location_id: "",
         location_name: inputLocation,
       };
-      await createAssetLocation(token, assetLocationObj);
+      await createAssetLocation(authTokenObj.authToken, assetLocationObj);
       toast.success("Location Added Successfully", {
         position: "bottom-left",
         autoClose: 5000,

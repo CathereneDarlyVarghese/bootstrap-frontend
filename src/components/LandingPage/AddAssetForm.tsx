@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 // import useAssetTypeNames from "hooks/useAssetTypeNames";
-import {
-  AssetLocation,
-  AssetPlacement,
-  AssetSection,
-  AssetType,
-} from "types";
+import { AssetLocation, AssetPlacement, AssetSection, AssetType } from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
@@ -27,6 +22,7 @@ import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [token, setToken] = useState<string>("");
@@ -46,6 +42,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
@@ -86,8 +83,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     const imageLocation = await uploadFiletoS3(file, "inventory");
     console.log(imageLocation);
 
-    const userData = await Auth.currentAuthenticatedUser();
-    const modifiedBy = userData.attributes.given_name;
+    const modifiedBy = authTokenObj.attributes.given_name;
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 2: Create a file in the backend
@@ -367,10 +363,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
                       ? "text-black dark:text-white"
                       : "text-gray-400"
-                    }`}
+                  }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />

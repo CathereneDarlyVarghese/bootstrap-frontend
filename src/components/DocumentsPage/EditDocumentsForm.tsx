@@ -6,6 +6,7 @@ import { uploadFiletoS3 } from "utils";
 import { updateDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import { Auth } from "aws-amplify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const EditDocumentsForm = ({
   open,
@@ -21,7 +22,7 @@ const EditDocumentsForm = ({
   documentStatus,
   fileID,
   assetID,
-  locationID
+  locationID,
 }) => {
   const [file, setFile] = useState<any>(null);
   const [formData, setFormData] = useState<Document>({
@@ -38,16 +39,18 @@ const EditDocumentsForm = ({
     org_id: null,
     asset_id: assetID,
     location_id: locationID,
-    document_type: null
+    document_type: null,
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
-  const [, setSelectedStartDate] = useState<string>(
-    formData.start_date
-  );
-  const [, setSelectedEndDate] = useState<string>(
-    formData.end_date
-  );
-  const defaultDocumentFile: File = { file_id: "", file_array: [], modified_by_array: [], modified_date_array: [] };
+  const [, setSelectedStartDate] = useState<string>(formData.start_date);
+  const [, setSelectedEndDate] = useState<string>(formData.end_date);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const defaultDocumentFile: File = {
+    file_id: "",
+    file_array: [],
+    modified_by_array: [],
+    modified_date_array: [],
+  };
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
 
   // useEffect hook to retrieve the session token from localStorage
@@ -105,11 +108,12 @@ const EditDocumentsForm = ({
     }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSubmit = async (
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
-
-    const userData = await Auth.currentAuthenticatedUser();
-    const token = userData.signInUserSession.accessToken.jwtToken;
 
     if (file) {
       // Step 1: Obtain file location (link) from S3 bucket
@@ -119,12 +123,14 @@ const EditDocumentsForm = ({
       const newFileArrayEntry: string = documentLocation.location;
       console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
-      const newModifiedByArrayEntry = userData.attributes.given_name;
-      const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
+      const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
+      const newModifiedDateArrayEntry = new Date()
+        .toISOString()
+        .substring(0, 10);
 
       // Step 2: Append this file location into file_array of existing File object in the backend
       const appendedFile = await appendToFileArray(
-        token,
+        authTokenObj.authToken,
         formData.file_id,
         newFileArrayEntry,
         newModifiedByArrayEntry,
@@ -137,7 +143,7 @@ const EditDocumentsForm = ({
     }
     try {
       const updatedDocument = await updateDocument(
-        token,
+        authTokenObj.authToken,
         formData.document_id,
         formData
       );
@@ -302,20 +308,21 @@ const EditDocumentsForm = ({
                     onClick={() =>
                       window.open(
                         documentFile.file_array[
-                        documentFile.file_array.length - 1
+                          documentFile.file_array.length - 1
                         ][0],
                         "_blank"
                       )
                     }
                   >
-                    {`(Latest File: ${documentFile.file_array.length > 0
-                      ? String(
-                        documentFile.file_array[
-                        documentFile.file_array.length - 1
-                        ][0]
-                      ).substring(51)
-                      : ""
-                      })`}
+                    {`(Latest File: ${
+                      documentFile.file_array.length > 0
+                        ? String(
+                            documentFile.file_array[
+                              documentFile.file_array.length - 1
+                            ][0]
+                          ).substring(51)
+                        : ""
+                    })`}
                   </h1>
                 </label>
                 <input
@@ -385,8 +392,8 @@ const EditDocumentsForm = ({
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-800"
               onClick={(e) => {
-                handleSubmit(e)
-                close()
+                handleSubmit(e);
+                close();
               }}
             >
               Submit

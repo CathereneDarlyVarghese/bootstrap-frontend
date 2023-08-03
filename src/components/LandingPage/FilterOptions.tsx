@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { Auth } from "aws-amplify";
 import { getAssetPlacements } from "services/assetPlacementServices";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 export let selectedStatusIds: string[] = [];
 // export var selectedSectionNames: string[] = [];
@@ -10,7 +11,7 @@ export let selectedPlacementNames: string[] = [];
 export const resetFilterOptions = () => {
   selectedStatusIds = [];
   selectedPlacementNames = [];
-}
+};
 
 export const FilterOptions = ({
   filterClose,
@@ -22,6 +23,7 @@ export const FilterOptions = ({
   handleSectionReset,
 }) => {
   // const statuses = ["Working", "DOWN", "Maintenance"];
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const statuses = [
     {
@@ -156,10 +158,8 @@ export const FilterOptions = ({
     const getPlacements = async () => {
       try {
         if (selectedButtonsPlacement.length === 0) {
-          const userData = await Auth.currentAuthenticatedUser();
-
           const fetchedPlacements = await getAssetPlacements(
-            userData.signInUserSession.accessToken.jwtToken
+            authTokenObj.authToken
           );
 
           console.log("Fetched Placements", fetchedPlacements, placements);
@@ -168,7 +168,7 @@ export const FilterOptions = ({
             placements = fetchedPlacements;
           }
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     getPlacements();
   }, []);
@@ -176,7 +176,9 @@ export const FilterOptions = ({
   return (
     <div className="p-2">
       <div className="flex flex-row">
-        <h1 className="font-sans font-semibold text-black dark:text-white">Filters</h1>
+        <h1 className="font-sans font-semibold text-black dark:text-white">
+          Filters
+        </h1>
         <div className="flex flex-row gap-2 ml-auto">
           <button
             onClick={filterClose}
@@ -198,20 +200,22 @@ export const FilterOptions = ({
       <div className="my-3">
         <h1 className="font-sans">Status</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(-1)
-            ? "bg-blue-200 hover:bg-blue-200"
-            : "bg-white hover:bg-white"
-            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
+            selectedButtonsStatus.includes(-1)
+              ? "bg-blue-200 hover:bg-blue-200"
+              : "bg-white hover:bg-white"
+          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handleStatusClick(-1)}
         >
           All
         </button>
         {statuses.map((status, index) => (
           <button
-            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsStatus.includes(index)
-              ? "bg-blue-200 hover:bg-blue-200"
-              : "bg-white hover:bg-white"
-              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+            className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
+              selectedButtonsStatus.includes(index)
+                ? "bg-blue-200 hover:bg-blue-200"
+                : "bg-white hover:bg-white"
+            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
             onClick={() => handleStatusClick(index)}
           >
             {status.status_name}
@@ -247,10 +251,11 @@ export const FilterOptions = ({
       <div>
         <h1 className="font-sans">Placement</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(-1)
-            ? "bg-blue-200 hover:bg-blue-200"
-            : "bg-white hover:bg-white"
-            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
+            selectedButtonsPlacement.includes(-1)
+              ? "bg-blue-200 hover:bg-blue-200"
+              : "bg-white hover:bg-white"
+          } border-blue-500 hover:border-blue-500 rounded-full m-1`}
           onClick={() => handlePlacementClick(-1)}
         >
           All
@@ -260,10 +265,11 @@ export const FilterOptions = ({
           .map((placement, index) => (
             <button
               key={index}
-              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsPlacement.includes(index)
-                ? "bg-blue-200 hover:bg-blue-200"
-                : "bg-white hover:bg-white"
-                } border-blue-500 hover:border-blue-500 rounded-full m-1`}
+              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${
+                selectedButtonsPlacement.includes(index)
+                  ? "bg-blue-200 hover:bg-blue-200"
+                  : "bg-white hover:bg-white"
+              } border-blue-500 hover:border-blue-500 rounded-full m-1`}
               onClick={() => handlePlacementClick(index)}
             >
               {placement.placement_name}

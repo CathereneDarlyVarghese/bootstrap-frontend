@@ -15,8 +15,7 @@ import { Auth } from "aws-amplify";
 import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from 'react-query';
-
+import { useMutation, useQueryClient } from "react-query";
 
 const AddStatusFormSchema = {
   //DishWasher status check form
@@ -93,15 +92,15 @@ const AddStatusForm = ({
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
   // const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [file, ] = useState<any>();
-  const [name, ] = useState<string>("");
+  const [file] = useState<any>();
+  const [name] = useState<string>("");
   const statusTypeNames = useStatusTypeNames();
-  const [authTokenObj, ] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const queryClient = useQueryClient();
 
-  const assetCheckAddMutation = useMutation((assetCheck:any) =>
-      createAssetCheck(authTokenObj.authToken, assetCheck),
+  const assetCheckAddMutation = useMutation(
+    (assetCheck: any) => createAssetCheck(authTokenObj.authToken, assetCheck),
     {
       onSettled: () => {
         toast.success("Asset Check Added Successfully", {
@@ -118,15 +117,18 @@ const AddStatusForm = ({
         queryClient.invalidateQueries(["query-assetChecks"]);
       },
       onError: (err: any) => {
-        toast.error("Failed to Delete Asset's Status Check")
-      }
+        toast.error("Failed to Delete Asset's Status Check");
+      },
     }
   );
-  
+
   useEffect(() => {
     const fetchForm = async () => {
       try {
-        const form = await getAssetCheckFormById(authTokenObj.authToken, assetTypeId);
+        const form = await getAssetCheckFormById(
+          authTokenObj.authToken,
+          assetTypeId
+        );
         setJsonForm(form.form_json); // Adjust this line according to your returned data structure
       } catch (error) {
         if (error.response?.status === 404) {
@@ -159,9 +161,7 @@ const AddStatusForm = ({
     if (reportIssue) {
       try {
         const imageLocation = await uploadFiletoS3(file, "assetCheck");
-
-        const userData = await Auth.currentAuthenticatedUser();
-        const modifiedBy = userData.attributes.given_name;
+        const modifiedBy = authTokenObj.attributes.given_name;
         const modifiedDate = new Date().toISOString().substring(0, 10);
 
         const createdFile = await createFile(authTokenObj.authToken, {
@@ -184,7 +184,6 @@ const AddStatusForm = ({
 
         // Add inventory using the API service
         assetCheckAddMutation.mutateAsync(assetCheck);
-        
       } catch (error) {
         toast.error("Failed to add asset");
       }
@@ -204,7 +203,6 @@ const AddStatusForm = ({
       try {
         // Add inventory using the API service
         assetCheckAddMutation.mutateAsync(assetCheck);
-
       } catch (error) {
         toast.error("Failed to add asset");
       }

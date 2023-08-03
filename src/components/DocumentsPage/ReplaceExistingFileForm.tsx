@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { replaceLatestInFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   const [file, setFile] = useState<any>();
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files[0];
@@ -21,9 +23,6 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
 
     console.log("Selected File ==>> ", file);
 
-    const userData = await Auth.currentAuthenticatedUser();
-    const token = userData.signInUserSession.accessToken.jwtToken;
-
     console.log("File ID ==>> ", fileID);
 
     // Step 1: Upload the file to S3 bucket
@@ -33,12 +32,12 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
     const newFileArrayEntry: string = documentLocation.location;
     console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
-    const newModifiedByArrayEntry = userData.attributes.given_name;
+    const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
       const replacedFile = await replaceLatestInFileArray(
-        token,
+        authTokenObj.authToken,
         fileID,
         newFileArrayEntry,
         newModifiedByArrayEntry,
@@ -117,8 +116,6 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
                   onChange={(e) => handleFileChange(e)}
                   className="text-black dark:text-white"
                 />
-
-
               </div>
 
               <div className="w-full flex flex-row justify-center">

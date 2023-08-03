@@ -7,6 +7,7 @@ import { createDocument } from "services/documentServices";
 import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { Auth } from "aws-amplify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -14,10 +15,8 @@ const AddDocumentsForm = ({
   assetID = null,
   locationID = null,
 }) => {
-  const [token, setToken] = useState<string>("");
-
   const [file, setFile] = useState<any>();
-
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
 
   const defaultFormData = {
@@ -55,8 +54,7 @@ const AddDocumentsForm = ({
     event.preventDefault();
     setAddDocumentsOpen(false);
 
-    const userData = await Auth.currentAuthenticatedUser();
-    const modifiedBy = userData.attributes.given_name;
+    const modifiedBy = authTokenObj.attributes.given_name;
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 1: Upload the file to S3 bucket
@@ -64,11 +62,11 @@ const AddDocumentsForm = ({
     console.log("documentLocation ==>> ", documentLocation);
 
     // Step 2: Create a file in the backend
-    const createdFile = await createFile(token, {
+    const createdFile = await createFile(authTokenObj.authToken, {
       file_id: null,
       file_array: [documentLocation.location],
       modified_by_array: [modifiedBy],
-      modified_date_array: [modifiedDate]
+      modified_date_array: [modifiedDate],
     });
     console.log("Return from createFile (file_id) ==>> ", createdFile);
     const fileId = String(createdFile);
@@ -91,8 +89,8 @@ const AddDocumentsForm = ({
       end_date: formData.endDate.toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
-      modified_by: userData.attributes.given_name,
-      modified_date: (new Date()).toLocaleDateString(),
+      modified_by: authTokenObj.attributes.given_name,
+      modified_date: new Date().toLocaleDateString(),
       org_id: null,
       asset_id: assetID,
       location_id: locationID,
@@ -103,7 +101,10 @@ const AddDocumentsForm = ({
 
     // Step 4: Create the document in the backend
     try {
-      const createdDocument = await createDocument(token, documentData);
+      const createdDocument = await createDocument(
+        authTokenObj.authToken,
+        documentData
+      );
       console.log("Created Document:", createdDocument);
       toast.success("Document Added Successfully", {
         position: "bottom-left",
@@ -133,15 +134,13 @@ const AddDocumentsForm = ({
     setFormData(defaultFormData);
   };
 
-  // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-        const token = userData.signInUserSession.accessToken.jwtToken;
-        const fetchedDocumentTypes = await getAllDocumentTypes(token);
+        const fetchedDocumentTypes = await getAllDocumentTypes(
+          authTokenObj.authToken
+        );
 
-        setToken(token);
         setDocumentTypes(fetchedDocumentTypes);
       } catch (error) {
         console.error(
@@ -217,7 +216,7 @@ const AddDocumentsForm = ({
                 className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                 required
               >
-                <option value="" disabled selected hidden >
+                <option value="" disabled selected hidden>
                   Select Document Type
                 </option>
                 {documentTypes.map((documentType) => (
@@ -290,7 +289,6 @@ const AddDocumentsForm = ({
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
                 className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
-
               />
               {/* <input
                 type="file"
@@ -303,10 +301,11 @@ const AddDocumentsForm = ({
                 <input
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
-                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
-                    ? "text-black dark:text-white"
-                    : "text-gray-400"
-                    }`}
+                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
                 />
                 <button
                   className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"

@@ -26,6 +26,7 @@ import {
   selectedPlacementNames,
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const ListsLayout = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const ListsLayout = () => {
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     []
   );
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -53,8 +55,9 @@ const ListsLayout = () => {
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
-  const [selectedAssetSection] =
-    useState<AssetSection>(defaultAssetSections[0]);
+  const [selectedAssetSection] = useState<AssetSection>(
+    defaultAssetSections[0]
+  );
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
 
@@ -65,8 +68,7 @@ const ListsLayout = () => {
     defaultAssetPlacements
   );
 
-  const [selectedAssetPlacementName] =
-    useState<string>("");
+  const [selectedAssetPlacementName] = useState<string>("");
 
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
@@ -141,7 +143,7 @@ const ListsLayout = () => {
   //     if (Notification.permission !== "granted") {
   //       Notification.requestPermission().then((permission) => {
   //         if (permission === "granted") {
-            // console.log("Notification permission granted");
+  // console.log("Notification permission granted");
   //           setNotificationEnabled(true);
   //           // subscribeToPusherChannel();
   //         } else {
@@ -161,19 +163,10 @@ const ListsLayout = () => {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-        // console.log("The user data ==>>", userData);
-        // setSessionToken(userData.signInUserSession.idToken.jwtToken);
-        // console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
-
-        // Retrieve the location ID from the location state
         const locationId = location.locationId;
 
         // Fetch assets based on the selected location ID
-        const assetsData = await getAssets(
-          userData.signInUserSession.idToken.jwtToken,
-          locationId
-        );
+        const assetsData = await getAssets(authTokenObj.authToken, locationId);
 
         if (Array.isArray(assetsData)) {
           setIncomingAssets(assetsData);
@@ -195,10 +188,8 @@ const ListsLayout = () => {
   useEffect(() => {
     const fetchAssetSections = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-
         const fetchedAssetSections = await getAssetSections(
-          userData.signInUserSession.idToken.jwtToken
+          authTokenObj.authToken
         );
 
         // Filtering fetched Asset Sections on the basis of selected Location
@@ -219,10 +210,8 @@ const ListsLayout = () => {
   useEffect(() => {
     const fetchAssetPlacements = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-
         const fetchedAssetPlacements = await getAssetPlacements(
-          userData.signInUserSession.idToken.jwtToken
+          authTokenObj.authToken
         );
 
         // Filtering fetched Asset Placements on the basis of selected Location

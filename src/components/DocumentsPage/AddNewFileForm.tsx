@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { appendToFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
   const [file, setFile] = useState<any>();
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files[0];
@@ -21,9 +23,6 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
 
     console.log("Selected File ==>> ", file);
 
-    const userData = await Auth.currentAuthenticatedUser();
-    const token = userData.signInUserSession.accessToken.jwtToken;
-
     console.log("File ID ==>> ", fileID);
 
     // Step 1: Upload the file to S3 bucket
@@ -33,12 +32,12 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
     const newFileArrayEntry: string = documentLocation.location;
     console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
-    const newModifiedByArrayEntry = userData.attributes.given_name;
+    const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
       const appendedFile = await appendToFileArray(
-        token,
+        authTokenObj.authToken,
         fileID,
         newFileArrayEntry,
         newModifiedByArrayEntry,
@@ -81,7 +80,9 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
       <div className="modal">
         <div className="modal-box dark:bg-gray-900">
           <div className="flex flex-row">
-            <h3 className="font-bold text-lg text-blue-900 dark:text-blue-700">Add a New File</h3>
+            <h3 className="font-bold text-lg text-blue-900 dark:text-blue-700">
+              Add a New File
+            </h3>
             <svg
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +115,6 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
                   onChange={(e) => handleFileChange(e)}
                   className="text-black dark:text-white"
                 />
-
               </div>
 
               {/* upload file button as design */}

@@ -21,6 +21,7 @@ import EditDocumentsForm from "./EditDocumentsForm";
 import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import { File } from "types";
 import AddNewFileForm from "./AddNewFileForm";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const DocumentsCard = ({
   documentID,
@@ -36,7 +37,6 @@ const DocumentsCard = ({
   assetID,
   locationID,
 }) => {
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const defaultDocumentFile: File = {
     file_id: "",
     file_array: [],
@@ -49,22 +49,20 @@ const DocumentsCard = ({
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
   const [addFileForm, setAddFileForm] = useState(false);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-
         const fetchedDocumentType = await getDocumentTypeById(
-          userData.signInUserSession.accessToken.jwtToken,
+          authTokenObj.authToken,
           documentTypeID
         );
 
         setDocumentType(fetchedDocumentType.document_type);
 
         const fetchedDocumentFile = await getFileById(
-          userData.signInUserSession.accessToken.jwtToken,
+          authTokenObj.authToken,
           fileID
         );
 
@@ -80,18 +78,9 @@ const DocumentsCard = ({
     fetchDocumentDetails();
   }, []);
 
-  // console.log("Selected Document Type ==>> ", documentType);
-  // console.log("Session Token ==>> ", sessionToken);
-
   const deleteSelectedDocument = async () => {
     try {
-      const userData = await Auth.currentAuthenticatedUser();
-      setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-
-      await deleteDocument(
-        userData.signInUserSession.accessToken.jwtToken,
-        documentID
-      );
+      await deleteDocument(authTokenObj.authToken, documentID);
       toast.success("Document Deleted Successfully!", {
         position: "bottom-left",
         autoClose: 5000,
@@ -329,7 +318,6 @@ const DocumentsCard = ({
           <div className="mt-4 flex flex-col lg:flex-col gap-5 ">
             <div
               className="flex flex-row gap-2 items-center md:mr-auto lg:w-full"
-
               onClick={() => {
                 console.log("clicked");
               }}
@@ -341,7 +329,7 @@ const DocumentsCard = ({
                 <div className="overflow-x-auto w-full inline-block">
                   <table className="table table-zebra">
                     {/* head */}
-                    <thead >
+                    <thead>
                       <tr>
                         <th>No.</th>
                         <th>File Name</th>

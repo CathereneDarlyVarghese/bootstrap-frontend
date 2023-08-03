@@ -9,17 +9,16 @@ import Form from "react-jsonschema-form";
 
 import { Helmet } from "react-helmet";
 import "./MyStyle.css";
-
-
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 const AdminPage = () => {
-  const [token, setToken] = useState("");
   const [assetTypes, setAssetTypes] = useState([]);
   const [selectedAssetType, setSelectedAssetType] = useState(null);
   const [jsonForm, setJsonForm] = useState(null);
   const [, setShowModal] = useState(false);
   const [toggleContent, setToggleContent] = useState(0);
   const [qrOptions, setQrOptions] = useState(0);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   // const [sessionToken, setSessionToken] = useState<string | null>(null);
   // const [inputLocation, setInputLocation] = useState<string>("");
   const [assetType, setAssetType] = useState<string>("");
@@ -35,7 +34,7 @@ const AdminPage = () => {
     }
 
     try {
-      const newAssetType = await createAssetType(token, {
+      const newAssetType = await createAssetType(authTokenObj.authToken, {
         asset_type_id: "",
         asset_type: assetType,
       });
@@ -48,13 +47,8 @@ const AdminPage = () => {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const userData = await Auth.currentAuthenticatedUser();
-      setToken(userData.signInUserSession.accessToken.jwtToken);
-
       try {
-        const assetTypes1 = await getAllAssetTypes(
-          userData.signInUserSession.accessToken.jwtToken
-        );
+        const assetTypes1 = await getAllAssetTypes(authTokenObj.authToken);
         setAssetTypes(assetTypes1);
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -67,14 +61,17 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchForm = async () => {
       try {
-        const form = await getAssetCheckFormById(token, selectedAssetType);
+        const form = await getAssetCheckFormById(
+          authTokenObj.authToken,
+          selectedAssetType
+        );
         console.log("Returned form object:", form); // Debugging line
         setJsonForm(form.form_json); // Adjust this line according to your returned data structure
         handleShow();
       } catch (error) {
         if (error.response?.status === 404) {
           try {
-            const newForm = await createAssetCheckForm(token, {
+            const newForm = await createAssetCheckForm(authTokenObj.authToken, {
               form_json: {},
               asset_type_id: selectedAssetType,
             });
@@ -92,7 +89,7 @@ const AdminPage = () => {
     if (selectedAssetType) {
       fetchForm();
     }
-  }, [selectedAssetType, token]);
+  }, [selectedAssetType, authTokenObj.authToken]);
 
   return (
     <div className="admin-page flex flex-row">
