@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllAssetTypes } from "services/assetTypeServices";
+import { createAssetType, getAllAssetTypes } from "services/assetTypeServices";
 import { Auth } from "aws-amplify";
 import {
   createAssetCheckForm,
@@ -12,13 +12,13 @@ import "./MyStyle.css";
 import { TfiClose } from "react-icons/tfi";
 
 const uiSchema = {
-  "operational": {
-    "ui:widget": "radio"
+  operational: {
+    "ui:widget": "radio",
   },
-  "clean": {
-    "ui:widget": "radio"
-  }
-}
+  clean: {
+    "ui:widget": "radio",
+  },
+};
 
 const AdminPage = () => {
   const [token, setToken] = useState("");
@@ -28,8 +28,31 @@ const AdminPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [toggleContent, setToggleContent] = useState(0);
   const [qrOptions, setQrOptions] = useState(0);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [inputLocation, setInputLocation] = useState<string>("");
+  const [assetType, setAssetType] = useState<string>("");
 
   const handleShow = () => setShowModal(true);
+
+  const handleAddAssetType = async (e) => {
+    e.preventDefault();
+
+    if (assetType.trim() === "") {
+      console.error("Asset type must not be empty");
+      return;
+    }
+
+    try {
+      const newAssetType = await createAssetType(token, {
+        asset_type_id: "",
+        asset_type: assetType,
+      });
+      console.log("Asset Type Created:", newAssetType);
+      setAssetType("");
+    } catch (error) {
+      console.error("Error creating asset type:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -86,21 +109,34 @@ const AdminPage = () => {
       </Helmet>
       <div className="w-1/5 bg-gray-200 h-screen p-5">
         <div className="flex flex-col gap-5 items-start">
-          <button className="font-sans text-black font-semibold" onClick={() => {
-            setToggleContent(0)
-            setQrOptions(0)
-          }}>Show Forms</button>
-          <button className="font-sans text-black font-semibold" onClick={() => {
-            setToggleContent(1)
-            setQrOptions(0)
-          }}>Add Asset Type</button>
-          <button className="font-sans text-black font-semibold" onClick={() => {
-            setToggleContent(2)
-            setQrOptions(0)
-          }
-          }>Get All QR Codes</button>
+          <button
+            className="font-sans text-black font-semibold"
+            onClick={() => {
+              setToggleContent(0);
+              setQrOptions(0);
+            }}
+          >
+            Show Forms
+          </button>
+          <button
+            className="font-sans text-black font-semibold"
+            onClick={() => {
+              setToggleContent(1);
+              setQrOptions(0);
+            }}
+          >
+            Add Asset Type
+          </button>
+          <button
+            className="font-sans text-black font-semibold"
+            onClick={() => {
+              setToggleContent(2);
+              setQrOptions(0);
+            }}
+          >
+            Get All QR Codes
+          </button>
         </div>
-
       </div>
       <div className="w-4/5">
         {toggleContent === 0 ? (
@@ -134,12 +170,26 @@ const AdminPage = () => {
             <div className="w-1/2 p-5 border border-slate-200 rounded-lg">
               <div className="flex flex-row items-center">
                 <h3 className="font-bold text-lg">Add Asset Type</h3>
-
               </div>
               <form>
-                <input type="text" required placeholder="Enter Asset Type" className="input input-sm w-full border border-slate-300 my-5" />
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter Asset Type"
+                  className="input input-sm w-full border border-slate-300 my-5"
+                  value={assetType}
+                  onChange={(e) => {
+                    setAssetType(e.target.value);
+                    console.log("Asset Type:", e.target.value);
+                  }}
+                />
                 <div className="flex flex-row justify-center">
-                  <button className="btn btn-sm bg-blue-900 hover:bg-blue-900" >Submit</button>
+                  <button
+                    onClick={handleAddAssetType}
+                    className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+                  >
+                    Submit
+                  </button>
                 </div>
               </form>
             </div>
@@ -147,8 +197,17 @@ const AdminPage = () => {
         ) : (
           <div>
             <div className="flex flex-col gap-5 items-center justify-center p-5">
-              <button className="btn bg-blue-900 hover:bg-blue-900 w-64">Print All QR Codes</button>
-              <button className="btn bg-blue-900 hover:bg-blue-900 w-64" onClick={() => { setQrOptions(1) }}>Select QR Codes to print</button>
+              <button className="btn bg-blue-900 hover:bg-blue-900 w-64">
+                Print All QR Codes
+              </button>
+              <button
+                className="btn bg-blue-900 hover:bg-blue-900 w-64"
+                onClick={() => {
+                  setQrOptions(1);
+                }}
+              >
+                Select QR Codes to print
+              </button>
             </div>
             <div>
               {qrOptions === 1 ? (
@@ -159,7 +218,9 @@ const AdminPage = () => {
                     <input type="checkbox" className="checkbox" />
                   </label>
                   <label className="label cursor-pointer w-3/12">
-                    <span className="label-text">Automatic Espresso Machine</span>
+                    <span className="label-text">
+                      Automatic Espresso Machine
+                    </span>
                     <input type="checkbox" className="checkbox" />
                   </label>
                   <label className="label cursor-pointer w-3/12">
@@ -172,25 +233,29 @@ const AdminPage = () => {
                   </label>
                   {/* Map asset names inside this */}
                   <div className="flex flex-row gap-2">
-                    <button className="btn btn-sm capitalize bg-blue-900 hover:bg-blue-900 w-fit flex flex-row justify-start" onClick={() => { setQrOptions(0) }}>Clear Selection</button>
-                    <button className="btn btn-sm capitalize bg-blue-900 hover:bg-blue-900 w-fit flex flex-row justify-start">Print</button>
+                    <button
+                      className="btn btn-sm capitalize bg-blue-900 hover:bg-blue-900 w-fit flex flex-row justify-start"
+                      onClick={() => {
+                        setQrOptions(0);
+                      }}
+                    >
+                      Clear Selection
+                    </button>
+                    <button className="btn btn-sm capitalize bg-blue-900 hover:bg-blue-900 w-fit flex flex-row justify-start">
+                      Print
+                    </button>
                   </div>
-
                 </div>
-              ) : ("")}
+              ) : (
+                ""
+              )}
             </div>
           </div>
-
-
         )}
 
-
-
         {/* add asset type */}
-
-
       </div>
-    </div >
+    </div>
   );
 };
 
