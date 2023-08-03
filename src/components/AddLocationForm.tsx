@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createAssetLocation } from "../services/locationServices";
 import { Auth, Hub } from "aws-amplify";
 import { AssetLocation } from "types";
+import { toast } from "react-toastify";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
@@ -19,8 +20,28 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
         location_name: inputLocation,
       };
       await createAssetLocation(token, assetLocationObj);
+      toast.success("Location Added Successfully", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.log(error);
+      toast.error("Failed to Add Location", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
 
     setAddLocationForm(false);
