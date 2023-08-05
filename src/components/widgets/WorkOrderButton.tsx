@@ -1,8 +1,8 @@
-interface ButtonProps {
-  title: string;
-  primary: boolean;
-  onClick: () => void;
-}
+// interface ButtonProps {
+//   title: string;
+//   primary: boolean;
+//   onClick: () => void;
+// }
 
 const WorkOrderButton = ({
   title,

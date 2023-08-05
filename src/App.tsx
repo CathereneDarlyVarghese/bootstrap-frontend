@@ -5,23 +5,19 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-// import AddInventory from "components/AddInventory";
+
 import ScanInventory from "components/ScanInventory";
-import SignInWithGoogleTest from "components/GoogleSignIn/SignInWithGoogle";
-//import AddLocations from 'components/AddLocations';
 import { Amplify, Auth, Hub } from "aws-amplify";
 import awsConfig from "aws-exports";
 import NavBar from "components/NavBar";
 import { ToastContainer } from "react-toastify";
-import Pusher from "pusher-js";
+
 import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
-import { RedirectFunction } from "react-router-dom";
 import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
 import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import DocumentsPage from "components/DocumentsPage/DocumentsPage";
-import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
-import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
+
 import AdminPage from "components/AdminPage/AdminPage";
 
 Amplify.configure(awsConfig);

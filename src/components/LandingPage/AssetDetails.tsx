@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
-import WorkOrderForm from "./WorkOrderForm1";
-import closeIcon from "../../icons/closeIcon.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
-import { BsQrCode } from "react-icons/bs";
 import { AiOutlineCalendar } from "react-icons/ai";
-import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
 import { AssetCondition, StatusTypes } from "enums";
-import { Asset, IncomingAsset, IncomingAssetCheck } from "types";
+import {  IncomingAsset } from "types";
 import { deleteAsset, toggleAssetCondition } from "services/assetServices";
 
-import documentIcon from "../../icons/documentIcon.svg";
+
 import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
-import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
-import { getAssetCheckById } from "services/assetCheckServices";
 import useAssetCondition from "hooks/useAssetCondition";
 
 interface AssetDetailsProps {

@@ -10,13 +10,6 @@ const QRCodeReader = () => {
     let lastResult;
     let countResults = 0;
 
-    const onScanSuccess = (decodedText, decodedResult) => {
-      if (decodedText !== lastResult) {
-        ++countResults;
-        lastResult = decodedText;
-        console.log(`Scan result ${decodedText}`, decodedResult);
-      }
-    };
 
     const html5QrcodeScanner = new Html5QrcodeScanner(
       qrRef.current.id,
@@ -28,7 +21,7 @@ const QRCodeReader = () => {
       (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
-          ++countResults;
+          countResults = countResults + 1;
           lastResult = decodedText;
           console.log(`Scan result ${decodedText}`, decodedResult);
         }

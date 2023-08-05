@@ -2,10 +2,10 @@
 import axios from "axios";
 import { AssetPlacement } from "../types";
 
-type Props = {
-  accessToken: string;
-  data?: AssetPlacement;
-};
+// type Props = {
+//   accessToken: string;
+//   data?: AssetPlacement;
+// };
 
 export const getAssetPlacements = async (
   accessToken: string

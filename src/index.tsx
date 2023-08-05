@@ -5,7 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "@ui5/webcomponents-react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "jotai";
-import * as PusherPushNotifications from "@pusher/push-notifications-web";
+// import * as PusherPushNotifications from "@pusher/push-notifications-web";
 import ReactDOM from "react-dom";
 
 // Check if service workers are supported by the browser
@@ -27,19 +27,19 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-const beamsClient = new PusherPushNotifications.Client({
-  instanceId: "ca786f8c-c316-4f3a-9860-c363a0186c50",
-});
+// const beamsClient = new PusherPushNotifications.Client({
+//   instanceId: "ca786f8c-c316-4f3a-9860-c363a0186c50",
+// });
 
-beamsClient
-  .start()
-  .then(() => beamsClient.addDeviceInterest("hello"))
-  .then(() => {
-    console.log("Pusher Beams client started successfully");
-  })
-  .catch((e) => {
-    console.error("Error starting Pusher Beams client:", e);
-  });
+// beamsClient
+//   .start()
+//   .then(() => beamsClient.addDeviceInterest("hello"))
+//   .then(() => {
+//     console.log("Pusher Beams client started successfully");
+//   })
+//   .catch((e) => {
+//     console.error("Error starting Pusher Beams client:", e);
+//   });
 
 ReactDOM.render(
   <Provider>

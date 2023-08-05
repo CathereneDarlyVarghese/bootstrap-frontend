@@ -1,12 +1,7 @@
 import React from "react";
 import closeIcon from "../../icons/closeIcon.svg";
 import { AiOutlineDelete } from "react-icons/ai";
-import { FiEdit3 } from "react-icons/fi";
-import { BsQrCode } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { deleteInventory } from "services/apiServices";
 import { toast } from "react-toastify";
-import { AiOutlineCalendar } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import { deleteAssetCheck } from "services/assetCheckServices";
 
@@ -27,12 +22,12 @@ interface StatusDetailsProps {
 const StatusDetails: React.FC<StatusDetailsProps> = ({
   sessionToken,
   uptimeCheckId,
-  assetId,
+
   statusCheck,
   imageArray,
   modifiedBy,
   modifiedDate,
-  uptimeNotes,
+
   refreshAssets,
   closeAsset,
   status_check_data,
@@ -74,7 +69,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
         {imageArray && imageArray[0] && (
           <img
             src={imageArray[0][0]}
-            alt="an image"
+            alt="Images of the status checks"
             className="rounded-xl h-32 w-fit object-cover mx-auto"
           />
         )}

@@ -4,10 +4,10 @@ import { Buffer } from "buffer";
 Buffer.from("anything", "base64");
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
-type Props = {
-  file: File;
-  dir: string;
-};
+// type Props = {
+//   file: File;
+//   dir: string;
+// };
 
 export async function uploadFiletoS3(file, dir) {
   const config = {
