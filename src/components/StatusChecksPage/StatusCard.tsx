@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsFillCheckCircleFill, BsFillXCircleFill, BsInfoCircleFill } from "react-icons/bs";
-import { BsInfoCircle } from "react-icons/bs"
 
 interface StatusCardProps {
   status: string;

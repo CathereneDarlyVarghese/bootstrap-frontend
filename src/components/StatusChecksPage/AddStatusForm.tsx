@@ -85,13 +85,13 @@ const AddStatusForm = ({
   assetTypeId,
 }) => {
   const Form = withTheme(AntDTheme);
-  const [formDataState, setFormDataState] = useState<any>({});
+  const [, setFormDataState] = useState<any>({});
   const [token, setToken] = useState<string>("");
   const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [file, setFile] = useState<any>();
+  // const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [file, ] = useState<any>();
   const [name, setName] = useState<string>("");
   const statusTypeNames = useStatusTypeNames();
 
@@ -129,7 +129,7 @@ const AddStatusForm = ({
     if (assetType) {
       fetchForm();
     }
-  }, [assetType, token]);
+  }, [assetType, assetTypeId, token]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
     return Object.keys(object).find((key) => object[key] === value);
@@ -227,8 +227,8 @@ const AddStatusForm = ({
         id="my-modal-3"
         className="modal-toggle"
       />
-      <div className="modal z-50">
-        <div className="modal-box z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
+      <div className=" z-50">
+        <div className=" z-50 p-0 bg-white dark:bg-gray-800 w-full sm:mx-2">
           {/* Modal header */}
           <div className="p-5 bg-white dark:bg-gray-800 flex flex-row">
             <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-blue-600">

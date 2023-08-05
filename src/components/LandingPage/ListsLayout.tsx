@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
-import Pusher from "pusher-js";
+// import Pusher from "pusher-js";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
+import { AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,17 +27,17 @@ import {
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
 
-const ListsLayout = (props: any) => {
+const ListsLayout = () => {
   const navigate = useNavigate();
-  const [location, setLocation] = useSyncedAtom(locationAtom);
+  const [location] = useSyncedAtom(locationAtom);
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
-  const [assetId, setAssetId] = useState(null);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [forceRefresh, setForceRefresh] = useState(false);
+  const [, setAssetId] = useState(null);
+  const [sessionToken] = useState<string | null>(null);
+  const [, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  // const [, setNotificationEnabled] = useState(false);
   const [filtersOpen, setFitlersOpen] = useState(false);
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
@@ -48,13 +48,12 @@ const ListsLayout = (props: any) => {
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
 
-
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
-  const [selectedAssetSection, setSelectedAssetSection] =
+  const [selectedAssetSection] =
     useState<AssetSection>(defaultAssetSections[0]);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
@@ -66,7 +65,7 @@ const ListsLayout = (props: any) => {
     defaultAssetPlacements
   );
 
-  const [selectedAssetPlacementName, setSelectedAssetPlacementName] =
+  const [selectedAssetPlacementName] =
     useState<string>("");
 
   const handleAddAssetOpen = () => {
@@ -88,18 +87,18 @@ const ListsLayout = (props: any) => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newSearchTerm = event.target.value;
-    setSearchTerm(newSearchTerm);
+  // const handleSearchInputChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const newSearchTerm = event.target.value;
+  //   setSearchTerm(newSearchTerm);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("search", encodeURIComponent(newSearchTerm));
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   urlParams.set("search", encodeURIComponent(newSearchTerm));
 
-    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
-  };
+  //   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  //   window.history.pushState({}, "", newUrl);
+  // };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -116,61 +115,63 @@ const ListsLayout = (props: any) => {
     window.history.pushState(null, "", urlWithoutParams);
   };
 
-  useEffect(() => {
-    const subscribeToPusherChannel = () => {
-      var pusher = new Pusher("f626cc1d579038ad1013", {
-        cluster: "ap1",
-      });
+  // useEffect(() => {
+  //   const subscribeToPusherChannel = () => {
+  //     var pusher = new Pusher("f626cc1d579038ad1013", {
+  //       cluster: "ap1",
+  //     });
 
-      const channel = pusher.subscribe("my-channel");
+  //     const channel = pusher.subscribe("my-channel");
 
-      channel.bind("EVENT_NAME", (data) => {
-        if (notificationEnabled && Notification.permission === "granted") {
-          const notification = new Notification("New Event", {
-            body: data.message,
-            icon: "/path/to/icon.png",
-          });
-          notification.onclick = () => {
-            // Handle the notification click event
-          };
-        }
-        alert(JSON.stringify(data));
-      });
-    };
+  //     channel.bind("EVENT_NAME", (data) => {
+  //       if (notificationEnabled && Notification.permission === "granted") {
+  //         const notification = new Notification("New Event", {
+  //           body: data.message,
+  //           icon: "/path/to/icon.png",
+  //         });
+  //         notification.onclick = () => {
+  //           // Handle the notification click event
+  //         };
+  //       }
+  //       alert(JSON.stringify(data));
+  //     });
+  //   };
 
-    const requestNotificationPermission = () => {
-      if (Notification.permission !== "granted") {
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            console.log("Notification permission granted");
-            setNotificationEnabled(true);
-            subscribeToPusherChannel();
-          } else {
-            console.log("Notification permission denied");
-          }
-        });
-      } else {
-        console.log("Notification permission already granted");
-        setNotificationEnabled(true);
-        subscribeToPusherChannel();
-      }
-    };
+  //   const requestNotificationPermission = () => {
+  //     if (Notification.permission !== "granted") {
+  //       Notification.requestPermission().then((permission) => {
+  //         if (permission === "granted") {
+  //           console.log("Notification permission granted");
+  //           setNotificationEnabled(true);
+  //           // subscribeToPusherChannel();
+  //         } else {
+  //           console.log("Notification permission denied");
+  //         }
+  //       });
+  //     } else {
+  //       console.log("Notification permission already granted");
+  //       setNotificationEnabled(true);
+  //       // subscribeToPusherChannel();
+  //     }
+  //   };
 
-    requestNotificationPermission();
-  }, []);
+  //   requestNotificationPermission();
+  // }, []);
 
   useEffect(() => {
     const fetchAssets = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+        console.log("The user data ==>>", userData);
+        // setSessionToken(userData.signInUserSession.idToken.jwtToken);
+        console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
 
         // Retrieve the location ID from the location state
         const locationId = location.locationId;
 
         // Fetch assets based on the selected location ID
         const assetsData = await getAssets(
-          userData.signInUserSession.accessToken.jwtToken,
+          userData.signInUserSession.idToken.jwtToken,
           locationId
         );
 
@@ -189,7 +190,7 @@ const ListsLayout = (props: any) => {
     };
 
     fetchAssets();
-  }, [location]); // Add the 'location' dependency to re-fetch assets when location changes
+  }, [location]);
 
   useEffect(() => {
     const fetchAssetSections = async () => {
@@ -197,7 +198,7 @@ const ListsLayout = (props: any) => {
         const userData = await Auth.currentAuthenticatedUser();
 
         const fetchedAssetSections = await getAssetSections(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
 
         // Filtering fetched Asset Sections on the basis of selected Location
@@ -206,7 +207,6 @@ const ListsLayout = (props: any) => {
         );
 
         setAssetSections(filteredFetchedAssetSections);
-        // console.log("Fetched Asset Sections ==>> ", fetchedAssetSections);
       } catch (error) {
         console.log(error);
       }
@@ -222,15 +222,19 @@ const ListsLayout = (props: any) => {
         const userData = await Auth.currentAuthenticatedUser();
 
         const fetchedAssetPlacements = await getAssetPlacements(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
 
         // Filtering fetched Asset Placements on the basis of selected Location
         const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
-          (placement: AssetPlacement) => placement.location_id === location.locationId
+          (placement: AssetPlacement) =>
+            placement.location_id === location.locationId
         );
 
-        console.log("Fetched Asset Placement (Location Filtered) ==>> ", filteredFetchedAssetPlacements);
+        console.log(
+          "Fetched Asset Placement (Location Filtered) ==>> ",
+          filteredFetchedAssetPlacements
+        );
 
         setAssetPlacements(filteredFetchedAssetPlacements);
       } catch (error) {
@@ -240,7 +244,7 @@ const ListsLayout = (props: any) => {
     fetchAssetPlacements();
   }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
-  const detailsTabIndexRefresh = (tabIndex) => {
+  const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
 
@@ -300,7 +304,8 @@ const ListsLayout = (props: any) => {
                 <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full h-12">
                   <button>
                     <img
-                      src={SearchIcon} alt="search"
+                      src={SearchIcon}
+                      alt="search"
                       className="h-fit justify-center items-center ml-3"
                     />
                   </button>
@@ -311,7 +316,7 @@ const ListsLayout = (props: any) => {
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
-                      handleSearchInputChange(e);
+                      // handleSearchInputChange(e);
                       setShowOptions(true);
                     }}
                   />
@@ -387,8 +392,9 @@ const ListsLayout = (props: any) => {
           </div>
           <div className="mt-5">
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row w-full justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
               <select
                 name=""
@@ -459,12 +465,11 @@ const ListsLayout = (props: any) => {
                   const intersectionFilterMatch =
                     sectionFilterMatch && placementFilterMatch;
 
-
                   return (
                     searchTermMatch &&
                     statusFilterMatch &&
                     (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                    selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : intersectionFilterMatch)
                   );
@@ -565,8 +570,6 @@ const ListsLayout = (props: any) => {
           </div>
         )}
       </div>
-
-
     </div>
   );
 };
@@ -578,7 +581,7 @@ const ListsLayout = (props: any) => {
 
 // ListsLayout.defaultProps = {
 //   searchType: "Item",
-// }; 
+// };
 // }
 
 export default ListsLayout;

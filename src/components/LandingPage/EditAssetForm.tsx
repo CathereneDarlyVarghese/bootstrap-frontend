@@ -172,23 +172,25 @@ const EditAssetForm = ({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Step 1: Upload the file to S3 bucket
-    const imageLocation = await uploadFiletoS3(file, "inventory");
-    console.log(imageLocation);
+    if(file) {
+      // Step 1: Upload the file to S3 bucket
+      const imageLocation = await uploadFiletoS3(file, "inventory");
+      console.log(imageLocation);
 
-    const userData = await Auth.currentAuthenticatedUser();
-    const modifiedBy = userData.attributes.given_name;
-    const modifiedDate = new Date().toISOString().substring(0, 10);
+      const userData = await Auth.currentAuthenticatedUser();
+      const modifiedBy = userData.attributes.given_name;
+      const modifiedDate = new Date().toISOString().substring(0, 10);
 
-    // Step 2: Create a file in the backend
-    const createdFile = await createFile(token, {
-      file_id: "",
-      file_array: [imageLocation.location],
-      modified_by_array: [modifiedBy],
-      modified_date_array: [modifiedDate],
-    });
-    console.log("return from createFile==>>", createdFile);
-    const fileId = String(createdFile);
+      // Step 2: Create a file in the backend
+      const createdFile = await createFile(token, {
+        file_id: "",
+        file_array: [imageLocation.location],
+        modified_by_array: [modifiedBy],
+        modified_date_array: [modifiedDate],
+      });
+      console.log("return from createFile==>>", createdFile);
+      const fileId = String(createdFile);
+    }
 
     // Step 3: Update the asset in the backend
     try {

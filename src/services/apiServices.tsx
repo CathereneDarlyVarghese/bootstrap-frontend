@@ -1,10 +1,10 @@
 import axios from "axios";
 import { Asset, WorkOrder } from "types";
 
-type Props = {
-  accessToken: string;
-  data?: Asset;
-};
+// type Props = {
+//   accessToken: string;
+//   data?: Asset;
+// };
 
 export async function getInventory(accessToken: string): Promise<Asset[]> {
   const config = {

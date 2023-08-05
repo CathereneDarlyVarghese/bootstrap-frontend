@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Auth, Hub } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
-import { useAtom } from "jotai";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
@@ -21,10 +20,10 @@ const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
 
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [, setSessionToken] = useState<string | null>(null);
 
   const routePage = useLocation();
 
@@ -87,11 +86,17 @@ const NavBar = () => {
     const fetchLocations = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
+        setSessionToken(userData.signInUserSession.idToken.jwtToken);
         const locationData = await getAllAssetLocations(
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
         setLocations(locationData);
+        if (locationData.length > 0) {
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
+        }
         console.log("locations fetched", locationData);
       } catch (error) {
         console.log(error);
@@ -106,21 +111,21 @@ const NavBar = () => {
       {/* {console.log("locations fetched")} */}
       <div className="navbar bg-blue-900">
         <div className="flex-1">
-          <a
+          <button
             onClick={() => {
               navigate("/");
               resetFilterOptions();
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
-            <img src={B} />
-            <img src={ootstrap} />
+            <img src={B} alt="Logo I presume" />
+            <img src={ootstrap} alt="Logo I presume"/>
 
             {/* <h1>ootstrap</h1> */}
             {/* Bootstrap */}
-          </a>
+          </button>
           <div className="tabs ml-10 lg:hidden">
-            <a
+            <button
               className="tab text-white border border-transparent border-b-white font-sans mx-3 asset-tab"
               onClick={() => {
                 navigate("/home");
@@ -128,32 +133,32 @@ const NavBar = () => {
               }}
             >
               Assets
-            </a>
+            </button>
 
-            <a
+            <button
               className="tab text-white border border-transparent font-sans workorder-tab"
               onClick={() => {
                 navigate("/work-orders");
               }}
             >
               Maintenance
-            </a>
-            <a
+            </button>
+            <button
               className="tab text-white border border-transparent font-sans documents-tab"
               onClick={() => {
                 navigate("/document/location");
               }}
             >
               Documents
-            </a>
-            <a
+            </button>
+            <button
               className="tab text-white border border-transparent font-sans status-tab"
               onClick={() => {
                 navigate("/status-checks");
               }}
             >
               Status
-            </a>
+            </button>
           </div>
           <ThemeSwitcher />
         </div>
@@ -193,7 +198,7 @@ const NavBar = () => {
                   d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
                 />
               </svg>
-              <div className="hidden md:block">
+              <div className="md:hidden">
                 {locations ? location.locationName : "No Locations"}
               </div>
               <svg
@@ -236,7 +241,7 @@ const NavBar = () => {
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div>
-                  <img
+                  <img alt="random avatar"
                     className="rounded-full md:hidden 2xl:block "
                     src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
                   />
@@ -282,9 +287,9 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
+                    href="/location"
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                     onClick={() => {
-                      console.log("add location");
                       setAddLocationForm(true);
                     }}
                   >
@@ -293,6 +298,7 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
+                    href="/"
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                     onClick={() => {
                       Auth.signOut();

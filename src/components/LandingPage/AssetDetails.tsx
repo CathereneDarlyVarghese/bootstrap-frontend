@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import WorkOrderForm from "./WorkOrderForm1";
-import closeIcon from "../../icons/closeIcon.svg";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -18,9 +16,7 @@ import {
 import { deleteAsset, toggleAssetCondition } from "services/assetServices";
 import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
-import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
-import { getAssetCheckById } from "services/assetCheckServices";
 import useAssetCondition from "hooks/useAssetCondition";
 import EditAssetForm from "./EditAssetForm";
 import { getAllAssetTypes } from "services/assetTypeServices";
