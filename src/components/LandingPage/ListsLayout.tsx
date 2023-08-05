@@ -37,7 +37,7 @@ const ListsLayout = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [, setNotificationEnabled] = useState(false);
+  // const [, setNotificationEnabled] = useState(false);
   const [filtersOpen, setFitlersOpen] = useState(false);
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
@@ -87,18 +87,18 @@ const ListsLayout = () => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newSearchTerm = event.target.value;
-    setSearchTerm(newSearchTerm);
+  // const handleSearchInputChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const newSearchTerm = event.target.value;
+  //   setSearchTerm(newSearchTerm);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("search", encodeURIComponent(newSearchTerm));
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   urlParams.set("search", encodeURIComponent(newSearchTerm));
 
-    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
-  };
+  //   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  //   window.history.pushState({}, "", newUrl);
+  // };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -115,7 +115,7 @@ const ListsLayout = () => {
     window.history.pushState(null, "", urlWithoutParams);
   };
 
-  useEffect(() => {
+  // useEffect(() => {
   //   const subscribeToPusherChannel = () => {
   //     var pusher = new Pusher("f626cc1d579038ad1013", {
   //       cluster: "ap1",
@@ -137,26 +137,26 @@ const ListsLayout = () => {
   //     });
   //   };
 
-    const requestNotificationPermission = () => {
-      if (Notification.permission !== "granted") {
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            console.log("Notification permission granted");
-            setNotificationEnabled(true);
-            // subscribeToPusherChannel();
-          } else {
-            console.log("Notification permission denied");
-          }
-        });
-      } else {
-        console.log("Notification permission already granted");
-        setNotificationEnabled(true);
-        // subscribeToPusherChannel();
-      }
-    };
+  //   const requestNotificationPermission = () => {
+  //     if (Notification.permission !== "granted") {
+  //       Notification.requestPermission().then((permission) => {
+  //         if (permission === "granted") {
+  //           console.log("Notification permission granted");
+  //           setNotificationEnabled(true);
+  //           // subscribeToPusherChannel();
+  //         } else {
+  //           console.log("Notification permission denied");
+  //         }
+  //       });
+  //     } else {
+  //       console.log("Notification permission already granted");
+  //       setNotificationEnabled(true);
+  //       // subscribeToPusherChannel();
+  //     }
+  //   };
 
-    requestNotificationPermission();
-  }, []);
+  //   requestNotificationPermission();
+  // }, []);
 
   useEffect(() => {
     const fetchAssets = async () => {
@@ -316,7 +316,7 @@ const ListsLayout = () => {
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
-                      handleSearchInputChange(e);
+                      // handleSearchInputChange(e);
                       setShowOptions(true);
                     }}
                   />
