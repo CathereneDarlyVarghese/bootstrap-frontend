@@ -4,6 +4,8 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { TfiClose } from "react-icons/tfi";
 import { deleteAssetCheck } from "services/assetCheckServices";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from 'react-query';
 
 interface StatusDetailsProps {
   sessionToken: string | null;
@@ -32,23 +34,22 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   closeAsset,
   status_check_data,
 }) => {
-  console.log(
-    "imageArray[0]:",
-    imageArray && imageArray.length > 0 ? imageArray[0] : null
-  );
+  const [authTokenObj, ] = useSyncedGenericAtom(genericAtom, "authToken");
+  const queryClient = useQueryClient();
 
-  console.log("StatusCheck:", statusCheck);
-
-  const handleDelete = async () => {
-    try {
-      await deleteAssetCheck(sessionToken, uptimeCheckId);
-      refreshAssets();
-      toast.success("Asset's Status Check Deleted Successfully");
-    } catch (error) {
-      console.log("Error Deleting Asset's Status Check:", error);
-      toast.error("Failed to Delete Asset's Status Check");
+  const assetCheckMutation = useMutation(
+    () =>
+     deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
+    {
+      onSettled: () => {
+        toast.success("Asset's Status Check Deleted Successfully")
+        queryClient.invalidateQueries(["query-assetChecks"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset's Status Check")
+      }
     }
-  };
+  );
 
   return (
     <div className="h-5/6 mx-4 mt-2 p-5 bg-white dark:bg-gray-800 rounded-xl overflow-y-auto flex flex-col border border-gray-200 dark:border-gray-600 hover:border-blue-800 hover:dark:border-gray-400">
@@ -94,39 +95,41 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             </Link> */}
             <AiOutlineDelete
               className="text-red-500 text-xl ml-2 cursor-pointer"
-              onClick={handleDelete}
+              onClick={() =>assetCheckMutation.mutate()}
             />
           </div>
         </div>
         <div>
           <table>
-            <tr className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-              <td className="w-24">Modified By</td>
-              <td className="w-5">:</td>
-              <td>{modifiedBy}</td>
-            </tr>
-            {status_check_data &&
-              Object.entries(status_check_data).map(([key, value], index) => (
-                // <div
-                //   key={index}
-                // >
-                //   <div className="flex flex-row ">
-                //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-                //       {key} :
-                //     </p>
-                //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-                //       {value}
-                //     </p>
-                //   </div>
+           <tbody>
+              <tr className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                <td className="w-24">Modified By</td>
+                <td className="w-5">:</td>
+                <td>{modifiedBy}</td>
+              </tr>
+              {status_check_data &&
+                Object.entries(status_check_data).map(([key, value], index) => (
+                  // <div
+                  //   key={index}
+                  // >
+                  //   <div className="flex flex-row ">
+                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                  //       {key} :
+                  //     </p>
+                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                  //       {value}
+                  //     </p>
+                  //   </div>
 
-                // </div>
-                <tr key={index} className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-                  <td>{key}</td>
-                  <td>:</td>
-                  <td>{value}</td>
-                </tr>
+                  // </div>
+                  <tr key={index} className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                    <td>{key}</td>
+                    <td>:</td>
+                    <td>{value}</td>
+                  </tr>
 
-              ))}
+                ))}
+              </tbody>
           </table>
 
         </div>

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { createAssetLocation } from "../services/locationServices";
-import { Auth, Hub } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [, setSessionToken] = useState<string | null>(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

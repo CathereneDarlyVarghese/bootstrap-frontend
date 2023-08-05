@@ -41,10 +41,10 @@ const EditDocumentsForm = ({
     document_type: null
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
-  const [selectedStartDate, setSelectedStartDate] = useState<string>(
+  const [, setSelectedStartDate] = useState<string>(
     formData.start_date
   );
-  const [selectedEndDate, setSelectedEndDate] = useState<string>(
+  const [, setSelectedEndDate] = useState<string>(
     formData.end_date
   );
   const defaultDocumentFile: File = { file_id: "", file_array: [], modified_by_array: [], modified_date_array: [] };

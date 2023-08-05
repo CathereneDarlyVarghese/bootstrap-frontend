@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
+import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { AssetCondition, StatusTypes } from "enums";
@@ -70,18 +71,10 @@ const AssetDetails: React.FC<
   assetTypeId,
   assetLocation,
 }) => {
-  const [activeTab, setActiveTab] = useState(0);
-  const [editFormOpen, setEditFormOpen] = useState(false);
-  const [assetTypes, setAssetTypes] = useState<AssetType[]>();
-  const [assetLocations, setAssetLocations] = useState<AssetLocation[]>();
-  const [assetSections, setAssetSections] = useState<AssetSection[]>();
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>();
-  const [assetSection, setAssetSection] = useState<AssetSection>();
-  const [assetPlacement, setAssetPlacement] = useState<AssetPlacement>();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const assetConditions = useAssetCondition();
+    const [activeTab, setActiveTab] = useState(0);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const assetConditions = useAssetCondition();
 
   const getStatusText = (status: string | null) => {
     switch (status) {

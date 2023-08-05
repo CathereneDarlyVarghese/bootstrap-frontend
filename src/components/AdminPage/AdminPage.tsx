@@ -6,30 +6,22 @@ import {
   getAssetCheckFormById,
 } from "services/assetCheckFormServices";
 import Form from "react-jsonschema-form";
-// import "./AdminPage.module.css";
+
 import { Helmet } from "react-helmet";
 import "./MyStyle.css";
-import { TfiClose } from "react-icons/tfi";
 
-const uiSchema = {
-  operational: {
-    "ui:widget": "radio",
-  },
-  clean: {
-    "ui:widget": "radio",
-  },
-};
+
 
 const AdminPage = () => {
   const [token, setToken] = useState("");
   const [assetTypes, setAssetTypes] = useState([]);
   const [selectedAssetType, setSelectedAssetType] = useState(null);
   const [jsonForm, setJsonForm] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [, setShowModal] = useState(false);
   const [toggleContent, setToggleContent] = useState(0);
   const [qrOptions, setQrOptions] = useState(0);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [inputLocation, setInputLocation] = useState<string>("");
+  // const [sessionToken, setSessionToken] = useState<string | null>(null);
+  // const [inputLocation, setInputLocation] = useState<string>("");
   const [assetType, setAssetType] = useState<string>("");
 
   const handleShow = () => setShowModal(true);

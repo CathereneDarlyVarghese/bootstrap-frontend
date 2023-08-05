@@ -10,8 +10,8 @@ import { getFileById } from "services/fileServices";
 
 const DocumentsPage = () => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-  const [location, setLocation] = useSyncedAtom(locationAtom);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [location, ] = useSyncedAtom(locationAtom);
+  const [, setSessionToken] = useState<string | null>(null);
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
   >([]); //This is because the fetched documents are a mixture from documents and document_types tables
@@ -36,8 +36,8 @@ const DocumentsPage = () => {
     useState<IncomingDocument>(defaultDocument);
 
   //display file
-  const [fileOpen, setFileOpen] = useState(false);
-  const [fileName, setFileName] = useState<string>(null);
+  const [fileOpen, ] = useState(false);
+  const [, setFileName] = useState<string>(null);
 
   const selectedLocation = location.locationId;
   console.log("The selected location (1) ==>>", selectedLocation);
@@ -79,9 +79,9 @@ const DocumentsPage = () => {
     fetchFile();
   }, [selectedDocument]);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  // const scrollToTop = () => {
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  // };
 
   return (
     <>

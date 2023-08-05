@@ -14,6 +14,9 @@ import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme 
 import { Auth } from "aws-amplify";
 import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from 'react-query';
+
 
 const AddStatusFormSchema = {
   //DishWasher status check form
@@ -86,33 +89,49 @@ const AddStatusForm = ({
 }) => {
   const Form = withTheme(AntDTheme);
   const [, setFormDataState] = useState<any>({});
-  const [token, setToken] = useState<string>("");
   const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
   // const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [file, ] = useState<any>();
-  const [name, setName] = useState<string>("");
+  const [name, ] = useState<string>("");
   const statusTypeNames = useStatusTypeNames();
+  const [authTokenObj, ] = useSyncedGenericAtom(genericAtom, "authToken");
 
-  useEffect(() => {
-    const fetchCredentials = async () => {
-      const userData = await Auth.currentAuthenticatedUser();
-      setToken(userData.signInUserSession.accessToken.jwtToken);
-      setName(userData.attributes.given_name);
-    };
-    fetchCredentials();
-  }, []);
+  const queryClient = useQueryClient();
 
+  const assetCheckAddMutation = useMutation((assetCheck:any) =>
+      createAssetCheck(authTokenObj.authToken, assetCheck),
+    {
+      onSettled: () => {
+        toast.success("Asset Check Added Successfully", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        onStatusAdded();
+        queryClient.invalidateQueries(["query-assetChecks"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset's Status Check")
+      }
+    }
+  );
+  
   useEffect(() => {
     const fetchForm = async () => {
       try {
-        const form = await getAssetCheckFormById(token, assetTypeId);
+        const form = await getAssetCheckFormById(authTokenObj.authToken, assetTypeId);
         setJsonForm(form.form_json); // Adjust this line according to your returned data structure
       } catch (error) {
         if (error.response?.status === 404) {
           try {
-            const newForm = await createAssetCheckForm(token, {
+            const newForm = await createAssetCheckForm(authTokenObj.authToken, {
               form_json: {},
               asset_type_id: assetTypeId,
             });
@@ -129,7 +148,7 @@ const AddStatusForm = ({
     if (assetType) {
       fetchForm();
     }
-  }, [assetType, assetTypeId, token]);
+  }, [assetType, assetTypeId]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
     return Object.keys(object).find((key) => object[key] === value);
@@ -137,7 +156,6 @@ const AddStatusForm = ({
 
   const handleSubmit = async (formData: any) => {
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
-    console.log("FormData Operational==>>", statusUUID);
     if (reportIssue) {
       try {
         const imageLocation = await uploadFiletoS3(file, "assetCheck");
@@ -146,7 +164,7 @@ const AddStatusForm = ({
         const modifiedBy = userData.attributes.given_name;
         const modifiedDate = new Date().toISOString().substring(0, 10);
 
-        const createdFile = await createFile(token, {
+        const createdFile = await createFile(authTokenObj.authToken, {
           file_id: "",
           file_array: [imageLocation.location],
           modified_by_array: [modifiedBy],
@@ -165,23 +183,12 @@ const AddStatusForm = ({
         };
 
         // Add inventory using the API service
-        await createAssetCheck(token, assetCheck);
-        toast.success("Asset Check Added Successfully", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        onStatusAdded();
+        assetCheckAddMutation.mutateAsync(assetCheck);
+        
       } catch (error) {
         toast.error("Failed to add asset");
       }
     } else {
-      console.log("reportIssue", reportIssue);
       // Case when there is no issue
       const assetCheck = {
         uptime_check_id: "",
@@ -193,22 +200,11 @@ const AddStatusForm = ({
         modified_date: new Date(),
         status_check_data: JSON.parse(JSON.stringify(formData)),
       };
-      console.log("Submitted Check >>", assetCheck);
 
       try {
         // Add inventory using the API service
-        await createAssetCheck(token, assetCheck);
-        toast.success("Asset Check Added Successfully", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        onStatusAdded();
+        assetCheckAddMutation.mutateAsync(assetCheck);
+
       } catch (error) {
         toast.error("Failed to add asset");
       }
@@ -253,7 +249,6 @@ const AddStatusForm = ({
                 validator={validator}
                 uiSchema={AddStatusFormSchema}
                 onSubmit={({ formData }) => {
-                  console.log("Data submitted: ", formData);
                   setFormDataState(formData);
                   handleSubmit(formData);
                   setAddFormOpen(false);
