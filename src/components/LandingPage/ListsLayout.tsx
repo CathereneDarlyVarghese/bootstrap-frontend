@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
-import Pusher from "pusher-js";
+// import Pusher from "pusher-js";
 
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import { Asset, AssetPlacement, AssetSection, IncomingAsset } from "types";
+import { AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { Auth } from "aws-amplify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,17 +27,17 @@ import {
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
 
-const ListsLayout = (props: any) => {
+const ListsLayout = () => {
   const navigate = useNavigate();
-  const [location, setLocation] = useSyncedAtom(locationAtom);
+  const [location] = useSyncedAtom(locationAtom);
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
-  const [assetId, setAssetId] = useState(null);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [forceRefresh, setForceRefresh] = useState(false);
+  const [, setAssetId] = useState(null);
+  const [sessionToken] = useState<string | null>(null);
+  const [, setForceRefresh] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [, setNotificationEnabled] = useState(false);
   const [filtersOpen, setFitlersOpen] = useState(false);
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
@@ -53,7 +53,7 @@ const ListsLayout = (props: any) => {
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
-  const [selectedAssetSection, setSelectedAssetSection] =
+  const [selectedAssetSection] =
     useState<AssetSection>(defaultAssetSections[0]);
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
@@ -65,7 +65,7 @@ const ListsLayout = (props: any) => {
     defaultAssetPlacements
   );
 
-  const [selectedAssetPlacementName, setSelectedAssetPlacementName] =
+  const [selectedAssetPlacementName] =
     useState<string>("");
 
   const handleAddAssetOpen = () => {
@@ -116,26 +116,26 @@ const ListsLayout = (props: any) => {
   };
 
   useEffect(() => {
-    const subscribeToPusherChannel = () => {
-      var pusher = new Pusher("f626cc1d579038ad1013", {
-        cluster: "ap1",
-      });
+  //   const subscribeToPusherChannel = () => {
+  //     var pusher = new Pusher("f626cc1d579038ad1013", {
+  //       cluster: "ap1",
+  //     });
 
-      const channel = pusher.subscribe("my-channel");
+  //     const channel = pusher.subscribe("my-channel");
 
-      channel.bind("EVENT_NAME", (data) => {
-        if (notificationEnabled && Notification.permission === "granted") {
-          const notification = new Notification("New Event", {
-            body: data.message,
-            icon: "/path/to/icon.png",
-          });
-          notification.onclick = () => {
-            // Handle the notification click event
-          };
-        }
-        alert(JSON.stringify(data));
-      });
-    };
+  //     channel.bind("EVENT_NAME", (data) => {
+  //       if (notificationEnabled && Notification.permission === "granted") {
+  //         const notification = new Notification("New Event", {
+  //           body: data.message,
+  //           icon: "/path/to/icon.png",
+  //         });
+  //         notification.onclick = () => {
+  //           // Handle the notification click event
+  //         };
+  //       }
+  //       alert(JSON.stringify(data));
+  //     });
+  //   };
 
     const requestNotificationPermission = () => {
       if (Notification.permission !== "granted") {
@@ -143,7 +143,7 @@ const ListsLayout = (props: any) => {
           if (permission === "granted") {
             console.log("Notification permission granted");
             setNotificationEnabled(true);
-            subscribeToPusherChannel();
+            // subscribeToPusherChannel();
           } else {
             console.log("Notification permission denied");
           }
@@ -151,7 +151,7 @@ const ListsLayout = (props: any) => {
       } else {
         console.log("Notification permission already granted");
         setNotificationEnabled(true);
-        subscribeToPusherChannel();
+        // subscribeToPusherChannel();
       }
     };
 
@@ -163,7 +163,7 @@ const ListsLayout = (props: any) => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         console.log("The user data ==>>", userData);
-        setSessionToken(userData.signInUserSession.idToken.jwtToken);
+        // setSessionToken(userData.signInUserSession.idToken.jwtToken);
         console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
 
         // Retrieve the location ID from the location state
@@ -244,7 +244,7 @@ const ListsLayout = (props: any) => {
     fetchAssetPlacements();
   }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
-  const detailsTabIndexRefresh = (tabIndex) => {
+  const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
 

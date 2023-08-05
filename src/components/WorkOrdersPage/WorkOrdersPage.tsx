@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
-import SearchIcon from "../../icons/circle2017.png";
-import WorkOrderCard from "./WorkOrderCard";
-import WorkOrderDetails from "./WorkOrderDetails";
+import  { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getAsset } from "services/apiServices";
 
 const WorkOrdersPage = (props: any) => {
   const [asset, setAsset] = useState(null);
-  const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
+  // const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get("assetId");
-  const [searchTerm, setSearchTerm] = useState(""); // new state for search term
+  // const [searchTerm, setSearchTerm] = useState(""); // new state for search term
 
   useEffect(() => {
     (async () => {
@@ -24,15 +21,15 @@ const WorkOrdersPage = (props: any) => {
         console.error("Asset ID is not provided");
       }
     })();
-  }, [assetId]);
+  }, [assetId, asset]);
 
   //function to add and remove class for UI
-  const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
-  };
-  const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
-  };
+  // const addClass = (selectClass, addClass) => {
+  //   document.querySelector(selectClass).classList.add(addClass);
+  // };
+  // const removeClass = (selectClass, removeClass) => {
+  //   document.querySelector(selectClass).classList.remove(removeClass);
+  // };
 
   return (
     <div className="flex flex-row justify-center h-screen items-center bg-white dark:bg-black">

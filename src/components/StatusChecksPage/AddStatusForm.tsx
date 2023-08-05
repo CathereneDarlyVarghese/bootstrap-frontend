@@ -85,13 +85,13 @@ const AddStatusForm = ({
   assetTypeId,
 }) => {
   const Form = withTheme(AntDTheme);
-  const [formDataState, setFormDataState] = useState<any>({});
+  const [, setFormDataState] = useState<any>({});
   const [token, setToken] = useState<string>("");
   const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [file, setFile] = useState<any>();
+  // const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [file, ] = useState<any>();
   const [name, setName] = useState<string>("");
   const statusTypeNames = useStatusTypeNames();
 
@@ -129,7 +129,7 @@ const AddStatusForm = ({
     if (assetType) {
       fetchForm();
     }
-  }, [assetType, token]);
+  }, [assetType, assetTypeId, token]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
     return Object.keys(object).find((key) => object[key] === value);

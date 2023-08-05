@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { createAssetLocation } from "../services/locationServices";
 import { Auth, Hub } from "aws-amplify";
 import { AssetLocation } from "types";

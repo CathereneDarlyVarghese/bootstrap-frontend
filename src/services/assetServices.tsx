@@ -1,12 +1,12 @@
 import axios from "axios";
 import { AssetCondition } from "enums";
-import useAssetCondition from "hooks/useAssetCondition";
+// import useAssetCondition from "hooks/useAssetCondition";
 import { Asset, IncomingAsset } from "types"; // ensure the Asset type is defined
 
-type Props = {
-  accessToken: string;
-  data?: Asset;
-};
+// type Props = {
+//   accessToken: string;
+//   data?: Asset;
+// };
 
 export async function getAllAssets(
   accessToken: string

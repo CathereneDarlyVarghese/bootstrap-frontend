@@ -1,10 +1,10 @@
 import axios from "axios";
 import { Document, IncomingDocument } from "../types"; // Import the Document interface
 
-type Props = {
-  accessToken: string;
-  data?: IncomingDocument;
-};
+// type Props = {
+//   accessToken: string;
+//   data?: IncomingDocument;
+// };
 
 export async function createDocument(
   accessToken: string,

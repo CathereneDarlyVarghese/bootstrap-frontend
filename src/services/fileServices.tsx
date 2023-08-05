@@ -3,10 +3,10 @@ import { File } from "../types"; // Import the File interface
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
-type Props = {
-  accessToken: string;
-  data?: File;
-};
+// type Props = {
+//   accessToken: string;
+//   data?: File;
+// };
 
 export async function createFile(
   accessToken: string,

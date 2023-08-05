@@ -4,8 +4,7 @@ import StatusDetails from "./StatusDetails";
 import AddStatusForm from "./AddStatusForm";
 import { getAssetCheckById } from "services/assetCheckServices";
 import { IncomingAssetCheck } from "types";
-import { Auth } from "aws-amplify";
-import { getAssetTypeById } from "services/assetTypeServices";
+// import { Auth } from "aws-amplify";
 
 
 interface AssetStatusChecksPageProps {
@@ -25,31 +24,31 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   assetTypeId,
   selectedAsset
 }) => {
-  const [statusCheckId, setStatusCheckId] = useState<string | null>(null);
+  const [, setStatusCheckId] = useState<string | null>(null);
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
   const [selectedAssetCheck, setSelectedAssetCheck] =
     useState<IncomingAssetCheck>();
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const refreshAssets = () => {
-    setAssetId(null);
-    // Toggle the assetId state to trigger refresh
-  };
+  // const refreshAssets = () => {
+  //   setAssetId(null);
+  //   // Toggle the assetId state to trigger refresh
+  // };
 
-  const handleStatusAdded = async () => {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      const response = await getAssetCheckById(
-        userData.signInUserSession.accessToken.jwtToken,
-        assetId
-      );
-      setAssetChecks(response);
-      console.log("status Checks Fetched ==>>", response);
-    } catch (error) {
-      console.log("Error fetching asset checks:", error);
-    }
-  };
+  // const handleStatusAdded = async () => {
+  //   try {
+  //     const userData = await Auth.currentAuthenticatedUser();
+  //     const response = await getAssetCheckById(
+  //       userData.signInUserSession.accessToken.jwtToken,
+  //       assetId
+  //     );
+  //     setAssetChecks(response);
+  //     console.log("status Checks Fetched ==>>", response);
+  //   } catch (error) {
+  //     console.log("Error fetching asset checks:", error);
+  //   }
+  // };
 
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
     setStatusCheckId(selectedStatusCheckId);
@@ -73,7 +72,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     };
 
     fetchAssetChecks();
-  }, [assetId]);
+  }, [sessionToken, assetId]);
 
   return (
     <div className="w-full">
