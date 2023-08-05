@@ -2,12 +2,10 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useNavigate,
-  Link,
 } from "react-router-dom";
 
 import ScanInventory from "components/ScanInventory";
-import { Amplify, Auth, Hub } from "aws-amplify";
+import { Amplify } from "aws-amplify";
 import awsConfig from "aws-exports";
 import NavBar from "components/NavBar";
 import { ToastContainer } from "react-toastify";
@@ -19,35 +17,49 @@ import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import DocumentsPage from "components/DocumentsPage/DocumentsPage";
 
 import AdminPage from "components/AdminPage/AdminPage";
+import { ReactQueryDevtools } from 'react-query/devtools'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: 5*60*1000,
+    },
+  },
+});
 Amplify.configure(awsConfig);
 
 function AppContent() {
   return (
     <div>
+      
       <NavBar></NavBar>
 
       <div className="h-screen" style={{ overflow: "scroll" }}>
         <Routes>
           <Route path="/scan" element={<ScanInventory />} />
-          {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<ListsLayout />} />
           <Route path="/work-orders" element={<WorkOrdersPage />} />
           <Route path="/document/location" element={<DocumentsPage />} />
-          {/* <Route path="/document/asset" element={<AssetDocumentsPage />} /> */}
           <Route path="/status-checks" element={<StatusChecksPage />} />
           <Route path="/admin" element={<AdminPage />} />
-
-          {/* <Route path="/add-workorder" element={<AddWorkOrder />} /> */}
-          {/* <Route path="/asset-status-checks" element={<AssetStatusChecksPage />} /> */}
         </Routes>
       </div>
+      
+
     </div>
   );
 }
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
@@ -66,6 +78,8 @@ function App() {
         theme="light"
       />
     </Router>
+    <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

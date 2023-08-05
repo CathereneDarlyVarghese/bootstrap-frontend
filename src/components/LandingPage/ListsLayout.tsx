@@ -141,7 +141,7 @@ const ListsLayout = () => {
   //     if (Notification.permission !== "granted") {
   //       Notification.requestPermission().then((permission) => {
   //         if (permission === "granted") {
-  //           console.log("Notification permission granted");
+            // console.log("Notification permission granted");
   //           setNotificationEnabled(true);
   //           // subscribeToPusherChannel();
   //         } else {
@@ -162,9 +162,9 @@ const ListsLayout = () => {
     const fetchAssets = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        console.log("The user data ==>>", userData);
+        // console.log("The user data ==>>", userData);
         // setSessionToken(userData.signInUserSession.idToken.jwtToken);
-        console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
+        // console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
 
         // Retrieve the location ID from the location state
         const locationId = location.locationId;
@@ -183,7 +183,7 @@ const ListsLayout = () => {
           setIncomingAssets([]);
         }
 
-        console.log("The fetched assets ==>>", assetsData);
+        // console.log("The fetched assets ==>>", assetsData);
       } catch (error) {
         console.log(error);
       }
