@@ -9,23 +9,23 @@ import { Provider } from "jotai";
 import ReactDOM from "react-dom";
 
 // Check if service workers are supported by the browser
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/service-worker.js").then(
-      function (registration) {
-        // Registration was successful
-        console.log(
-          "ServiceWorker registration successful with scope: ",
-          registration.scope
-        );
-      },
-      function (err) {
-        // registration failed :(
-        console.log("ServiceWorker registration failed: ", err);
-      }
-    );
-  });
-}
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", function () {
+//     navigator.serviceWorker.register("/service-worker.js").then(
+//       function (registration) {
+//         // Registration was successful
+//         console.log(
+//           "ServiceWorker registration successful with scope: ",
+//           registration.scope
+//         );
+//       },
+//       function (err) {
+//         // registration failed :(
+//         console.log("ServiceWorker registration failed: ", err);
+//       }
+//     );
+//   });
+// }
 
 // const beamsClient = new PusherPushNotifications.Client({
 //   instanceId: "ca786f8c-c316-4f3a-9860-c363a0186c50",
