@@ -137,8 +137,6 @@ export async function toggleAssetCondition(
     // Add more condition mappings if needed
   };
 
-  console.log("changed condition=>", changedCondition);
-
   const toggledConditionText =
     changedCondition === assetConditionMap[AssetCondition.ACTIVE]
       ? assetConditionMap[AssetCondition.ACTIVE]
@@ -155,6 +153,5 @@ export async function toggleAssetCondition(
   const assetData: Partial<Asset> = {
     asset_condition: toggledConditionUUID,
   };
-  console.log("asset data ==>>", assetData);
   await updateAsset(accessToken, id, assetData);
 }

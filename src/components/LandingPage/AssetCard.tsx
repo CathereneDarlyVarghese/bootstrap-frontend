@@ -2,16 +2,11 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import MapIcon from "../../icons/mapIcon.svg";
-import { AiFillExclamationCircle } from "react-icons/ai";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { BsFillXCircleFill } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { BsCircleFill } from "react-icons/bs";
 import DisplayQR from "./DisplayQR";
-import { AssetCondition, StatusTypes } from "enums";
-import { opacity } from "html2canvas/dist/types/css/property-descriptors/opacity";
+import { StatusTypes } from "enums";
 
-let status = "expire_soon";
 
 type AssetCardProps = {
   assetName: string;
@@ -26,18 +21,6 @@ type AssetCardProps = {
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
   const [showQr, setShowQr] = useState(false);
-  const getStatusText = (status: string | null) => {
-    switch (status) {
-      case StatusTypes.WORKING:
-        return "WORKING";
-      case StatusTypes.DOWN:
-        return "DOWN";
-      case StatusTypes.MAINTENANCE:
-        return "Maintenance";
-      default:
-        return "";
-    }
-  };
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
   const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
@@ -49,10 +32,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   };
 
   // Dark mode colors
-  const assetCarBgColor = "bg-gray-700";
   const badgeBgColor = "bg-gray-800";
-  const textColor = "text-white";
-  const locationColor = "bg-gray-100";
 
   const assetCardStyle = {
     backgroundColor: props.assetCondition === "INACTIVE" ? "#cdcfd1" : "",
@@ -100,7 +80,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           {props.assetName}
         </h1>
         <div className="flex flex-row items-center">
-          <img src={MapIcon} className="h-6 mr-3 ml-2" />
+          <img src={MapIcon} alt="Show Asset Inactive Status" className="h-6 mr-3 ml-2" />
           {/* <PinIcon /> */}
           <p
             className={`text-sm text-start ${props.assetCondition === "INACTIVE" ? "text-gray-500 dark:text-gray-400" : "text-gray-500 dark:text-gray-300"}  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -58,9 +56,7 @@ const AssetDetails: React.FC<
   assetCondition,
   assetTypeId,
 }) => {
-    const [activeTab, setActiveTab] = useState(0);
-    const navigate = useNavigate();
-    const location = useLocation();
+    // const [, setActiveTab] = useState(0);
     const assetConditions = useAssetCondition();
 
     const getStatusText = (status: string | null) => {

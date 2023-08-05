@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
 
@@ -13,8 +14,10 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
 
+
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
+  const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
   const [locations, setLocations] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -24,6 +27,7 @@ const NavBar = () => {
   const [addLocationForm, setAddLocationForm] = useState(false);
 
   const [, setSessionToken] = useState<string | null>(null);
+
 
   const routePage = useLocation();
 
@@ -67,12 +71,13 @@ const NavBar = () => {
     const checkUser = async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        console.log(userData);
         setUser(userData);
         window.localStorage.setItem(
           "sessionToken",
           userData.signInUserSession.accessToken.jwtToken
         );
+        setAuthToken({"authToken": userData.signInUserSession.accessToken.jwtToken});
+
         setIsLoading(false);
       } catch {
         console.log("Not signed in");
@@ -183,18 +188,18 @@ const NavBar = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="w-6 h-6 m-1"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
                 />
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
                 />
               </svg>

@@ -11,7 +11,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   const assetName = selectedAsset.asset_name;
 
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [, setSessionToken] = useState<string | null>(null);
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
   >([]); //This is because the fetched documents are a mixture from documents and document_types tables

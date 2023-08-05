@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Amplify, Auth, Hub } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import DubeButton from 'components/widgets/Button';
 
 function SignInWithGoogle() {

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-import useAssetTypeNames from "hooks/useAssetTypeNames";
+// import useAssetTypeNames from "hooks/useAssetTypeNames";
 import {
-  Asset,
   AssetLocation,
   AssetPlacement,
   AssetSection,
@@ -30,7 +29,6 @@ import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
-  const assetTypeNames = useAssetTypeNames();
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
