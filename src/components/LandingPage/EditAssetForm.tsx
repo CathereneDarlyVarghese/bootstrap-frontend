@@ -94,10 +94,10 @@ const EditAssetForm = ({
     modified_by: asset.modified_by,
     org_id: null,
     //status_check_enabled: asset.status_check_enabled, CORRECT VERSION
-    status_check_enabled: true,
-    images_id: assetImage,
+    status_check_enabled: asset.status_check_enabled,
+    images_id: asset.images_id,
     // status_check_interval: asset.status_check_interval, CORRECT VERSION
-    status_check_interval: 0,
+    status_check_interval: asset.status_check_interval,
     asset_condition:
       asset.asset_condition === "ACTIVE"
         ? AssetCondition.ACTIVE
@@ -169,10 +169,10 @@ const EditAssetForm = ({
     handleSectionChange();
   }, [formData.asset_section]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmitForm = async (event) => {
     event.preventDefault();
 
-    if(file) {
+    if (file) {
       // Step 1: Upload the file to S3 bucket
       const imageLocation = await uploadFiletoS3(file, "inventory");
       console.log(imageLocation);
@@ -190,12 +190,17 @@ const EditAssetForm = ({
       });
       console.log("return from createFile==>>", createdFile);
       const fileId = String(createdFile);
+
+      setFormData((prevState) => ({
+        ...prevState,
+        images_id: fileId,
+      }));
     }
 
     // Step 3: Update the asset in the backend
     try {
       const updatedAsset = await updateAsset(token, asset.asset_id, formData);
-      console.log("Updated Asset:", updatedAsset);
+      console.log("Updated Asset:", formData);
       toast.success("Asset Edited Successfully", {
         position: "bottom-left",
         autoClose: 5000,
@@ -231,6 +236,21 @@ const EditAssetForm = ({
   useEffect(() => {
     console.log(selectedSectionId);
   }, [selectedSectionId]);
+
+  useEffect(() => {
+    const handleStatusCheckDisabled = () => {
+      if (formData.status_check_enabled === false) {
+        setFormData((prevState) => ({
+          ...prevState,
+          status_check_interval: null,
+          asset_finance_purchase: null,
+          asset_finance_current_value: null,
+        }));
+      }
+    };
+
+    handleStatusCheckDisabled();
+  }, [formData.status_check_enabled]);
 
   // Function to handle adding a section
   const handleAddSection = async () => {
@@ -331,7 +351,7 @@ const EditAssetForm = ({
       />
       <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
-          <form method="post" onSubmit={handleSubmit}>
+          <form method="post" onSubmit={handleSubmitForm}>
             {/* Modal header */}
             <div className="p-5 bg-white dark:bg-gray-700 flex flex-row rounded-xl">
               <h3 className="font-sans font-bold dark:font-semibold text-lg text-blue-800 dark:text-white ">
