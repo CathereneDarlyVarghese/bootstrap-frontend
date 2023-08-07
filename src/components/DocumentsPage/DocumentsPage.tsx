@@ -4,9 +4,10 @@ import { locationAtom, useSyncedAtom } from "store/locationStore";
 import DocumentsCard from "./DocumentsCard";
 import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByLocationIdOnly } from "services/documentServices";
-import { IncomingDocument } from "types";
+import { IncomingDocument, File } from "types";
 import { getFileById } from "services/fileServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQuery } from "react-query";
 
 const DocumentsPage = () => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
@@ -15,6 +16,10 @@ const DocumentsPage = () => {
     IncomingDocument[]
   >([]);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [getResult, setGetResult] = useState<string | null>(null);
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
 
   const defaultDocument = {
     document_id: "",
@@ -40,42 +45,52 @@ const DocumentsPage = () => {
   const [, setFileName] = useState<string>(null);
 
   const selectedLocation = location.locationId;
-  console.log("The selected location (1) ==>>", selectedLocation);
+
+  const { refetch: fetchDocuments } = useQuery<IncomingDocument[], Error>(
+    "query-documents",
+    async () => {
+      return await getDocumentsByLocationIdOnly(
+        authTokenObj.authToken,
+        location.locationId
+      );
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        setIncomingDocuments(res);
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const documentsData = await getDocumentsByLocationIdOnly(
-          authTokenObj.authToken,
-          location.locationId
-        );
-        setIncomingDocuments(documentsData);
-        console.log("The selected location (2) ==>>", selectedLocation);
-        console.log("The fetched documents ==>>", documentsData);
-
-        //Initialising selectedDocument as the first one (to avoid null error)
-        setSelectedDocument(documentsData[0]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     fetchDocuments();
   }, [location]);
 
-  useEffect(() => {
-    const fetchFile = async () => {
-      const fetchedFile = await getFileById(
+  const { refetch: fetchFile } = useQuery<File, Error>(
+    "query-files",
+    async () => {
+      return await getFileById(
         authTokenObj.authToken,
         selectedDocument.file_id
       );
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        const fileName =
+          res.file_array && res.file_array[0] ? res.file_array[0] : "";
+        setFileName(fileName);
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
 
-      setFileName(
-        fetchedFile.file_array && fetchedFile.file_array[0]
-          ? fetchedFile.file_array[0]
-          : ""
-      );
-    };
+  useEffect(() => {
     fetchFile();
   }, [selectedDocument]);
 
