@@ -22,6 +22,7 @@ import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import { File } from "types";
 import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from "react-query";
 
 const DocumentsCard = ({
   documentID,
@@ -50,6 +51,7 @@ const DocumentsCard = ({
   const [replaceFileForm, setReplaceFileForm] = useState(false);
   const [addFileForm, setAddFileForm] = useState(false);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -78,33 +80,18 @@ const DocumentsCard = ({
     fetchDocumentDetails();
   }, []);
 
-  const deleteSelectedDocument = async () => {
-    try {
-      await deleteDocument(authTokenObj.authToken, documentID);
-      toast.success("Document Deleted Successfully!", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } catch (error) {
-      console.log("Failed to delete document: ", error);
-      toast.error("Failed to create document", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+  const deleteSelectedDocument = useMutation(
+    () => deleteDocument(authTokenObj.authToken, documentID),
+    {
+      onSettled: () => {
+        toast.success("Document Deleted Successfully");
+        queryClient.invalidateQueries(["query-documents"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Document");
+      },
     }
-  };
+  );
 
   // Latest Document and Document History Table Data
   const fileArray = documentFile.file_array.slice(0).reverse();
@@ -305,7 +292,7 @@ const DocumentsCard = ({
                         "Are you sure you want to delete this document?"
                       )
                     ) {
-                      deleteSelectedDocument();
+                      deleteSelectedDocument.mutateAsync();
                     }
                     console.log("Delete document button clicked");
                   }}

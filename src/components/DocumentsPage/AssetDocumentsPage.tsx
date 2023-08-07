@@ -5,6 +5,7 @@ import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { IncomingDocument } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQuery } from "react-query";
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
   // const searchParams = new URLSearchParams(location.search);
@@ -16,25 +17,34 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
     IncomingDocument[]
   >([]); //This is because the fetched documents are a mixture from documents and document_types tables
   const [documentID, setDocumentID] = useState(null);
+  const [getResult, setGetResult] = useState<string | null>(null);
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
   const [fileOpen, setFileOpen] = useState(false);
 
   console.log("The selected asset ID (1) ==>>", selectedAssetID);
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const documentsData = await getDocumentsByAssetId(
-          authTokenObj.authToken,
-          selectedAssetID
-        );
-        setIncomingDocuments(documentsData);
-        console.log("The selected asset ID (2) ==>>", selectedAssetID);
-        console.log("The fetched documents ==>>", documentsData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const { refetch: fetchDocuments } = useQuery<IncomingDocument[], Error>(
+    "query-documents",
+    async () => {
+      return await getDocumentsByAssetId(
+        authTokenObj.authToken,
+        selectedAssetID
+      );
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        setIncomingDocuments(res);
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
 
+  useEffect(() => {
     fetchDocuments();
   }, [selectedAssetID]);
 
