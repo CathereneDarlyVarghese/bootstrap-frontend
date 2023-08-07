@@ -10,6 +10,7 @@ import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 import useAssetCondition from "hooks/useAssetCondition";
+import { useMutation, useQueryClient } from "react-query";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -53,6 +54,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   assetTypeId,
 }) => {
   // const [, setActiveTab] = useState(0);
+  const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
 
   const getStatusText = (status: string | null) => {
@@ -78,6 +80,19 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     }
     return "bg-gray-400";
   };
+
+  const deleteAssetMutation = useMutation(
+    () => deleteAsset(sessionToken, assetId),
+    {
+      onSettled: () => {
+        toast.success("Asset Deleted Successfully");
+        queryClient.invalidateQueries(["query-asset"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Document");
+      },
+    }
+  );
 
   const handleToggleAssetCondition = async () => {
     try {
@@ -275,33 +290,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                         "Are you sure you want to delete this asset?"
                       )
                     ) {
-                      console.log("Asset ID ==>> ", assetId);
-                      await deleteAsset(sessionToken, assetId)
-                        .then(() => {
-                          toast("Deleted successfully", {
-                            position: "bottom-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                          });
-                        })
-                        .catch((error) => {
-                          console.error("Error deleting inventory:", error);
-                          toast("Oops, Something went wrong", {
-                            position: "bottom-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                          });
-                        });
+                      deleteAssetMutation.mutateAsync();
                     }
                   }}
                 >
