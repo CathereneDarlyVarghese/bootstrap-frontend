@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { TfiClose } from "react-icons/tfi";
 import { deleteAssetCheck } from "services/assetCheckServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from "react-query";
 
 interface StatusDetailsProps {
   sessionToken: string | null;
@@ -34,20 +34,28 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   closeAsset,
   status_check_data,
 }) => {
-  const [authTokenObj, ] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const queryClient = useQueryClient();
 
+  function camelCaseToNormal(text) {
+    return text
+      .replace(/([A-Z])/g, " $1") // Insert a space before each uppercase letter
+      .replace(/^./, function (str) {
+        return str.toUpperCase();
+      }) // Uppercase the first character of the string
+      .trim(); // Remove any leading spaces
+  }
+
   const assetCheckMutation = useMutation(
-    () =>
-     deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
+    () => deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
     {
       onSettled: () => {
-        toast.success("Asset's Status Check Deleted Successfully")
+        toast.success("Asset's Status Check Deleted Successfully");
         queryClient.invalidateQueries(["query-assetChecks"]);
       },
       onError: (err: any) => {
-        toast.error("Failed to Delete Asset's Status Check")
-      }
+        toast.error("Failed to Delete Asset's Status Check");
+      },
     }
   );
 
@@ -95,17 +103,17 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             </Link> */}
             <AiOutlineDelete
               className="text-red-500 text-xl ml-2 cursor-pointer"
-              onClick={() =>assetCheckMutation.mutate()}
+              onClick={() => assetCheckMutation.mutate()}
             />
           </div>
         </div>
         <div>
           <table>
-           <tbody>
+            <tbody>
               <tr className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
                 <td className="w-24">Modified By</td>
                 <td className="w-5">:</td>
-                <td>{modifiedBy}</td>
+                <td>{modifiedBy ? modifiedBy : "Data Not Available"}</td>
               </tr>
               {status_check_data &&
                 Object.entries(status_check_data).map(([key, value], index) => (
@@ -122,16 +130,17 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
                   //   </div>
 
                   // </div>
-                  <tr key={index} className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
-                    <td>{key}</td>
+                  <tr
+                    key={index}
+                    className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm"
+                  >
+                    <td>{camelCaseToNormal(key)}</td>
                     <td>:</td>
-                    <td>{value}</td>
+                    <td>{value ? value : "Data not available"}</td>
                   </tr>
-
                 ))}
-              </tbody>
+            </tbody>
           </table>
-
         </div>
       </div>
     </div>

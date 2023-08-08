@@ -238,19 +238,25 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 </div>
                 <div>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Section: {sectionName}
+                    Section: {sectionName ? sectionName : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Placement: {placementName}
+                    Placement: {placementName ? placementName : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Purchase Price: {parseInt(purchasePrice)}
+                    Purchase Price:{" "}
+                    {parseInt(purchasePrice)
+                      ? parseInt(purchasePrice)
+                      : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Current Value: {parseInt(currentValue)}
+                    Current Value:{" "}
+                    {parseInt(currentValue)
+                      ? parseInt(currentValue)
+                      : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Notes: {notes}
+                    Notes: {notes ? notes : "Not Available"}
                   </p>
                 </div>
                 {/* <div className="my-2">

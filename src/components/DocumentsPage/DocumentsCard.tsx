@@ -144,7 +144,7 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {startDate.substring(0, 10)}
+                    {startDate ? startDate.substring(0, 10) : "Not Available"}
                   </h1>
                 </div>
               </div>
@@ -157,21 +157,21 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {endDate.substring(0, 10)}
+                    {endDate ? endDate.substring(0, 10) : "Not Available"}
                   </h1>
                 </div>
               </div>
             </div>
             <div className="flex flex-row items-center gap-5">
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
-                {documentName}
+                {documentName ? documentName : "Not Available"}
               </h1>
               <div
                 className={
                   "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
                 }
               >
-                {documentType}
+                {documentType ? documentType : "Not Available"}
               </div>
             </div>
           </div>
@@ -226,7 +226,7 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {startDate.substring(0, 10)}
+                    {startDate ? startDate.substring(0, 10) : "Not Available"}
                   </h1>
                 </div>
               </div>
@@ -239,26 +239,28 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {endDate.substring(0, 10)}
+                    {endDate ? endDate.substring(0, 10) : "Not Available"}
                   </h1>
                 </div>
               </div>
             </div>
             <div className="flex flex-row items-center gap-5">
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
-                {documentName}
+                {documentName ? documentName : "Not Available"}
               </h1>
               <div
                 className={
                   "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
                 }
               >
-                {documentType}
+                {documentType ? documentType : "Not Available"}
               </div>
             </div>
           </div>
           <div className="mt-2">
-            <p className="text-gray-400">{documentDescription}</p>
+            <p className="text-gray-400">
+              {documentDescription ? documentDescription : "Not Available"}
+            </p>
           </div>
           <div className="mt-2 flex flex-row">
             <div className="mr-1">
@@ -266,7 +268,9 @@ const DocumentsCard = ({
                 Note:
               </h1>
               <div>
-                <p className="text-gray-400">{documentNotes}</p>
+                <p className="text-gray-400">
+                  {documentNotes ? documentNotes : "Not Available"}
+                </p>
               </div>
             </div>
             <div className="ml-auto">
