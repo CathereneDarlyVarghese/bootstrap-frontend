@@ -23,9 +23,9 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from "react-query";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
-  const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
@@ -46,7 +46,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
-
+  const queryClient = useQueryClient();
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatus(event.target.value);
   };
@@ -76,6 +76,29 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setFilteredPlacements(placements);
   };
 
+  const assetAddMutation = useMutation(
+    (assetData: any) => createAsset(authTokenObj.authToken, assetData),
+    {
+      onSettled: () => {
+        toast.success("Asset Added Successfully", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setAddAssetOpen(false);
+        queryClient.invalidateQueries(["query-asset"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -87,7 +110,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 2: Create a file in the backend
-    const createdFile = await createFile(token, {
+    const createdFile = await createFile(authTokenObj.authToken, {
       file_id: "",
       file_array: [imageLocation.location],
       modified_by_array: [modifiedBy],
@@ -126,39 +149,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
     // Step 4: Create the asset in the backend
     try {
-      const createdAsset = await createAsset(token, assetData);
-      console.log("Created Asset:", createdAsset);
-      toast.success("Asset Added Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+      assetAddMutation.mutateAsync({
+        assetData,
       });
-      setAddAssetOpen(false);
     } catch (error) {
       console.error("Failed to create asset:", error);
-      toast.error("Failed to create asset", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
     }
   };
-
-  // useEffect hook to retrieve the session token from localStorage
-  useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
-    setToken(data);
-  }, []);
 
   const fetchData = async () => {
     try {
@@ -201,7 +198,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
           location_id: selectedLocation,
         };
         try {
-          const createdSection = await createAssetSection(token, newSection);
+          const createdSection = await createAssetSection(
+            authTokenObj.authToken,
+            newSection
+          );
           console.log("Created Section:", createdSection);
           const updatedSections = [...assetSections, createdSection];
           setAssetSections(updatedSections);
@@ -230,7 +230,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         };
         try {
           const createdPlacement = await createAssetPlacement(
-            token,
+            authTokenObj.authToken,
             newPlacement
           );
           console.log("Created Placement:", createdPlacement);

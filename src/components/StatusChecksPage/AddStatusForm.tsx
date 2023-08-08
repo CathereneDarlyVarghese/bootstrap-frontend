@@ -114,6 +114,7 @@ const AddStatusForm = ({
           theme: "light",
         });
         onStatusAdded();
+        queryClient.invalidateQueries(["query-asset"]);
         queryClient.invalidateQueries(["query-assetChecks"]);
       },
       onError: (err: any) => {

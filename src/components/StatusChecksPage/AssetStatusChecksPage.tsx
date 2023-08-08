@@ -5,7 +5,7 @@ import AddStatusForm from "./AddStatusForm";
 import { getAssetCheckById } from "services/assetCheckServices";
 import { IncomingAssetCheck } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from 'react-query';
+import { useQuery } from "react-query";
 
 interface AssetStatusChecksPageProps {
   sessionToken: string;
@@ -22,7 +22,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   setAssetId,
   assetType,
   assetTypeId,
-  selectedAsset
+  selectedAsset,
 }) => {
   const [, setStatusCheckId] = useState<string | null>(null);
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
@@ -30,7 +30,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     useState<IncomingAssetCheck>();
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [authTokenObj, ] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [getResult, setGetResult] = useState<string | null>(null);
   const formatResponse = (res: any) => {
     return JSON.stringify(res, null, 2);
@@ -44,7 +44,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     setSelectedAssetCheck(selectedAssetCheck);
   };
 
-  const { refetch: getAllAssets } = useQuery<IncomingAssetCheck[], Error>(
+  const { refetch: getAllAssetChecks } = useQuery<IncomingAssetCheck[], Error>(
     "query-assetChecks",
     async () => {
       return await getAssetCheckById(authTokenObj.authToken, assetId);
@@ -61,7 +61,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   );
 
   useEffect(() => {
-    getAllAssets()
+    getAllAssetChecks();
   }, [assetId, authTokenObj.authToken]);
 
   return (
@@ -101,14 +101,15 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
                 <StatusCard
                   status={assetCheck.status_check}
                   date={new Date(assetCheck.modified_date)}
-                  onClick={() => handleStatusCardClick(assetCheck.uptime_check_id)}
+                  onClick={() =>
+                    handleStatusCardClick(assetCheck.uptime_check_id)
+                  }
                   uptime_notes={assetCheck.uptime_notes}
                 />
               ))}
           </div>
         </div>
       )}
-
 
       <div className={`${detailsOpen ? "" : "hidden"}`}>
         {/* Map status details */}

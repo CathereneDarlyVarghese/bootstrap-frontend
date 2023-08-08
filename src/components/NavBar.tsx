@@ -14,7 +14,6 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
 
-
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
@@ -27,7 +26,6 @@ const NavBar = () => {
   const [addLocationForm, setAddLocationForm] = useState(false);
 
   const [, setSessionToken] = useState<string | null>(null);
-
 
   const routePage = useLocation();
 
@@ -74,9 +72,12 @@ const NavBar = () => {
         setUser(userData);
         window.localStorage.setItem(
           "sessionToken",
-          userData.signInUserSession.accessToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken
         );
-        setAuthToken({"authToken": userData.signInUserSession.accessToken.jwtToken});
+        setAuthToken({
+          authToken: userData.signInUserSession.idToken.jwtToken,
+          attributes: userData.attributes,
+        });
 
         setIsLoading(false);
       } catch {
@@ -124,7 +125,7 @@ const NavBar = () => {
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
             <img src={B} alt="Logo I presume" />
-            <img src={ootstrap} alt="Logo I presume"/>
+            <img src={ootstrap} alt="Logo I presume" />
 
             {/* <h1>ootstrap</h1> */}
             {/* Bootstrap */}
@@ -246,7 +247,8 @@ const NavBar = () => {
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div>
-                  <img alt="random avatar"
+                  <img
+                    alt="random avatar"
                     className="rounded-full md:hidden 2xl:block "
                     src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
                   />

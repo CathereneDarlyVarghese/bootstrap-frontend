@@ -11,6 +11,7 @@ import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 import useAssetCondition from "hooks/useAssetCondition";
 import { useMutation, useQueryClient } from "react-query";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -56,6 +57,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   // const [, setActiveTab] = useState(0);
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const getStatusText = (status: string | null) => {
     switch (status) {
@@ -82,7 +84,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   };
 
   const deleteAssetMutation = useMutation(
-    () => deleteAsset(sessionToken, assetId),
+    () => deleteAsset(authTokenObj.authToken, assetId),
     {
       onSettled: () => {
         toast.success("Asset Deleted Successfully");
@@ -296,7 +298,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                         "Are you sure you want to delete this asset?"
                       )
                     ) {
-                      deleteAssetMutation.mutateAsync();
+                      deleteAssetMutation.mutate();
                     }
                   }}
                 >
