@@ -26,6 +26,9 @@ import {
   selectedPlacementNames,
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQuery } from "react-query";
+import { getAsset } from "services/apiServices";
 
 const ListsLayout = () => {
   const navigate = useNavigate();
@@ -44,6 +47,12 @@ const ListsLayout = () => {
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     []
   );
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
+  const [assets, setAssets] = useState<IncomingAsset[]>([]);
+  const [getResult, setGetResult] = useState<string | null>(null);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -53,8 +62,9 @@ const ListsLayout = () => {
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
-  const [selectedAssetSection] =
-    useState<AssetSection>(defaultAssetSections[0]);
+  const [selectedAssetSection] = useState<AssetSection>(
+    defaultAssetSections[0]
+  );
   //active tabs in asset details card
   const [detailsTab, setDetailsTab] = useState(0);
 
@@ -65,17 +75,10 @@ const ListsLayout = () => {
     defaultAssetPlacements
   );
 
-  const [selectedAssetPlacementName] =
-    useState<string>("");
+  const [selectedAssetPlacementName] = useState<string>("");
 
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
-  };
-
-  const refreshAssets = () => {
-    setForceRefresh((prev) => !prev);
-    // setAssetId(null);
-    // Toggle the forceRefresh state to trigger refresh
   };
 
   // function to add and remove class for UI
@@ -87,18 +90,18 @@ const ListsLayout = () => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
-  // const handleSearchInputChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const newSearchTerm = event.target.value;
-  //   setSearchTerm(newSearchTerm);
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
 
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   urlParams.set("search", encodeURIComponent(newSearchTerm));
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("search", encodeURIComponent(newSearchTerm));
 
-  //   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-  //   window.history.pushState({}, "", newUrl);
-  // };
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -141,7 +144,7 @@ const ListsLayout = () => {
   //     if (Notification.permission !== "granted") {
   //       Notification.requestPermission().then((permission) => {
   //         if (permission === "granted") {
-            // console.log("Notification permission granted");
+  // console.log("Notification permission granted");
   //           setNotificationEnabled(true);
   //           // subscribeToPusherChannel();
   //         } else {
@@ -158,89 +161,76 @@ const ListsLayout = () => {
   //   requestNotificationPermission();
   // }, []);
 
-  useEffect(() => {
-    const fetchAssets = async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
-        // console.log("The user data ==>>", userData);
-        // setSessionToken(userData.signInUserSession.idToken.jwtToken);
-        // console.log("Token ==>>", userData.signInUserSession.idToken.jwtToken);
-
-        // Retrieve the location ID from the location state
-        const locationId = location.locationId;
-
-        // Fetch assets based on the selected location ID
-        const assetsData = await getAssets(
-          userData.signInUserSession.idToken.jwtToken,
-          locationId
-        );
-
-        if (Array.isArray(assetsData)) {
-          setIncomingAssets(assetsData);
-        } else if (assetsData) {
-          setIncomingAssets([assetsData]);
+  const { refetch: getAllAssets } = useQuery<IncomingAsset[], Error>(
+    "query-asset",
+    async () => {
+      return await getAssets(authTokenObj.authToken, location.locationId);
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        if (Array.isArray(res)) {
+          setIncomingAssets(res);
+        } else if (res) {
+          setIncomingAssets([res]);
         } else {
           setIncomingAssets([]);
         }
-
-        // console.log("The fetched assets ==>>", assetsData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAssets();
-  }, [location]);
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
 
   useEffect(() => {
-    const fetchAssetSections = async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
+    getAllAssets();
+  }, [location]);
 
-        const fetchedAssetSections = await getAssetSections(
-          userData.signInUserSession.idToken.jwtToken
-        );
-
-        // Filtering fetched Asset Sections on the basis of selected Location
-        const filteredFetchedAssetSections = fetchedAssetSections.filter(
+  const { refetch: fetchAssetSections } = useQuery<AssetSection[], Error>(
+    "query-assetSections",
+    async () => {
+      return await getAssetSections(authTokenObj.authToken);
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        const filteredFetchedAssetSections = res.filter(
           (section: AssetSection) => section.location_id === location.locationId
         );
-
         setAssetSections(filteredFetchedAssetSections);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
+
+  useEffect(() => {
     fetchAssetSections();
   }, [location]);
 
-  // console.log("Selected Asset Section ==>> ", selectedAssetSectionID);
-
-  useEffect(() => {
-    const fetchAssetPlacements = async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
-
-        const fetchedAssetPlacements = await getAssetPlacements(
-          userData.signInUserSession.idToken.jwtToken
-        );
-
-        // Filtering fetched Asset Placements on the basis of selected Location
-        const filteredFetchedAssetPlacements = fetchedAssetPlacements.filter(
+  const { refetch: fetchAssetPlacements } = useQuery<AssetPlacement[], Error>(
+    "query-assetPlacement",
+    async () => {
+      return await getAssetPlacements(authTokenObj.authToken);
+    },
+    {
+      enabled: true,
+      onSuccess: (res) => {
+        const filteredFetchedAssetPlacements = res.filter(
           (placement: AssetPlacement) =>
             placement.location_id === location.locationId
         );
-
-        console.log(
-          "Fetched Asset Placement (Location Filtered) ==>> ",
-          filteredFetchedAssetPlacements
-        );
-
         setAssetPlacements(filteredFetchedAssetPlacements);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      },
+      onError: (err: any) => {
+        setGetResult(formatResponse(err.response?.data || err));
+      },
+    }
+  );
+
+  useEffect(() => {
     fetchAssetPlacements();
   }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
@@ -316,7 +306,7 @@ const ListsLayout = () => {
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
-                      // handleSearchInputChange(e);
+                      handleSearchInputChange(e);
                       setShowOptions(true);
                     }}
                   />
@@ -540,7 +530,6 @@ const ListsLayout = () => {
                 purchasePrice={selectedAsset.asset_finance_purchase}
                 currentValue={selectedAsset.asset_finance_current_value}
                 sessionToken={sessionToken}
-                refreshAssets={refreshAssets}
                 setAssetId={setSelectedAsset}
                 selectedAsset1={selectedAsset}
                 tabIndex={detailsTab}

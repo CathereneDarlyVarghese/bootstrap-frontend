@@ -21,6 +21,8 @@ import EditDocumentsForm from "./EditDocumentsForm";
 import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import { File } from "types";
 import AddNewFileForm from "./AddNewFileForm";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from "react-query";
 
 const DocumentsCard = ({
   documentID,
@@ -36,7 +38,6 @@ const DocumentsCard = ({
   assetID,
   locationID,
 }) => {
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const defaultDocumentFile: File = {
     file_id: "",
     file_array: [],
@@ -49,22 +50,21 @@ const DocumentsCard = ({
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
   const [addFileForm, setAddFileForm] = useState(false);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
       try {
-        const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-
         const fetchedDocumentType = await getDocumentTypeById(
-          userData.signInUserSession.accessToken.jwtToken,
+          authTokenObj.authToken,
           documentTypeID
         );
 
         setDocumentType(fetchedDocumentType.document_type);
 
         const fetchedDocumentFile = await getFileById(
-          userData.signInUserSession.accessToken.jwtToken,
+          authTokenObj.authToken,
           fileID
         );
 
@@ -80,42 +80,18 @@ const DocumentsCard = ({
     fetchDocumentDetails();
   }, []);
 
-  // console.log("Selected Document Type ==>> ", documentType);
-  // console.log("Session Token ==>> ", sessionToken);
-
-  const deleteSelectedDocument = async () => {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      setSessionToken(userData.signInUserSession.accessToken.jwtToken);
-
-      await deleteDocument(
-        userData.signInUserSession.accessToken.jwtToken,
-        documentID
-      );
-      toast.success("Document Deleted Successfully!", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } catch (error) {
-      console.log("Failed to delete document: ", error);
-      toast.error("Failed to create document", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+  const deleteSelectedDocument = useMutation(
+    () => deleteDocument(authTokenObj.authToken, documentID),
+    {
+      onSettled: () => {
+        toast.success("Document Deleted Successfully");
+        queryClient.invalidateQueries(["query-documents"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Document");
+      },
     }
-  };
+  );
 
   // Latest Document and Document History Table Data
   const fileArray = documentFile.file_array.slice(0).reverse();
@@ -316,7 +292,7 @@ const DocumentsCard = ({
                         "Are you sure you want to delete this document?"
                       )
                     ) {
-                      deleteSelectedDocument();
+                      deleteSelectedDocument.mutateAsync();
                     }
                     console.log("Delete document button clicked");
                   }}
@@ -329,7 +305,6 @@ const DocumentsCard = ({
           <div className="mt-4 flex flex-col lg:flex-col gap-5 ">
             <div
               className="flex flex-row gap-2 items-center md:mr-auto lg:w-full"
-
               onClick={() => {
                 console.log("clicked");
               }}
@@ -341,7 +316,7 @@ const DocumentsCard = ({
                 <div className="overflow-x-auto w-full inline-block">
                   <table className="table table-zebra">
                     {/* head */}
-                    <thead >
+                    <thead>
                       <tr>
                         <th>No.</th>
                         <th>File Name</th>
