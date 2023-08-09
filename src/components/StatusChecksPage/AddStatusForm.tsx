@@ -9,74 +9,11 @@ import {
   createAssetCheckForm,
   getAssetCheckFormById,
 } from "services/assetCheckFormServices";
-import { withTheme } from "@rjsf/core";
-import { Theme as AntDTheme } from "@rjsf/antd"; // you can use any other theme you prefer
-import { Auth } from "aws-amplify";
+import Form from "@rjsf/core";
 import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "react-query";
-
-const AddStatusFormSchema = {
-  //DishWasher status check form
-  operational: {
-    "ui:widget": "radio",
-  },
-  clean: {
-    "ui:widget": "radio",
-  },
-  defrost: {
-    "ui:widget": "radio",
-  },
-  condition: {
-    "ui:widget": "radio",
-  },
-  cleanliness: {
-    "ui:widget": "radio",
-  },
-  hygieneCheck: {
-    "ui:widget": "radio",
-  },
-  debrisCheck: {
-    "ui:widget": "radio",
-  },
-  waterPointsCheck: {
-    "ui:widget": "radio",
-  },
-  testRunCheck: {
-    "ui:widget": "radio",
-  },
-
-  // Furniture Status Check
-  upholstery: {
-    "ui:widget": "radio",
-  },
-  stability: {
-    "ui:widget": "radio",
-  },
-
-  // Chiller Status Check
-  freshProduceCheck: {
-    "ui:widget": "radio",
-  },
-  productsLabelledAndDated: {
-    "ui:widget": "radio",
-  },
-  hygieneAndCleanliness: {
-    "ui:widget": "radio",
-  },
-
-  //Wine Chiller Status Check
-  temperatureCheck: {
-    "ui:widget": "radio",
-  },
-  productLabelDateCheck: {
-    "ui:widget": "radio",
-  },
-  cleanlinessCheck: {
-    "ui:widget": "radio",
-  },
-};
 
 const AddStatusForm = ({
   addFormOpen,
@@ -86,7 +23,6 @@ const AddStatusForm = ({
   assetType,
   assetTypeId,
 }) => {
-  const Form = withTheme(AntDTheme);
   const [, setFormDataState] = useState<any>({});
   const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
@@ -103,16 +39,7 @@ const AddStatusForm = ({
     (assetCheck: any) => createAssetCheck(authTokenObj.authToken, assetCheck),
     {
       onSettled: () => {
-        toast.success("Asset Check Added Successfully", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.success("Asset Check Added Successfully");
         onStatusAdded();
         queryClient.invalidateQueries(["query-asset"]);
         queryClient.invalidateQueries(["query-assetChecks"]);
@@ -246,7 +173,6 @@ const AddStatusForm = ({
               <Form
                 schema={jsonForm}
                 validator={validator}
-                uiSchema={AddStatusFormSchema}
                 onSubmit={({ formData }) => {
                   setFormDataState(formData);
                   handleSubmit(formData);

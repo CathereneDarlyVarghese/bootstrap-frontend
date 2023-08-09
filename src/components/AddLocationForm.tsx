@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createAssetLocation } from "../services/locationServices";
-import { Auth } from "aws-amplify";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";

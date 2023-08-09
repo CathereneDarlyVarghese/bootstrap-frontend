@@ -48,6 +48,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
+        console.log("Fetched token==>>", authTokenObj.authToken);
         const assetTypes1 = await getAllAssetTypes(authTokenObj.authToken);
         setAssetTypes(assetTypes1);
       } catch (error) {
@@ -65,7 +66,6 @@ const AdminPage = () => {
           authTokenObj.authToken,
           selectedAssetType
         );
-        console.log("Returned form object:", form); // Debugging line
         setJsonForm(form.form_json); // Adjust this line according to your returned data structure
         handleShow();
       } catch (error) {
@@ -93,9 +93,9 @@ const AdminPage = () => {
 
   return (
     <div className="admin-page flex flex-row">
-      <Helmet>
+      {/* <Helmet>
         <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
-      </Helmet>
+      </Helmet> */}
       <div className="w-1/5 bg-gray-200 h-screen p-5">
         <div className="flex flex-col gap-5 items-start">
           <button
