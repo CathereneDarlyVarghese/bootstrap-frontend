@@ -4,43 +4,34 @@ import { Auth } from "aws-amplify";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from "react-query";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const queryClient = useQueryClient();
 
+  const locationAddMutation = useMutation(
+    (assetLocationObj: any) =>
+      createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    {
+      onSettled: () => {
+        toast.success("Asset Added Successfully");
+        queryClient.invalidateQueries(["query-locations"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      const assetLocationObj: AssetLocation = {
-        location_id: "",
-        location_name: inputLocation,
-      };
-      await createAssetLocation(authTokenObj.authToken, assetLocationObj);
-      toast.success("Location Added Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to Add Location", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
+    const assetLocationObj: AssetLocation = {
+      location_id: "",
+      location_name: inputLocation,
+    };
+    locationAddMutation.mutateAsync(assetLocationObj);
 
     setAddLocationForm(false);
   };
