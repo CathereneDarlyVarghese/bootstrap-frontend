@@ -10,10 +10,13 @@ const QRCodeReader = () => {
     let lastResult;
     let countResults = 0;
 
-
     const html5QrcodeScanner = new Html5QrcodeScanner(
       qrRef.current.id,
-      { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], },
+      {
+        fps: 10,
+        qrbox: 250,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+      },
       false
     );
 
@@ -24,6 +27,14 @@ const QRCodeReader = () => {
           countResults = countResults + 1;
           lastResult = decodedText;
           console.log(`Scan result ${decodedText}`, decodedResult);
+
+          // Redirect to the scanned URL
+          if (
+            decodedText.startsWith("http://") ||
+            decodedText.startsWith("https://")
+          ) {
+            window.location.href = decodedText;
+          }
         }
       },
       (errorMessage) => {

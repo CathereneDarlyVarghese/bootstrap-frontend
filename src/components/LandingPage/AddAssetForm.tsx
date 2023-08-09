@@ -157,14 +157,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const fetchData = async () => {
     try {
-      const accessToken = window.localStorage.getItem("sessionToken");
+      const locations =
+        queryClient.getQueryData<AssetLocation[]>("query-locations");
+      const sections = queryClient.getQueryData<AssetSection[]>(
+        "query-assetSections"
+      );
+      const placements = queryClient.getQueryData<AssetPlacement[]>(
+        "query-assetPlacement"
+      );
 
-      const [types, locations, placements, sections] = await Promise.all([
-        getAllAssetTypes(accessToken),
-        getAllAssetLocations(accessToken),
-        getAssetPlacements(accessToken),
-        getAssetSections(accessToken),
-      ]);
+      const types = await getAllAssetTypes(authTokenObj.authToken);
 
       setAssetTypes(types);
       setLocations(locations);
