@@ -149,9 +149,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
     // Step 4: Create the asset in the backend
     try {
-      assetAddMutation.mutateAsync({
-        assetData,
-      });
+      assetAddMutation.mutateAsync(assetData);
     } catch (error) {
       console.error("Failed to create asset:", error);
     }
