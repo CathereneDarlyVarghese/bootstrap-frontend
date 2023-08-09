@@ -13,18 +13,22 @@ import ScanButton from "./widgets/ScanButton";
 import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { useQuery } from "react-query";
+import { AssetLocation } from "types";
 
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
   const [locations, setLocations] = useState(null);
-
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
-
+  const [getResult, setGetResult] = useState<string | null>(null);
   const [, setSessionToken] = useState<string | null>(null);
 
   const routePage = useLocation();
@@ -88,14 +92,17 @@ const NavBar = () => {
     checkUser();
   }, []);
 
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
-        setSessionToken(userData.signInUserSession.idToken.jwtToken);
-        const locationData = await getAllAssetLocations(
-          userData.signInUserSession.idToken.jwtToken
-        );
+  const { refetch: fetchLocations } = useQuery<AssetLocation[], Error>(
+    "query-locations",
+    async () => {
+      const userData = await Auth.currentAuthenticatedUser();
+      return await getAllAssetLocations(
+        userData.signInUserSession.idToken.jwtToken
+      );
+    },
+    {
+      enabled: true,
+      onSuccess: (locationData) => {
         setLocations(locationData);
         if (locationData.length > 0) {
           setLocation({
@@ -103,14 +110,16 @@ const NavBar = () => {
             locationId: locationData[0].location_id,
           });
         }
-        console.log("locations fetched", locationData);
-      } catch (error) {
+      },
+      onError: (error: any) => {
         console.log(error);
-      }
-    };
+      },
+    }
+  );
 
-    fetchLocations();
-  }, []);
+  // useEffect(() => {
+  //   fetchLocations();
+  // }, []);
 
   return (
     <>
@@ -294,7 +303,7 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    href="/location"
+                    // href="/location"
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                     onClick={() => {
                       setAddLocationForm(true);
