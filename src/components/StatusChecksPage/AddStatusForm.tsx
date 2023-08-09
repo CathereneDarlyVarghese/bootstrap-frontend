@@ -24,7 +24,6 @@ const AddStatusForm = ({
   assetTypeId,
 }) => {
   const [, setFormDataState] = useState<any>({});
-  const [reportIssue, setReportIssue] = useState(false);
   const [jsonForm, setJsonForm] = useState(null);
   const now = new Date();
   // const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -86,54 +85,24 @@ const AddStatusForm = ({
 
   const handleSubmit = async (formData: any) => {
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
-    if (reportIssue) {
-      try {
-        const imageLocation = await uploadFiletoS3(file, "assetCheck");
-        const modifiedBy = authTokenObj.attributes.given_name;
-        const modifiedDate = new Date().toISOString().substring(0, 10);
 
-        const createdFile = await createFile(authTokenObj.authToken, {
-          file_id: "",
-          file_array: [imageLocation.location],
-          modified_by_array: [modifiedBy],
-          modified_date_array: [modifiedDate],
-        });
+    console.log("Modified by==>", authTokenObj.attributes.given_name);
+    const assetCheck = {
+      uptime_check_id: "",
+      asset_id: assetId,
+      status_check: statusUUID,
+      file_id: null,
+      uptime_notes: null,
+      modified_by: authTokenObj.attributes.given_name,
+      modified_date: new Date(),
+      status_check_data: JSON.parse(JSON.stringify(formData)),
+    };
 
-        const assetCheck = {
-          uptime_check_id: "",
-          asset_id: assetId,
-          status_check: statusUUID,
-          file_id: String(createdFile),
-          uptime_notes: formData.uptime_notes as string,
-          modified_by: name,
-          modified_date: new Date(),
-          status_check_data: JSON.parse(JSON.stringify(formData)),
-        };
-
-        // Add inventory using the API service
-        assetCheckAddMutation.mutateAsync(assetCheck);
-      } catch (error) {
-        toast.error("Failed to add asset");
-      }
-    } else {
-      // Case when there is no issue
-      const assetCheck = {
-        uptime_check_id: "",
-        asset_id: assetId,
-        status_check: statusUUID,
-        file_id: null,
-        uptime_notes: null,
-        modified_by: name,
-        modified_date: new Date(),
-        status_check_data: JSON.parse(JSON.stringify(formData)),
-      };
-
-      try {
-        // Add inventory using the API service
-        assetCheckAddMutation.mutateAsync(assetCheck);
-      } catch (error) {
-        toast.error("Failed to add asset");
-      }
+    try {
+      // Add inventory using the API service
+      assetCheckAddMutation.mutateAsync(assetCheck);
+    } catch (error) {
+      toast.error("Failed to add asset");
     }
 
     // Log the form submission
@@ -177,7 +146,6 @@ const AddStatusForm = ({
                   setFormDataState(formData);
                   handleSubmit(formData);
                   setAddFormOpen(false);
-                  setReportIssue(false);
                 }}
               />
             )}

@@ -161,9 +161,6 @@ export const FilterOptions = ({
           const fetchedPlacements = await getAssetPlacements(
             authTokenObj.authToken
           );
-
-          console.log("Fetched Placements", fetchedPlacements, placements);
-
           if (placements.length === 0) {
             placements = fetchedPlacements;
           }

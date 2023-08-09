@@ -48,7 +48,6 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        console.log("Fetched token==>>", authTokenObj.authToken);
         const assetTypes1 = await getAllAssetTypes(authTokenObj.authToken);
         setAssetTypes(assetTypes1);
       } catch (error) {
