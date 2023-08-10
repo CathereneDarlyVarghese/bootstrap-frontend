@@ -46,8 +46,11 @@ const DocumentsPage = () => {
 
   const selectedLocation = location.locationId;
 
-  const { refetch: fetchDocuments } = useQuery<IncomingDocument[], Error>(
-    "query-documents",
+  const { refetch: fetchDocumentsByLocation } = useQuery<
+    IncomingDocument[],
+    Error
+  >(
+    "query-documentsbyLocationId",
     async () => {
       return await getDocumentsByLocationIdOnly(
         authTokenObj.authToken,
@@ -66,7 +69,7 @@ const DocumentsPage = () => {
   );
 
   useEffect(() => {
-    fetchDocuments();
+    fetchDocumentsByLocation();
   }, [location]);
 
   const { refetch: fetchFile } = useQuery<File, Error>(

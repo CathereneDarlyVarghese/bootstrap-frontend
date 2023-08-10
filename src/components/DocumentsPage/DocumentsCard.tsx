@@ -85,7 +85,9 @@ const DocumentsCard = ({
     {
       onSettled: () => {
         toast.success("Document Deleted Successfully");
-        queryClient.invalidateQueries(["query-documents"]);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["query-documentsByAssetId"]);
       },
       onError: (err: any) => {
         toast.error("Failed to Delete Document");
