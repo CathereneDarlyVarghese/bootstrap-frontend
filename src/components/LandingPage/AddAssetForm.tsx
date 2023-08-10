@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-// import useAssetTypeNames from "hooks/useAssetTypeNames";
 import { AssetLocation, AssetPlacement, AssetSection, AssetType } from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
@@ -23,30 +22,48 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
+  // ====== State Declarations ======
+  // Asset Attributes
   const [file, setFile] = useState<File>();
-  const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
-  const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
-  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedSection, setSelectedSection] = useState<string>("");
   const [selectedPlacement, setSelectedPlacement] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [selectedCondition, setSelectedCondition] = useState<string>("");
+  const [addSection, setAddSection] = useState(false);
+  const [addPlacement, setAddPlacement] = useState(false);
+
+  // Asset Collections
+  const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
+  const [locations, setLocations] = useState<AssetLocation[]>([]);
+  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
   >([]);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [addSection, setAddSection] = useState(false);
-  const [addPlacement, setAddPlacement] = useState(false);
-  const [selectedCondition, setSelectedCondition] = useState("");
+
+  // Auth
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
+  // Static Data
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
+
+  // Hooks & External Services
   const queryClient = useQueryClient();
+
+  // ====== Effects ======
+
+  // Initial data fetching
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // ====== Helpers & Handlers ======
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatus(event.target.value);
   };
@@ -62,50 +79,39 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       (section) => section.location_id === locationId
     );
     setFilteredSections(sections);
-    // Reset selected section and filtered placements
     setSelectedSection("");
     setFilteredPlacements([]);
   };
 
   const handleSectionChange = (sectionId: string) => {
     setSelectedSection(sectionId);
-    // Filter placements based on the selected section
     const placements = assetPlacements.filter(
       (placement) => placement.section_id === sectionId
     );
     setFilteredPlacements(placements);
   };
 
-  const assetAddMutation = useMutation(
-    (assetData: any) => createAsset(authTokenObj.authToken, assetData),
-    {
-      onSettled: () => {
-        toast.success("Asset Added Successfully", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setAddAssetOpen(false);
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
+  // Logic for fetching initial data
+  const fetchData = async () => {
+    try {
+      const locations =
+        queryClient.getQueryData<AssetLocation[]>("query-locations");
+      const types = await getAllAssetTypes(authTokenObj.authToken);
+      fetchAssetPlacements();
+      fetchAssetSections();
+      setAssetTypes(types);
+      setLocations(locations);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
     }
-  );
+  };
 
+  // Form submission handler
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Step 1: Upload the file to S3 bucket
     const imageLocation = await uploadFiletoS3(file, "inventory");
-    console.log(imageLocation);
-
     const modifiedBy = authTokenObj.attributes.given_name;
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
@@ -116,14 +122,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       modified_by_array: [modifiedBy],
       modified_date_array: [modifiedDate],
     });
-    console.log("return from createFile==>>", createdFile);
     const fileId = String(createdFile);
 
     // Step 3: Prepare the asset data
     const formData = new FormData(event.target);
 
     //
-    console.log("Name from form ==>>", formData.get("name"));
 
     const assetData = {
       asset_id: null,
@@ -155,71 +159,28 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const locations =
-        queryClient.getQueryData<AssetLocation[]>("query-locations");
-      const sections = queryClient.getQueryData<AssetSection[]>(
-        "query-assetSections"
-      );
-      const placements = queryClient.getQueryData<AssetPlacement[]>(
-        "query-assetPlacement"
-      );
-
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-
-      setAssetTypes(types);
-      setLocations(locations);
-      setAssetPlacements(placements);
-      setAssetSections(sections);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
-
-  useEffect(() => {
-    console.log(selectedSection);
-  }, [selectedSection]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   // Function to handle adding a section
-  const handleAddSection = async () => {
-    // event.preventDefault();
-    console.log("inside handleAddSection");
+  const handleAddSection = async (e) => {
+    e.preventDefault();
     if (selectedLocation) {
-      console.log("Section submitted==>", selectedSection);
-      if (selectedSection) {
-        const newSection: AssetSection = {
-          section_id: "",
-          section_name: selectedSection,
-          location_id: selectedLocation,
-        };
-        try {
-          const createdSection = await createAssetSection(
-            authTokenObj.authToken,
-            newSection
-          );
-          console.log("Created Section:", createdSection);
-          const updatedSections = [...assetSections, createdSection];
-          setAssetSections(updatedSections);
-          setFilteredSections(updatedSections);
-
-          // Fetch updated data and call handleLocationChange
-          fetchData();
-          handleLocationChange(selectedLocation);
-        } catch (error) {
-          console.error("Failed to create section:", error);
-        }
+      const newSection: AssetSection = {
+        section_id: "",
+        section_name: selectedSection,
+        location_id: selectedLocation,
+      };
+      try {
+        sectionAddMutation.mutateAsync(newSection);
+        console.log("New location added:", selectedLocation);
+      } catch (error) {
+        console.error("Failed to create section:", error);
       }
     } else {
       alert("Please select a location first.");
     }
   };
 
-  const handleAddPlacement = async () => {
+  const handleAddPlacement = async (e) => {
+    e.preventDefault();
     if (selectedLocation && selectedSection) {
       if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
@@ -229,23 +190,15 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
           location_id: selectedLocation,
         };
         try {
-          const createdPlacement = await createAssetPlacement(
-            authTokenObj.authToken,
-            newPlacement
-          );
-          console.log("Created Placement:", createdPlacement);
-          const updatedPlacements = [...assetPlacements, createdPlacement];
-          setAssetPlacements(updatedPlacements);
+          placementAddMutation.mutate(newPlacement);
+          // const updatedPlacements = [...assetPlacements, newPlacement];
+          // setAssetPlacements(updatedPlacements);
 
-          // Update filtered placements
-          const filteredPlacements = updatedPlacements.filter(
-            (placement) => placement.section_id === selectedSection
-          );
-          setFilteredPlacements(filteredPlacements);
-
-          // Fetch updated data and call handleSectionChange
-          fetchData();
-          handleSectionChange(selectedSection);
+          // // Update filtered placements
+          // const filteredPlacements = updatedPlacements.filter(
+          //   (placement) => placement.section_id === selectedSection
+          // );
+          // setFilteredPlacements(filteredPlacements);
         } catch (error) {
           console.error("Failed to create placement:", error);
         }
@@ -254,6 +207,90 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       alert("Please select a location and section first.");
     }
   };
+
+  // ====== Data Fetching using useQuery ======
+  const { data: assetSectionsData, refetch: fetchAssetSections } = useQuery<
+    AssetSection[],
+    Error
+  >("query-assetSectionsForm", () => getAssetSections(authTokenObj.authToken), {
+    onSuccess: (res) => {
+      setAssetSections(res);
+      const sections = res.filter(
+        (section) => section.location_id === selectedLocation
+      );
+      setFilteredSections(sections);
+    },
+    onError: (err: any) => {
+      console.log(err);
+    },
+  });
+
+  const { data: assetPlacementsData, refetch: fetchAssetPlacements } = useQuery<
+    AssetPlacement[],
+    Error
+  >(
+    "query-assetPlacementsForm",
+    () => getAssetPlacements(authTokenObj.authToken),
+    {
+      onSuccess: (res) => {
+        setAssetPlacements(res);
+        const placements = res.filter(
+          (placements) => placements.location_id === selectedLocation
+        );
+        setFilteredPlacements(placements);
+      },
+      onError: (err: any) => {
+        console.log(err);
+      },
+    }
+  );
+
+  // ====== Mutations ======
+  const assetAddMutation = useMutation(
+    (assetData: any) => createAsset(authTokenObj.authToken, assetData),
+    {
+      onSettled: () => {
+        toast.success("Asset Added Successfully");
+        setAddAssetOpen(false);
+        queryClient.invalidateQueries(["query-asset"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
+
+  const sectionAddMutation = useMutation(
+    (newSection: AssetSection) =>
+      createAssetSection(authTokenObj.authToken, newSection),
+    {
+      onSettled: () => {
+        toast.success("Section Added Successfully");
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["query-assetSectionsForm"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
+
+  const placementAddMutation = useMutation(
+    (newPlacement: AssetPlacement) =>
+      createAssetPlacement(authTokenObj.authToken, newPlacement),
+    {
+      onSettled: () => {
+        toast.success("Placement Added Successfully");
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
 
   // Function to close the add asset form
   const closeAddForm = () => {
@@ -456,7 +493,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       <select
                         required
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                        onChange={(e) => handleSectionChange(e.target.value)}
+                        onChange={(e) => {
+                          handleSectionChange(e.target.value);
+                        }}
                         value={selectedSection}
                       >
                         <option value="" disabled hidden>
@@ -568,135 +607,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </select>
               </div>
 
-              {/* Adding Section Modal */}
-              <input
-                type="checkbox"
-                checked={addSection}
-                id="my_modal_6"
-                className="modal-toggle"
-              />
-              <div id="addSectionModal" className="modal ">
-                <div className="modal-box bg-white dark:bg-gray-800">
-                  {selectedLocation && (
-                    <form>
-                      <div className="flex flex-row mb-5">
-                        <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                          Add Section
-                        </h3>
-                        <button
-                          className="ml-auto"
-                          type="button"
-                          onClick={() => {
-                            setAddSection(false);
-                          }}
-                        >
-                          <TfiClose className="font-bold text-black dark:text-white" />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                          New Section Name
-                        </label>
-                        <input
-                          type="text"
-                          name="section"
-                          required
-                          onChange={(e) => setSelectedSection(e.target.value)}
-                          className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                        />
-                      </div>
-
-                      <div className="w-full mt-4 flex justify-center">
-                        <button
-                          onClick={() => {
-                            handleAddSection();
-                            setAddSection(false);
-                          }}
-                          type="button"
-                          className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
-                    // <form>
-                    //   <input
-                    //     type="text"
-                    //     name="section"
-                    //     required
-                    //     onChange={(e) => setSelectedSection(e.target.value)}
-                    //   />
-                    // <button
-                    //   onClick={() => {
-                    //     handleAddSection();
-                    //     setAddSection(false);
-                    //   }}
-                    //   type="button"
-                    // >
-                    //   Submit now
-                    // </button>
-                    // </form>
-                  )}
-                </div>
-              </div>
-
-              {/* adding placement Modal */}
-              <input
-                type="checkbox"
-                checked={addPlacement}
-                id="my_modal_6"
-                className="modal-toggle"
-              />
-              <div id="addPlacementModal" className="modal ">
-                <div className="modal-box bg-white dark:bg-gray-800">
-                  {selectedSection && (
-                    <form>
-                      <div className="flex flex-row mb-5">
-                        <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
-                          Add Placement
-                        </h3>
-                        <button
-                          className="ml-auto"
-                          type="button"
-                          onClick={() => {
-                            setAddPlacement(false);
-                          }}
-                        >
-                          <TfiClose className="font-bold text-black dark:text-white" />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                          New Placement Name
-                        </label>
-                        <input
-                          type="text"
-                          name="placement"
-                          required
-                          onChange={(e) => setSelectedPlacement(e.target.value)}
-                          className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
-                        />
-                      </div>
-
-                      <div className="w-full mt-4 flex justify-center">
-                        <button
-                          onClick={() => {
-                            handleAddPlacement();
-                            setAddPlacement(false);
-                          }}
-                          type="button"
-                          className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-              </div>
-
               {/* Toggle for status check enabled */}
               <div className="flex items-center my-1">
                 <label
@@ -768,9 +678,122 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               </div>
             </div>
           </form>
-          <div>
-            <AddSectionModal />
+
+          {/* adding placement Modal */}
+          <input
+            type="checkbox"
+            checked={addPlacement}
+            id="my_modal_6"
+            className="modal-toggle"
+          />
+          <div id="addPlacementModal" className="modal ">
+            <div className="modal-box bg-white dark:bg-gray-800">
+              {selectedSection && (
+                <form>
+                  <div className="flex flex-row mb-5">
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                      Add Placement
+                    </h3>
+                    <button
+                      className="ml-auto"
+                      type="button"
+                      onClick={() => {
+                        setAddPlacement(false);
+                      }}
+                    >
+                      <TfiClose className="font-bold text-black dark:text-white" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                      New Placement Name
+                    </label>
+                    <input
+                      type="text"
+                      name="placement"
+                      required
+                      onChange={(e) => setSelectedPlacement(e.target.value)}
+                      className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                    />
+                  </div>
+
+                  <div className="w-full mt-4 flex justify-center">
+                    <button
+                      onClick={(e) => {
+                        handleAddPlacement(e);
+                        setAddPlacement(false);
+                      }}
+                      type="button"
+                      className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
+
+          {/* Adding Section Modal */}
+          <input
+            type="checkbox"
+            checked={addSection}
+            id="my_modal_6"
+            className="modal-toggle"
+          />
+          <div id="addSectionModal" className="modal ">
+            <div className="modal-box bg-white dark:bg-gray-800">
+              {selectedLocation && (
+                <form>
+                  <div className="flex flex-row mb-5">
+                    <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
+                      Add Section
+                    </h3>
+                    <button
+                      className="ml-auto"
+                      type="button"
+                      onClick={() => {
+                        setAddSection(false);
+                      }}
+                    >
+                      <TfiClose className="font-bold text-black dark:text-white" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                      New Section Name
+                    </label>
+                    <input
+                      type="text"
+                      name="section"
+                      required
+                      onChange={(e) => setSelectedSection(e.target.value)}
+                      className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                    />
+                  </div>
+
+                  <div className="w-full mt-4 flex justify-center">
+                    <button
+                      onClick={(e) => {
+                        handleAddSection(e);
+                        setAddSection(false);
+                      }}
+                      type="button"
+                      className="btn btn-sm bg-blue-900 hover:bg-blue-900 mx-auto"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+
+          {/* <div>
+            <AddSectionModal />
+          </div> */}
         </div>
       </div>
     </>

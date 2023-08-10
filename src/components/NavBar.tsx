@@ -179,7 +179,7 @@ const NavBar = () => {
         </div>
 
         <div className="flex-none gap-5 md:gap-2 ">
-          {/* Location Button */}
+          {/* Scan Button */}
           {user && (
             <ScanButton
               onClick={() => {
@@ -303,7 +303,6 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    // href="/location"
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                     onClick={() => {
                       setAddLocationForm(true);
