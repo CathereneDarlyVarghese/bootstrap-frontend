@@ -63,7 +63,7 @@ const AddDocumentsForm = ({
       onSuccess: (res) => {
         console.log("Return from createDocument ==>> ", res);
         queryClient.invalidateQueries(["query-documentsByAssetId"]);
-        queryClient.invalidateQueries(["query-documentsByLocationId"]);
+        queryClient.invalidateQueries(["query-documentsbyLocationId"]);
       },
       onError: (err: any) => {
         toast.error("Failed to Delete Asset");
