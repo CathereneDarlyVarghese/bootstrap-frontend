@@ -92,7 +92,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
         queryClient.invalidateQueries(["query-asset"]);
       },
       onError: (err: any) => {
-        toast.error("Failed to Delete Document");
+        toast.error("Failed to Delete Asset");
       },
     }
   );

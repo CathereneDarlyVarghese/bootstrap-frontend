@@ -170,7 +170,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       };
       try {
         sectionAddMutation.mutateAsync(newSection);
-        console.log("New location added:", selectedLocation);
       } catch (error) {
         console.error("Failed to create section:", error);
       }
@@ -191,14 +190,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         };
         try {
           placementAddMutation.mutate(newPlacement);
-          // const updatedPlacements = [...assetPlacements, newPlacement];
-          // setAssetPlacements(updatedPlacements);
-
-          // // Update filtered placements
-          // const filteredPlacements = updatedPlacements.filter(
-          //   (placement) => placement.section_id === selectedSection
-          // );
-          // setFilteredPlacements(filteredPlacements);
         } catch (error) {
           console.error("Failed to create placement:", error);
         }

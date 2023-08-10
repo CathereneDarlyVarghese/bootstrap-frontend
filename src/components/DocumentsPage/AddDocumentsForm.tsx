@@ -8,6 +8,7 @@ import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useMutation, useQueryClient } from "react-query";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -18,6 +19,7 @@ const AddDocumentsForm = ({
   const [file, setFile] = useState<any>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
+  const queryClient = useQueryClient();
 
   const defaultFormData = {
     documentName: "",
@@ -49,6 +51,24 @@ const AddDocumentsForm = ({
       [e.target.id]: e.target.value,
     }));
   };
+
+  const documentAddMutation = useMutation(
+    (documentData: Document) =>
+      createDocument(authTokenObj.authToken, documentData),
+    {
+      onSettled: () => {
+        toast.success("Document Added Successfully");
+        setAddDocumentsOpen(false);
+      },
+      onSuccess: (res) => {
+        console.log("Return from createDocument ==>> ", res);
+        queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to Delete Asset");
+      },
+    }
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -101,34 +121,10 @@ const AddDocumentsForm = ({
 
     // Step 4: Create the document in the backend
     try {
-      const createdDocument = await createDocument(
-        authTokenObj.authToken,
-        documentData
-      );
-      console.log("Created Document:", createdDocument);
-      toast.success("Document Added Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setAddDocumentsOpen(false);
+      documentAddMutation.mutateAsync(documentData);
     } catch (error) {
       console.error("Failed to create document:", error);
-      toast.error("Failed to create document", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Failed to create document");
     }
 
     setFormData(defaultFormData);

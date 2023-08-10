@@ -25,8 +25,8 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
 
   console.log("The selected asset ID (1) ==>>", selectedAssetID);
 
-  const { refetch: fetchDocuments } = useQuery<IncomingDocument[], Error>(
-    "query-documents",
+  const { refetch: fetchDocumentsById } = useQuery<IncomingDocument[], Error>(
+    "query-documentsByAssetId",
     async () => {
       return await getDocumentsByAssetId(
         authTokenObj.authToken,
@@ -45,7 +45,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   );
 
   useEffect(() => {
-    fetchDocuments();
+    fetchDocumentsById();
   }, [selectedAssetID]);
 
   return (
