@@ -3,7 +3,7 @@ import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { AssetCondition, StatusTypes } from "enums";
-import { IncomingAsset } from "types";
+import { Asset, IncomingAsset } from "types";
 import { deleteAsset, toggleAssetCondition } from "services/assetServices";
 
 import { TfiClose } from "react-icons/tfi";
@@ -97,28 +97,49 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     }
   );
 
-  const handleToggleAssetCondition = async () => {
-    try {
-      const toggledAssetCondition =
-        assetCondition === assetConditions[AssetCondition.ACTIVE]
-          ? assetConditions[AssetCondition.INACTIVE]
-          : assetConditions[AssetCondition.ACTIVE];
-
-      await toggleAssetCondition(sessionToken, assetId, toggledAssetCondition);
-    } catch (error) {
-      console.error("Error toggling asset condition:", error);
-      toast("Oops, Something went wrong", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+  const handleToggleAssetCondition = useMutation(
+    (assetCondition: string) => {
+      if (assetCondition === assetConditions[AssetCondition.ACTIVE]) {
+        return toggleAssetCondition(
+          authTokenObj.authToken,
+          assetId,
+          assetConditions[AssetCondition.INACTIVE]
+        );
+      } else {
+        return toggleAssetCondition(
+          authTokenObj.authToken,
+          assetId,
+          assetConditions[AssetCondition.ACTIVE]
+        );
+      }
+    },
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(["query-asset"]);
+      },
+      onError: (err: any) => {
+        toast.error("Failed to toggle asset condition");
+      },
     }
-  };
+  );
+
+  // const handleToggleAssetCondition = async () => {
+  //   try {
+  //     const toggledAssetCondition =
+  //       assetCondition === assetConditions[AssetCondition.ACTIVE]
+  //         ? assetConditions[AssetCondition.INACTIVE]
+  //         : assetConditions[AssetCondition.ACTIVE];
+
+  //     await toggleAssetCondition(
+  //       authTokenObj.authToken,
+  //       assetId,
+  //       toggledAssetCondition
+  //     );
+  //   } catch (error) {
+  //     console.error("Error toggling asset condition:", error);
+  //     toast("Oops, Something went wrong");
+  //   }
+  // };
 
   return (
     <>
@@ -278,10 +299,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 <button
                   className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                   onClick={() => {
-                    handleToggleAssetCondition();
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, 1000);
+                    handleToggleAssetCondition.mutate(assetCondition);
+                    // setTimeout(() => {
+                    //   window.location.reload();
+                    // }, 1000);
                   }}
                 >
                   {assetCondition === assetConditions[AssetCondition.ACTIVE]
