@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
@@ -19,7 +19,7 @@ import { AssetLocation } from "types";
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
-  const [locations, setLocations] = useState(null);
+  const [locations, setLocations] = useState<AssetLocation[]>([]);
   const formatResponse = (res: any) => {
     return JSON.stringify(res, null, 2);
   };
@@ -104,11 +104,15 @@ const NavBar = () => {
       enabled: true,
       onSuccess: (locationData) => {
         setLocations(locationData);
-        if (locationData.length > 0) {
-          setLocation({
-            locationName: locationData[0].location_name,
-            locationId: locationData[0].location_id,
-          });
+        console.log("locationData", locationData);
+        if (!location.locationId) {
+          if (locationData.length > 0) {
+            console.log("location is empty but data is there", locationData);
+            setLocation({
+              locationName: locationData[0].location_name,
+              locationId: locationData[0].location_id,
+            });
+          }
         }
       },
       onError: (error: any) => {
@@ -116,6 +120,27 @@ const NavBar = () => {
       },
     }
   );
+
+  if (location.locationName === "" && location.locationId === "") {
+    fetchLocations();
+  }
+
+  const mountCount = useRef(0);
+
+  useEffect(() => {
+    mountCount.current += 1;
+    console.log("mountCount", mountCount.current);
+    // Skip the effect for the first two renders
+    if (mountCount.current <= 2) {
+      return;
+    }
+
+    // Storing location to local storage when it changes (but not on the first two mounts)
+    if (location) {
+      window.localStorage.setItem("location", JSON.stringify(location));
+      console.log("location stored", location);
+    }
+  }, [location]);
 
   // useEffect(() => {
   //   fetchLocations();
@@ -214,7 +239,9 @@ const NavBar = () => {
                 />
               </svg>
               <div className="md:hidden">
-                {locations ? location.locationName : "No Locations"}
+                {location.locationName != ""
+                  ? location.locationName
+                  : "Not Selected"}
               </div>
               <svg
                 className="fill-current"
