@@ -164,10 +164,11 @@ const ListsLayout = () => {
   const { refetch: getAllAssets } = useQuery<IncomingAsset[], Error>(
     "query-asset",
     async () => {
-      return await getAssets(authTokenObj.authToken, location.locationId);
+      if (location.locationId != "")
+        return await getAssets(authTokenObj.authToken, location.locationId);
     },
     {
-      enabled: true,
+      enabled: Boolean(authTokenObj.authToken && location?.locationId),
       onSuccess: (res) => {
         if (Array.isArray(res)) {
           setIncomingAssets(res);
@@ -184,8 +185,10 @@ const ListsLayout = () => {
   );
 
   useEffect(() => {
-    getAllAssets();
-  }, [location]);
+    if (authTokenObj?.authToken) {
+      getAllAssets();
+    }
+  }, [location, authTokenObj.authToken]);
 
   const { refetch: fetchAssetSections } = useQuery<AssetSection[], Error>(
     "query-assetSections",
@@ -353,30 +356,31 @@ const ListsLayout = () => {
               <div
                 className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}
               >
-                {incomingAssets
-                  .filter((a) => {
-                    const SearchTermMatch =
-                      a.asset_name
-                        .toLowerCase()
-                        .startsWith(searchTerm.toLowerCase()) &&
-                      searchTerm !== "";
+                {incomingAssets &&
+                  incomingAssets
+                    .filter((a) => {
+                      const SearchTermMatch =
+                        a.asset_name
+                          .toLowerCase()
+                          .startsWith(searchTerm.toLowerCase()) &&
+                        searchTerm !== "";
 
-                    return SearchTermMatch;
-                  })
-                  .slice(0, 5)
-                  .map((asset) => (
-                    <div
-                      className="bg-gray-100 hover:bg-gray-300"
-                      onClick={() => {
-                        setSearchTerm(asset.asset_name);
-                        setShowOptions(false);
-                      }}
-                    >
-                      <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
-                        {asset.asset_name}
-                      </p>
-                    </div>
-                  ))}
+                      return SearchTermMatch;
+                    })
+                    .slice(0, 5)
+                    .map((asset) => (
+                      <div
+                        className="bg-gray-100 hover:bg-gray-300"
+                        onClick={() => {
+                          setSearchTerm(asset.asset_name);
+                          setShowOptions(false);
+                        }}
+                      >
+                        <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
+                          {asset.asset_name}
+                        </p>
+                      </div>
+                    ))}
               </div>
             </div>
           </div>
@@ -394,13 +398,16 @@ const ListsLayout = () => {
                 className="select select-sm bg-white dark:bg-gray-700 text-black dark:text-white border border-slate-300 dark:border-slate-600 w-8/12"
               >
                 <option value="">All Sections</option>
-                {assetSections
-                  .sort((a, b) => a.section_name.localeCompare(b.section_name))
-                  .map((section: AssetSection, index: number) => (
-                    <option key={index} value={section.section_name}>
-                      {section.section_name}
-                    </option>
-                  ))}
+                {assetSections &&
+                  assetSections
+                    .sort((a, b) =>
+                      a.section_name.localeCompare(b.section_name)
+                    )
+                    .map((section: AssetSection, index: number) => (
+                      <option key={index} value={section.section_name}>
+                        {section.section_name}
+                      </option>
+                    ))}
               </select>
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize text-black"
@@ -428,72 +435,73 @@ const ListsLayout = () => {
           ) : (
             <div>
               {/* Render asset cards */}
-              {incomingAssets
-                .filter((asset) => {
-                  const searchTermMatch =
-                    searchTerm === "" ||
-                    asset.asset_name
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase()) ||
-                    asset.asset_type
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase());
+              {incomingAssets &&
+                incomingAssets
+                  .filter((asset) => {
+                    const searchTermMatch =
+                      searchTerm === "" ||
+                      asset.asset_name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      asset.asset_type
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase());
 
-                  const statusFilterMatch =
-                    selectedStatusIds.length === 0 ||
-                    selectedStatusIds.includes(asset.asset_status);
+                    const statusFilterMatch =
+                      selectedStatusIds.length === 0 ||
+                      selectedStatusIds.includes(asset.asset_status);
 
-                  const sectionFilterMatch =
-                    selectedSectionNames.length === 0 ||
-                    selectedSectionNames.includes(asset.section_name);
+                    const sectionFilterMatch =
+                      selectedSectionNames.length === 0 ||
+                      selectedSectionNames.includes(asset.section_name);
 
-                  const placementFilterMatch =
-                    selectedPlacementNames.length === 0 ||
-                    selectedPlacementNames.includes(asset.placement_name);
+                    const placementFilterMatch =
+                      selectedPlacementNames.length === 0 ||
+                      selectedPlacementNames.includes(asset.placement_name);
 
-                  /* sectionFilterMatch AND placementFilterMatch */
-                  const intersectionFilterMatch =
-                    sectionFilterMatch && placementFilterMatch;
+                    /* sectionFilterMatch AND placementFilterMatch */
+                    const intersectionFilterMatch =
+                      sectionFilterMatch && placementFilterMatch;
 
-                  return (
-                    searchTermMatch &&
-                    statusFilterMatch &&
-                    (selectedSectionNames.length === 0 ||
-                    selectedPlacementNames.length === 0
-                      ? intersectionFilterMatch
-                      : intersectionFilterMatch)
-                  );
-                })
-                .map((asset) => (
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setSelectedAsset(asset);
-                      setAssetId(asset.asset_id);
-                      setAddAssetOpen(false);
-                      removeClass(
-                        "#parent-element .asset-details-card",
-                        "lg:hidden"
-                      );
-                      addClass(
-                        "#parent-element .asset-details-card",
-                        "lg:w-full"
-                      );
-                      addClass("#parent-element .asset-card", "lg:hidden");
-                    }}
-                  >
-                    <AssetCard
-                      assetName={asset.asset_name}
-                      assetType={asset.asset_type}
-                      assetAddress={asset.location_name}
-                      imageLocation={asset.images_array[0]}
-                      status={asset.asset_status}
-                      assetCondition={asset.asset_condition}
-                      imagePlaceholder="img"
-                      updatedDetailsTabIndex={detailsTabIndexRefresh}
-                    />
-                  </div>
-                ))}
+                    return (
+                      searchTermMatch &&
+                      statusFilterMatch &&
+                      (selectedSectionNames.length === 0 ||
+                      selectedPlacementNames.length === 0
+                        ? intersectionFilterMatch
+                        : intersectionFilterMatch)
+                    );
+                  })
+                  .map((asset) => (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setSelectedAsset(asset);
+                        setAssetId(asset.asset_id);
+                        setAddAssetOpen(false);
+                        removeClass(
+                          "#parent-element .asset-details-card",
+                          "lg:hidden"
+                        );
+                        addClass(
+                          "#parent-element .asset-details-card",
+                          "lg:w-full"
+                        );
+                        addClass("#parent-element .asset-card", "lg:hidden");
+                      }}
+                    >
+                      <AssetCard
+                        assetName={asset.asset_name}
+                        assetType={asset.asset_type}
+                        assetAddress={asset.location_name}
+                        imageLocation={asset.images_array[0]}
+                        status={asset.asset_status}
+                        assetCondition={asset.asset_condition}
+                        imagePlaceholder="img"
+                        updatedDetailsTabIndex={detailsTabIndexRefresh}
+                      />
+                    </div>
+                  ))}
             </div>
           )}
         </div>
