@@ -128,7 +128,7 @@ const NavBar = () => {
         <div className="flex-1">
           <button
             onClick={() => {
-              navigate("/");
+              navigate("/home");
               resetFilterOptions();
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
