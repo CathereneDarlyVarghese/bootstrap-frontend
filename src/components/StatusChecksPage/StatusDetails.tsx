@@ -103,7 +103,10 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             </Link> */}
             <AiOutlineDelete
               className="text-red-500 text-xl ml-2 cursor-pointer"
-              onClick={() => assetCheckMutation.mutate()}
+              onClick={() => {
+                assetCheckMutation.mutate();
+                closeAsset();
+              }}
             />
           </div>
         </div>
