@@ -175,7 +175,7 @@ const NavBar = () => {
               Status
             </button>
           </div>
-          <ThemeSwitcher />
+          {/* <ThemeSwitcher /> */}
         </div>
 
         <div className="flex-none gap-5 md:gap-2 ">
