@@ -1,1 +1,5 @@
-# Write stuff here
+# State mangement
+## Use Jotai
+
+
+React Query
