@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { TfiClose } from "react-icons/tfi";
 import { deleteAssetCheck } from "services/assetCheckServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface StatusDetailsProps {
   sessionToken: string | null;
@@ -46,18 +46,16 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
       .trim(); // Remove any leading spaces
   }
 
-  const assetCheckMutation = useMutation(
-    () => deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
-    {
-      onSettled: () => {
-        toast.success("Asset's Status Check Deleted Successfully");
-        queryClient.invalidateQueries(["query-assetChecks"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset's Status Check");
-      },
-    }
-  );
+  const assetCheckMutation = useMutation({
+    mutationFn: () => deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
+    onSettled: () => {
+      toast.success("Asset's Status Check Deleted Successfully");
+      queryClient.invalidateQueries(["query-assetChecks"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset's Status Check");
+    },
+  });
 
   return (
     <div className="h-5/6 mx-4 mt-2 p-5 bg-white dark:bg-gray-800 rounded-xl overflow-y-auto flex flex-col border border-gray-200 dark:border-gray-600 hover:border-blue-800 hover:dark:border-gray-400">

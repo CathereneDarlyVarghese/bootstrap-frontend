@@ -7,7 +7,7 @@ import { getDocumentsByLocationIdOnly } from "services/documentServices";
 import { IncomingDocument, File } from "types";
 import { getFileById } from "services/fileServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const DocumentsPage = () => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
@@ -46,56 +46,51 @@ const DocumentsPage = () => {
 
   const selectedLocation = location.locationId;
 
-  const { refetch: fetchDocumentsByLocation } = useQuery<
-    IncomingDocument[],
-    Error
-  >(
-    "query-documentsbyLocationId",
-    async () => {
-      return await getDocumentsByLocationIdOnly(
+  const fetchDocumentsByLocation = async () => {
+    try {
+      const documents = await getDocumentsByLocationIdOnly(
         authTokenObj.authToken,
         location.locationId
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        setIncomingDocuments(res);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      setIncomingDocuments(documents);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
 
-  useEffect(() => {
-    fetchDocumentsByLocation();
-  }, [location]);
+  const { data: DocumentsByLocation } = useQuery({
+    queryKey: ["query-documentsByLocationId", location],
+    queryFn: fetchDocumentsByLocation,
+  });
 
-  const { refetch: fetchFile } = useQuery<File, Error>(
-    "query-files",
-    async () => {
-      return await getFileById(
+  // useEffect(() => {
+  //   fetchDocumentsByLocation();
+  // }, [location]);
+
+  const fetchFile = async () => {
+    try {
+      const fileData = await getFileById(
         authTokenObj.authToken,
         selectedDocument.file_id
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const fileName =
-          res.file_array && res.file_array[0] ? res.file_array[0] : "";
-        setFileName(fileName);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      const fileName =
+        fileData.file_array && fileData.file_array[0]
+          ? fileData.file_array[0]
+          : "";
+      setFileName(fileName);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
 
-  useEffect(() => {
-    fetchFile();
-  }, [selectedDocument]);
+  const { data: FileById } = useQuery({
+    queryKey: ["query-files", selectedDocument],
+    queryFn: fetchFile,
+  });
+
+  // useEffect(() => {
+  //   fetchFile();
+  // }, [selectedDocument]);
 
   // const scrollToTop = () => {
   //   window.scrollTo({ top: 0, behavior: "smooth" });

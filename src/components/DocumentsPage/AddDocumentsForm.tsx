@@ -8,7 +8,7 @@ import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -52,24 +52,22 @@ const AddDocumentsForm = ({
     }));
   };
 
-  const documentAddMutation = useMutation(
-    (documentData: Document) =>
+  const documentAddMutation = useMutation({
+    mutationFn: (documentData: Document) =>
       createDocument(authTokenObj.authToken, documentData),
-    {
-      onSettled: () => {
-        toast.success("Document Added Successfully");
-        setAddDocumentsOpen(false);
-      },
-      onSuccess: (res) => {
-        console.log("Return from createDocument ==>> ", res);
-        queryClient.invalidateQueries(["query-documentsByAssetId"]);
-        queryClient.invalidateQueries(["query-documentsbyLocationId"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Document Added Successfully");
+      setAddDocumentsOpen(false);
+    },
+    onSuccess: (res) => {
+      console.log("Return from createDocument ==>> ", res);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

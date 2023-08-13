@@ -27,10 +27,11 @@ import {
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAsset } from "services/apiServices";
 
 const ListsLayout = () => {
+  const selectRef = useRef<HTMLSelectElement>(null); //For handleSectionreset
   const navigate = useNavigate();
   const [location] = useSyncedAtom(locationAtom);
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
@@ -161,15 +162,15 @@ const ListsLayout = () => {
   //   requestNotificationPermission();
   // }, []);
 
-  const { refetch: getAllAssets } = useQuery<IncomingAsset[], Error>(
-    "query-asset",
-    async () => {
-      if (location.locationId != "")
-        return await getAssets(authTokenObj.authToken, location.locationId);
-    },
-    {
-      enabled: Boolean(authTokenObj.authToken && location?.locationId),
-      onSuccess: (res) => {
+  // Define a new function to handle the logic
+  const fetchAllAssets = async () => {
+    try {
+      if (location.locationId !== "") {
+        const res = await getAssets(
+          authTokenObj.authToken,
+          location.locationId
+        );
+
         if (Array.isArray(res)) {
           setIncomingAssets(res);
         } else if (res) {
@@ -177,65 +178,73 @@ const ListsLayout = () => {
         } else {
           setIncomingAssets([]);
         }
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      }
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
     }
-  );
+  };
 
-  useEffect(() => {
-    if (authTokenObj?.authToken) {
-      getAllAssets();
+  const { data: Assets } = useQuery({
+    queryKey: ["query-asset", location, authTokenObj.authToken],
+    queryFn: fetchAllAssets,
+    enabled: !!authTokenObj.authToken,
+  });
+
+  // useEffect(() => {
+  //   if (authTokenObj?.authToken) {
+  //     fetchAllAssets();
+  //   }
+  // }, [location]);
+
+  const fetchAssetSections = async () => {
+    try {
+      const res = await getAssetSections(authTokenObj.authToken);
+
+      const filteredFetchedAssetSections = res.filter(
+        (section: AssetSection) => section.location_id === location.locationId
+      );
+      setAssetSections(filteredFetchedAssetSections);
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
     }
-  }, [location, authTokenObj.authToken]);
+  };
 
-  const { refetch: fetchAssetSections } = useQuery<AssetSection[], Error>(
-    "query-assetSections",
-    async () => {
-      return await getAssetSections(authTokenObj.authToken);
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const filteredFetchedAssetSections = res.filter(
-          (section: AssetSection) => section.location_id === location.locationId
-        );
-        setAssetSections(filteredFetchedAssetSections);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+  const { data: AssetsSections } = useQuery({
+    queryKey: ["query-assetSections", location],
+    queryFn: fetchAssetSections,
+  });
+
+  // useEffect(() => {
+  //   fetchAssetSections();
+  // }, [location]);
+
+  const fetchAssetPlacements = async () => {
+    try {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+
+      const filteredFetchedAssetPlacements = res.filter(
+        (placement: AssetPlacement) =>
+          placement.location_id === location.locationId
+      );
+      setAssetPlacements(filteredFetchedAssetPlacements);
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
     }
-  );
+  };
 
-  useEffect(() => {
-    fetchAssetSections();
-  }, [location]);
+  const { data: AssetsPlacements } = useQuery({
+    queryKey: [
+      "query-assetPlacement",
+      location,
+      selectedAssetSection.section_id,
+      selectedAssetPlacementName,
+    ],
+    queryFn: fetchAssetPlacements,
+  });
 
-  const { refetch: fetchAssetPlacements } = useQuery<AssetPlacement[], Error>(
-    "query-assetPlacement",
-    async () => {
-      return await getAssetPlacements(authTokenObj.authToken);
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const filteredFetchedAssetPlacements = res.filter(
-          (placement: AssetPlacement) =>
-            placement.location_id === location.locationId
-        );
-        setAssetPlacements(filteredFetchedAssetPlacements);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
-    }
-  );
-
-  useEffect(() => {
-    fetchAssetPlacements();
-  }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
+  // useEffect(() => {
+  //   fetchAssetPlacements();
+  // }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
 
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
@@ -254,8 +263,6 @@ const ListsLayout = () => {
       setSelectedSectionNames([selectedValue]);
     }
   };
-
-  const selectRef = useRef<HTMLSelectElement>(null);
 
   const handleSectionReset = () => {
     if (selectRef.current) {

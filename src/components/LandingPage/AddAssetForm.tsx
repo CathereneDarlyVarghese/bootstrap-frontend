@@ -22,7 +22,7 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // ====== State Declarations ======
@@ -94,8 +94,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Logic for fetching initial data
   const fetchData = async () => {
     try {
-      const locations =
-        queryClient.getQueryData<AssetLocation[]>("query-locations");
+      const locations = queryClient.getQueryData<AssetLocation[]>([
+        "query-locations",
+      ]);
       const types = await getAllAssetTypes(authTokenObj.authToken);
       fetchAssetPlacements();
       fetchAssetSections();
@@ -200,88 +201,83 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   };
 
   // ====== Data Fetching using useQuery ======
-  const { data: assetSectionsData, refetch: fetchAssetSections } = useQuery<
-    AssetSection[],
-    Error
-  >("query-assetSectionsForm", () => getAssetSections(authTokenObj.authToken), {
-    onSuccess: (res) => {
+  const fetchAssetSections = async () => {
+    try {
+      const res = await getAssetSections(authTokenObj.authToken);
       setAssetSections(res);
       const sections = res.filter(
         (section) => section.location_id === selectedLocation
       );
       setFilteredSections(sections);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { data: AssetSections } = useQuery({
+    queryKey: ["query-assetSectionsForm"],
+    queryFn: fetchAssetSections,
+  });
+
+  const fetchAssetPlacements = async () => {
+    try {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      setAssetPlacements(res);
+      const placements = res.filter(
+        (placement) => placement.location_id === selectedLocation
+      );
+      setFilteredPlacements(placements);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { data: AssetPlacements } = useQuery({
+    queryKey: ["query-assetPlacementsForm"],
+    queryFn: fetchAssetPlacements,
+  });
+
+  // ====== Mutations ======
+  const assetAddMutation = useMutation({
+    mutationFn: (assetData: any) =>
+      createAsset(authTokenObj.authToken, assetData),
+    onSettled: () => {
+      toast.success("Asset Added Successfully");
+      setAddAssetOpen(false);
+      queryClient.invalidateQueries(["query-asset"]);
     },
     onError: (err: any) => {
-      console.log(err);
+      toast.error("Failed to Delete Asset");
     },
   });
 
-  const { data: assetPlacementsData, refetch: fetchAssetPlacements } = useQuery<
-    AssetPlacement[],
-    Error
-  >(
-    "query-assetPlacementsForm",
-    () => getAssetPlacements(authTokenObj.authToken),
-    {
-      onSuccess: (res) => {
-        setAssetPlacements(res);
-        const placements = res.filter(
-          (placements) => placements.location_id === selectedLocation
-        );
-        setFilteredPlacements(placements);
-      },
-      onError: (err: any) => {
-        console.log(err);
-      },
-    }
-  );
-
-  // ====== Mutations ======
-  const assetAddMutation = useMutation(
-    (assetData: any) => createAsset(authTokenObj.authToken, assetData),
-    {
-      onSettled: () => {
-        toast.success("Asset Added Successfully");
-        setAddAssetOpen(false);
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
-
-  const sectionAddMutation = useMutation(
-    (newSection: AssetSection) =>
+  const sectionAddMutation = useMutation({
+    mutationFn: (newSection: AssetSection) =>
       createAssetSection(authTokenObj.authToken, newSection),
-    {
-      onSettled: () => {
-        toast.success("Section Added Successfully");
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["query-assetSectionsForm"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Section Added Successfully");
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["query-assetSectionsForm"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
-  const placementAddMutation = useMutation(
-    (newPlacement: AssetPlacement) =>
+  const placementAddMutation = useMutation({
+    mutationFn: (newPlacement: AssetPlacement) =>
       createAssetPlacement(authTokenObj.authToken, newPlacement),
-    {
-      onSettled: () => {
-        toast.success("Placement Added Successfully");
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["query-assetPlacementsForm"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Placement Added Successfully");
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
   // Function to close the add asset form
   const closeAddForm = () => {

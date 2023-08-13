@@ -13,7 +13,7 @@ import Form from "@rjsf/core";
 import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddStatusForm = ({
   addFormOpen,
@@ -34,20 +34,19 @@ const AddStatusForm = ({
 
   const queryClient = useQueryClient();
 
-  const assetCheckAddMutation = useMutation(
-    (assetCheck: any) => createAssetCheck(authTokenObj.authToken, assetCheck),
-    {
-      onSettled: () => {
-        toast.success("Asset Check Added Successfully");
-        onStatusAdded();
-        queryClient.invalidateQueries(["query-asset"]);
-        queryClient.invalidateQueries(["query-assetChecks"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset's Status Check");
-      },
-    }
-  );
+  const assetCheckAddMutation = useMutation({
+    mutationFn: (assetCheck: any) =>
+      createAssetCheck(authTokenObj.authToken, assetCheck),
+    onSettled: () => {
+      toast.success("Asset Check Added Successfully");
+      onStatusAdded();
+      queryClient.invalidateQueries(["query-asset"]);
+      queryClient.invalidateQueries(["query-assetChecks"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset's Status Check");
+    },
+  });
 
   useEffect(() => {
     const fetchForm = async () => {

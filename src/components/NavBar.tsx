@@ -13,10 +13,11 @@ import ScanButton from "./widgets/ScanButton";
 import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AssetLocation } from "types";
 
 const NavBar = () => {
+  const mountCount = useRef(0);
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
   const [locations, setLocations] = useState<AssetLocation[]>([]);
@@ -92,40 +93,38 @@ const NavBar = () => {
     checkUser();
   }, []);
 
-  const { refetch: fetchLocations } = useQuery<AssetLocation[], Error>(
-    "query-locations",
-    async () => {
+  const fetchLocations = async () => {
+    try {
       const userData = await Auth.currentAuthenticatedUser();
-      return await getAllAssetLocations(
+      const locationData = await getAllAssetLocations(
         userData.signInUserSession.idToken.jwtToken
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (locationData) => {
-        setLocations(locationData);
-        console.log("locationData", locationData);
-        if (!location.locationId) {
-          if (locationData.length > 0) {
-            console.log("location is empty but data is there", locationData);
-            setLocation({
-              locationName: locationData[0].location_name,
-              locationId: locationData[0].location_id,
-            });
-          }
-        }
-      },
-      onError: (error: any) => {
-        console.log(error);
-      },
-    }
-  );
 
-  if (location.locationName === "" && location.locationId === "") {
+      setLocations(locationData);
+      console.log("locationData", locationData);
+
+      if (!location.locationId) {
+        if (locationData.length > 0) {
+          console.log("location is empty but data is there", locationData);
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { data: Locations } = useQuery({
+    queryKey: ["query-locations"],
+    queryFn: fetchLocations,
+  });
+
+  if (location.locationName === "" || location.locationId === "") {
     fetchLocations();
   }
-
-  const mountCount = useRef(0);
 
   useEffect(() => {
     mountCount.current += 1;

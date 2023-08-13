@@ -10,7 +10,7 @@ import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 import useAssetCondition from "hooks/useAssetCondition";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
 interface AssetDetailsProps {
@@ -84,8 +84,8 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   };
 
   const deleteAssetMutation = useMutation(
-    () => deleteAsset(authTokenObj.authToken, assetId),
     {
+      mutationFn: () => deleteAsset(authTokenObj.authToken, assetId),
       onSettled: () => {
         setAssetId(null);
         toast.success("Asset Deleted Successfully");
@@ -95,10 +95,21 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
         toast.error("Failed to Delete Asset");
       },
     }
+    // () => deleteAsset(authTokenObj.authToken, assetId),
+    // {
+    //   onSettled: () => {
+    //     setAssetId(null);
+    //     toast.success("Asset Deleted Successfully");
+    //     queryClient.invalidateQueries(["query-asset"]);
+    //   },
+    //   onError: (err: any) => {
+    //     toast.error("Failed to Delete Asset");
+    //   },
+    // }
   );
 
-  const handleToggleAssetCondition = useMutation(
-    (assetCondition: string) => {
+  const handleToggleAssetCondition = useMutation({
+    mutationFn: (assetCondition: string) => {
       if (assetCondition === assetConditions[AssetCondition.ACTIVE]) {
         return toggleAssetCondition(
           authTokenObj.authToken,
@@ -113,15 +124,13 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
         );
       }
     },
-    {
-      onSettled: () => {
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to toggle asset condition");
-      },
-    }
-  );
+    onSettled: () => {
+      queryClient.invalidateQueries(["query-asset"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to toggle asset condition");
+    },
+  });
 
   // const handleToggleAssetCondition = async () => {
   //   try {

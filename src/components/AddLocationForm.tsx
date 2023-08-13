@@ -3,26 +3,24 @@ import { createAssetLocation } from "../services/locationServices";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const queryClient = useQueryClient();
 
-  const locationAddMutation = useMutation(
-    (assetLocationObj: any) =>
+  const locationAddMutation = useMutation({
+    mutationFn: (assetLocationObj: any) =>
       createAssetLocation(authTokenObj.authToken, assetLocationObj),
-    {
-      onSettled: () => {
-        toast.success("Asset Added Successfully");
-        queryClient.invalidateQueries(["query-locations"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Asset Added Successfully");
+      queryClient.invalidateQueries(["query-locations"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
   const handleSubmit = async (event) => {
     event.preventDefault();
 

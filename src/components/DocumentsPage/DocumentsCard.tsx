@@ -22,7 +22,7 @@ import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import { File } from "types";
 import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const DocumentsCard = ({
   documentID,
@@ -80,20 +80,18 @@ const DocumentsCard = ({
     fetchDocumentDetails();
   }, []);
 
-  const deleteSelectedDocument = useMutation(
-    () => deleteDocument(authTokenObj.authToken, documentID),
-    {
-      onSettled: () => {
-        toast.success("Document Deleted Successfully");
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["query-documentsbyLocationId"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Document");
-      },
-    }
-  );
+  const deleteSelectedDocument = useMutation({
+    mutationFn: () => deleteDocument(authTokenObj.authToken, documentID),
+    onSettled: () => {
+      toast.success("Document Deleted Successfully");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Document");
+    },
+  });
 
   // Latest Document and Document History Table Data
   const fileArray = documentFile.file_array.slice(0).reverse();

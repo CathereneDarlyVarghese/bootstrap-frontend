@@ -5,7 +5,7 @@ import AddStatusForm from "./AddStatusForm";
 import { getAssetCheckById } from "services/assetCheckServices";
 import { IncomingAssetCheck } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 interface AssetStatusChecksPageProps {
   sessionToken: string;
@@ -44,25 +44,19 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     setSelectedAssetCheck(selectedAssetCheck);
   };
 
-  const { refetch: getAllAssetChecks } = useQuery<IncomingAssetCheck[], Error>(
-    "query-assetChecks",
-    async () => {
-      return await getAssetCheckById(authTokenObj.authToken, assetId);
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        setAssetChecks(res);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+  const fetchAllAssetChecks = async (assetId) => {
+    try {
+      const res = await getAssetCheckById(authTokenObj.authToken, assetId);
+      setAssetChecks(res);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
 
-  useEffect(() => {
-    getAllAssetChecks();
-  }, [assetId, authTokenObj.authToken]);
+  const { data: AllAssetChecks } = useQuery({
+    queryKey: ["query-assetChecks", assetId, authTokenObj.authToken],
+    queryFn: fetchAllAssetChecks,
+  });
 
   return (
     <div className="w-full">
