@@ -23,27 +23,36 @@ const AddStatusForm = ({
   assetType,
   assetTypeId,
 }) => {
+  // State initialization
   const [, setFormDataState] = useState<any>({});
-  const [jsonForm, setJsonForm] = useState(null);
-  const now = new Date();
-  // const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [file] = useState<any>();
-  const [name] = useState<string>("");
+  const [jsonForm, setJsonForm] = useState(null); // Form in JSON format
+
+  const now = new Date(); // Current date and time
+
   const statusTypeNames = useStatusTypeNames();
+
+  // Fetch authentication token
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
+  // Using the query client for server communication
   const queryClient = useQueryClient();
 
+  // Mutation for adding an asset check
   const assetCheckAddMutation = useMutation({
     mutationFn: (assetCheck: any) =>
       createAssetCheck(authTokenObj.authToken, assetCheck),
+
     onSettled: () => {
+      // Actions to perform after the mutation is settled (whether success or failure)
       toast.success("Asset Check Added Successfully");
       onStatusAdded();
+      // Invalidate cache to ensure fresh data is fetched next time
       queryClient.invalidateQueries(["query-asset"]);
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
+
     onError: (err: any) => {
+      // Handle errors from the mutation
       toast.error("Failed to Add Status Check");
     },
   });
@@ -55,7 +64,7 @@ const AddStatusForm = ({
           authTokenObj.authToken,
           assetTypeId
         );
-        setJsonForm(form.form_json); // Adjust this line according to your returned data structure
+        setJsonForm(form.form_json);
       } catch (error) {
         if (error.response?.status === 404) {
           try {
@@ -63,7 +72,7 @@ const AddStatusForm = ({
               form_json: {},
               asset_type_id: assetTypeId,
             });
-            setJsonForm(newForm.form_json); // Adjust this line according to your returned data structure
+            setJsonForm(newForm.form_json);
           } catch (error) {
             console.error("Failed to create a new form:", error);
           }

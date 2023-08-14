@@ -84,11 +84,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   };
 
   const handleSectionChange = (sectionId: string) => {
-    setSelectedSection(sectionId);
+    console.log(
+      "updated Placements in handleSectionChange==>>",
+      assetPlacements
+    );
     const placements = assetPlacements.filter(
       (placement) => placement.section_id === sectionId
     );
+    console.log("AssetPlacements in handleSectionChange==>>", placements);
     setFilteredPlacements(placements);
+    setSelectedPlacement("");
   };
 
   // Logic for fetching initial data
@@ -223,10 +228,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     try {
       const res = await getAssetPlacements(authTokenObj.authToken);
       setAssetPlacements(res);
-      const placements = res.filter(
-        (placement) => placement.location_id === selectedLocation
-      );
-      setFilteredPlacements(placements);
     } catch (error) {
       console.log(error);
     }
@@ -260,6 +261,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["query-assetSectionsForm"]);
+      handleLocationChange(selectedLocation);
+      setSelectedSection(null);
     },
     onError: (err: any) => {
       toast.error("Failed to Delete Asset");
@@ -269,9 +272,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const placementAddMutation = useMutation({
     mutationFn: (newPlacement: AssetPlacement) =>
       createAssetPlacement(authTokenObj.authToken, newPlacement),
-    onSettled: () => {
+    onSettled: async () => {
       toast.success("Placement Added Successfully");
-      queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+      await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+      console.log(
+        "Selected sections in placementAddMusation==>>",
+        selectedSection
+      );
+      handleSectionChange(selectedSection);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["query-assetPlacementsForm"]);
@@ -483,6 +491,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         required
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                         onChange={(e) => {
+                          setSelectedSection(e.target.value);
                           handleSectionChange(e.target.value);
                         }}
                         value={selectedSection}

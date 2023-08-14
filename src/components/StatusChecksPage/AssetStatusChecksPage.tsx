@@ -24,26 +24,33 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   assetTypeId,
   selectedAsset,
 }) => {
-  const [, setStatusCheckId] = useState<string | null>(null);
+  // State Initialization
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
   const [selectedAssetCheck, setSelectedAssetCheck] =
     useState<IncomingAssetCheck>();
+  const [, setStatusCheckId] = useState<string | null>(null);
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [getResult, setGetResult] = useState<string | null>(null);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+
+  // Helper function to format response
   const formatResponse = (res: any) => {
     return JSON.stringify(res, null, 2);
   };
+
+  // Function to handle status card click and show details
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
     setStatusCheckId(selectedStatusCheckId);
     setDetailsOpen(true);
-    const selectedAssetCheck = assetChecks.find(
+
+    const selectedCheck = assetChecks.find(
       (assetCheck) => assetCheck.uptime_check_id === selectedStatusCheckId
     );
-    setSelectedAssetCheck(selectedAssetCheck);
+    setSelectedAssetCheck(selectedCheck);
   };
 
+  // Async function to fetch all asset checks based on assetId
   const fetchAllAssetChecks = async (assetId) => {
     try {
       const res = await getAssetCheckById(
@@ -56,10 +63,11 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     }
   };
 
+  // Fetching all asset checks using React Query's useQuery
   const { data: AllAssetChecks } = useQuery({
     queryKey: ["query-assetChecks", assetId, authTokenObj.authToken],
     queryFn: fetchAllAssetChecks,
-    enabled: !!selectedAsset,
+    enabled: !!selectedAsset, // only enabled if there's a selectedAsset
   });
 
   return (
@@ -112,17 +120,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
       <div className={`${detailsOpen ? "" : "hidden"}`}>
         {/* Map status details */}
         <StatusDetails
-          sessionToken={sessionToken}
-          uptimeCheckId={selectedAssetCheck?.uptime_check_id || ""}
-          assetId={selectedAssetCheck?.asset_id || ""}
-          statusCheck={selectedAssetCheck?.status_check || ""}
-          imageArray={selectedAssetCheck?.images_array || []}
-          modifiedBy={selectedAssetCheck?.modified_by || ""}
-          modifiedDate={selectedAssetCheck?.modified_date || ""}
-          uptimeNotes={selectedAssetCheck?.uptime_notes || ""}
-          refreshAssets={() => {
-            console.log("refresh assets");
-          }}
+          selectedAssetCheck={selectedAssetCheck || undefined}
           closeAsset={() => {
             setDetailsOpen(false);
           }}
