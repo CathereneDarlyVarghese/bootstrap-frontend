@@ -6,7 +6,6 @@ import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
-
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
 import ScanButton from "./widgets/ScanButton";
@@ -18,29 +17,32 @@ import { AssetLocation } from "types";
 
 const NavBar = () => {
   const mountCount = useRef(0);
+  const routePage = useLocation();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // States
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
   const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
   const [getResult, setGetResult] = useState<string | null>(null);
   const [, setSessionToken] = useState<string | null>(null);
 
-  const routePage = useLocation();
+  // Utility to format the response
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
 
-  const queryClient = useQueryClient();
-
+  // Toggle dropdown state
   const toggleDropDown = () => {
     setOpen(!open);
   };
 
-  //function to add and remove class for UI
+  // Utility functions to add/remove class
   const addClass = (selectClass, addClass) => {
     document.querySelector(selectClass).classList.add(addClass);
   };
@@ -48,30 +50,25 @@ const NavBar = () => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
+  const TABS = {
+    "/home": ".asset-tab",
+    "/work-orders": ".workorder-tab",
+    "/document/location": ".documents-tab",
+    "/status-checks": ".status-tab",
+  };
+
+  // Effect: Update class based on route
   useEffect(() => {
-    if (routePage.pathname === "/home") {
-      addClass(".asset-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/work-orders") {
-      addClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/document/location") {
-      addClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/status-checks") {
-      addClass(".status-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-    }
+    Object.keys(TABS).forEach((path) => {
+      if (routePage.pathname === path) {
+        addClass(TABS[path], "border-b-white");
+      } else {
+        removeClass(TABS[path], "border-b-white");
+      }
+    });
   }, [routePage]);
 
+  // Effect: Check user authentication
   useEffect(() => {
     const checkUser = async () => {
       try {
@@ -95,6 +92,7 @@ const NavBar = () => {
     checkUser();
   }, []);
 
+  // Fetch location data
   const fetchLocations = async () => {
     try {
       const userData = await Auth.currentAuthenticatedUser();
@@ -117,15 +115,18 @@ const NavBar = () => {
     }
   };
 
+  // UseQuery to get locations
   const { data: Locations } = useQuery({
     queryKey: ["query-locations"],
     queryFn: fetchLocations,
   });
 
+  // Check for a new start
   if (location.locationName === "" || location.locationId === "") {
     fetchLocations();
   }
 
+  // Effect: Store location in local storage when it changes
   useEffect(() => {
     mountCount.current += 1;
     console.log("mountCount", mountCount.current);
@@ -140,10 +141,6 @@ const NavBar = () => {
       console.log("location stored", location);
     }
   }, [location]);
-
-  // useEffect(() => {
-  //   fetchLocations();
-  // }, []);
 
   return (
     <>

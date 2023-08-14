@@ -88,7 +88,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       mutationFn: () => deleteAsset(authTokenObj.authToken, assetId),
       onSettled: () => {
         setAssetId(null);
-        toast.success("Asset Deleted Successfully");
+        toast.info("Asset Deleted Successfully");
         queryClient.invalidateQueries(["query-asset"]);
       },
       onError: (err: any) => {
