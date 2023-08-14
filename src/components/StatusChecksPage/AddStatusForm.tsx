@@ -44,7 +44,7 @@ const AddStatusForm = ({
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
     onError: (err: any) => {
-      toast.error("Failed to Delete Asset's Status Check");
+      toast.error("Failed to Add Status Check");
     },
   });
 

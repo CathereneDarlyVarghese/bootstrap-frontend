@@ -13,7 +13,7 @@ import ScanButton from "./widgets/ScanButton";
 import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AssetLocation } from "types";
 
 const NavBar = () => {
@@ -33,6 +33,8 @@ const NavBar = () => {
   const [, setSessionToken] = useState<string | null>(null);
 
   const routePage = useLocation();
+
+  const queryClient = useQueryClient();
 
   const toggleDropDown = () => {
     setOpen(!open);
@@ -99,10 +101,8 @@ const NavBar = () => {
       const locationData = await getAllAssetLocations(
         userData.signInUserSession.idToken.jwtToken
       );
-
+      queryClient.setQueryData(["query-locations"], locationData);
       setLocations(locationData);
-      console.log("locationData", locationData);
-
       if (!location.locationId) {
         if (locationData.length > 0) {
           console.log("location is empty but data is there", locationData);

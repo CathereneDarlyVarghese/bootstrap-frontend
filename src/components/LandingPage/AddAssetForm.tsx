@@ -94,14 +94,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Logic for fetching initial data
   const fetchData = async () => {
     try {
-      const locations = queryClient.getQueryData<AssetLocation[]>([
+      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
         "query-locations",
       ]);
       const types = await getAllAssetTypes(authTokenObj.authToken);
       fetchAssetPlacements();
       fetchAssetSections();
       setAssetTypes(types);
-      setLocations(locations);
+      setLocations(queryLocations);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -232,9 +232,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     }
   };
 
-  const { data: AssetPlacements } = useQuery({
+  const AssetPlacements = useQuery({
     queryKey: ["query-assetPlacementsForm"],
     queryFn: fetchAssetPlacements,
+    enabled: !!selectedLocation,
   });
 
   // ====== Mutations ======
@@ -270,6 +271,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       createAssetPlacement(authTokenObj.authToken, newPlacement),
     onSettled: () => {
       toast.success("Placement Added Successfully");
+      queryClient.invalidateQueries(["query-assetPlacementsForm"]);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["query-assetPlacementsForm"]);

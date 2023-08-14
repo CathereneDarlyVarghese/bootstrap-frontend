@@ -46,7 +46,10 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
 
   const fetchAllAssetChecks = async (assetId) => {
     try {
-      const res = await getAssetCheckById(authTokenObj.authToken, assetId);
+      const res = await getAssetCheckById(
+        authTokenObj.authToken,
+        assetId.queryKey[1]
+      );
       setAssetChecks(res);
     } catch (error) {
       setGetResult(formatResponse(error.response?.data || error));
@@ -56,6 +59,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   const { data: AllAssetChecks } = useQuery({
     queryKey: ["query-assetChecks", assetId, authTokenObj.authToken],
     queryFn: fetchAllAssetChecks,
+    enabled: !!selectedAsset,
   });
 
   return (

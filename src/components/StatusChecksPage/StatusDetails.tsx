@@ -49,7 +49,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   const assetCheckMutation = useMutation({
     mutationFn: () => deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
     onSettled: () => {
-      toast.success("Asset's Status Check Deleted Successfully");
+      toast.info("Asset's Status Check Deleted Successfully");
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
     onError: (err: any) => {

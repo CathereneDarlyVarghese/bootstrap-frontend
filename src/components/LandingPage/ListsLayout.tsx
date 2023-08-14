@@ -212,6 +212,7 @@ const ListsLayout = () => {
   const { data: AssetsSections } = useQuery({
     queryKey: ["query-assetSections", location],
     queryFn: fetchAssetSections,
+    enabled: !!authTokenObj.authToken,
   });
 
   // useEffect(() => {
@@ -240,6 +241,7 @@ const ListsLayout = () => {
       selectedAssetPlacementName,
     ],
     queryFn: fetchAssetPlacements,
+    enabled: !!authTokenObj.authToken,
   });
 
   // useEffect(() => {
