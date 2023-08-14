@@ -3,16 +3,12 @@ import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
 // import Pusher from "pusher-js";
-
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { AssetPlacement, AssetSection, IncomingAsset } from "types";
-import { Auth } from "aws-amplify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import SearchIcon from "../../icons/circle2017.png";
-
 import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
@@ -28,7 +24,6 @@ import {
 import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
-import { getAsset } from "services/apiServices";
 
 const ListsLayout = () => {
   // ----------------------- REFS -----------------------
@@ -44,7 +39,6 @@ const ListsLayout = () => {
 
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const [sessionToken] = useState<string | null>(null);
 
   // Assets management
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
@@ -489,12 +483,7 @@ const ListsLayout = () => {
                       }}
                     >
                       <AssetCard
-                        assetName={asset.asset_name}
-                        assetType={asset.asset_type}
-                        assetAddress={asset.location_name}
-                        imageLocation={asset.images_array[0]}
-                        status={asset.asset_status}
-                        assetCondition={asset.asset_condition}
+                        asset={asset}
                         imagePlaceholder="img"
                         updatedDetailsTabIndex={detailsTabIndexRefresh}
                       />
@@ -526,23 +515,11 @@ const ListsLayout = () => {
                   removeClass("#parent-element .asset-details-card", "w-full");
                   removeClass("#parent-element .asset-card", "lg:hidden");
                 }}
-                assetId={selectedAsset.asset_id}
-                cardImage={selectedAsset.images_array[0]}
-                cardTitle={selectedAsset.asset_name}
-                assetType={selectedAsset.asset_type}
-                notes={selectedAsset.asset_notes}
-                sectionName={selectedAsset.section_name}
-                placementName={selectedAsset.placement_name}
-                purchasePrice={selectedAsset.asset_finance_purchase}
-                currentValue={selectedAsset.asset_finance_current_value}
-                sessionToken={sessionToken}
+                sessionToken={authTokenObj.authToken}
                 setAssetId={setSelectedAsset}
-                selectedAsset1={selectedAsset}
+                Asset={selectedAsset}
                 tabIndex={detailsTab}
                 setTabIndex={setDetailsTab}
-                assetCheckDate={selectedAsset.next_asset_check_date}
-                assetCondition={selectedAsset.asset_condition}
-                assetTypeId={selectedAsset.asset_type_id}
               />
             )}
           </>
