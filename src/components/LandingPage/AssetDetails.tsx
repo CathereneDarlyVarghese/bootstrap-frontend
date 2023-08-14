@@ -12,6 +12,10 @@ import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecks
 import useAssetCondition from "hooks/useAssetCondition";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import {
+  getStatusColor,
+  getStatusText,
+} from "components/StatusChecksPage/statusUtils";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -30,60 +34,25 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   tabIndex,
   setTabIndex,
 }) => {
-  // const [, setActiveTab] = useState(0);
+  // State and Hooks
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
-  const getStatusText = (status: string | null) => {
-    switch (status) {
-      case StatusTypes.WORKING:
-        return "WORKING";
-      case StatusTypes.DOWN:
-        return "DOWN";
-      case StatusTypes.MAINTENANCE:
-        return "Maintenance";
-      default:
-        return "";
-    }
-  };
+  // Mutation for deleting an asset
+  const deleteAssetMutation = useMutation({
+    mutationFn: () => deleteAsset(authTokenObj.authToken, Asset.asset_id),
+    onSettled: () => {
+      setAssetId(null);
+      toast.info("Asset Deleted Successfully");
+      queryClient.invalidateQueries(["query-asset"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
-  const getStatusColor = (status: string | undefined): string => {
-    if (status === StatusTypes.WORKING) {
-      return "bg-green-400";
-    } else if (status === StatusTypes.DOWN) {
-      return "bg-red-400";
-    } else if (status === StatusTypes.MAINTENANCE) {
-      return "bg-yellow-400";
-    }
-    return "bg-gray-400";
-  };
-
-  const deleteAssetMutation = useMutation(
-    {
-      mutationFn: () => deleteAsset(authTokenObj.authToken, Asset.asset_id),
-      onSettled: () => {
-        setAssetId(null);
-        toast.info("Asset Deleted Successfully");
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-    // () => deleteAsset(authTokenObj.authToken, assetId),
-    // {
-    //   onSettled: () => {
-    //     setAssetId(null);
-    //     toast.success("Asset Deleted Successfully");
-    //     queryClient.invalidateQueries(["query-asset"]);
-    //   },
-    //   onError: (err: any) => {
-    //     toast.error("Failed to Delete Asset");
-    //   },
-    // }
-  );
-
+  // Mutation for toggling asset condition
   const handleToggleAssetCondition = useMutation({
     mutationFn: (assetCondition: string) => {
       if (assetCondition === assetConditions[AssetCondition.ACTIVE]) {
@@ -107,6 +76,8 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       toast.error("Failed to toggle asset condition");
     },
   });
+
+  // const [, setActiveTab] = useState(0);
 
   // const handleToggleAssetCondition = async () => {
   //   try {
@@ -221,7 +192,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     </button>
                     <button
                       className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2 ${getStatusColor(
-                        Asset?.asset_status
+                        Asset.asset_status
                       )}`}
                     >
                       {getStatusText(Asset?.asset_status)}
