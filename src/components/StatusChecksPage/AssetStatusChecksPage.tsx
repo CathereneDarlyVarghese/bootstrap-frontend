@@ -90,6 +90,9 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
               +Add
             </button>
           </div>
+          <div>
+            <h1 className="text-blue-800 text-sm italic">*Click on the card for more info</h1>
+          </div>
           <div className={`${detailsOpen ? "hidden" : ""}`}>
             {assetChecks
               .sort(

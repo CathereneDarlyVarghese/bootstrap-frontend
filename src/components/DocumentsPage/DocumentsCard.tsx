@@ -252,7 +252,7 @@ const DocumentsCard = ({
               </h1>
               <div
                 className={
-                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
                 }
               >
                 {documentType ? documentType : "Not Available"}

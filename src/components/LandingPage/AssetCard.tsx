@@ -6,6 +6,7 @@ import { BsQrCode } from "react-icons/bs";
 import { BsCircleFill } from "react-icons/bs";
 import DisplayQR from "./DisplayQR";
 import { StatusTypes } from "enums";
+import { BsFillCheckCircleFill, BsFillXCircleFill, BsInfoCircleFill } from "react-icons/bs";
 
 
 type AssetCardProps = {
@@ -66,11 +67,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.assetType}
           </button>
           {props.status === StatusTypes.WORKING ? (
-            <BsCircleFill className="text-2xl text-green-600" />
+            <BsFillCheckCircleFill className="text-2xl text-green-600" />
           ) : props.status === StatusTypes.MAINTENANCE ? (
-            <BsCircleFill className="text-2xl text-yellow-600" />
+            <BsInfoCircleFill className="text-2xl text-yellow-600" />
           ) : (
-            <BsCircleFill className="text-2xl text-red-700" />
+            <BsFillXCircleFill className="text-2xl text-red-700" />
           )}
         </div>
         <h1
