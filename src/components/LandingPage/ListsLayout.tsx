@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useAtom } from "jotai";
+import { LogoClickedAtom } from "components/NavBar";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
@@ -54,6 +56,7 @@ const ListsLayout = () => {
   const [assets, setAssets] = useState<IncomingAsset[]>([]);
   const [getResult, setGetResult] = useState<string | null>(null);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom)
 
   // state from AddAssetForm.tsx
   const [addAssetOpen, setAddAssetOpen] = useState(false);
@@ -237,6 +240,14 @@ const ListsLayout = () => {
   useEffect(() => {
     fetchAssetPlacements();
   }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
+
+
+  useEffect(() => {
+    if (logoClicked === true) {
+      setAssetDetailsOpen(false);
+      setLogoClicked(false)
+    }
+  }, [logoClicked])
 
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
@@ -508,7 +519,7 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${assetDetailsOpen ? "w-2/3 lg:w-full" : addAssetOpen ? "lg:w-full" : "lg:hidden"}`}
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked ? "lg:hidden" : assetDetailsOpen ? "w-2/3 lg:w-full" : addAssetOpen ? "lg:w-full" : "lg:hidden"}`}
         id="style-7"
       >
         {/* Render asset details */}

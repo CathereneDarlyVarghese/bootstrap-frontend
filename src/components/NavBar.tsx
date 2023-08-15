@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
@@ -16,6 +17,8 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { useQuery } from "react-query";
 import { AssetLocation } from "types";
 
+export const LogoClickedAtom = atom(false)
+
 const NavBar = () => {
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
@@ -30,6 +33,7 @@ const NavBar = () => {
   const [addLocationForm, setAddLocationForm] = useState(false);
   const [getResult, setGetResult] = useState<string | null>(null);
   const [, setSessionToken] = useState<string | null>(null);
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
 
   const routePage = useLocation();
 
@@ -155,6 +159,7 @@ const NavBar = () => {
             onClick={() => {
               navigate("/home");
               resetFilterOptions();
+              setLogoClicked(true)
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
