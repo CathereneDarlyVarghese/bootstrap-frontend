@@ -97,6 +97,7 @@ const AddStatusForm = ({
       modified_date: new Date(),
       status_check_data: JSON.parse(JSON.stringify(formData)),
     };
+    console.log("modified date is", assetCheck.modified_date)
 
     try {
       // Add inventory using the API service
@@ -107,6 +108,7 @@ const AddStatusForm = ({
 
     // Log the form submission
     console.log("Form submitted:", formData);
+    console.log(assetCheck)
   };
 
   return (

@@ -432,7 +432,7 @@ const ListsLayout = () => {
             </div>
           </div>
           {filtersOpen ? (
-            <div >
+            <div>
               <FilterOptions
                 filterClose={() => setFitlersOpen(false)}
                 placements={assetPlacements}

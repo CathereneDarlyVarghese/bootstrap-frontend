@@ -67,7 +67,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             <img src={closeIcon} alt="Close" />
           </button>
           <h1 className="font-sans font-bold text-xl text-black dark:text-white lg:text-lg capitalize my-auto mx-auto">
-            Status Check Date: {modifiedDate.substring(0, 10)}
+            Status Check Date: {modifiedDate.substring(0, 50)}
           </h1>
         </div>
         <button className="ml-auto 2xl:block lg:hidden" onClick={closeAsset}>
