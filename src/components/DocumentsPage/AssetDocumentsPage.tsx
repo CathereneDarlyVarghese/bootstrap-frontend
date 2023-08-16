@@ -23,8 +23,6 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   };
   const [fileOpen, setFileOpen] = useState(false);
 
-  console.log("The selected asset ID (1) ==>>", selectedAssetID);
-
   const fetchDocumentsById = async () => {
     try {
       const documents = await getDocumentsByAssetId(

@@ -7,6 +7,7 @@ import { updateDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const EditDocumentsForm = ({
   open,
@@ -15,6 +16,8 @@ const EditDocumentsForm = ({
   fileStatus,
   documentStatus,
 }) => {
+  // QueryClient
+  const queryClient = useQueryClient();
   // States
   const [file, setFile] = useState<any>(null);
   const [formData, setFormData] = useState<Document>({
@@ -124,6 +127,8 @@ const EditDocumentsForm = ({
         formData.document_id,
         formData
       );
+      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
       toast.success("Document Updated Successfully");
     } catch (error) {
       toast.error("Failed to update document");

@@ -24,7 +24,17 @@ import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
+interface DocumentsCardProps {
+  document: IncomingDocument;
+  fileStatus: string;
+  documentStatus: string;
+}
+
+const DocumentsCard: React.FC<DocumentsCardProps> = ({
+  document,
+  fileStatus,
+  documentStatus,
+}) => {
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
   const defaultDocumentFile: File = {
@@ -57,19 +67,18 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
           authTokenObj.authToken,
           document.file_id
         );
-        console.log("Fetched File ==>> ", fetchedDocumentFile);
         setDocumentFile(fetchedDocumentFile);
       } catch (error) {
         console.log(error);
       }
     };
     fetchDocumentDetails();
-  }, []);
+  }, [document]);
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
     mutationFn: () =>
-      deleteDocument(authTokenObj.authToken, document.document_type_id),
+      deleteDocument(authTokenObj.authToken, document.document_id),
     onSettled: () => {
       toast.info("Document Deleted Successfully");
     },
