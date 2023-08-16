@@ -7,20 +7,23 @@ import { getDocumentsByLocationIdOnly } from "services/documentServices";
 import { IncomingDocument, File } from "types";
 import { getFileById } from "services/fileServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const DocumentsPage = () => {
+  // --- STATE VARIABLES ---
+
+  // State for document modal
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-  const [location] = useSyncedAtom(locationAtom);
+
+  // State for incoming documents
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
   >([]);
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const [getResult, setGetResult] = useState<string | null>(null);
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
 
+  // State for error/result messages
+  const [getResult, setGetResult] = useState<string | null>(null);
+
+  // Default document state
   const defaultDocument = {
     document_id: "",
     document_name: "",
@@ -40,66 +43,67 @@ const DocumentsPage = () => {
   const [selectedDocument, setSelectedDocument] =
     useState<IncomingDocument>(defaultDocument);
 
-  //display file
+  // State for file display
   const [fileOpen] = useState(false);
   const [, setFileName] = useState<string>(null);
 
-  const selectedLocation = location.locationId;
+  // Location and authentication states
+  const [location] = useSyncedAtom(locationAtom);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
-  const { refetch: fetchDocumentsByLocation } = useQuery<
-    IncomingDocument[],
-    Error
-  >(
-    "query-documentsbyLocationId",
-    async () => {
-      return await getDocumentsByLocationIdOnly(
+  // --- HELPER FUNCTIONS ---
+
+  // Format API response
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
+
+  // Fetch documents by location
+  const fetchDocumentsByLocation = async () => {
+    try {
+      const documents = await getDocumentsByLocationIdOnly(
         authTokenObj.authToken,
         location.locationId
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        setIncomingDocuments(res);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      setIncomingDocuments(documents);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
 
-  useEffect(() => {
-    fetchDocumentsByLocation();
-  }, [location]);
-
-  const { refetch: fetchFile } = useQuery<File, Error>(
-    "query-files",
-    async () => {
-      return await getFileById(
+  // Fetch file data
+  const fetchFile = async () => {
+    try {
+      const fileData = await getFileById(
         authTokenObj.authToken,
         selectedDocument.file_id
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const fileName =
-          res.file_array && res.file_array[0] ? res.file_array[0] : "";
-        setFileName(fileName);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      const fileName =
+        fileData.file_array && fileData.file_array[0]
+          ? fileData.file_array[0]
+          : "";
+      setFileName(fileName);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
 
-  useEffect(() => {
-    fetchFile();
-  }, [selectedDocument]);
+  // --- HOOKS ---
 
-  // const scrollToTop = () => {
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
-  // };
+  // Query for fetching documents by location
+  const { data: DocumentsByLocation } = useQuery({
+    queryKey: ["query-documentsByLocationId", location],
+    queryFn: fetchDocumentsByLocation,
+  });
+
+  // Query for fetching file by document
+  const { data: FileById } = useQuery({
+    queryKey: ["query-files", selectedDocument],
+    queryFn: fetchFile,
+  });
+
+  // Derived states or computations
+  const selectedLocation = location.locationId;
 
   return (
     <>
@@ -154,18 +158,9 @@ const DocumentsPage = () => {
                 }}
               >
                 <DocumentsCard
-                  documentID={document.document_id}
-                  documentName={document.document_name}
-                  documentDescription={document.document_description}
-                  documentTypeID={document.document_type_id}
-                  startDate={document.start_date}
-                  endDate={document.end_date}
-                  documentNotes={document.document_notes}
+                  document={document}
                   fileStatus="File Uploaded"
                   documentStatus="active"
-                  fileID={document.file_id}
-                  assetID={document.asset_id}
-                  locationID={document.location_id}
                 />
               </div>
             ))}

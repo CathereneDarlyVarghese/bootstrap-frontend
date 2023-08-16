@@ -19,60 +19,46 @@ import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import EditDocumentsForm from "./EditDocumentsForm";
 import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
-import { File } from "types";
+import { File, IncomingDocument } from "types";
 import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const DocumentsCard = ({
-  documentID,
-  documentName,
-  documentDescription,
-  documentTypeID,
-  startDate,
-  endDate,
-  documentNotes,
-  fileStatus,
-  documentStatus,
-  fileID,
-  assetID,
-  locationID,
-}) => {
+const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
+  // States
+  const [documentType, setDocumentType] = useState<string | null>(null);
   const defaultDocumentFile: File = {
     file_id: "",
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentType, setDocumentType] = useState<string | null>(null);
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
   const [addFileForm, setAddFileForm] = useState(false);
+
+  // Hooks and external data
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const queryClient = useQueryClient();
 
+  // Fetch document details on component mount
   useEffect(() => {
     const fetchDocumentDetails = async () => {
       try {
         const fetchedDocumentType = await getDocumentTypeById(
           authTokenObj.authToken,
-          documentTypeID
+          document.document_type_id
         );
-
         setDocumentType(fetchedDocumentType.document_type);
 
         const fetchedDocumentFile = await getFileById(
           authTokenObj.authToken,
-          fileID
+          document.file_id
         );
-
-        // setFileName((fetchedFile.file_array[0]));
         console.log("Fetched File ==>> ", fetchedDocumentFile);
         setDocumentFile(fetchedDocumentFile);
-
-        // console.log("Document Type ==>> ", documentType);
       } catch (error) {
         console.log(error);
       }
@@ -80,22 +66,23 @@ const DocumentsCard = ({
     fetchDocumentDetails();
   }, []);
 
-  const deleteSelectedDocument = useMutation(
-    () => deleteDocument(authTokenObj.authToken, documentID),
-    {
-      onSettled: () => {
-        toast.success("Document Deleted Successfully");
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["query-documentsbyLocationId"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Document");
-      },
-    }
-  );
+  // Mutation for deleting the selected document
+  const deleteSelectedDocument = useMutation({
+    mutationFn: () =>
+      deleteDocument(authTokenObj.authToken, document.document_type_id),
+    onSettled: () => {
+      toast.info("Document Deleted Successfully");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Document");
+    },
+  });
 
-  // Latest Document and Document History Table Data
+  // Create the table data for the latest document and document history
   const fileArray = documentFile.file_array.slice(0).reverse();
   const modifiedByArray = documentFile.modified_by_array.slice(0).reverse();
   const modifiedDateArray = documentFile.modified_date_array.slice(0).reverse();
@@ -105,13 +92,11 @@ const DocumentsCard = ({
     modifiedDateArray.length
   );
   const tableRows = [];
-
   for (let i = 0; i < maxLength; i++) {
     let serialNumber = maxLength - i;
     const file = fileArray[i] ? fileArray[i][0] : "Null";
     const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
     const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
-
     tableRows.push(
       <tr key={i}>
         <td>{serialNumber}</td>
@@ -146,7 +131,9 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {startDate ? startDate.substring(0, 10) : "Not Available"}
+                    {document.start_date
+                      ? document.start_date.substring(0, 10)
+                      : "Not Available"}
                   </h1>
                 </div>
               </div>
@@ -159,14 +146,18 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {endDate ? endDate.substring(0, 10) : "Not Available"}
+                    {document.end_date
+                      ? document.end_date.substring(0, 10)
+                      : "Not Available"}
                   </h1>
                 </div>
               </div>
             </div>
             <div className="flex flex-row items-center gap-5">
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
-                {documentName ? documentName : "Not Available"}
+                {document.document_name
+                  ? document.document_name
+                  : "Not Available"}
               </h1>
               <div
                 className={
@@ -228,7 +219,9 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {startDate ? startDate.substring(0, 10) : "Not Available"}
+                    {document.start_date
+                      ? document.start_date.substring(0, 10)
+                      : "Not Available"}
                   </h1>
                 </div>
               </div>
@@ -241,14 +234,18 @@ const DocumentsCard = ({
                 <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
-                    {endDate ? endDate.substring(0, 10) : "Not Available"}
+                    {document.end_date
+                      ? document.end_date.substring(0, 10)
+                      : "Not Available"}
                   </h1>
                 </div>
               </div>
             </div>
             <div className="flex flex-row items-center gap-5">
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
-                {documentName ? documentName : "Not Available"}
+                {document.document_name
+                  ? document.document_name
+                  : "Not Available"}
               </h1>
               <div
                 className={
@@ -261,7 +258,9 @@ const DocumentsCard = ({
           </div>
           <div className="mt-2">
             <p className="text-gray-400">
-              {documentDescription ? documentDescription : "Not Available"}
+              {document.document_description
+                ? document.document_description
+                : "Not Available"}
             </p>
           </div>
           <div className="mt-2 flex flex-row">
@@ -271,7 +270,9 @@ const DocumentsCard = ({
               </h1>
               <div>
                 <p className="text-gray-400">
-                  {documentNotes ? documentNotes : "Not Available"}
+                  {document.document_notes
+                    ? document.document_notes
+                    : "Not Available"}
                 </p>
               </div>
             </div>
@@ -392,30 +393,21 @@ const DocumentsCard = ({
             <EditDocumentsForm
               open={editFormOpen}
               close={() => setEditFormOpen(false)}
-              documentID={documentID}
-              documentName={documentName}
-              documentDescription={documentDescription}
-              documentTypeID={documentTypeID}
-              startDate={startDate}
-              endDate={endDate}
-              documentNotes={documentNotes}
+              document={document}
               fileStatus={fileStatus}
               documentStatus={documentStatus}
-              fileID={fileID}
-              assetID={assetID}
-              locationID={locationID}
             />
           </div>
           <div>
             <ReplaceExistingFileForm
-              fileID={fileID}
+              fileID={document.file_id}
               open={replaceFileForm}
               closeForm={() => setReplaceFileForm(false)}
             />
           </div>
           <div>
             <AddNewFileForm
-              fileID={fileID}
+              fileID={document.file_id}
               open={addFileForm}
               closeForm={() => setAddFileForm(false)}
             />

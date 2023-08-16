@@ -5,7 +5,7 @@ import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { IncomingDocument } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
   // const searchParams = new URLSearchParams(location.search);
@@ -25,24 +25,22 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
 
   console.log("The selected asset ID (1) ==>>", selectedAssetID);
 
-  const { refetch: fetchDocumentsById } = useQuery<IncomingDocument[], Error>(
-    "query-documentsByAssetId",
-    async () => {
-      return await getDocumentsByAssetId(
+  const fetchDocumentsById = async () => {
+    try {
+      const documents = await getDocumentsByAssetId(
         authTokenObj.authToken,
         selectedAssetID
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        setIncomingDocuments(res);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
+      setIncomingDocuments(documents);
+    } catch (error) {
+      setGetResult(formatResponse(error.response?.data || error));
     }
-  );
+  };
+
+  const { data: DocumentsById } = useQuery({
+    queryKey: ["query-documentsByAssetId"],
+    queryFn: fetchDocumentsById,
+  });
 
   useEffect(() => {
     fetchDocumentsById();
@@ -99,19 +97,9 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
                 }}
               >
                 <DocumentsCard
-                  documentID={document.document_id}
-                  documentName={document.document_name}
-                  documentDescription={document.document_description}
-                  documentTypeID={document.document_type_id}
-                  startDate={document.start_date}
-                  endDate={document.end_date}
-                  documentNotes={document.document_notes}
+                  document={document}
                   fileStatus="File Uploaded"
                   documentStatus="active"
-                  // FIX THIS - For now we are only displaying one file name
-                  fileID={document.file_id}
-                  assetID={document.asset_id}
-                  locationID={document.location_id}
                 />
               </div>
             ))}

@@ -11,34 +11,25 @@ import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 const EditDocumentsForm = ({
   open,
   close,
-  documentID,
-  documentName,
-  documentDescription,
-  documentTypeID,
-  startDate,
-  endDate,
-  documentNotes,
+  document,
   fileStatus,
   documentStatus,
-  fileID,
-  assetID,
-  locationID,
 }) => {
   const [file, setFile] = useState<any>(null);
   const [formData, setFormData] = useState<Document>({
-    document_id: documentID,
-    document_name: documentName,
-    document_description: documentDescription,
-    document_type_id: documentTypeID,
-    start_date: startDate,
-    end_date: endDate,
-    file_id: fileID,
-    document_notes: documentNotes,
+    document_id: document.document_id,
+    document_name: document.document_name,
+    document_description: document.document_description,
+    document_type_id: document.document_type_id,
+    start_date: document.start_date,
+    end_date: document.end_date,
+    file_id: document.file_id,
+    document_notes: document.document_notes,
     modified_by: null,
     modified_date: null,
     org_id: null,
-    asset_id: assetID,
-    location_id: locationID,
+    asset_id: document.asset_id,
+    location_id: document.location_id,
     document_type: null,
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
@@ -59,7 +50,7 @@ const EditDocumentsForm = ({
       try {
         const data = window.localStorage.getItem("sessionToken");
         const fetchedDocumentTypes = await getAllDocumentTypes(data);
-        const fetchedDocumentFile = await getFileById(data, fileID);
+        const fetchedDocumentFile = await getFileById(data, document.file_id);
 
         setDocumentTypes(fetchedDocumentTypes);
         setDocumentFile(fetchedDocumentFile);

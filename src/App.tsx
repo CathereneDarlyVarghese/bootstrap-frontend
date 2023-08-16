@@ -13,8 +13,8 @@ import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
 import DocumentsPage from "components/DocumentsPage/DocumentsPage";
 
 import AdminPage from "components/AdminPage/AdminPage";
-import { ReactQueryDevtools } from "react-query/devtools";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,7 +68,7 @@ function App() {
           theme="light"
         />
       </Router>
-      <ReactQueryDevtools initialIsOpen={true} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

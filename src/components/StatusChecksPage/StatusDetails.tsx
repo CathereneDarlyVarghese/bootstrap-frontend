@@ -5,59 +5,59 @@ import { toast } from "react-toastify";
 import { TfiClose } from "react-icons/tfi";
 import { deleteAssetCheck } from "services/assetCheckServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IncomingAssetCheck } from "types";
 
 interface StatusDetailsProps {
-  sessionToken: string | null;
-  uptimeCheckId: string;
-  assetId: string;
-  statusCheck: string;
-  imageArray: string[][];
-  modifiedBy: string;
-  modifiedDate: string;
-  uptimeNotes: string;
-  refreshAssets: () => void;
+  selectedAssetCheck: IncomingAssetCheck | undefined;
   closeAsset: () => void;
   status_check_data: JSON;
 }
 
 const StatusDetails: React.FC<StatusDetailsProps> = ({
-  sessionToken,
-  uptimeCheckId,
-
-  statusCheck,
-  imageArray,
-  modifiedBy,
-  modifiedDate,
-
-  refreshAssets,
+  selectedAssetCheck,
   closeAsset,
   status_check_data,
 }) => {
+  // Hook to get the authentication token
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+
+  // React Query's client
   const queryClient = useQueryClient();
 
+  /**
+   * Convert camel case strings to normal spaced strings.
+   * Example: "camelCaseExample" to "Camel Case Example"
+   *
+   * @param {string} text - The camel case string.
+   * @return {string} - The converted string.
+   */
   function camelCaseToNormal(text) {
     return text
       .replace(/([A-Z])/g, " $1") // Insert a space before each uppercase letter
-      .replace(/^./, function (str) {
-        return str.toUpperCase();
-      }) // Uppercase the first character of the string
+      .replace(/^./, (str) => str.toUpperCase()) // Uppercase the first character of the string
       .trim(); // Remove any leading spaces
   }
 
-  const assetCheckMutation = useMutation(
-    () => deleteAssetCheck(authTokenObj.authToken, uptimeCheckId),
-    {
-      onSettled: () => {
-        toast.success("Asset's Status Check Deleted Successfully");
-        queryClient.invalidateQueries(["query-assetChecks"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset's Status Check");
-      },
-    }
-  );
+  /**
+   * Mutation to handle deleting an asset check.
+   * On successful deletion, it shows a toast and invalidates the relevant queries.
+   * On failure, it shows an error toast.
+   */
+  const assetCheckMutation = useMutation({
+    mutationFn: () =>
+      deleteAssetCheck(
+        authTokenObj.authToken,
+        selectedAssetCheck?.uptime_check_id
+      ),
+    onSettled: () => {
+      toast.info("Asset's Status Check Deleted Successfully");
+      queryClient.invalidateQueries(["query-assetChecks"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset's Status Check");
+    },
+  });
 
   return (
     <div className="h-5/6 mx-4 mt-2 p-5 bg-white dark:bg-gray-800 rounded-xl overflow-y-auto flex flex-col border border-gray-200 dark:border-gray-600 hover:border-blue-800 hover:dark:border-gray-400">
@@ -67,7 +67,8 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             <img src={closeIcon} alt="Close" />
           </button>
           <h1 className="font-sans font-bold text-xl text-black dark:text-white lg:text-lg capitalize my-auto mx-auto">
-            Status Check Date: {modifiedDate.substring(0, 50)}
+            Status Check Date:{" "}
+            {selectedAssetCheck?.modified_date.substring(0, 10)}
           </h1>
         </div>
         <button className="ml-auto 2xl:block lg:hidden" onClick={closeAsset}>
@@ -75,13 +76,14 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
         </button>
       </div>
       <figure className="rounded-none">
-        {imageArray && imageArray[0] && (
-          <img
-            src={imageArray[0][0]}
-            alt="Images of the status checks"
-            className="rounded-xl h-32 w-fit object-cover mx-auto"
-          />
-        )}
+        {selectedAssetCheck?.images_array &&
+          selectedAssetCheck?.images_array[0] && (
+            <img
+              src={selectedAssetCheck?.images_array[0][0]}
+              alt="Images of the status checks"
+              className="rounded-xl h-32 w-fit object-cover mx-auto"
+            />
+          )}
       </figure>
       <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
         <div className="flex 2xl:flex-row lg:flex-col">
@@ -89,7 +91,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             className="flex text-black dark:text-white text-xl font-semibold font-sans tracking-wide xl:text-sm"
             style={{ wordSpacing: 3 }}
           >
-            {statusCheck}
+            {selectedAssetCheck?.status_check}
           </h2>
           <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
             {/* <Link to={`/qr-code/${assetId}`}>
@@ -116,7 +118,11 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
               <tr className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
                 <td className="w-24">Modified By</td>
                 <td className="w-5">:</td>
-                <td>{modifiedBy ? modifiedBy : "Data Not Available"}</td>
+                <td>
+                  {selectedAssetCheck?.modified_by
+                    ? selectedAssetCheck?.modified_by
+                    : "Data Not Available"}
+                </td>
               </tr>
               {status_check_data &&
                 Object.entries(status_check_data).map(([key, value], index) => (

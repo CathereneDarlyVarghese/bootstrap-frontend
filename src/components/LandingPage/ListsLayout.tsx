@@ -5,16 +5,12 @@ import "./cardstyles.css";
 import AssetCard from "./AssetCard";
 import AssetDetails from "./AssetDetails";
 // import Pusher from "pusher-js";
-
 import AddAssetForm from "./AddAssetForm";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { AssetPlacement, AssetSection, IncomingAsset } from "types";
-import { Auth } from "aws-amplify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import SearchIcon from "../../icons/circle2017.png";
-
 import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
@@ -29,69 +25,81 @@ import {
 } from "./FilterOptions";
 import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "react-query";
-import { getAsset } from "services/apiServices";
+import { useQuery } from "@tanstack/react-query";
 
 const ListsLayout = () => {
+  // ----------------------- REFS -----------------------
+  const selectRef = useRef<HTMLSelectElement>(null); // For resetting the section selector
+
+  // ----------------------- NAVIGATION -----------------------
   const navigate = useNavigate();
+
+  // ----------------------- STATE DECLARATIONS -----------------------
+
+  // Location states
   const [location] = useSyncedAtom(locationAtom);
-  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]); //This is because the fetched assets are a mixture from several tables.
-  const [, setAssetId] = useState(null);
-  const [sessionToken] = useState<string | null>(null);
-  const [, setForceRefresh] = useState(false);
+
+  // Authentication
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+
+  // Assets management
+  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
+  const [assets, setAssets] = useState<IncomingAsset[]>([]);
+  const [assetId, setAssetId] = useState(null);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+
+  // UI States
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(true);
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  // const [, setNotificationEnabled] = useState(false);
-  const [filtersOpen, setFitlersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [assetDetailsOpen, setAssetDetailsOpen] = useState(false);
-  const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
-  const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
-  const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
-    []
-  );
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
-  const [assets, setAssets] = useState<IncomingAsset[]>([]);
-  const [getResult, setGetResult] = useState<string | null>(null);
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [detailsTab, setDetailsTab] = useState(0); // Active tabs in asset details card
+  const [addAssetOpen, setAddAssetOpen] = useState(false);
   const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom)
 
-  // state from AddAssetForm.tsx
-  const [addAssetOpen, setAddAssetOpen] = useState(false);
-
+  // Asset section and placements management
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },
+  ];
+  const defaultAssetPlacements = [
+    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
   const [selectedAssetSection] = useState<AssetSection>(
     defaultAssetSections[0]
   );
-  //active tabs in asset details card
-  const [detailsTab, setDetailsTab] = useState(0);
-
-  const defaultAssetPlacements = [
-    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
-  ];
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
     defaultAssetPlacements
   );
-
   const [selectedAssetPlacementName] = useState<string>("");
+  const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
+    []
+  );
 
-  const handleAddAssetOpen = () => {
-    setAddAssetOpen(true);
+  // Buttons and filters
+  const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
+  const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
+
+  // Miscellaneous states
+  const [getResult, setGetResult] = useState<string | null>(null);
+
+  // ----------------------- FUNCTION DECLARATIONS -----------------------
+
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
   };
 
-  // function to add and remove class for UI
+  // Functions for UI manipulation
   const addClass = (selectClass, addClass) => {
     document.querySelector(selectClass).classList.add(addClass);
   };
-
   const removeClass = (selectClass, removeClass) => {
     document.querySelector(selectClass).classList.remove(removeClass);
+  };
+
+  const handleAddAssetOpen = () => {
+    setAddAssetOpen(true);
   };
 
   const handleSearchInputChange = (
@@ -102,25 +110,87 @@ const ListsLayout = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("search", encodeURIComponent(newSearchTerm));
-
     const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
     window.history.pushState({}, "", newUrl);
   };
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const scannedSearchTerm = urlParams.get("search");
-    if (scannedSearchTerm) {
-      setSearchTerm(decodeURIComponent(scannedSearchTerm));
-    } else {
-      clearQueryParams();
-    }
-  }, []);
 
   const clearQueryParams = () => {
     const urlWithoutParams = window.location.origin + window.location.pathname;
     window.history.pushState(null, "", urlWithoutParams);
   };
+
+  // Fetching assets data and handlers
+  const fetchAllAssets = async () => {
+    try {
+      if (location.locationId !== "") {
+        const res = await getAssets(
+          authTokenObj.authToken,
+          location.locationId
+        );
+        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+      }
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
+
+  const fetchAssetSections = async () => {
+    try {
+      const res = await getAssetSections(authTokenObj.authToken);
+      const filtered = res.filter(
+        (section: AssetSection) => section.location_id === location.locationId
+      );
+      setAssetSections(filtered);
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
+
+  const fetchAssetPlacements = async () => {
+    try {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      const filtered = res.filter(
+        (placement: AssetPlacement) =>
+          placement.location_id === location.locationId
+      );
+      setAssetPlacements(filtered);
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
+
+  const detailsTabIndexRefresh = () => {
+    setDetailsTab(0);
+  };
+
+  const handleSectionSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+    setSelectedSectionNames(selectedValue === "" ? [] : [selectedValue]);
+  };
+
+  const handleSectionReset = () => {
+    if (selectRef.current) {
+      selectRef.current.value = "";
+      setSelectedSectionNames([]);
+    }
+  };
+
+  // ----------------------- USEEFFECT HOOKS -----------------------
+
+  // Sync search term with URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const scannedSearchTerm = urlParams.get("search");
+    setSearchTerm(
+      scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : ""
+    );
+  }, []);
+
+  // Note: You can add other useEffect hooks here as necessary
+
+  // ----------------------- NOTIFICATION FUNCTIONS -----------------------
 
   // useEffect(() => {
   //   const subscribeToPusherChannel = () => {
@@ -165,116 +235,30 @@ const ListsLayout = () => {
   //   requestNotificationPermission();
   // }, []);
 
-  const { refetch: getAllAssets } = useQuery<IncomingAsset[], Error>(
-    "query-asset",
-    async () => {
-      if (location.locationId != "")
-        return await getAssets(authTokenObj.authToken, location.locationId);
-    },
-    {
-      enabled: Boolean(authTokenObj.authToken && location?.locationId),
-      onSuccess: (res) => {
-        if (Array.isArray(res)) {
-          setIncomingAssets(res);
-        } else if (res) {
-          setIncomingAssets([res]);
-        } else {
-          setIncomingAssets([]);
-        }
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
-    }
-  );
+  // ----------------------- QUERY HOOKS -----------------------
 
-  useEffect(() => {
-    if (authTokenObj?.authToken) {
-      getAllAssets();
-    }
-  }, [location, authTokenObj.authToken]);
+  const { data: Assets } = useQuery({
+    queryKey: ["query-asset", location, authTokenObj.authToken],
+    queryFn: fetchAllAssets,
+    enabled: !!authTokenObj.authToken,
+  });
 
-  const { refetch: fetchAssetSections } = useQuery<AssetSection[], Error>(
-    "query-assetSections",
-    async () => {
-      return await getAssetSections(authTokenObj.authToken);
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const filteredFetchedAssetSections = res.filter(
-          (section: AssetSection) => section.location_id === location.locationId
-        );
-        setAssetSections(filteredFetchedAssetSections);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
-    }
-  );
+  const { data: AssetsSections } = useQuery({
+    queryKey: ["query-assetSections", location],
+    queryFn: fetchAssetSections,
+    enabled: !!authTokenObj.authToken,
+  });
 
-  useEffect(() => {
-    fetchAssetSections();
-  }, [location]);
-
-  const { refetch: fetchAssetPlacements } = useQuery<AssetPlacement[], Error>(
-    "query-assetPlacement",
-    async () => {
-      return await getAssetPlacements(authTokenObj.authToken);
-    },
-    {
-      enabled: true,
-      onSuccess: (res) => {
-        const filteredFetchedAssetPlacements = res.filter(
-          (placement: AssetPlacement) =>
-            placement.location_id === location.locationId
-        );
-        setAssetPlacements(filteredFetchedAssetPlacements);
-      },
-      onError: (err: any) => {
-        setGetResult(formatResponse(err.response?.data || err));
-      },
-    }
-  );
-
-  useEffect(() => {
-    fetchAssetPlacements();
-  }, [location, selectedAssetSection.section_id, selectedAssetPlacementName]);
-
-
-  useEffect(() => {
-    if (logoClicked === true) {
-      setAssetDetailsOpen(false);
-      setLogoClicked(false)
-    }
-  }, [logoClicked])
-
-  const detailsTabIndexRefresh = () => {
-    setDetailsTab(0);
-  };
-
-  const handleSectionSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedValue = event.target.value;
-
-    if (selectedValue === "") {
-      // When "All Sections" is selected, reset selectedSectionNames to []
-      setSelectedSectionNames([]);
-    } else {
-      // When any other option is selected, include only that section_name
-      setSelectedSectionNames([selectedValue]);
-    }
-  };
-
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  const handleSectionReset = () => {
-    if (selectRef.current) {
-      selectRef.current.value = "";
-      setSelectedSectionNames([]);
-    }
-  };
+  const { data: AssetsPlacements } = useQuery({
+    queryKey: [
+      "query-assetPlacement",
+      location,
+      selectedAssetSection.section_id,
+      selectedAssetPlacementName,
+    ],
+    queryFn: fetchAssetPlacements,
+    enabled: !!authTokenObj.authToken,
+  });
 
   return (
     <div
@@ -422,7 +406,7 @@ const ListsLayout = () => {
               </select>
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize text-black"
-                onClick={() => setFitlersOpen(true)}
+                onClick={() => setFiltersOpen(true)}
               >
                 <div className="flex flex-row">
                   Filters
@@ -434,7 +418,7 @@ const ListsLayout = () => {
           {filtersOpen ? (
             <div>
               <FilterOptions
-                filterClose={() => setFitlersOpen(false)}
+                filterClose={() => setFiltersOpen(false)}
                 placements={assetPlacements}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
@@ -503,12 +487,7 @@ const ListsLayout = () => {
                       }}
                     >
                       <AssetCard
-                        assetName={asset.asset_name}
-                        assetType={asset.asset_type}
-                        assetAddress={asset.location_name}
-                        imageLocation={asset.images_array[0]}
-                        status={asset.asset_status}
-                        assetCondition={asset.asset_condition}
+                        asset={asset}
                         imagePlaceholder="img"
                         updatedDetailsTabIndex={detailsTabIndexRefresh}
                       />
@@ -541,23 +520,11 @@ const ListsLayout = () => {
                   // removeClass("#parent-element .asset-details-card", "w-full");
                   // removeClass("#parent-element .asset-card", "lg:hidden");
                 }}
-                assetId={selectedAsset.asset_id}
-                cardImage={selectedAsset.images_array[0]}
-                cardTitle={selectedAsset.asset_name}
-                assetType={selectedAsset.asset_type}
-                notes={selectedAsset.asset_notes}
-                sectionName={selectedAsset.section_name}
-                placementName={selectedAsset.placement_name}
-                purchasePrice={selectedAsset.asset_finance_purchase}
-                currentValue={selectedAsset.asset_finance_current_value}
-                sessionToken={sessionToken}
+                sessionToken={authTokenObj.authToken}
                 setAssetId={setSelectedAsset}
-                selectedAsset1={selectedAsset}
+                Asset={selectedAsset}
                 tabIndex={detailsTab}
                 setTabIndex={setDetailsTab}
-                assetCheckDate={selectedAsset.next_asset_check_date}
-                assetCondition={selectedAsset.asset_condition}
-                assetTypeId={selectedAsset.asset_type_id}
               />
             )}
           </>

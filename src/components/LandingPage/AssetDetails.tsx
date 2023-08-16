@@ -11,119 +11,75 @@ import { TfiClose } from "react-icons/tfi";
 import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
 import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
 import useAssetCondition from "hooks/useAssetCondition";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import {
+  getStatusColor,
+  getStatusText,
+} from "components/StatusChecksPage/statusUtils";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
-  assetId: string | null;
-  cardTitle: string | null;
-  cardImage: string | null;
-  sectionName: string | null;
-  placementName: string | null;
-  purchasePrice: string | null;
-  currentValue: string | null;
-  notes: string | null;
-  assetType: string | null;
   setAssetId: (id: string | null) => void;
   closeAsset: () => void;
-  selectedAsset1: IncomingAsset | null;
+  Asset: IncomingAsset | null;
   tabIndex: any;
   setTabIndex: (tabIndex) => void;
-  assetCheckDate: Date | null;
-  assetCondition: string | null;
-  assetTypeId: string | null;
 }
 
 const AssetDetails: React.FC<AssetDetailsProps> = ({
-  assetId,
-  cardImage,
-  cardTitle,
-  assetType,
   sessionToken,
   setAssetId,
   closeAsset,
-  sectionName,
-  placementName,
-  purchasePrice,
-  currentValue,
-  notes,
-  selectedAsset1,
+  Asset,
   tabIndex,
   setTabIndex,
-  assetCheckDate,
-  assetCondition,
-  assetTypeId,
 }) => {
-  // const [, setActiveTab] = useState(0);
+  // State and Hooks
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-
-  const getStatusText = (status: string | null) => {
-    switch (status) {
-      case StatusTypes.WORKING:
-        return "WORKING";
-      case StatusTypes.DOWN:
-        return "DOWN";
-      case StatusTypes.MAINTENANCE:
-        return "Maintenance";
-      default:
-        return "";
-    }
-  };
-
-  const getStatusColor = (status: string | undefined): string => {
-    if (status === StatusTypes.WORKING) {
-      return "bg-green-400";
-    } else if (status === StatusTypes.DOWN) {
-      return "bg-red-400";
-    } else if (status === StatusTypes.MAINTENANCE) {
-      return "bg-yellow-400";
-    }
-    return "bg-gray-400";
-  };
-
-  const deleteAssetMutation = useMutation(
-    () => deleteAsset(authTokenObj.authToken, assetId),
-    {
-      onSettled: () => {
-        setAssetId(null);
-        toast.success("Asset Deleted Successfully");
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
-
   const [assetConditionState, setAssetConditionState] = useState(assetConditions[AssetCondition.ACTIVE])
-  const handleToggleAssetCondition = useMutation(
-    (assetCondition: string) => {
+
+  // Mutation for deleting an asset
+  const deleteAssetMutation = useMutation({
+    mutationFn: () => deleteAsset(authTokenObj.authToken, Asset.asset_id),
+    onSettled: () => {
+      setAssetId(null);
+      toast.info("Asset Deleted Successfully");
+      queryClient.invalidateQueries(["query-asset"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
+
+  // Mutation for toggling asset condition
+  const handleToggleAssetCondition = useMutation({
+    mutationFn: (assetCondition: string) => {
       if (assetCondition === assetConditions[AssetCondition.ACTIVE]) {
         return toggleAssetCondition(
           authTokenObj.authToken,
-          assetId,
+          Asset.asset_id,
           assetConditions[AssetCondition.INACTIVE]
         );
       } else {
         return toggleAssetCondition(
           authTokenObj.authToken,
-          assetId,
+          Asset.asset_id,
           assetConditions[AssetCondition.ACTIVE]
         );
       }
     },
-    {
-      onSettled: () => {
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to toggle asset condition");
-      },
-    }
-  );
+    onSettled: () => {
+      queryClient.invalidateQueries(["query-asset"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to toggle asset condition");
+    },
+  });
+
+  // const [, setActiveTab] = useState(0);
 
   // const handleToggleAssetCondition = async () => {
   //   try {
@@ -215,7 +171,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
             <>
               <figure className="rounded-none">
                 <img
-                  src={cardImage}
+                  src={Asset.images_array[0]}
                   alt="an image"
                   className="rounded-xl h-48 object-cover mx-auto"
                 />
@@ -226,25 +182,27 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     className="flex text-gray-800 dark:text-gray-300 text-xl font-semibold font-sans tracking-wide xl:text-sm"
                     style={{ wordSpacing: 3 }}
                   >
-                    {cardTitle}
+                    {Asset.asset_name}
                   </h2>
 
                   <div className="my-2 2xl:ml-auto lg:ml-0 lg:mx-auto flex flex-row items-center">
                     <button className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-default capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
-                      {assetType}
+                      {Asset.asset_type}
                     </button>
                     <button
                       className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2 ${getStatusColor(
-                        selectedAsset1?.asset_status
+                        Asset.asset_status
                       )}`}
                     >
-                      {getStatusText(selectedAsset1?.asset_status)}
+                      {getStatusText(Asset?.asset_status)}
                     </button>
 
-                    {assetCheckDate ? (
+                    {Asset.next_asset_check_date ? (
                       <button className="badge bg-green-400 text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2">
                         <AiOutlineCalendar className="mr-3 text-xl sm:mr-1 sm:text-lg" />
-                        {assetCheckDate.toLocaleString().slice(0, 10)}
+                        {Asset.next_asset_check_date
+                          .toLocaleString()
+                          .slice(0, 10)}
                       </button>
                     ) : (
                       <span className="text-gray-400 mx-1">
@@ -261,25 +219,30 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 </div>
                 <div>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Section: {sectionName ? sectionName : "Not Available"}
+                    Section:{" "}
+                    {Asset.section_name ? Asset.section_name : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Placement: {placementName ? placementName : "Not Available"}
+                    Placement:{" "}
+                    {Asset.placement_name
+                      ? Asset.placement_name
+                      : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                     Purchase Price:{" "}
-                    {parseInt(purchasePrice)
-                      ? parseInt(purchasePrice)
+                    {parseInt(Asset.asset_finance_purchase)
+                      ? parseInt(Asset.asset_finance_purchase)
                       : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                     Current Value:{" "}
-                    {parseInt(currentValue)
-                      ? parseInt(currentValue)
+                    {parseInt(Asset.asset_finance_current_value)
+                      ? parseInt(Asset.asset_finance_current_value)
                       : "Not Available"}
                   </p>
                   <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                    Notes: {notes ? notes : "Not Available"}
+                    Notes:{" "}
+                    {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
                   </p>
                 </div>
                 {/* <div className="my-2">
@@ -298,22 +261,17 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 <button
                   className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                   onClick={() => {
-                    handleToggleAssetCondition.mutate(assetCondition);
-                    const newAssetCondition = assetConditionState === assetConditions[AssetCondition.ACTIVE] ? assetConditions[AssetCondition.INACTIVE] :
-                      assetConditions[AssetCondition.ACTIVE]
-                    setAssetConditionState(newAssetCondition)
-                    closeAsset()
-                    // setAssetConditionState(assetConditions[AssetCondition.INACTIVE])
-
+                    handleToggleAssetCondition.mutate(Asset.asset_condition);
                     // setTimeout(() => {
                     //   window.location.reload();
                     // }, 1000);
                   }}
                 >
-                  {/* {assetCondition === assetConditions[AssetCondition.ACTIVE]
+                  {Asset.asset_condition ===
+                    assetConditions[AssetCondition.ACTIVE]
                     ? "Mark as Inactive"
-                    : "Mark as Active"} */}
-                  {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"}
+                    : "Mark as Active"}
+                  {/* {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"} */}
                 </button>
                 <button className="mx-3">
                   <FiEdit3 className="text-xl text-black dark:text-white" />
@@ -336,17 +294,17 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
             </>
           ) : tabIndex === 1 ? (
             <div>
-              <AssetDocumentsPage selectedAsset={selectedAsset1} />
+              <AssetDocumentsPage selectedAsset={Asset} />
             </div>
           ) : tabIndex === 2 ? (
             <div>
               <AssetStatusChecksPage
-                selectedAsset={selectedAsset1}
+                selectedAsset={Asset}
                 sessionToken={sessionToken}
-                assetId={assetId}
+                assetId={Asset.asset_id}
                 setAssetId={setAssetId}
-                assetType={assetType}
-                assetTypeId={assetTypeId}
+                assetType={Asset.asset_type}
+                assetTypeId={Asset.asset_type_id}
               />
             </div>
           ) : (
