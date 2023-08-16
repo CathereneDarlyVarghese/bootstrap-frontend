@@ -27,12 +27,12 @@ const StatusCard: React.FC<StatusCardProps> = ({
       <div className="card-body overflow-auto px-0 py-0 w-11/12 overflow-hidden">
         <div className="flex flex-row gap-5">
           <h1
-            className={`flex text-gray-800 dark:text-white text-lg font-semibold font-sans tracking-wide xl:text-sm ${status === "WORKING" ? "text-green-500" : status === "DOWN" ? "text-red-500" : "text-yellow-500"}`}
+            className={`flex text-gray-800 dark:text-white text-lg font-semibold font-sans tracking-wide xl:text-sm`}
             style={{ wordSpacing: 3 }}
           >
             {formattedDate}
           </h1>
-          <h1 className={`${status === "WORKING" ? "text-green-500" : status === "DOWN" ? "text-red-500" : "text-yellow-500"} dark:text-gray-400 text-lg font-normal font-sans xl:text-sm`}>
+          <h1 className={`text-gray-500 dark:text-gray-400 text-lg font-normal font-sans xl:text-sm`}>
             {status === "WORKING" ? "Working" : status === "DOWN" ? "Down" : "Needs Attention"}
           </h1>
           <div className="flex items-center ml-auto">
@@ -44,7 +44,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
               <BsFillCheckCircleFill className="text-green-700 text-xl mr-2" />
             )}
             {status === "UNDER MAINTENANCE" && (
-              <AiFillExclamationCircle className="text-red-500 text-xl mr-2" />
+              <AiFillExclamationCircle className="text-yellow-600 text-xl mr-2" />
             )}
           </div>
         </div>

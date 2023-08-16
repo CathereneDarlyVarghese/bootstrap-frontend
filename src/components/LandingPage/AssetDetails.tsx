@@ -262,6 +262,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                   className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                   onClick={() => {
                     handleToggleAssetCondition.mutate(Asset.asset_condition);
+                    closeAsset()
                     // setTimeout(() => {
                     //   window.location.reload();
                     // }, 1000);

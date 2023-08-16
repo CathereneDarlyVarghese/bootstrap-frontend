@@ -259,6 +259,12 @@ const ListsLayout = () => {
     queryFn: fetchAssetPlacements,
     enabled: !!authTokenObj.authToken,
   });
+  useEffect(() => {
+    if (logoClicked === true) {
+      setAssetDetailsOpen(false);
+      setLogoClicked(false)
+    }
+  }, [logoClicked])
 
   return (
     <div
