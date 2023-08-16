@@ -239,6 +239,7 @@ const AddDocumentsForm = ({
                     id="endDate"
                     name="endDate"
                     value={endDate}
+                    min={startDate}
                     onChange={(e) => handleChange(e)}
                     required
                     className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
