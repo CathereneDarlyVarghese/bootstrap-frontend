@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -38,6 +39,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [assetConditionState, setAssetConditionState] = useState(assetConditions[AssetCondition.ACTIVE])
 
   // Mutation for deleting an asset
   const deleteAssetMutation = useMutation({
@@ -120,11 +122,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
               </button>
               <div className="flex flex-row">
                 <button
-                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${
-                    tabIndex === 1
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                  }`}
+                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
+                    ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                    : "text-gray-400 font-normal"
+                    }`}
                   onClick={() => {
                     setTabIndex(1);
                   }}
@@ -132,11 +133,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                   Documents
                 </button>
                 <button
-                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${
-                    tabIndex === 2
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                  }`}
+                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
+                    ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                    : "text-gray-400 font-normal"
+                    }`}
                   onClick={() => {
                     setTabIndex(2);
                   }}
@@ -144,11 +144,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                   Status Checks
                 </button>
                 <button
-                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${
-                    tabIndex === 3
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                  }`}
+                  className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
+                    ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                    : "text-gray-400 font-normal"
+                    }`}
                   onClick={() => {
                     setTabIndex(3);
                   }}
@@ -263,15 +262,17 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                   className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                   onClick={() => {
                     handleToggleAssetCondition.mutate(Asset.asset_condition);
+                    closeAsset()
                     // setTimeout(() => {
                     //   window.location.reload();
                     // }, 1000);
                   }}
                 >
                   {Asset.asset_condition ===
-                  assetConditions[AssetCondition.ACTIVE]
+                    assetConditions[AssetCondition.ACTIVE]
                     ? "Mark as Inactive"
                     : "Mark as Active"}
+                  {/* {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"} */}
                 </button>
                 <button className="mx-3">
                   <FiEdit3 className="text-xl text-black dark:text-white" />
