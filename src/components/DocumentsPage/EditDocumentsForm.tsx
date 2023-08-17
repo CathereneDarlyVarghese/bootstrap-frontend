@@ -127,7 +127,7 @@ const EditDocumentsForm = ({
         formData.document_id,
         formData
       );
-      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       toast.success("Document Updated Successfully");
     } catch (error) {

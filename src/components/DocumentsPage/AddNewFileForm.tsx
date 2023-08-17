@@ -41,7 +41,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
         newModifiedByArrayEntry,
         newModifiedDateArrayEntry
       );
-      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       toast.success("File Added Successfully");
     } catch (error) {
