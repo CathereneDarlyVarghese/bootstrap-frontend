@@ -45,10 +45,20 @@ const AddDocumentsForm = ({
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
+    const { id, value } = e.target;
+
+    if (id === "startDate") {
+      setFormData((prevState) => ({
+        ...prevState,
+        startDate: value,
+        endDate: "", // Resetting the endDate here
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [id]: value,
+      }));
+    }
   };
 
   // Mutation function to add a new document
@@ -225,7 +235,9 @@ const AddDocumentsForm = ({
                     id="startDate"
                     name="startDate"
                     value={startDate}
-                    onChange={(e) => handleChange(e)}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     required
                     className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                   />
