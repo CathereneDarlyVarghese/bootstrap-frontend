@@ -7,6 +7,7 @@ import { updateDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const EditDocumentsForm = ({
   open,
@@ -15,25 +16,22 @@ const EditDocumentsForm = ({
   fileStatus,
   documentStatus,
 }) => {
+  // QueryClient
+  const queryClient = useQueryClient();
+  // States
   const [file, setFile] = useState<any>(null);
   const [formData, setFormData] = useState<Document>({
-    document_id: document.document_id,
-    document_name: document.document_name,
-    document_description: document.document_description,
-    document_type_id: document.document_type_id,
-    start_date: document.start_date,
-    end_date: document.end_date,
-    file_id: document.file_id,
-    document_notes: document.document_notes,
+    // Initializing formData with passed document properties
+    ...document,
     modified_by: null,
     modified_date: null,
     org_id: null,
-    asset_id: document.asset_id,
-    location_id: document.location_id,
     document_type: null,
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
-  const [, setSelectedStartDate] = useState<string>(formData.start_date);
+  const [selectedStartDate, setSelectedStartDate] = useState<string>(
+    formData.start_date
+  );
   const [, setSelectedEndDate] = useState<string>(formData.end_date);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const defaultDocumentFile: File = {
@@ -44,18 +42,20 @@ const EditDocumentsForm = ({
   };
   const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
 
-  // useEffect hook to retrieve the session token from localStorage
+  // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const data = window.localStorage.getItem("sessionToken");
-        const fetchedDocumentTypes = await getAllDocumentTypes(data);
-        const fetchedDocumentFile = await getFileById(data, document.file_id);
+        const fetchedDocumentTypes = await getAllDocumentTypes(
+          authTokenObj.authToken
+        );
+        const fetchedDocumentFile = await getFileById(
+          authTokenObj.authToken,
+          document.file_id
+        );
 
         setDocumentTypes(fetchedDocumentTypes);
         setDocumentFile(fetchedDocumentFile);
-
-        console.log("Form Data Document Name ==>> ", formData.file_id);
       } catch (error) {
         console.error(
           "Failed to fetch Session Token and Document Types:",
@@ -67,23 +67,19 @@ const EditDocumentsForm = ({
     fetchDetails();
   }, []);
 
+  // Handlers
   const handleFormDataChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    console.log(e.target.value);
-
     setFormData((prevState) => ({
       ...prevState,
-      //"id" and "name" of <elements> in <form> has to be same for this to work
       [e.target.id]: e.target.value,
     }));
   };
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedStartDate(e.target.value);
-
     setFormData((prevState) => ({
       ...prevState,
       start_date: e.target.value,
@@ -92,7 +88,6 @@ const EditDocumentsForm = ({
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedEndDate(e.target.value);
-
     setFormData((prevState) => ({
       ...prevState,
       end_date: e.target.value,
@@ -107,19 +102,15 @@ const EditDocumentsForm = ({
     event.preventDefault();
 
     if (file) {
-      // Step 1: Obtain file location (link) from S3 bucket
+      // Upload the file to S3 and update the File object in the backend
       const documentLocation = await uploadFiletoS3(file, "document");
-      console.log("documentLocation ==>> ", documentLocation);
-
       const newFileArrayEntry: string = documentLocation.location;
-      console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
       const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
       const newModifiedDateArrayEntry = new Date()
         .toISOString()
         .substring(0, 10);
 
-      // Step 2: Append this file location into file_array of existing File object in the backend
       const appendedFile = await appendToFileArray(
         authTokenObj.authToken,
         formData.file_id,
@@ -127,44 +118,21 @@ const EditDocumentsForm = ({
         newModifiedByArrayEntry,
         newModifiedDateArrayEntry
       );
-      console.log(
-        "Return from appendFile (Success/Error Message) ==>> ",
-        appendedFile
-      );
     }
+
     try {
+      // Update the document
       const updatedDocument = await updateDocument(
         authTokenObj.authToken,
         formData.document_id,
         formData
       );
-      console.log("Updated Document:", updatedDocument);
-      toast.success("Document Updated Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      // setAddDocumentsOpen(false);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      toast.success("Document Updated Successfully");
     } catch (error) {
-      console.error("Failed to update document:", error);
-      toast.error("Failed to update document", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Failed to update document");
     }
-
-    // setFormData(defaultDocumentFile);
   };
 
   return (
@@ -252,7 +220,10 @@ const EditDocumentsForm = ({
                         0,
                         10
                       )}
-                      onChange={(e) => handleStartDateChange(e)}
+                      onChange={(e) => {
+                        handleStartDateChange(e);
+                        setSelectedStartDate(e.target.value);
+                      }}
                       required
                       className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                     />
@@ -265,6 +236,7 @@ const EditDocumentsForm = ({
                       type="date"
                       id="endDate"
                       name="endDate"
+                      min={selectedStartDate}
                       defaultValue={String(formData.end_date).substring(0, 10)}
                       onChange={(e) => handleEndDateChange(e)}
                       required

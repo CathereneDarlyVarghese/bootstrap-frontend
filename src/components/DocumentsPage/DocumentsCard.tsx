@@ -24,7 +24,17 @@ import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
+interface DocumentsCardProps {
+  document: IncomingDocument;
+  fileStatus: string;
+  documentStatus: string;
+}
+
+const DocumentsCard: React.FC<DocumentsCardProps> = ({
+  document,
+  fileStatus,
+  documentStatus,
+}) => {
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
   const defaultDocumentFile: File = {
@@ -44,37 +54,45 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
   const queryClient = useQueryClient();
 
   // Fetch document details on component mount
-  useEffect(() => {
-    const fetchDocumentDetails = async () => {
-      try {
-        const fetchedDocumentType = await getDocumentTypeById(
-          authTokenObj.authToken,
-          document.document_type_id
-        );
-        setDocumentType(fetchedDocumentType.document_type);
+  const fetchDocumentDetailsMutation = useMutation({
+    mutationKey: ["fetch-document-details", document],
+    mutationFn: async () => {
+      const fetchedDocumentType = await getDocumentTypeById(
+        authTokenObj.authToken,
+        document.document_type_id
+      );
 
-        const fetchedDocumentFile = await getFileById(
-          authTokenObj.authToken,
-          document.file_id
-        );
-        console.log("Fetched File ==>> ", fetchedDocumentFile);
-        setDocumentFile(fetchedDocumentFile);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchDocumentDetails();
-  }, []);
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id
+      );
+
+      return { fetchedDocumentType, fetchedDocumentFile };
+    },
+
+    onSuccess: (data) => {
+      setDocumentType(data.fetchedDocumentType.document_type);
+      setDocumentFile(data.fetchedDocumentFile);
+    },
+
+    onError: (error: any) => {
+      console.error("Error fetching document details:", error);
+    },
+  });
+
+  useEffect(() => {
+    fetchDocumentDetailsMutation.mutate();
+  }, [document]);
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
     mutationFn: () =>
-      deleteDocument(authTokenObj.authToken, document.document_type_id),
+      deleteDocument(authTokenObj.authToken, document.document_id),
     onSettled: () => {
       toast.info("Document Deleted Successfully");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
     },
     onError: (err: any) => {
@@ -94,7 +112,7 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
   const tableRows = [];
   for (let i = 0; i < maxLength; i++) {
     let serialNumber = maxLength - i;
-    const file = fileArray[i] ? fileArray[i][0] : "Null";
+    const file = fileArray[i] ? fileArray[i] : "Null";
     const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
     const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
     tableRows.push(
