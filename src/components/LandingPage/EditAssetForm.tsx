@@ -172,6 +172,8 @@ const EditAssetForm = ({
   const handleSubmitForm = async (event) => {
     event.preventDefault();
 
+    let updatedFormData = { ...formData };
+
     if (file) {
       // Step 1: Upload the file to S3 bucket
       const imageLocation = await uploadFiletoS3(file, "inventory");
@@ -195,12 +197,14 @@ const EditAssetForm = ({
         ...prevState,
         images_id: fileId,
       }));
+
+      updatedFormData.images_id = fileId;
     }
 
     // Step 3: Update the asset in the backend
     try {
-      const updatedAsset = await updateAsset(token, asset.asset_id, formData);
-      console.log("Updated Asset:", formData);
+      const updatedAsset = await updateAsset(token, asset.asset_id, updatedFormData);
+      console.log("Updated Asset:", updatedFormData);
       toast.success("Asset Edited Successfully", {
         position: "bottom-left",
         autoClose: 5000,
@@ -238,18 +242,18 @@ const EditAssetForm = ({
   // }, [selectedSectionId]);
 
   // useEffect(() => {
-    const handleStatusCheckDisabled = () => {
-      if (!formData.status_check_enabled) {
-        setFormData((prevState) => ({
-          ...prevState,
-          status_check_interval: null,
-          asset_finance_purchase: null,
-          asset_finance_current_value: null,
-        }));
-      }
-    };
+  const handleStatusCheckDisabled = () => {
+    if (!formData.status_check_enabled) {
+      setFormData((prevState) => ({
+        ...prevState,
+        status_check_interval: null,
+        asset_finance_purchase: null,
+        asset_finance_current_value: null,
+      }));
+    }
+  };
 
-    // handleStatusCheckDisabled();
+  // handleStatusCheckDisabled();
   // }, [formData.status_check_enabled]);
 
   // Function to handle adding a section
@@ -810,9 +814,7 @@ const EditAssetForm = ({
                           type="text"
                           name="placement"
                           required
-                          onChange={(e) =>
-                            setSelectedPlacement(e.target.value)
-                          }
+                          onChange={(e) => setSelectedPlacement(e.target.value)}
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
                       </div>
@@ -843,23 +845,28 @@ const EditAssetForm = ({
                   Enable Status Check
                 </label>
                 <input
-  type="checkbox"
-  id="status_check_enabled"
-  className="form-checkbox text-blue-600"
-  checked={formData.status_check_enabled}
-  onChange={(e) => {
-    const isChecked = e.target.checked;
+                  type="checkbox"
+                  id="status_check_enabled"
+                  className="form-checkbox text-blue-600"
+                  checked={formData.status_check_enabled}
+                  onChange={(e) => {
+                    const isChecked = e.target.checked;
 
-    setFormData((prevState) => ({
-      ...prevState,
-      status_check_enabled: isChecked,
-      status_check_interval: isChecked ? prevState.status_check_interval : null,
-      asset_finance_purchase: isChecked ? prevState.asset_finance_purchase : null,
-      asset_finance_current_value: isChecked ? prevState.asset_finance_current_value : null,
-    }));
-  }}
-/>
-
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      status_check_enabled: isChecked,
+                      status_check_interval: isChecked
+                        ? prevState.status_check_interval
+                        : null,
+                      asset_finance_purchase: isChecked
+                        ? prevState.asset_finance_purchase
+                        : null,
+                      asset_finance_current_value: isChecked
+                        ? prevState.asset_finance_current_value
+                        : null,
+                    }));
+                  }}
+                />
               </div>
 
               {formData.status_check_enabled ? (
@@ -869,6 +876,7 @@ const EditAssetForm = ({
                     Status Check Interval (in days)
                   </label>
                   <input
+                    required
                     type="number"
                     id="status_check_interval"
                     name="status_check_interval"
@@ -888,6 +896,7 @@ const EditAssetForm = ({
                         Finance Purchase
                       </label>
                       <input
+                        required
                         type="number"
                         id="asset_finance_purchase"
                         name="asset_finance_purchase"
@@ -905,6 +914,7 @@ const EditAssetForm = ({
                         Finance Current Value
                       </label>
                       <input
+                        required
                         type="number"
                         id="asset_finance_current_value"
                         name="asset_finance_current_value"
