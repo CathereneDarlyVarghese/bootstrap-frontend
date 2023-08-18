@@ -24,7 +24,17 @@ import AddNewFileForm from "./AddNewFileForm";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
+interface DocumentsCardProps {
+  document: IncomingDocument;
+  fileStatus: string;
+  documentStatus: string;
+}
+
+const DocumentsCard: React.FC<DocumentsCardProps> = ({
+  document,
+  fileStatus,
+  documentStatus,
+}) => {
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
   const defaultDocumentFile: File = {
@@ -44,37 +54,45 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
   const queryClient = useQueryClient();
 
   // Fetch document details on component mount
-  useEffect(() => {
-    const fetchDocumentDetails = async () => {
-      try {
-        const fetchedDocumentType = await getDocumentTypeById(
-          authTokenObj.authToken,
-          document.document_type_id
-        );
-        setDocumentType(fetchedDocumentType.document_type);
+  const fetchDocumentDetailsMutation = useMutation({
+    mutationKey: ["fetch-document-details", document],
+    mutationFn: async () => {
+      const fetchedDocumentType = await getDocumentTypeById(
+        authTokenObj.authToken,
+        document.document_type_id
+      );
 
-        const fetchedDocumentFile = await getFileById(
-          authTokenObj.authToken,
-          document.file_id
-        );
-        console.log("Fetched File ==>> ", fetchedDocumentFile);
-        setDocumentFile(fetchedDocumentFile);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchDocumentDetails();
-  }, []);
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id
+      );
+
+      return { fetchedDocumentType, fetchedDocumentFile };
+    },
+
+    onSuccess: (data) => {
+      setDocumentType(data.fetchedDocumentType.document_type);
+      setDocumentFile(data.fetchedDocumentFile);
+    },
+
+    onError: (error: any) => {
+      console.error("Error fetching document details:", error);
+    },
+  });
+
+  useEffect(() => {
+    fetchDocumentDetailsMutation.mutate();
+  }, [document]);
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
     mutationFn: () =>
-      deleteDocument(authTokenObj.authToken, document.document_type_id),
+      deleteDocument(authTokenObj.authToken, document.document_id),
     onSettled: () => {
       toast.info("Document Deleted Successfully");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["query-documentsbyLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
     },
     onError: (err: any) => {
@@ -94,7 +112,7 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
   const tableRows = [];
   for (let i = 0; i < maxLength; i++) {
     let serialNumber = maxLength - i;
-    const file = fileArray[i] ? fileArray[i][0] : "Null";
+    const file = fileArray[i] ? fileArray[i] : "Null";
     const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
     const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
     tableRows.push(
@@ -161,7 +179,7 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
               </h1>
               <div
                 className={
-                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
                 }
               >
                 {documentType ? documentType : "Not Available"}
@@ -212,13 +230,13 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
             <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
               <div className="mr-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
                 <div>
-                  <h1 className="text-black dark:text-white font-semibold font-sans text-md md:text-sm md:font-medium">
+                  <h1 className="text-black dark:text-white font-semibold font-sans text-sm md:text-sm md:font-medium">
                     Start Date:
                   </h1>
                 </div>
-                <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2 text-md md:text-sm">
+                <div className="flex flex-row items-center gap-1 border border-gray-200 dark:border-gray-600 rounded-md p-2">
                   <AiOutlineCalendar className="text-xl text-blue-900 dark:text-gray-400" />
-                  <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
+                  <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-sm md:text-xs md:font-medium">
                     {document.start_date
                       ? document.start_date.substring(0, 10)
                       : "Not Available"}
@@ -227,7 +245,7 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
               </div>
               <div className="ml-auto flex md:flex-col flex-row items-center md:items-start gap-2 md:gap-0">
                 <div>
-                  <h1 className="text-black dark:text-white font-semibold font-sans text-md md:text-sm md:font-medium">
+                  <h1 className="text-black dark:text-white font-semibold font-sans text-sm md:text-sm md:font-medium">
                     End Date:
                   </h1>
                 </div>
@@ -249,7 +267,7 @@ const DocumentsCard = ({ document, fileStatus, documentStatus }) => {
               </h1>
               <div
                 className={
-                  "badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto"
+                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
                 }
               >
                 {documentType ? documentType : "Not Available"}

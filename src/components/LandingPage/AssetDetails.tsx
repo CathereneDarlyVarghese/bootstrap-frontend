@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -57,6 +56,9 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [assetConditionState, setAssetConditionState] = useState(
+    assetConditions[AssetCondition.ACTIVE]
+  );
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
@@ -348,12 +350,24 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
                     </p>
                   </div>
+                  {/* <div className="my-2">
+                    <h1 className="text-blue-900 dark:text-white font-semibold my-1">
+                      Document:
+                    </h1>
+                    <div className="flex flex-row items-center gap-2 mt-2">
+                      <img src={documentIcon} />
+                      <h2 className="font-sans text-gray-500 dark:text-gray-300 text-md md:text-xs">
+                        Document Name
+                      </h2>
+                    </div>
+                  </div> */}
                 </div>
                 <div className="flex flex-row md:justify-center justify-start items-center my-2">
                   <button
                     className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                     onClick={() => {
                       handleToggleAssetCondition.mutate(Asset.asset_condition);
+                      closeAsset();
                       // setTimeout(() => {
                       //   window.location.reload();
                       // }, 1000);
@@ -363,6 +377,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     assetConditions[AssetCondition.ACTIVE]
                       ? "Mark as Inactive"
                       : "Mark as Active"}
+                    {/* {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"} */}
                   </button>
                   <button
                     title="Edit Asset"
@@ -406,9 +421,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
               </div>
             ) : (
               <div className="flex flex-row justify-center h-28 items-center">
-                <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">
-                  Page Coming Soon
-                </p>
                 <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">
                   Page Coming Soon
                 </p>

@@ -1,19 +1,19 @@
 import { PrimitiveAtom, atom, useAtom } from "jotai";
 import { useEffect } from "react";
 
-export type LocationType = {
+export type AssetLocation = {
   locationName: string;
   locationId: string;
 };
 
-const initialLocation: LocationType = JSON.parse(
+const initialLocation: AssetLocation = JSON.parse(
   window.localStorage.getItem("location") ||
     '{"locationName": "No Locations", "locationId": "4d064c86-9ba7-47fb-bdaa-ac84769dd2df"}'
 );
 
-export const locationAtom = atom<LocationType>(initialLocation);
+export const locationAtom = atom<AssetLocation>(initialLocation);
 
-export const useSyncedAtom = (atom: PrimitiveAtom<LocationType>) => {
+export const useSyncedAtom = (atom: PrimitiveAtom<AssetLocation>) => {
   const [state, setState] = useAtom(atom);
 
   useEffect(() => {
