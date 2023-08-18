@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -24,7 +26,6 @@ import {
   getStatusText,
 } from "components/StatusChecksPage/statusUtils";
 import EditAssetForm from "./EditAssetForm";
-import { useState, useEffect } from "react";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import {
   createAssetPlacement,
@@ -347,17 +348,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
                     </p>
                   </div>
-                  {/* <div className="my-2">
-                    <h1 className="text-blue-900 dark:text-white font-semibold my-1">
-                      Document:
-                    </h1>
-                    <div className="flex flex-row items-center gap-2 mt-2">
-                      <img src={documentIcon} />
-                      <h2 className="font-sans text-gray-500 dark:text-gray-300 text-md md:text-xs">
-                        Document Name
-                      </h2>
-                    </div>
-                  </div> */}
                 </div>
                 <div className="flex flex-row md:justify-center justify-start items-center my-2">
                   <button
@@ -416,6 +406,9 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
               </div>
             ) : (
               <div className="flex flex-row justify-center h-28 items-center">
+                <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">
+                  Page Coming Soon
+                </p>
                 <p className="text-black dark:text-gray-300 text-xl font-sans font-semibold">
                   Page Coming Soon
                 </p>
