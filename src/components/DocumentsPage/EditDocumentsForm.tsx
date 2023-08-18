@@ -228,10 +228,11 @@ const EditDocumentsForm = ({
                     </label>
                     <input
                       type="date"
-                      id="endDate"
-                      name="endDate"
+                      id="end_date"
+                      name="end_date"
                       min={selectedStartDate}
-                      value={selectedEndDate}
+                      defaultValue={String(formData.end_date).substring(0, 10)}
+                      // value={selectedEndDate}
                       onChange={(e) => {
                         handleFormDataChange(e);
                         setSelectedEndDate(e.target.value);
