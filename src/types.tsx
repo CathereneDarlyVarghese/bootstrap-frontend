@@ -77,6 +77,9 @@ export interface IncomingAsset {
   asset_type_id: string;
   status_check_enabled: boolean;
   status_check_interval: number;
+  asset_location?: string;
+  asset_placement?: string;
+  asset_section?: string;
 }
 
 export interface Document {

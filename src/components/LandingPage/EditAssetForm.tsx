@@ -51,11 +51,11 @@ const EditAssetForm = ({
   const [selectedLocation, setSelectedLocation] = useState<string>(
     assetLocation.locationId
   );
-  const [selectedSectionId, setSelectedSectionId] = useState<string>(
-    assetSection ? assetSection.section_id : null
+  const [selectedSection, setSelectedSection] = useState<string>(
+    asset.asset_section
   );
-  const [selectedPlacementId, setSelectedPlacementId] = useState<string>(
-    assetPlacement ? assetPlacement.placement_id : null
+  const [selectedPlacement, setSelectedPlacement] = useState<string>(
+    asset.asset_placement
   );
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
@@ -84,9 +84,9 @@ const EditAssetForm = ({
     asset_name: asset.asset_name,
     asset_type_id: asset.asset_type_id,
     asset_notes: asset.asset_notes,
-    asset_location: assetLocation.locationId,
-    asset_placement: assetPlacement ? assetPlacement.placement_id : null,
-    asset_section: assetSection ? assetSection.section_id : null,
+    asset_location: asset.asset_location,
+    asset_placement: asset.asset_placement,
+    asset_section: asset.asset_section,
     asset_status: asset.asset_status,
     asset_finance_purchase: asset.asset_finance_purchase,
     asset_finance_current_value: asset.asset_finance_current_value,
@@ -126,13 +126,13 @@ const EditAssetForm = ({
           ...prevState,
           ["asset_section"]: null,
         }));
-        setSelectedSectionId(formData.asset_section);
+        setSelectedSection(formData.asset_section);
       } else {
         setFormData((prevState) => ({
           ...prevState,
           ["asset_section"]: defaultFormData.asset_section,
         }));
-        setSelectedSectionId(defaultFormData.asset_section);
+        setSelectedSection(defaultFormData.asset_section);
       }
     };
 
@@ -141,7 +141,7 @@ const EditAssetForm = ({
 
   useEffect(() => {
     const handleSectionChange = async () => {
-      setSelectedSectionId(formData.asset_section);
+      setSelectedSection(formData.asset_section);
 
       // Filter placements based on the selected section
       const placements = assetPlacements.filter(
@@ -154,16 +154,16 @@ const EditAssetForm = ({
           ...prevState,
           ["asset_placement"]: null,
         }));
-        setSelectedPlacementId(formData.asset_placement);
+        setSelectedPlacement(formData.asset_placement);
       } else {
         setFormData((prevState) => ({
           ...prevState,
           ["asset_placement"]: defaultFormData.asset_placement,
         }));
-        setSelectedPlacementId(defaultFormData.asset_placement);
+        setSelectedPlacement(defaultFormData.asset_placement);
       }
 
-      setSelectedPlacementId(formData.asset_placement);
+      setSelectedPlacement(formData.asset_placement);
     };
 
     handleSectionChange();
@@ -233,13 +233,13 @@ const EditAssetForm = ({
     setToken(data);
   }, []);
 
-  useEffect(() => {
-    console.log(selectedSectionId);
-  }, [selectedSectionId]);
+  // useEffect(() => {
+  //   console.log(selectedSectionId);
+  // }, [selectedSectionId]);
 
-  useEffect(() => {
+  // useEffect(() => {
     const handleStatusCheckDisabled = () => {
-      if (formData.status_check_enabled === false) {
+      if (!formData.status_check_enabled) {
         setFormData((prevState) => ({
           ...prevState,
           status_check_interval: null,
@@ -249,19 +249,19 @@ const EditAssetForm = ({
       }
     };
 
-    handleStatusCheckDisabled();
-  }, [formData.status_check_enabled]);
+    // handleStatusCheckDisabled();
+  // }, [formData.status_check_enabled]);
 
   // Function to handle adding a section
   const handleAddSection = async () => {
     // event.preventDefault();
     console.log("inside handleAddSection");
     if (selectedLocation) {
-      console.log("Section submitted==>", selectedSectionId);
-      if (selectedSectionId) {
+      console.log("Section submitted==>", selectedSection);
+      if (selectedSection) {
         const newSection: AssetSection = {
           section_id: "",
-          section_name: selectedSectionId,
+          section_name: selectedSection,
           location_id: selectedLocation,
         };
         try {
@@ -283,12 +283,12 @@ const EditAssetForm = ({
   };
 
   const handleAddPlacement = async () => {
-    if (selectedLocation && selectedSectionId) {
-      if (selectedPlacementId) {
+    if (selectedLocation && selectedSection) {
+      if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
-          placement_name: selectedPlacementId,
-          section_id: selectedSectionId,
+          placement_name: selectedPlacement,
+          section_id: selectedSection,
           location_id: selectedLocation,
         };
         try {
@@ -302,7 +302,7 @@ const EditAssetForm = ({
 
           // Update filtered placements
           const filteredPlacements = updatedPlacements.filter(
-            (placement) => placement.section_id === selectedSectionId
+            (placement) => placement.section_id === selectedSection
           );
           setFilteredPlacements(filteredPlacements);
 
@@ -651,7 +651,7 @@ const EditAssetForm = ({
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (selectedLocation && selectedSectionId) {
+                          if (selectedLocation && selectedSection) {
                             setAddPlacement(true);
                           } else {
                             alert(
@@ -737,7 +737,7 @@ const EditAssetForm = ({
                           type="text"
                           name="section"
                           required
-                          onChange={(e) => setSelectedSectionId(e.target.value)}
+                          onChange={(e) => setSelectedSection(e.target.value)}
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
                       </div>
@@ -785,7 +785,7 @@ const EditAssetForm = ({
               />
               <div id="addPlacementModal" className="modal ">
                 <div className="modal-box bg-white dark:bg-gray-800">
-                  {selectedSectionId && (
+                  {selectedSection && (
                     <form>
                       <div className="flex flex-row mb-5">
                         <h3 className="text-blue-900 font-sans font-semibold dark:text-white">
@@ -811,7 +811,7 @@ const EditAssetForm = ({
                           name="placement"
                           required
                           onChange={(e) =>
-                            setSelectedPlacementId(e.target.value)
+                            setSelectedPlacement(e.target.value)
                           }
                           className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                         />
@@ -843,17 +843,23 @@ const EditAssetForm = ({
                   Enable Status Check
                 </label>
                 <input
-                  type="checkbox"
-                  id="status_check_enabled"
-                  className="form-checkbox text-blue-600"
-                  checked={formData.status_check_enabled}
-                  onChange={(e) =>
-                    setFormData((prevState) => ({
-                      ...prevState,
-                      status_check_enabled: e.target.checked,
-                    }))
-                  }
-                />
+  type="checkbox"
+  id="status_check_enabled"
+  className="form-checkbox text-blue-600"
+  checked={formData.status_check_enabled}
+  onChange={(e) => {
+    const isChecked = e.target.checked;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      status_check_enabled: isChecked,
+      status_check_interval: isChecked ? prevState.status_check_interval : null,
+      asset_finance_purchase: isChecked ? prevState.asset_finance_purchase : null,
+      asset_finance_current_value: isChecked ? prevState.asset_finance_current_value : null,
+    }));
+  }}
+/>
+
               </div>
 
               {formData.status_check_enabled ? (
