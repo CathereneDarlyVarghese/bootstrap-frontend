@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
@@ -6,38 +7,46 @@ import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
-
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
 import ScanButton from "./widgets/ScanButton";
 import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AssetLocation } from "types";
 
+export const LogoClickedAtom = atom(false)
+
 const NavBar = () => {
+  const mountCount = useRef(0);
+  const routePage = useLocation();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // States
   const [location, setLocation] = useSyncedAtom(locationAtom);
   const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
   const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
   const [getResult, setGetResult] = useState<string | null>(null);
   const [, setSessionToken] = useState<string | null>(null);
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
 
-  const routePage = useLocation();
+  // Utility to format the response
+  const formatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
 
+  // Toggle dropdown state
   const toggleDropDown = () => {
     setOpen(!open);
   };
 
-  //function to add and remove class for UI
+  // Utility functions to add/remove class
   const addClass = (selectClass, addClass) => {
     document.querySelector(selectClass).classList.add(addClass);
   };
@@ -45,30 +54,25 @@ const NavBar = () => {
     document.querySelector(selectClass).classList.remove(removeClass);
   };
 
+  const TABS = {
+    "/home": ".asset-tab",
+    "/work-orders": ".workorder-tab",
+    "/document/location": ".documents-tab",
+    "/status-checks": ".status-tab",
+  };
+
+  // Effect: Update class based on route
   useEffect(() => {
-    if (routePage.pathname === "/home") {
-      addClass(".asset-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/work-orders") {
-      addClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/document/location") {
-      addClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-      removeClass(".status-tab", "border-b-white");
-    } else if (routePage.pathname === "/status-checks") {
-      addClass(".status-tab", "border-b-white");
-      removeClass(".documents-tab", "border-b-white");
-      removeClass(".workorder-tab", "border-b-white");
-      removeClass(".asset-tab", "border-b-white");
-    }
+    Object.keys(TABS).forEach((path) => {
+      if (routePage.pathname === path) {
+        addClass(TABS[path], "border-b-white");
+      } else {
+        removeClass(TABS[path], "border-b-white");
+      }
+    });
   }, [routePage]);
 
+  // Effect: Check user authentication
   useEffect(() => {
     const checkUser = async () => {
       try {
@@ -92,41 +96,41 @@ const NavBar = () => {
     checkUser();
   }, []);
 
-  const { refetch: fetchLocations } = useQuery<AssetLocation[], Error>(
-    "query-locations",
-    async () => {
+  // Fetch location data
+  const fetchLocations = async () => {
+    try {
       const userData = await Auth.currentAuthenticatedUser();
-      return await getAllAssetLocations(
+      const locationData = await getAllAssetLocations(
         userData.signInUserSession.idToken.jwtToken
       );
-    },
-    {
-      enabled: true,
-      onSuccess: (locationData) => {
-        setLocations(locationData);
-        console.log("locationData", locationData);
-        if (!location.locationId) {
-          if (locationData.length > 0) {
-            console.log("location is empty but data is there", locationData);
-            setLocation({
-              locationName: locationData[0].location_name,
-              locationId: locationData[0].location_id,
-            });
-          }
+      queryClient.setQueryData(["query-locations"], locationData);
+      setLocations(locationData);
+      if (!location.locationId) {
+        if (locationData.length > 0) {
+          console.log("location is empty but data is there", locationData);
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
         }
-      },
-      onError: (error: any) => {
-        console.log(error);
-      },
+      }
+    } catch (error) {
+      console.log(error);
     }
-  );
+  };
 
-  if (location.locationName === "" && location.locationId === "") {
+  // UseQuery to get locations
+  const { data: Locations } = useQuery({
+    queryKey: ["query-locations"],
+    queryFn: fetchLocations,
+  });
+
+  // Check for a new start
+  if (location.locationName === "" || location.locationId === "") {
     fetchLocations();
   }
 
-  const mountCount = useRef(0);
-
+  // Effect: Store location in local storage when it changes
   useEffect(() => {
     mountCount.current += 1;
     console.log("mountCount", mountCount.current);
@@ -142,10 +146,6 @@ const NavBar = () => {
     }
   }, [location]);
 
-  // useEffect(() => {
-  //   fetchLocations();
-  // }, []);
-
   return (
     <>
       {/* {console.log("locations fetched")} */}
@@ -155,6 +155,7 @@ const NavBar = () => {
             onClick={() => {
               navigate("/home");
               resetFilterOptions();
+              setLogoClicked(true)
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >

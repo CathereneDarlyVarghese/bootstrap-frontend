@@ -22,13 +22,13 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { locationAtom, useSyncedAtom } from "store/locationStore";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // ====== State Declarations ======
   // Asset Attributes
   const [file, setFile] = useState<File>();
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedSection, setSelectedSection] = useState<string>("");
   const [selectedPlacement, setSelectedPlacement] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -52,6 +52,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Static Data
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
+  const [location] = useSyncedAtom(locationAtom);
 
   // Hooks & External Services
   const queryClient = useQueryClient();
@@ -72,35 +73,38 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setSelectedCondition(event.target.value);
   };
 
-  const handleLocationChange = (locationId: string) => {
-    setSelectedLocation(locationId);
-    // Filter sections based on the selected location
-    const sections = assetSections.filter(
-      (section) => section.location_id === locationId
-    );
-    setFilteredSections(sections);
-    setSelectedSection("");
-    setFilteredPlacements([]);
-  };
+  // const handleLocationChange = (locationId: string) => {
+  //   setSelectedLocation(locationId);
+  //   // Filter sections based on the selected location
+  //   const sections = assetSections.filter(
+  //     (section) => section.location_id === locationId
+  //   );
+  //   setFilteredSections(sections);
+  //   setSelectedSection("");
+  //   setFilteredPlacements([]);
+  // };
 
-  const handleSectionChange = (sectionId: string) => {
-    setSelectedSection(sectionId);
+  const handleSectionChange = async (sectionId: string) => {
+    await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
     const placements = assetPlacements.filter(
       (placement) => placement.section_id === sectionId
     );
+    console.log("AssetPlacements in handleSectionChange==>>", placements);
     setFilteredPlacements(placements);
+    setSelectedPlacement("");
   };
 
   // Logic for fetching initial data
   const fetchData = async () => {
     try {
-      const locations =
-        queryClient.getQueryData<AssetLocation[]>("query-locations");
+      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+        "query-locations",
+      ]);
       const types = await getAllAssetTypes(authTokenObj.authToken);
       fetchAssetPlacements();
       fetchAssetSections();
       setAssetTypes(types);
-      setLocations(locations);
+      setLocations(queryLocations);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -134,7 +138,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       asset_name: formData.get("name") as string,
       asset_type_id: formData.get("type") as string,
       asset_notes: formData.get("notes") as string,
-      asset_location: selectedLocation,
+      asset_location: location.locationId,
       asset_placement: formData.get("placement") as string,
       asset_section: selectedSection,
       asset_status: selectedStatus,
@@ -162,11 +166,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Function to handle adding a section
   const handleAddSection = async (e) => {
     e.preventDefault();
-    if (selectedLocation) {
+    if (location.locationId) {
       const newSection: AssetSection = {
         section_id: "",
         section_name: selectedSection,
-        location_id: selectedLocation,
+        location_id: location.locationId,
       };
       try {
         sectionAddMutation.mutateAsync(newSection);
@@ -180,13 +184,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const handleAddPlacement = async (e) => {
     e.preventDefault();
-    if (selectedLocation && selectedSection) {
+    if (location && selectedSection) {
       if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
           placement_name: selectedPlacement,
           section_id: selectedSection,
-          location_id: selectedLocation,
+          location_id: location.locationId,
         };
         try {
           placementAddMutation.mutate(newPlacement);
@@ -200,88 +204,92 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   };
 
   // ====== Data Fetching using useQuery ======
-  const { data: assetSectionsData, refetch: fetchAssetSections } = useQuery<
-    AssetSection[],
-    Error
-  >("query-assetSectionsForm", () => getAssetSections(authTokenObj.authToken), {
-    onSuccess: (res) => {
+  const fetchAssetSections = async () => {
+    try {
+      const res = await getAssetSections(authTokenObj.authToken);
       setAssetSections(res);
       const sections = res.filter(
-        (section) => section.location_id === selectedLocation
+        (section) => section.location_id === location.locationId
       );
       setFilteredSections(sections);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { data: AssetSections } = useQuery({
+    queryKey: ["query-assetSectionsForm", location],
+    queryFn: fetchAssetSections,
+  });
+
+  const fetchAssetPlacements = async () => {
+    try {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      if (!res || typeof res === "undefined") {
+        throw new Error("No data received from API");
+      }
+      console.log("AssetPlacements==>>", res);
+      setAssetPlacements(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const AssetPlacements = useQuery({
+    queryKey: ["query-assetPlacementsForm"],
+    queryFn: fetchAssetPlacements,
+    enabled: !!location.locationId,
+  });
+
+  // ====== Mutations ======
+  const assetAddMutation = useMutation({
+    mutationFn: (assetData: any) =>
+      createAsset(authTokenObj.authToken, assetData),
+    onSettled: () => {
+      toast.success("Asset Added Successfully");
+      setAddAssetOpen(false);
+      queryClient.invalidateQueries(["query-asset"]);
     },
     onError: (err: any) => {
-      console.log(err);
+      toast.error("Failed to Delete Asset");
     },
   });
 
-  const { data: assetPlacementsData, refetch: fetchAssetPlacements } = useQuery<
-    AssetPlacement[],
-    Error
-  >(
-    "query-assetPlacementsForm",
-    () => getAssetPlacements(authTokenObj.authToken),
-    {
-      onSuccess: (res) => {
-        setAssetPlacements(res);
-        const placements = res.filter(
-          (placements) => placements.location_id === selectedLocation
-        );
-        setFilteredPlacements(placements);
-      },
-      onError: (err: any) => {
-        console.log(err);
-      },
-    }
-  );
-
-  // ====== Mutations ======
-  const assetAddMutation = useMutation(
-    (assetData: any) => createAsset(authTokenObj.authToken, assetData),
-    {
-      onSettled: () => {
-        toast.success("Asset Added Successfully");
-        setAddAssetOpen(false);
-        queryClient.invalidateQueries(["query-asset"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
-
-  const sectionAddMutation = useMutation(
-    (newSection: AssetSection) =>
+  const sectionAddMutation = useMutation({
+    mutationFn: (newSection: AssetSection) =>
       createAssetSection(authTokenObj.authToken, newSection),
-    {
-      onSettled: () => {
-        toast.success("Section Added Successfully");
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["query-assetSectionsForm"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Section Added Successfully");
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["query-assetSectionsForm"]);
+      // handleLocationChange(selectedLocation);
+      setSelectedSection(null);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
-  const placementAddMutation = useMutation(
-    (newPlacement: AssetPlacement) =>
+  const placementAddMutation = useMutation({
+    mutationFn: (newPlacement: AssetPlacement) =>
       createAssetPlacement(authTokenObj.authToken, newPlacement),
-    {
-      onSettled: () => {
-        toast.success("Placement Added Successfully");
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["query-assetPlacementsForm"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: async () => {
+      toast.success("Placement Added Successfully");
+      await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+      console.log(
+        "Selected sections in placementAddMusation==>>",
+        selectedSection
+      );
+      handleSectionChange(selectedSection);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Delete Asset");
+    },
+  });
 
   // Function to close the add asset form
   const closeAddForm = () => {
@@ -325,7 +333,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Input field for asset name */}
                 <div className="w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-black dark:text-white text-sm">
-                    Name of Assets
+                    Name of Asset
                   </label>
                   <input
                     type="text"
@@ -449,24 +457,24 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <div className="flex flex-col w-1/2 md:w-auto">
                   {/* Dropdown for selecting location */}
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select location
+                    Select Location
                   </label>
                   <select
                     required
+                    disabled
                     className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                    onChange={(e) => handleLocationChange(e.target.value)}
-                    value={selectedLocation}
+                    value={location.locationId} // Setting the value to 'location' variable's location_id
                   >
                     <option value="" disabled hidden>
                       Select Location
                     </option>
-                    {locations.map((location) => (
+                    {locations.map((locationItem) => (
                       <option
-                        key={location.location_id}
-                        value={location.location_id}
+                        key={locationItem.location_id}
+                        value={locationItem.location_id}
                         className="text-black bg-white dark:text-white dark:bg-gray-800"
                       >
-                        {location.location_name}
+                        {locationItem.location_name}
                       </option>
                     ))}
                   </select>
@@ -477,7 +485,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Dropdown for selecting section */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select section
+                    Select Section
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12">
@@ -485,6 +493,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         required
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                         onChange={(e) => {
+                          setSelectedSection(e.target.value);
                           handleSectionChange(e.target.value);
                         }}
                         value={selectedSection}
@@ -509,7 +518,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (selectedLocation) {
+                          if (location) {
                             setAddSection(true);
                           } else {
                             alert("Please select a location first.");
@@ -525,7 +534,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 {/* Dropdown for selecting placement */}
                 <div className="dropdown flex flex-col w-1/2 md:w-auto">
                   <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                    Select placement
+                    Select Placement
                   </label>
                   <div className="flex flex-row items-center">
                     <div className="w-11/12 ">
@@ -553,7 +562,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         className="btn btn-sm bg-blue-800 hover:bg-blue-800"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (selectedLocation && selectedSection) {
+                          if (location && selectedSection) {
                             setAddPlacement(true);
                           } else {
                             alert(
@@ -689,6 +698,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       className="ml-auto"
                       type="button"
                       onClick={() => {
+                        queryClient.invalidateQueries([
+                          "query-assetPlacementsForm",
+                        ]);
                         setAddPlacement(false);
                       }}
                     >
@@ -735,7 +747,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
           />
           <div id="addSectionModal" className="modal ">
             <div className="modal-box bg-white dark:bg-gray-800">
-              {selectedLocation && (
+              {location && (
                 <form>
                   <div className="flex flex-row mb-5">
                     <h3 className="text-blue-900 font-sans font-semibold dark:text-white">

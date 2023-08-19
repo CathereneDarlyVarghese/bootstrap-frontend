@@ -4,8 +4,10 @@ import { appendToFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
+  const queryClient = useQueryClient();
   const [file, setFile] = useState<any>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
@@ -20,10 +22,6 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-
-    console.log("Selected File ==>> ", file);
-
-    console.log("File ID ==>> ", fileID);
 
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
@@ -43,29 +41,12 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
         newModifiedByArrayEntry,
         newModifiedDateArrayEntry
       );
-      console.log("Appended File ==>> ", appendedFile);
-      toast.success("File Added Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      toast.success("File Added Successfully");
     } catch (error) {
       console.error("Failed to Add File:", error);
-      toast.error("Failed to add file", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Failed to add file");
     }
   };
 

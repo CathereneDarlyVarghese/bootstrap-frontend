@@ -6,9 +6,8 @@ import { createFile } from "services/fileServices";
 import { createDocument } from "services/documentServices";
 import { getAllDocumentTypes } from "services/documentTypeServices";
 import { AiOutlinePaperClip } from "react-icons/ai";
-import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -16,6 +15,7 @@ const AddDocumentsForm = ({
   assetID = null,
   locationID = null,
 }) => {
+  // State Initialization
   const [file, setFile] = useState<any>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
@@ -29,7 +29,6 @@ const AddDocumentsForm = ({
     endDate: "",
     documentNotes: "",
   };
-
   const [formData, setFormData] = useState(defaultFormData);
   const {
     documentName,
@@ -40,37 +39,47 @@ const AddDocumentsForm = ({
     documentNotes,
   } = formData;
 
+  // Function to handle form input changes
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      //"id" and "name" of <elements> in <form> has to be same for this to work
-      [e.target.id]: e.target.value,
-    }));
+    const { id, value } = e.target;
+
+    if (id === "startDate") {
+      setFormData((prevState) => ({
+        ...prevState,
+        startDate: value,
+        endDate: "", // Resetting the endDate here
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [id]: value,
+      }));
+    }
   };
 
-  const documentAddMutation = useMutation(
-    (documentData: Document) =>
+  // Mutation function to add a new document
+  const documentAddMutation = useMutation({
+    mutationFn: (documentData: Document) =>
       createDocument(authTokenObj.authToken, documentData),
-    {
-      onSettled: () => {
-        toast.success("Document Added Successfully");
-        setAddDocumentsOpen(false);
-      },
-      onSuccess: (res) => {
-        console.log("Return from createDocument ==>> ", res);
-        queryClient.invalidateQueries(["query-documentsByAssetId"]);
-        queryClient.invalidateQueries(["query-documentsbyLocationId"]);
-      },
-      onError: (err: any) => {
-        toast.error("Failed to Delete Asset");
-      },
-    }
-  );
+    onSettled: () => {
+      toast.success("Document Added Successfully");
+      setAddDocumentsOpen(false);
+    },
+    onSuccess: (res) => {
+      console.log("Return from createDocument ==>> ", res);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to Add Document");
+    },
+  });
 
+  // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAddDocumentsOpen(false);
@@ -78,29 +87,23 @@ const AddDocumentsForm = ({
     const modifiedBy = authTokenObj.attributes.given_name;
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
-    // Step 1: Upload the file to S3 bucket
+    // Step 1: Upload the document to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
     console.log("documentLocation ==>> ", documentLocation);
 
-    // Step 2: Create a file in the backend
+    // Step 2: Register the uploaded file in the backend
     const createdFile = await createFile(authTokenObj.authToken, {
       file_id: null,
       file_array: [documentLocation.location],
       modified_by_array: [modifiedBy],
       modified_date_array: [modifiedDate],
     });
-    console.log("Return from createFile (file_id) ==>> ", createdFile);
     const fileId = String(createdFile);
 
-    // Step 3: Prepare the document data
-    // const formData = new FormData(event.target);
-
-    const selectedSelectTag = document.querySelector(
-      "#documentType"
-    ) as HTMLSelectElement;
-    const selectedDocumentTypeID = selectedSelectTag.value;
-    console.log("Selected document type: ", selectedDocumentTypeID);
-
+    // Step 3: Collect data for the new document
+    const selectedDocumentTypeID = (
+      document.querySelector("#documentType") as HTMLSelectElement
+    ).value;
     const documentData: Document = {
       document_id: null,
       document_name: formData.documentName,
@@ -110,7 +113,7 @@ const AddDocumentsForm = ({
       end_date: formData.endDate.toString(),
       file_id: fileId,
       document_notes: formData.documentNotes,
-      modified_by: authTokenObj.attributes.given_name,
+      modified_by: modifiedBy,
       modified_date: new Date().toLocaleDateString(),
       org_id: null,
       asset_id: assetID,
@@ -118,9 +121,7 @@ const AddDocumentsForm = ({
       document_type: selectedDocumentTypeID,
     };
 
-    console.log("Document Data ==>> ", documentData);
-
-    // Step 4: Create the document in the backend
+    // Step 4: Add the document to the backend
     try {
       documentAddMutation.mutateAsync(documentData);
     } catch (error) {
@@ -131,26 +132,23 @@ const AddDocumentsForm = ({
     setFormData(defaultFormData);
   };
 
+  // Function to fetch available document types on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedDocumentTypes = await getAllDocumentTypes(
           authTokenObj.authToken
         );
-
         setDocumentTypes(fetchedDocumentTypes);
       } catch (error) {
-        console.error(
-          "Failed to fetch Session Token and Document Types:",
-          error
-        );
+        console.error("Failed to fetch Document Types:", error);
       }
     };
 
     fetchData();
   }, []);
 
-  // Function to close the add asset form
+  // Function to close the form modal
   const closeAddForm = () => {
     setAddDocumentsOpen(false);
   };
@@ -237,7 +235,9 @@ const AddDocumentsForm = ({
                     id="startDate"
                     name="startDate"
                     value={startDate}
-                    onChange={(e) => handleChange(e)}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     required
                     className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                   />
@@ -251,6 +251,7 @@ const AddDocumentsForm = ({
                     id="endDate"
                     name="endDate"
                     value={endDate}
+                    min={startDate}
                     onChange={(e) => handleChange(e)}
                     required
                     className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"

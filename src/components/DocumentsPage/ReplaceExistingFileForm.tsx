@@ -4,8 +4,10 @@ import { replaceLatestInFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
+  const queryClient = useQueryClient();
   const [file, setFile] = useState<any>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
@@ -21,16 +23,10 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   ) => {
     event.preventDefault();
 
-    console.log("Selected File ==>> ", file);
-
-    console.log("File ID ==>> ", fileID);
-
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
-    console.log("documentLocation ==>> ", documentLocation);
 
     const newFileArrayEntry: string = documentLocation.location;
-    console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
     const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
@@ -44,28 +40,13 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
         newModifiedDateArrayEntry
       );
       console.log("New File ==>> ", replacedFile);
-      toast.success("Existing File Replaced Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      queryClient.invalidateQueries(["query-documentsByLocationId"]);
+      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      queryClient.invalidateQueries(["fetch-document-details"]);
+      toast.success("Existing File Replaced Successfully");
     } catch (error) {
       console.error("Failed to Replace Existing File:", error);
-      toast.error("Failed to replace existing file", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Failed to replace existing file");
     }
   };
 
