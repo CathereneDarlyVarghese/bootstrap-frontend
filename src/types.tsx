@@ -75,6 +75,11 @@ export interface IncomingAsset {
   next_asset_check_date: Date;
   asset_condition: string;
   asset_type_id: string;
+  status_check_enabled: boolean;
+  status_check_interval: number;
+  asset_location?: string;
+  asset_placement?: string;
+  asset_section?: string;
 }
 
 export interface Document {
