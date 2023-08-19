@@ -30,10 +30,10 @@ const EditDocumentsForm = ({
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
   const [selectedStartDate, setSelectedStartDate] = useState<string>(
-    formData.start_date
+    String(formData.start_date).substring(0, 10)
   );
   const [selectedEndDate, setSelectedEndDate] = useState<string>(
-    formData.end_date
+    String(formData.end_date).substring(0, 10)
   );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const defaultDocumentFile: File = {
@@ -236,8 +236,8 @@ const EditDocumentsForm = ({
                       id="end_date"
                       name="end_date"
                       min={selectedStartDate}
-                      defaultValue={String(formData.end_date).substring(0, 10)}
-                      // value={selectedEndDate}
+                      // defaultValue={String(formData.end_date).substring(0, 10)}
+                      value={selectedEndDate}
                       onChange={(e) => {
                         handleFormDataChange(e);
                         setSelectedEndDate(e.target.value);
