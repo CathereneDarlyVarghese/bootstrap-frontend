@@ -307,7 +307,7 @@ const ListsLayout = () => {
 
                   <input
                     type="text"
-                    placeholder="Search Asset"
+                    placeholder={"Search " + location.locationName}
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {

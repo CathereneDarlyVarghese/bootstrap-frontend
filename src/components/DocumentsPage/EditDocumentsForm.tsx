@@ -30,9 +30,11 @@ const EditDocumentsForm = ({
   });
   const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
   const [selectedStartDate, setSelectedStartDate] = useState<string>(
-    formData.start_date
+    String(formData.start_date).substring(0, 10)
   );
-  const [, setSelectedEndDate] = useState<string>(formData.end_date);
+  const [selectedEndDate, setSelectedEndDate] = useState<string>(
+    String(formData.end_date).substring(0, 10)
+  );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const defaultDocumentFile: File = {
     file_id: "",
@@ -73,25 +75,22 @@ const EditDocumentsForm = ({
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
-  };
+    const { id, value } = e.target;
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      start_date: e.target.value,
-    }));
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedEndDate(e.target.value);
-    setFormData((prevState) => ({
-      ...prevState,
-      end_date: e.target.value,
-    }));
+    setFormData((prevState) => {
+      if (id === "start_date") {
+        setSelectedEndDate(""); // Reset the selected end date
+        return {
+          ...prevState,
+          [id]: value,
+          end_date: "", // Reset the end date
+        };
+      }
+      return {
+        ...prevState,
+        [id]: value,
+      };
+    });
   };
 
   const handleSubmit = async (
@@ -221,7 +220,7 @@ const EditDocumentsForm = ({
                         10
                       )}
                       onChange={(e) => {
-                        handleStartDateChange(e);
+                        handleFormDataChange(e);
                         setSelectedStartDate(e.target.value);
                       }}
                       required
@@ -234,11 +233,15 @@ const EditDocumentsForm = ({
                     </label>
                     <input
                       type="date"
-                      id="endDate"
-                      name="endDate"
+                      id="end_date"
+                      name="end_date"
                       min={selectedStartDate}
-                      defaultValue={String(formData.end_date).substring(0, 10)}
-                      onChange={(e) => handleEndDateChange(e)}
+                      // defaultValue={String(formData.end_date).substring(0, 10)}
+                      value={selectedEndDate}
+                      onChange={(e) => {
+                        handleFormDataChange(e);
+                        setSelectedEndDate(e.target.value);
+                      }}
                       required
                       className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                     />
