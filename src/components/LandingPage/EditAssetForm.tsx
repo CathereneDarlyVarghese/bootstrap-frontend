@@ -30,6 +30,11 @@ import useAssetCondition from "hooks/useAssetCondition";
 import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { AssetCondition } from "enums";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 const EditAssetForm = ({
   editFormOpen,
@@ -47,6 +52,7 @@ const EditAssetForm = ({
   const assetTypeNames = useAssetTypeNames();
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
+  const queryClient = useQueryClient();
   // const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>(
     assetLocation.locationId
@@ -203,33 +209,25 @@ const EditAssetForm = ({
 
     // Step 3: Update the asset in the backend
     try {
-      const updatedAsset = await updateAsset(token, asset.asset_id, updatedFormData);
-      console.log("Updated Asset:", updatedFormData);
-      toast.success("Asset Edited Successfully", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setEditFormOpen(false);
+      assetUpdateMutation.mutateAsync(updatedFormData);
     } catch (error) {
       console.error("Failed to update asset:", error);
-      toast.error("Failed to update asset", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
     }
   };
+
+  const assetUpdateMutation = useMutation({
+    mutationFn: (updatedData: any) =>
+      updateAsset(token, asset.asset_id, updatedData),
+    onSettled: () => {},
+    onSuccess: () => {
+      toast.success("Asset Edited Successfully");
+      setEditFormOpen(false);
+      queryClient.invalidateQueries(["query-asset"]);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to update asset");
+    },
+  });
 
   // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
