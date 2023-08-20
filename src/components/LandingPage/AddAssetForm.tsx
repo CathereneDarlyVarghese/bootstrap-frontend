@@ -184,7 +184,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const handleAddPlacement = async (e) => {
     e.preventDefault();
-    if (location && selectedSection) {
+    if (selectedSection) {
       if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
@@ -228,14 +228,17 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       if (!res || typeof res === "undefined") {
         throw new Error("No data received from API");
       }
-      console.log("AssetPlacements==>>", res);
+      const placements = assetPlacements.filter(
+        (placement) => placement.section_id === selectedSection
+      );
+      setFilteredPlacements(placements);
       setAssetPlacements(res);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const AssetPlacements = useQuery({
+  const { refetch } = useQuery({
     queryKey: ["query-assetPlacementsForm"],
     queryFn: fetchAssetPlacements,
     enabled: !!location.locationId,
@@ -276,15 +279,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       createAssetPlacement(authTokenObj.authToken, newPlacement),
     onSettled: async () => {
       toast.success("Placement Added Successfully");
-      await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
-      console.log(
-        "Selected sections in placementAddMusation==>>",
-        selectedSection
-      );
       handleSectionChange(selectedSection);
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
     },
     onError: (err: any) => {
       toast.error("Failed to Delete Asset");
