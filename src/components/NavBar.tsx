@@ -16,7 +16,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AssetLocation } from "types";
 
-export const LogoClickedAtom = atom(false)
+export const LogoClickedAtom = atom(false);
 
 const NavBar = () => {
   const mountCount = useRef(0);
@@ -48,10 +48,21 @@ const NavBar = () => {
 
   // Utility functions to add/remove class
   const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
+    const element = document.querySelector(selectClass);
+    if (element) {
+      element.classList.add(addClass);
+    } else {
+      console.warn(`Element with selector ${selectClass} not found!`);
+    }
   };
+
   const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
+    const element = document.querySelector(selectClass);
+    if (element) {
+      element.classList.remove(removeClass);
+    } else {
+      console.warn(`Element with selector ${selectClass} not found!`);
+    }
   };
 
   const TABS = {
@@ -155,7 +166,7 @@ const NavBar = () => {
             onClick={() => {
               navigate("/home");
               resetFilterOptions();
-              setLogoClicked(true)
+              setLogoClicked(true);
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >

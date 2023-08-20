@@ -55,7 +55,7 @@ const ListsLayout = () => {
   const [assetDetailsOpen, setAssetDetailsOpen] = useState(false);
   const [detailsTab, setDetailsTab] = useState(0); // Active tabs in asset details card
   const [addAssetOpen, setAddAssetOpen] = useState(false);
-  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom)
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
 
   // Asset section and placements management
   const defaultAssetSections = [
@@ -92,10 +92,25 @@ const ListsLayout = () => {
 
   // Functions for UI manipulation
   const addClass = (selectClass, addClass) => {
-    document.querySelector(selectClass).classList.add(addClass);
+    const element = document.querySelector(selectClass);
+    if (element) {
+      element.classList.add(addClass);
+    } else {
+      console.warn(
+        `Element with selector ${selectClass} not found when trying to add class.`
+      );
+    }
   };
+
   const removeClass = (selectClass, removeClass) => {
-    document.querySelector(selectClass).classList.remove(removeClass);
+    const element = document.querySelector(selectClass);
+    if (element) {
+      element.classList.remove(removeClass);
+    } else {
+      console.warn(
+        `Element with selector ${selectClass} not found when trying to remove class.`
+      );
+    }
   };
 
   const handleAddAssetOpen = () => {
@@ -262,9 +277,9 @@ const ListsLayout = () => {
   useEffect(() => {
     if (logoClicked === true) {
       setAssetDetailsOpen(false);
-      setLogoClicked(false)
+      setLogoClicked(false);
     }
-  }, [logoClicked])
+  }, [logoClicked]);
 
   return (
     <div
@@ -281,7 +296,9 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""} ${addAssetOpen ? "lg:hidden" : ""} `}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
+          assetDetailsOpen ? "lg:hidden" : ""
+        } ${addAssetOpen ? "lg:hidden" : ""} `}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -388,8 +405,9 @@ const ListsLayout = () => {
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row w-full justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
               <select
                 name=""
@@ -468,7 +486,7 @@ const ListsLayout = () => {
                       searchTermMatch &&
                       statusFilterMatch &&
                       (selectedSectionNames.length === 0 ||
-                        selectedPlacementNames.length === 0
+                      selectedPlacementNames.length === 0
                         ? intersectionFilterMatch
                         : intersectionFilterMatch)
                     );
@@ -480,7 +498,7 @@ const ListsLayout = () => {
                         setSelectedAsset(asset);
                         setAssetId(asset.asset_id);
                         setAddAssetOpen(false);
-                        setAssetDetailsOpen(true)
+                        setAssetDetailsOpen(true);
                         // removeClass(
                         //   "#parent-element .asset-details-card",
                         //   "lg:hidden"
@@ -504,7 +522,15 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked ? "lg:hidden" : assetDetailsOpen ? "w-2/3 lg:w-full" : addAssetOpen ? "lg:w-full" : "lg:hidden"}`}
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
+          logoClicked
+            ? "lg:hidden"
+            : assetDetailsOpen
+            ? "w-2/3 lg:w-full"
+            : addAssetOpen
+            ? "lg:w-full"
+            : "lg:hidden"
+        }`}
         id="style-7"
       >
         {/* Render asset details */}
