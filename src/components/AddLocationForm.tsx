@@ -14,11 +14,11 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
     mutationFn: (assetLocationObj: any) =>
       createAssetLocation(authTokenObj.authToken, assetLocationObj),
     onSettled: () => {
-      toast.success("Asset Added Successfully");
+      toast.success("Location Added Successfully");
       queryClient.invalidateQueries(["query-locations"]);
     },
     onError: (err: any) => {
-      toast.error("Failed to Delete Asset");
+      toast.error("Failed to Add Location");
     },
   });
   const handleSubmit = async (event) => {

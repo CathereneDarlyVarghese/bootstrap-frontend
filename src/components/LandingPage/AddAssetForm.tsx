@@ -73,23 +73,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setSelectedCondition(event.target.value);
   };
 
-  // const handleLocationChange = (locationId: string) => {
-  //   setSelectedLocation(locationId);
-  //   // Filter sections based on the selected location
-  //   const sections = assetSections.filter(
-  //     (section) => section.location_id === locationId
-  //   );
-  //   setFilteredSections(sections);
-  //   setSelectedSection("");
-  //   setFilteredPlacements([]);
-  // };
-
   const handleSectionChange = async (sectionId: string) => {
     await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
     const placements = assetPlacements.filter(
       (placement) => placement.section_id === sectionId
     );
-    console.log("AssetPlacements in handleSectionChange==>>", placements);
     setFilteredPlacements(placements);
     setSelectedPlacement("");
   };
@@ -184,7 +172,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   const handleAddPlacement = async (e) => {
     e.preventDefault();
-    if (selectedSection) {
+    if (location && selectedSection) {
       if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: "",
@@ -228,10 +216,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       if (!res || typeof res === "undefined") {
         throw new Error("No data received from API");
       }
-      const placements = assetPlacements.filter(
+      const placements = res.filter(
         (placement) => placement.section_id === selectedSection
       );
-      setFilteredPlacements(placements);
+      await setFilteredPlacements(placements);
       setAssetPlacements(res);
     } catch (error) {
       console.log(error);
@@ -254,7 +242,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       queryClient.invalidateQueries(["query-asset"]);
     },
     onError: (err: any) => {
-      toast.error("Failed to Delete Asset");
+      toast.error("Failed to Add Asset");
     },
   });
 
@@ -266,26 +254,23 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["query-assetSectionsForm"]);
-      // handleLocationChange(selectedLocation);
       setSelectedSection(null);
     },
     onError: (err: any) => {
-      toast.error("Failed to Delete Asset");
+      toast.error("Failed to Add Section");
     },
   });
 
   const placementAddMutation = useMutation({
     mutationFn: (newPlacement: AssetPlacement) =>
       createAssetPlacement(authTokenObj.authToken, newPlacement),
-    onSettled: async () => {
-      toast.success("Placement Added Successfully");
-      handleSectionChange(selectedSection);
-    },
     onSuccess: async (data) => {
+      toast.success("Placement Added Successfully");
       await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
+      refetch();
     },
     onError: (err: any) => {
-      toast.error("Failed to Delete Asset");
+      toast.error("Failed to Add Placement");
     },
   });
 
@@ -389,8 +374,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onChange={(e) => {
                     setFile(e.target.files[0]);
                     const palceholderText = e.target.files[0];
-
-                    console.log(palceholderText.name);
                   }}
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
@@ -538,6 +521,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     <div className="w-11/12 ">
                       <select
                         required
+                        key={filteredPlacements.length}
                         name="placement"
                         className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
