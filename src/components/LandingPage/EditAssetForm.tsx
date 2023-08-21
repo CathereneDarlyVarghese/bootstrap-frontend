@@ -37,6 +37,7 @@ import {
 } from "@tanstack/react-query";
 
 const EditAssetForm = ({
+  closeAsset,
   editFormOpen,
   setEditFormOpen,
   asset,
@@ -210,6 +211,7 @@ const EditAssetForm = ({
     // Step 3: Update the asset in the backend
     try {
       assetUpdateMutation.mutateAsync(updatedFormData);
+      closeAsset();
     } catch (error) {
       console.error("Failed to update asset:", error);
     }
@@ -223,6 +225,7 @@ const EditAssetForm = ({
       toast.success("Asset Edited Successfully");
       setEditFormOpen(false);
       queryClient.invalidateQueries(["query-asset"]);
+      closeAsset();
     },
     onError: (err: any) => {
       toast.error("Failed to update asset");
@@ -340,8 +343,6 @@ const EditAssetForm = ({
 
     console.log("Form Data Field ==>> ", e.target.value);
   };
-
-  console.log("Form Data ==>> ", formData);
 
   return (
     <>
