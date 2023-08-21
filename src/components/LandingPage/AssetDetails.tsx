@@ -334,15 +334,15 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                         : "Not Available"}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Purchase Price:{" "}
+                      Purchase Value:{" "}
                       {parseInt(Asset.asset_finance_purchase)
-                        ? parseInt(Asset.asset_finance_purchase)
+                        ? `$${parseInt(Asset.asset_finance_purchase)}`
                         : "Not Available"}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                       Current Value:{" "}
                       {parseInt(Asset.asset_finance_current_value)
-                        ? parseInt(Asset.asset_finance_current_value)
+                        ? `$${parseInt(Asset.asset_finance_current_value)}`
                         : "Not Available"}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
