@@ -53,6 +53,7 @@ const Locations = () => {
         toast.success("Location deleted successfully");
         setSelectedLocation("");
         queryClient.invalidateQueries(["query-locationsAdmin"]);
+        queryClient.invalidateQueries(["query-locations"]);
       },
       onError: (error: any) => {
         toast.error("Failed to delete location");
