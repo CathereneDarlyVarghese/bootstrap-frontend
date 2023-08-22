@@ -38,6 +38,7 @@ const Locations = () => {
       onSuccess: async () => {
         toast.success("Asset Added Successfully");
         queryClient.invalidateQueries(["query-locationsAdmin"]);
+        queryClient.invalidateQueries(["query-locations"]);
       },
       onError: (err: any) => {
         toast.error("Failed to Add Asset");

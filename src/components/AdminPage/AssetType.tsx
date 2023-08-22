@@ -28,7 +28,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
     e.preventDefault();
 
     if (assetType.trim() === "") {
-      console.error("Asset type must not be empty");
+      toast.error("Asset Type type must not be empty");
       return;
     }
 
@@ -38,7 +38,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
         asset_type: assetType,
       });
       queryClient.invalidateQueries(["query-assetTypesAdmin"]);
-      console.log("Asset Type Created:", newAssetType);
+      toast.success("Asset Type added successfully");
       setAssetType("");
     } catch (error) {
       console.error("Error creating asset type:", error);
@@ -63,7 +63,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
     (id: string) => deleteAssetType(authTokenObj.authToken, id),
     {
       onSuccess: () => {
-        toast.success("Asset Type deleted successfully");
+        toast.info("Asset Type deleted successfully");
         setSelectedAssetType("");
         queryClient.invalidateQueries(["query-assetTypesAdmin"]);
       },
