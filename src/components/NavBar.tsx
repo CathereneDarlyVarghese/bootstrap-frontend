@@ -41,6 +41,10 @@ const NavBar = () => {
     return JSON.stringify(res, null, 2);
   };
 
+  // Extract locationId from the URL's search params.
+  const searchParams = new URLSearchParams(routePage.search);
+  const urlLocationId = searchParams.get("locationId");
+
   // Toggle dropdown state
   const toggleDropDown = () => {
     setOpen(!open);
@@ -116,6 +120,21 @@ const NavBar = () => {
       );
       queryClient.setQueryData(["query-locations"], locationData);
       setLocations(locationData);
+
+      if (urlLocationId) {
+        // Find the location with the specified ID from the URL.
+        const urlLocation = locationData.find(
+          (loc) => loc.location_id === urlLocationId
+        );
+        if (urlLocation) {
+          setLocation({
+            locationName: urlLocation.location_name,
+            locationId: urlLocation.location_id,
+          });
+          return;
+        }
+      }
+
       if (!location.locationId) {
         if (locationData.length > 0) {
           console.log("location is empty but data is there", locationData);
@@ -153,7 +172,6 @@ const NavBar = () => {
     // Storing location to local storage when it changes (but not on the first two mounts)
     if (location) {
       window.localStorage.setItem("location", JSON.stringify(location));
-      console.log("location stored", location);
     }
   }, [location]);
 
