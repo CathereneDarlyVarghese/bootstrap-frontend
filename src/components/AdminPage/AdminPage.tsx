@@ -105,7 +105,7 @@ const AdminPage = () => {
             jsonForm={jsonForm}
           />
         )} */}
-        <div className="ml-auto">
+        <div className="ml-auto 2xl:hidden md:block">
           <button className="btn btn-xs bg-blue-900 hover:bg-blue-900 m-2"
             onClick={() => setOpenSidebar(!openSidebar)}>Menu</button>
         </div>
