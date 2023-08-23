@@ -30,6 +30,7 @@ const AdminPage = () => {
   const [qrOptions, setQrOptions] = useState(0);
   const [assetType, setAssetType] = useState<string>("");
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [openSidebar, setOpenSidebar] = useState(true);
 
   // Handler for showing modal
   const handleShow = () => setShowModal(true);
@@ -83,11 +84,19 @@ const AdminPage = () => {
 
   return (
     <div className="admin-page flex flex-row">
-      <Sidebar
-        setToggleContent={setToggleContent}
-        setQrOptions={setQrOptions}
-      />
-      <div className="w-4/5">
+
+      <div className={`${openSidebar ? "" : "md:hidden"} md:absolute`}>
+        <Sidebar
+          // setToggleContent={setToggleContent}
+          setToggleContent={(value) => {
+            setToggleContent(value)
+            setOpenSidebar(false)
+          }}
+          setQrOptions={setQrOptions}
+        />
+      </div>
+
+      <div className="2xl:w-4/5 md:w-full flex flex-col m-0 p-0">
         {/* {toggleContent === 0 && (
           <ShowForms
             assetTypes={assetTypes}
@@ -96,13 +105,20 @@ const AdminPage = () => {
             jsonForm={jsonForm}
           />
         )} */}
-        {toggleContent === 1 && (
-          <AddAssetType assetType={assetType} setAssetType={setAssetType} />
-        )}
-        {/* {toggleContent === 2 && <QRCodes />} */}
-        {toggleContent === 3 && <Locations />}
-        {toggleContent === 4 && <Sections />}
-        {toggleContent === 5 && <Placements />}
+        <div className="ml-auto">
+          <button className="btn btn-xs bg-blue-900 hover:bg-blue-900 m-2"
+            onClick={() => setOpenSidebar(!openSidebar)}>Menu</button>
+        </div>
+        <div>
+          {toggleContent === 1 && (
+            <AddAssetType assetType={assetType} setAssetType={setAssetType} />
+          )}
+          {/* {toggleContent === 2 && <QRCodes />} */}
+          {toggleContent === 3 && <Locations />}
+          {toggleContent === 4 && <Sections />}
+          {toggleContent === 5 && <Placements />}
+        </div>
+
       </div>
     </div>
   );

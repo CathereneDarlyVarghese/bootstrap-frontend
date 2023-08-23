@@ -75,7 +75,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
 
   return (
     <div className="flex flex-col items-center mt-10 ">
-      <div className="w-1/2 p-5 border border-slate-200 rounded-lg">
+      <div className="2xl:w-1/2 md:w-3/4 p-5 border border-slate-200 rounded-lg">
         <div className="flex flex-row items-center">
           <h3 className="font-bold text-lg">Add Asset Type</h3>
         </div>
