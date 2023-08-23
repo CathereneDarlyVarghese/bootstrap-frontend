@@ -5,6 +5,5 @@ export const getStatusText = (status: string | null): string => {
 };
 
 export const getStatusColor = (status: string | undefined): string => {
-  console.log("status: ", status);
   return StatusColors[status] || StatusColors.DEFAULT;
 };

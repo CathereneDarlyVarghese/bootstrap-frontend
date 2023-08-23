@@ -188,6 +188,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     <>
       {editFormOpen ? (
         <EditAssetForm
+          closeAsset={closeAsset}
           editFormOpen={editFormOpen}
           setEditFormOpen={setEditFormOpen}
           asset={Asset}

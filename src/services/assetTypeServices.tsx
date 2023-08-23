@@ -88,5 +88,5 @@ export async function deleteAssetType(
     },
   };
 
-  await axios.delete(`${BASE_URL}/protected/asset-types/${id}`, config);
+  await axios.delete(`${BASE_URL}/protected/asset-type/${id}`, config);
 }
