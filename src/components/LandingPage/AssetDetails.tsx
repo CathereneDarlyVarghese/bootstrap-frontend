@@ -209,21 +209,32 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
           <div className="sticky top-0">
             <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
               <div className="flex flex-col">
-                <div className="flex flex-row items-center">
-                  <button className="btn btn-xs 2xl:hidden capitalize md:block bg-blue-900 hover:bg-blue-900" onClick={() => setTabIndex(0)}>Basi Info</button>
-                  <button
-                    className="ml-auto 2xl:hidden lg:block md:my-2"
-                    onClick={() => {
+
+                <button
+                  className="ml-auto 2xl:hidden lg:block md:my-2"
+                  onClick={() => {
+                    if (tabIndex !== 0) {
+                      setTabIndex(0)
+                    } else {
                       setAssetId(null);
-                    }}
-                  >
-                    {/* <img src={closeIcon} onClick={closeAsset} /> */}
-                    <TfiClose
-                      className="font-bold text-black dark:text-white"
-                      onClick={closeAsset}
-                    />
-                  </button>
-                </div>
+                      closeAsset()
+                    }
+                  }}
+                >
+                  {/* <img src={closeIcon} onClick={closeAsset} /> */}
+                  <TfiClose
+                    className="font-bold text-black dark:text-white"
+                  // onClick={closeAsset}
+                  // onClick={() => {
+                  //   if (tabIndex !== 0) {
+                  //     setTabIndex(0)
+                  //   }
+                  //   else {
+                  //     closeAsset()
+                  //   }
+                  // }}
+                  />
+                </button>
 
                 <div className="flex flex-row">
                   <button
@@ -275,10 +286,23 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
 
               <button
                 className="ml-auto 2xl:block lg:hidden"
-                onClick={() => setAssetId(null)}
+                // onClick={() => setAssetId(null)}
+                onClick={() => {
+                  if (tabIndex !== 0) {
+                    setTabIndex(0)
+                  } else {
+                    setAssetId(null);
+                    closeAsset()
+                  }
+                }}
               >
                 <TfiClose
-                  onClick={closeAsset}
+                  // onClick={() => {
+                  //   if (tabIndex !== 0) {
+                  //     setTabIndex(0)
+                  //   }
+                  // }}
+                  // onClick={closeAsset}
                   className="font-bold text-black dark:text-white"
                 />
               </button>
