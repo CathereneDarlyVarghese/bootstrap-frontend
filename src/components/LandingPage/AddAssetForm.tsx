@@ -283,6 +283,25 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
     const unFocusButton = document.querySelector("#hiddenButton")
+    const focusInput = document.querySelector("#hiddenInput")
+    const assetNameInput = document.querySelector("#nameOfAsset")
+    if (assetNameInput) {
+      const focusOnName = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      })
+      assetNameInput.dispatchEvent(focusOnName)
+    }
+    if (focusInput) {
+      const focusEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      })
+      focusInput.dispatchEvent(focusEvent)
+    }
+
     if (unFocusButton) {
       const event = new MouseEvent("click", {
         bubbles: true,
@@ -294,6 +313,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     } else {
       console.log("unfocus unsuccessfull")
     }
+
   }
 
   return (
@@ -305,6 +325,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         className="modal-toggle"
       />
       <button id="hiddenButton" style={{ position: "absolute", left: "-9999px" }}>Hidden button</button>
+      <input placeholder="unfocus" id="hiddenInput" style={{ position: "absolute", left: "-9999px" }} />
       <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
@@ -339,6 +360,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <input
                     type="text"
                     name="name"
+                    id="nameOfAsset"
                     placeholder="Enter Asset Name"
                     className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
                   />
