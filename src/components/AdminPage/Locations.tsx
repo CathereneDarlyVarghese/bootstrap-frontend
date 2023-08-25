@@ -36,7 +36,7 @@ const Locations = () => {
       createAssetLocation(authTokenObj.authToken, assetLocationObj),
     {
       onSuccess: async () => {
-        toast.success("Asset Added Successfully");
+        toast.success("Location Added Successfully");
         queryClient.invalidateQueries(["query-locationsAdmin"]);
         queryClient.invalidateQueries(["query-locations"]);
       },
@@ -63,7 +63,7 @@ const Locations = () => {
 
   return (
     <div className="flex flex-col items-center mt-10 ">
-      <div className="w-1/2 p-5 border border-slate-200 rounded-lg">
+      <div className="2xl:w-1/2 md:w-3/4 p-5 border border-slate-200 rounded-lg">
         <h3 className="font-bold text-lg">Manage Locations</h3>
 
         {/* Add New Location */}
@@ -77,8 +77,13 @@ const Locations = () => {
           />
           <button
             onClick={() => {
-              locationAddMutation.mutate({ location_name: newLocationName });
-              setNewLocationName("");
+              if (newLocationName.length !== 0) {
+                locationAddMutation.mutate({ location_name: newLocationName });
+                setNewLocationName("");
+              } else {
+                toast.error("Location field must not be empty")
+              }
+
             }}
             className="btn btn-sm bg-blue-500 hover:bg-blue-700"
           >

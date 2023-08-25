@@ -17,6 +17,7 @@ import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
+import { AssetCondition, StatusTypes } from "enums";
 import {
   FilterOptions,
   selectedStatusIds,
@@ -296,9 +297,8 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
-          assetDetailsOpen ? "lg:hidden" : ""
-        } ${addAssetOpen ? "lg:hidden" : ""} `}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
+          } ${addAssetOpen ? "lg:hidden" : ""} `}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -405,9 +405,8 @@ const ListsLayout = () => {
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${
-                filtersOpen ? "hidden" : ""
-              }`}
+              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
+                }`}
             >
               <select
                 name=""
@@ -486,10 +485,18 @@ const ListsLayout = () => {
                       searchTermMatch &&
                       statusFilterMatch &&
                       (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                        selectedPlacementNames.length === 0
                         ? intersectionFilterMatch
                         : intersectionFilterMatch)
                     );
+                  }).sort((a, b) => {
+                    if (a.asset_condition === AssetCondition.INACTIVE && b.asset_condition !== AssetCondition.INACTIVE) {
+                      return 1;
+                    }
+                    if (a.asset_condition !== AssetCondition.INACTIVE && b.asset_condition === AssetCondition.INACTIVE) {
+                      return -1; // Move 'inactive' asset to the end
+                    }
+                    return 0;
                   })
                   .map((asset) => (
                     <div
@@ -499,15 +506,6 @@ const ListsLayout = () => {
                         setAssetId(asset.asset_id);
                         setAddAssetOpen(false);
                         setAssetDetailsOpen(true);
-                        // removeClass(
-                        //   "#parent-element .asset-details-card",
-                        //   "lg:hidden"
-                        // );
-                        // addClass(
-                        //   "#parent-element .asset-details-card",
-                        //   "lg:w-full"
-                        // );
-                        // addClass("#parent-element .asset-card", "lg:hidden");
                       }}
                     >
                       <AssetCard
@@ -522,15 +520,14 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
-          logoClicked
-            ? "lg:hidden"
-            : assetDetailsOpen
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked
+          ? "lg:hidden"
+          : assetDetailsOpen
             ? "w-2/3 lg:w-full"
             : addAssetOpen
-            ? "lg:w-full"
-            : "lg:hidden"
-        }`}
+              ? "lg:w-full"
+              : "lg:hidden"
+          }`}
         id="style-7"
       >
         {/* Render asset details */}

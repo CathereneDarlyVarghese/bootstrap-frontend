@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+
 import ScanInventory from "components/ScanInventory";
 import { Amplify } from "aws-amplify";
 import awsConfig from "aws-exports";

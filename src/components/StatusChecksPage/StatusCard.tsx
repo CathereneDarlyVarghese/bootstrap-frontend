@@ -33,7 +33,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
             {formattedDate}
           </h1>
           <h1 className={`text-gray-500 dark:text-gray-400 text-lg font-normal font-sans xl:text-sm`}>
-            {status === "WORKING" ? "Working" : status === "DOWN" ? "Down" : "Needs Attention"}
+            {status === "WORKING" ? "Working" : status === "DOWN" ? "Not Working" : "Needs Attention"}
           </h1>
           <div className="flex items-center ml-auto">
             {status === "DOWN" && (

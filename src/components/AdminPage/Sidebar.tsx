@@ -10,7 +10,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setQrOptions,
 }) => {
   return (
-    <div className="w-1/5 bg-gray-200 h-screen p-5">
+    <div className="bg-gray-200 h-screen p-5">
       <div className="flex flex-col gap-5 items-start">
         {/* <button
           className="font-sans text-black font-semibold"

@@ -299,11 +299,10 @@ const AddDocumentsForm = ({
                 <input
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
-                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${
-                    file && file
+                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
                       ? "text-black dark:text-white"
                       : "text-gray-400"
-                  }`}
+                    }`}
                 />
                 <button
                   className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"
@@ -329,7 +328,7 @@ const AddDocumentsForm = ({
                 name="documentNotes"
                 value={documentNotes}
                 onChange={(e) => handleChange(e)}
-                placeholder="Enter Description"
+                placeholder="Notes"
                 // onChange={(e) =>
                 //   setData((curr) => ({ ...curr, name: e.target.value }))
                 // }
