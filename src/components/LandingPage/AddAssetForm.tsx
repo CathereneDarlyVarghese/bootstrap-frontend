@@ -100,6 +100,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Form submission handler
   const handleSubmit = async (event) => {
+    handleUnfocus()
     event.preventDefault();
 
     // Step 1: Upload the file to S3 bucket
@@ -279,6 +280,22 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setAddAssetOpen(false);
   };
 
+  // Unfocus input fields for safari browser
+  const handleUnfocus = () => {
+    const unFocusButton = document.querySelector("#hiddenButton")
+    if (unFocusButton) {
+      const event = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      })
+      unFocusButton.dispatchEvent(event)
+      console.log("unfocus activated")
+    } else {
+      console.log("unfocus unsuccessfull")
+    }
+  }
+
   return (
     <>
       <input
@@ -287,6 +304,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         id="my-modal-3"
         className="modal-toggle"
       />
+      <button id="hiddenButton" style={{ position: "absolute", left: "-9999px" }}>Hidden button</button>
       <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
@@ -380,11 +398,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -706,6 +723,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <div className="w-full mt-4 flex justify-center">
                     <button
                       onClick={(e) => {
+                        handleUnfocus()
                         handleAddPlacement(e);
                         setAddPlacement(false);
                       }}
