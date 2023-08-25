@@ -283,7 +283,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
     const unFocusButton = document.querySelector("#hiddenButton")
-    const focusInput = document.querySelector("#hiddenInput")
+    // const focusInput = document.querySelector("#hiddenInput")
     const assetNameInput = document.querySelector("#nameOfAsset")
     if (assetNameInput) {
       const focusOnName = new MouseEvent("click", {
@@ -292,15 +292,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         view: window,
       })
       assetNameInput.dispatchEvent(focusOnName)
+      console.log("focused on name input field")
     }
-    if (focusInput) {
-      const focusEvent = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      })
-      focusInput.dispatchEvent(focusEvent)
-    }
+    // if (focusInput) {
+    //   const focusEvent = new MouseEvent("click", {
+    //     bubbles: true,
+    //     cancelable: true,
+    //     view: window,
+    //   })
+    //   focusInput.dispatchEvent(focusEvent)
+    // }
 
     if (unFocusButton) {
       const event = new MouseEvent("click", {
