@@ -282,8 +282,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
-    const unFocusButton = document.querySelector("#hiddenButton")
+    // const unFocusButton = document.querySelector("#hiddenButton")
     // const focusInput = document.querySelector("#hiddenInput")
+    document.getElementById("nameOfAsset").focus()
     const assetNameInput = document.querySelector("#nameOfAsset")
     if (assetNameInput) {
       const focusOnName = new MouseEvent("click", {
@@ -303,17 +304,17 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     //   focusInput.dispatchEvent(focusEvent)
     // }
 
-    if (unFocusButton) {
-      const event = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      })
-      unFocusButton.dispatchEvent(event)
-      console.log("unfocus activated")
-    } else {
-      console.log("unfocus unsuccessfull")
-    }
+    // if (unFocusButton) {
+    //   const event = new MouseEvent("click", {
+    //     bubbles: true,
+    //     cancelable: true,
+    //     view: window,
+    //   })
+    //   unFocusButton.dispatchEvent(event)
+    //   console.log("unfocus activated")
+    // } else {
+    //   console.log("unfocus unsuccessfull")
+    // }
 
   }
 
@@ -692,6 +693,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   title="Submit"
                   workPending={false}
                   onClick={() => {
+                    handleUnfocus()
                     console.log("Asset Submitted");
                   }}
                   buttonColor={"bg-blue-900"}
