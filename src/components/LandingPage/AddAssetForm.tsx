@@ -688,11 +688,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
             {/* Modal action */}
             <div className="modal-action m-0 p-5 flex justify-center">
               <div>
-                <button className="btn btn-sm bg-red-800 hover:bg-red-800" onClick={(e) => {
-                  e.preventDefault()
-                  handleUnfocus()
-                }
-                }>focus</button>
                 {/* WorkOrderButton component */}
                 <WorkOrderButton
                   title="Submit"
