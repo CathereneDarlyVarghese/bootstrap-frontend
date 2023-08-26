@@ -10,6 +10,14 @@ window.Buffer = window.Buffer || require("buffer").Buffer;
 // };
 
 export async function uploadFiletoS3(file, dir) {
+  const timestamp = Date.now();
+  const originalFileName = file.name;
+  const fileNameWithTimestamp = `${timestamp}_${originalFileName}`;
+  file.name = fileNameWithTimestamp;
+
+  const formData = new FormData();
+  formData.append("file", file, fileNameWithTimestamp);
+
   const config = {
     bucketName: `${process.env.REACT_APP_S3_BUCKET_NAME}`,
     dirName: dir,
@@ -18,7 +26,7 @@ export async function uploadFiletoS3(file, dir) {
     secretAccessKey: `${process.env.REACT_APP_S3_SECRET_KEY}`,
   };
 
-  const result = uploadFile(file, config)
+  const result = uploadFile(formData, config)
     .then((data) => data)
     .catch((err) => console.error(err));
 
