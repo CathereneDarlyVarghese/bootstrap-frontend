@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
+import { useAtom } from "jotai";
+import { LogoClickedAtom } from "components/NavBar";
 import {
   Asset,
   AssetLocation,
@@ -51,6 +53,7 @@ const EditAssetForm = ({
   assetPlacement,
 }) => {
   const assetTypeNames = useAssetTypeNames();
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom)
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const queryClient = useQueryClient();
@@ -178,6 +181,7 @@ const EditAssetForm = ({
 
   const handleSubmitForm = async (event) => {
     event.preventDefault();
+    setLogoClicked(true)
 
     let updatedFormData = { ...formData };
 
@@ -220,7 +224,7 @@ const EditAssetForm = ({
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedData: any) =>
       updateAsset(token, asset.asset_id, updatedData),
-    onSettled: () => {},
+    onSettled: () => { },
     onSuccess: () => {
       toast.success("Asset Edited Successfully");
       setEditFormOpen(false);
@@ -448,9 +452,8 @@ const EditAssetForm = ({
                   className="text-xs text-blue-800 underline"
                   onClick={() => window.open(assetImage, "_blank")}
                 >
-                  {`(Latest File: ${
-                    assetImage ? String(assetImage).substring(52) : ""
-                  })`}
+                  {`(Latest File: ${assetImage ? String(assetImage).substring(52) : ""
+                    })`}
                 </h1>
               </label>
 
@@ -468,11 +471,10 @@ const EditAssetForm = ({
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -576,7 +578,7 @@ const EditAssetForm = ({
                           selected={
                             formData.asset_section === null &&
                             formData.asset_location !==
-                              defaultFormData.asset_location
+                            defaultFormData.asset_location
                           }
                         >
                           Select Section
@@ -633,7 +635,7 @@ const EditAssetForm = ({
                           selected={
                             formData.asset_placement === null &&
                             formData.asset_section !==
-                              defaultFormData.asset_section
+                            defaultFormData.asset_section
                           }
                         >
                           Select Placement
@@ -900,7 +902,7 @@ const EditAssetForm = ({
                         id="asset_finance_purchase"
                         name="asset_finance_purchase"
                         placeholder="Enter Finance Purchase"
-                        value={formData.asset_finance_purchase}
+                        value={Math.trunc(formData.asset_finance_purchase)}
                         onChange={(e) => {
                           handleFormDataChange(e);
                         }}
@@ -918,7 +920,7 @@ const EditAssetForm = ({
                         id="asset_finance_current_value"
                         name="asset_finance_current_value"
                         placeholder="Enter Finance Current Value"
-                        value={formData.asset_finance_current_value}
+                        value={Math.trunc(formData.asset_finance_current_value)}
                         onChange={(e) => {
                           handleFormDataChange(e);
                         }}
@@ -937,8 +939,10 @@ const EditAssetForm = ({
                 <WorkOrderButton
                   title="Submit"
                   workPending={false}
+                  disableButton={false}
                   onClick={() => {
                     console.log("Asset Submitted");
+
                   }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}

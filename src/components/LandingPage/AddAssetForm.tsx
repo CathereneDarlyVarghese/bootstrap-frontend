@@ -46,6 +46,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     AssetPlacement[]
   >([]);
 
+  //disable submit button after submission
+  const [disableButton, setDisableButton] = useState(false)
+
   // Auth
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
@@ -102,6 +105,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const handleSubmit = async (event) => {
     handleUnfocus()
     event.preventDefault();
+    setDisableButton(true)
+    toast.info("Adding asset. Please wait")
 
     // Step 1: Upload the file to S3 bucket
     const imageLocation = await uploadFiletoS3(file, "inventory");
@@ -282,40 +287,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
-    // const unFocusButton = document.querySelector("#hiddenButton")
-    // const focusInput = document.querySelector("#hiddenInput")
     document.getElementById("nameOfAsset").focus()
-    const assetNameInput = document.querySelector("#nameOfAsset")
-    if (assetNameInput) {
-      const focusOnName = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      })
-      assetNameInput.dispatchEvent(focusOnName)
-      console.log("focused on name input field")
-    }
-    // if (focusInput) {
-    //   const focusEvent = new MouseEvent("click", {
-    //     bubbles: true,
-    //     cancelable: true,
-    //     view: window,
-    //   })
-    //   focusInput.dispatchEvent(focusEvent)
-    // }
-
-    // if (unFocusButton) {
-    //   const event = new MouseEvent("click", {
-    //     bubbles: true,
-    //     cancelable: true,
-    //     view: window,
-    //   })
-    //   unFocusButton.dispatchEvent(event)
-    //   console.log("unfocus activated")
-    // } else {
-    //   console.log("unfocus unsuccessfull")
-    // }
-
   }
 
   return (
@@ -692,6 +664,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <WorkOrderButton
                   title="Submit"
                   workPending={false}
+                  disableButton={disableButton}
                   onClick={() => {
                     handleUnfocus()
                     console.log("Asset Submitted");
