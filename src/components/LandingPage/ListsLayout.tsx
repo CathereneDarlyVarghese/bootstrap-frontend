@@ -279,6 +279,8 @@ const ListsLayout = () => {
     if (logoClicked === true) {
       setAssetDetailsOpen(false);
       setLogoClicked(false);
+      setSelectedAsset(null)
+
     }
   }, [logoClicked]);
 

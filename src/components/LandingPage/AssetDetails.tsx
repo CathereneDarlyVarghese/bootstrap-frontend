@@ -131,6 +131,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     mutationFn: () => deleteAsset(authTokenObj.authToken, Asset.asset_id),
     onSettled: () => {
       setAssetId(null);
+      closeAsset()
       toast.info("Asset Deleted Successfully");
       queryClient.invalidateQueries(["query-asset"]);
     },
