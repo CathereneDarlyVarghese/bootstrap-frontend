@@ -26,7 +26,7 @@ const AdminPage = () => {
   const [selectedAssetType, setSelectedAssetType] = useState(null);
   const [jsonForm, setJsonForm] = useState(null);
   const [, setShowModal] = useState(false); // You might want to replace ',' with a state variable if you're using it
-  const [toggleContent, setToggleContent] = useState(0);
+  const [toggleContent, setToggleContent] = useState(1);
   const [qrOptions, setQrOptions] = useState(0);
   const [assetType, setAssetType] = useState<string>("");
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
@@ -83,42 +83,52 @@ const AdminPage = () => {
   // }, [selectedAssetType, authTokenObj.authToken]);
 
   return (
-    <div className="admin-page flex flex-row">
-
-      <div className={`${openSidebar ? "" : "md:hidden"} md:absolute`}>
-        <Sidebar
-          // setToggleContent={setToggleContent}
-          setToggleContent={(value) => {
-            setToggleContent(value)
-            setOpenSidebar(false)
-          }}
-          setQrOptions={setQrOptions}
-        />
-      </div>
-
-      <div className="2xl:w-4/5 md:w-full flex flex-col m-0 p-0">
-        {/* {toggleContent === 0 && (
-          <ShowForms
-            assetTypes={assetTypes}
-            selectedAssetType={selectedAssetType}
-            setSelectedAssetType={setSelectedAssetType}
-            jsonForm={jsonForm}
-          />
-        )} */}
-        <div className="ml-auto 2xl:hidden md:block">
-          <button className="btn btn-xs bg-blue-900 hover:bg-blue-900 m-2"
-            onClick={() => setOpenSidebar(!openSidebar)}>Menu</button>
+    <div>
+      <div className="drawer">
+        <input id="my-drawer" type="checkbox" checked={openSidebar} className="drawer-toggle" />
+        <div className="drawer-content">
+          {/* Page content here */}
+          {/* <label onClick={() => setOpenSidebar(true)} htmlFor="my-drawer" className="btn bg-blue-900 hover:bg-blue-900 drawer-button">Open drawer</label> */}
+          <button className="m-2 btn btn-sm bg-blue-900 hover:bg-blue-900" onClick={() => setOpenSidebar(true)}>Menu</button>
+          <div>
+            {toggleContent === 1 && (
+              <AddAssetType assetType={assetType} setAssetType={setAssetType} />
+            )}
+            {/* {toggleContent === 2 && <QRCodes />} */}
+            {toggleContent === 3 && <Locations />}
+            {toggleContent === 4 && <Sections />}
+            {toggleContent === 5 && <Placements />}
+          </div>
         </div>
-        <div>
-          {toggleContent === 1 && (
-            <AddAssetType assetType={assetType} setAssetType={setAssetType} />
-          )}
-          {/* {toggleContent === 2 && <QRCodes />} */}
-          {toggleContent === 3 && <Locations />}
-          {toggleContent === 4 && <Sections />}
-          {toggleContent === 5 && <Placements />}
+        <div className="drawer-side">
+          <label htmlFor="my-drawer" className="drawer-overlay"></label>
+          <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+            <li className="" onClick={() => {
+              setOpenSidebar(false)
+              setToggleContent(1)
+            }}>
+              <button className="focus:bg-blue-900 focus:text-white">Add Asset Types</button>
+            </li>
+            <li className="" onClick={() => {
+              setOpenSidebar(false)
+              setToggleContent(3)
+            }}>
+              <button className="focus:bg-blue-900 focus:text-white">Locations</button>
+            </li>
+            <li className="" onClick={() => {
+              setOpenSidebar(false)
+              setToggleContent(4)
+            }}>
+              <button className="focus:bg-blue-900 focus:text-white">Sections</button>
+            </li>
+            <li className="" onClick={() => {
+              setOpenSidebar(false)
+              setToggleContent(5)
+            }}>
+              <button className="focus:bg-blue-900 focus:text-white">Placements</button>
+            </li>
+          </ul>
         </div>
-
       </div>
     </div>
   );

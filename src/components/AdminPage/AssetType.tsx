@@ -88,7 +88,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
             value={assetType}
             onChange={(e) => setAssetType(e.target.value)}
           />
-          <div className="flex flex-row justify-center">
+          <div className="flex flex-row justify-left">
             <button
               onClick={handleAddAssetType}
               className="btn btn-sm bg-blue-900 hover:bg-blue-900"
@@ -122,7 +122,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
                 </option>
               ))}
             </select>
-            <div className="flex flex-row justify-center">
+            <div className="flex flex-row justify-left">
               <button
                 onClick={() => {
                   assetTypeDeleteMutation.mutate(selectedAssetType);
