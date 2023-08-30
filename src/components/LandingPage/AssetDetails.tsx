@@ -35,6 +35,7 @@ import {
   getAssetSections,
 } from "services/assetSectionServices";
 
+
 interface AssetDetailsProps {
   sessionToken: string | null;
   setAssetId: (id: string | null) => void;
