@@ -10,13 +10,12 @@ window.Buffer = window.Buffer || require("buffer").Buffer;
 // };
 
 export async function uploadFiletoS3(file, dir) {
-  const timestamp = Date.now();
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().slice(0, 19).replace(/[-T:/]/g, '');
   const originalFileName = file.name;
-  const fileNameWithTimestamp = `${timestamp}_${originalFileName}`;
-  file.name = fileNameWithTimestamp;
+  const newFileName = `${formattedDate}_${originalFileName}`;
 
-  const formData = new FormData();
-  formData.append("file", file, fileNameWithTimestamp);
+  const renamedFile = new File([file], newFileName, { type: file.type });
 
   const config = {
     bucketName: `${process.env.REACT_APP_S3_BUCKET_NAME}`,
@@ -26,7 +25,7 @@ export async function uploadFiletoS3(file, dir) {
     secretAccessKey: `${process.env.REACT_APP_S3_SECRET_KEY}`,
   };
 
-  const result = uploadFile(formData, config)
+  const result = uploadFile(renamedFile, config)
     .then((data) => data)
     .catch((err) => console.error(err));
 

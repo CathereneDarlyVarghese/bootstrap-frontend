@@ -449,7 +449,7 @@ const EditAssetForm = ({
                   onClick={() => window.open(assetImage, "_blank")}
                 >
                   {`(Latest File: ${
-                    assetImage ? String(assetImage).substring(52) : ""
+                    assetImage ? String(assetImage).substring(67) : ""
                   })`}
                 </h1>
               </label>
