@@ -856,15 +856,15 @@ const EditAssetForm = ({
                     setFormData((prevState) => ({
                       ...prevState,
                       status_check_enabled: isChecked,
-                      status_check_interval: isChecked
-                        ? prevState.status_check_interval
-                        : null,
-                      asset_finance_purchase: isChecked
-                        ? prevState.asset_finance_purchase
-                        : null,
-                      asset_finance_current_value: isChecked
-                        ? prevState.asset_finance_current_value
-                        : null,
+                      // status_check_interval: isChecked
+                      //   ? prevState.status_check_interval
+                      //   : null,
+                      // asset_finance_purchase: isChecked
+                      //   ? prevState.asset_finance_purchase
+                      //   : null,
+                      // asset_finance_current_value: isChecked
+                      //   ? prevState.asset_finance_current_value
+                      //   : null,
                     }));
                   }}
                 />
@@ -890,46 +890,47 @@ const EditAssetForm = ({
                     className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
                   />
 
-                  <div className="flex flex-row md:flex-col gap-3 md:gap-0">
-                    {/* Input field for finance purchase */}
-                    <div className="w-1/2 md:w-auto">
-                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                        Finance Purchase
-                      </label>
-                      <input
-                        required
-                        type="number"
-                        id="asset_finance_purchase"
-                        name="asset_finance_purchase"
-                        placeholder="Enter Finance Purchase"
-                        value={Math.trunc(formData.asset_finance_purchase)}
-                        onChange={(e) => {
-                          handleFormDataChange(e);
-                        }}
-                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                      />
-                    </div>
-                    {/* Input field for finance current value */}
-                    <div className="w-1/2 md:w-auto">
-                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                        Finance Current Value
-                      </label>
-                      <input
-                        required
-                        type="number"
-                        id="asset_finance_current_value"
-                        name="asset_finance_current_value"
-                        placeholder="Enter Finance Current Value"
-                        value={Math.trunc(formData.asset_finance_current_value)}
-                        onChange={(e) => {
-                          handleFormDataChange(e);
-                        }}
-                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                      />
-                    </div>
-                  </div>
+
                 </div>
               ) : null}
+              <div className="flex flex-row md:flex-col gap-3 md:gap-0">
+                {/* Input field for finance purchase */}
+                <div className="w-1/2 md:w-auto">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    Finance Purchase
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    id="asset_finance_purchase"
+                    name="asset_finance_purchase"
+                    placeholder="Enter Finance Purchase"
+                    value={Math.trunc(formData.asset_finance_purchase)}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                  />
+                </div>
+                {/* Input field for finance current value */}
+                <div className="w-1/2 md:w-auto">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    Finance Current Value
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    id="asset_finance_current_value"
+                    name="asset_finance_current_value"
+                    placeholder="Enter Finance Current Value"
+                    value={Math.trunc(formData.asset_finance_current_value)}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Modal action */}

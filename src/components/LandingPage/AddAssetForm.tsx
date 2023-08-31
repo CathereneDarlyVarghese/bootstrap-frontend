@@ -46,6 +46,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     AssetPlacement[]
   >([]);
 
+  const [statusCheckEnabled, setStatusCheckEnabled] = useState(false)
   //disable submit button after submission
   const [disableButton, setDisableButton] = useState(false)
 
@@ -144,6 +145,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         formData.get("finance_current_value") as string
       ),
       images_id: fileId,
+      status_check_enabled: statusCheckEnabled,
       status_check_interval: parseInt(
         formData.get("status_check_interval") as string
       ),
@@ -288,6 +290,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
     document.getElementById("nameOfAsset").focus()
+  }
+
+  const handleStatusCheckChange = (event) => {
+    setStatusCheckEnabled(event.target.checked)
   }
 
   return (
@@ -612,22 +618,28 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 </label>
                 <input
                   type="checkbox"
+                  checked={statusCheckEnabled}
+                  onChange={handleStatusCheckChange}
                   id="status_check_enabled"
                   className="form-checkbox text-blue-600"
                 />
               </div>
+              {statusCheckEnabled &&
+                <div>
+                  {/* Input field for status check interval */}
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
+                    Status Check Interval (in days)
+                  </label>
+                  <input
+                    type="number"
+                    name="status_check_interval"
+                    placeholder="Enter Status Check Interval"
+                    min="1"
+                    className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
+                  />
+                </div>
+              }
 
-              {/* Input field for status check interval */}
-              <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
-                Status Check Interval (in days)
-              </label>
-              <input
-                type="number"
-                name="status_check_interval"
-                placeholder="Enter Status Check Interval"
-                min="1"
-                className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
-              />
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Input field for finance purchase */}
@@ -655,6 +667,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   />
                 </div>
               </div>
+
             </div>
 
             {/* Modal action */}
