@@ -491,15 +491,61 @@ const ListsLayout = () => {
                         ? intersectionFilterMatch
                         : intersectionFilterMatch)
                     );
-                  }).sort((a, b) => {
-                    if (a.asset_condition === AssetCondition.INACTIVE && b.asset_condition !== AssetCondition.INACTIVE) {
-                      return 1;
-                    }
-                    if (a.asset_condition !== AssetCondition.INACTIVE && b.asset_condition === AssetCondition.INACTIVE) {
-                      return -1; // Move 'inactive' asset to the end
-                    }
-                    return 0;
-                  })
+                  }).filter((item) => item.asset_condition === "ACTIVE")
+                  .map((asset) => (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setSelectedAsset(asset);
+                        setAssetId(asset.asset_id);
+                        setAddAssetOpen(false);
+                        setAssetDetailsOpen(true);
+                      }}
+                    >
+                      <AssetCard
+                        asset={asset}
+                        imagePlaceholder="img"
+                        updatedDetailsTabIndex={detailsTabIndexRefresh}
+                      />
+                    </div>
+                  ))}
+              {incomingAssets &&
+                incomingAssets
+                  .filter((asset) => {
+                    const searchTermMatch =
+                      searchTerm === "" ||
+                      asset.asset_name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      asset.asset_type
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase());
+
+                    const statusFilterMatch =
+                      selectedStatusIds.length === 0 ||
+                      selectedStatusIds.includes(asset.asset_status);
+
+                    const sectionFilterMatch =
+                      selectedSectionNames.length === 0 ||
+                      selectedSectionNames.includes(asset.section_name);
+
+                    const placementFilterMatch =
+                      selectedPlacementNames.length === 0 ||
+                      selectedPlacementNames.includes(asset.placement_name);
+
+                    /* sectionFilterMatch AND placementFilterMatch */
+                    const intersectionFilterMatch =
+                      sectionFilterMatch && placementFilterMatch;
+
+                    return (
+                      searchTermMatch &&
+                      statusFilterMatch &&
+                      (selectedSectionNames.length === 0 ||
+                        selectedPlacementNames.length === 0
+                        ? intersectionFilterMatch
+                        : intersectionFilterMatch)
+                    );
+                  }).filter((item) => item.asset_condition === "INACTIVE")
                   .map((asset) => (
                     <div
                       style={{ cursor: "pointer" }}
