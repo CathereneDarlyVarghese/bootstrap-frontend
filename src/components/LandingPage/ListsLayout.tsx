@@ -456,8 +456,10 @@ const ListsLayout = () => {
             <div className={`${assetDetailsOpen ? "lg:hidden" : ""}`}>
               {/* Render asset cards */}
               {incomingAssets &&
-                incomingAssets
-                  .filter((asset) => {
+                (() => {
+                  const activeAssets = incomingAssets.filter((item) => item.asset_condition === "ACTIVE");
+                  const inactiveAssets = incomingAssets.filter((item) => item.asset_condition === "INACTIVE");
+                  return [...activeAssets, ...inactiveAssets].filter((asset) => {
                     const searchTermMatch =
                       searchTerm === "" ||
                       asset.asset_name
@@ -482,7 +484,6 @@ const ListsLayout = () => {
                     /* sectionFilterMatch AND placementFilterMatch */
                     const intersectionFilterMatch =
                       sectionFilterMatch && placementFilterMatch;
-
                     return (
                       searchTermMatch &&
                       statusFilterMatch &&
@@ -491,15 +492,8 @@ const ListsLayout = () => {
                         ? intersectionFilterMatch
                         : intersectionFilterMatch)
                     );
-                  }).sort((a, b) => {
-                    if (a.asset_condition === AssetCondition.INACTIVE && b.asset_condition !== AssetCondition.INACTIVE) {
-                      return 1;
-                    }
-                    if (a.asset_condition !== AssetCondition.INACTIVE && b.asset_condition === AssetCondition.INACTIVE) {
-                      return -1; // Move 'inactive' asset to the end
-                    }
-                    return 0;
-                  })
+                  });
+                })()
                   .map((asset) => (
                     <div
                       style={{ cursor: "pointer" }}
