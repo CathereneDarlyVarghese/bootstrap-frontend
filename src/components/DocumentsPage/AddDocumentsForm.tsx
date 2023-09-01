@@ -211,7 +211,7 @@ const AddDocumentsForm = ({
                 className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                 required
               >
-                <option value="" disabled selected hidden>
+                <option value="" disabled selected >
                   Select Document Type
                 </option>
                 {documentTypes.map((documentType) => (
@@ -300,8 +300,8 @@ const AddDocumentsForm = ({
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
                   className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
                     }`}
                 />
                 <button
