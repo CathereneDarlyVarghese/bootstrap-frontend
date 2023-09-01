@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useAtom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { LogoClickedAtom } from "components/NavBar";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
@@ -28,6 +28,8 @@ import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
 
+export const searchTermAtom = atom("")
+
 const ListsLayout = () => {
   // ----------------------- REFS -----------------------
   const selectRef = useRef<HTMLSelectElement>(null); // For resetting the section selector
@@ -50,7 +52,7 @@ const ListsLayout = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   // UI States
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [showOptions, setShowOptions] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [assetDetailsOpen, setAssetDetailsOpen] = useState(false);

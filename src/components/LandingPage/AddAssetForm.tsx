@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { atom, useAtom } from "jotai";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 import { AssetLocation, AssetPlacement, AssetSection, AssetType } from "types";
 import { uploadFiletoS3 } from "utils";
@@ -24,6 +25,7 @@ import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
+import { searchTermAtom } from "./ListsLayout";
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // ====== State Declarations ======
@@ -60,6 +62,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Hooks & External Services
   const queryClient = useQueryClient();
+
+  //edit search term when adding asset
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom)
 
   // ====== Effects ======
 
@@ -150,6 +155,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         formData.get("status_check_interval") as string
       ),
     };
+
+    setSearchTerm(assetData.asset_name)
 
     // Step 4: Create the asset in the backend
     try {
