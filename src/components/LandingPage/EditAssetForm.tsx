@@ -75,6 +75,7 @@ const EditAssetForm = ({
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+  const [disableButton, setDisableButton] = useState(false)
 
   const assetConditionOptionsReverse = {
     ACTIVE: AssetCondition.ACTIVE,
@@ -180,8 +181,10 @@ const EditAssetForm = ({
   }, [formData.asset_section]);
 
   const handleSubmitForm = async (event) => {
+    handleUnfocus();
     event.preventDefault();
-    setLogoClicked(true)
+    setDisableButton(true);
+    setLogoClicked(true);
 
     let updatedFormData = { ...formData };
 
@@ -347,6 +350,11 @@ const EditAssetForm = ({
 
     console.log("Form Data Field ==>> ", e.target.value);
   };
+
+  const handleUnfocus = () => {
+    document.getElementById("asset_name").focus()
+    document.getElementById("asset_name").blur()
+  }
 
   return (
     <>
@@ -940,7 +948,7 @@ const EditAssetForm = ({
                 <WorkOrderButton
                   title="Submit"
                   workPending={false}
-                  disableButton={false}
+                  disableButton={disableButton}
                   onClick={() => {
                     console.log("Asset Submitted");
 
