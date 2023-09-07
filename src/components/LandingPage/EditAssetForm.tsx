@@ -353,7 +353,7 @@ const EditAssetForm = ({
 
   const handleUnfocus = () => {
     document.getElementById("asset_name").focus()
-    document.getElementById("asset_name").blur()
+
   }
 
   return (

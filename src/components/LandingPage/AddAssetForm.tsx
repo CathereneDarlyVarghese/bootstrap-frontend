@@ -113,6 +113,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     toast.info("Adding asset. Please wait")
     event.preventDefault();
     setDisableButton(true)
+    document.getElementById("nameOfAsset").blur()
 
     // Step 1: Upload the file to S3 bucket
     const imageLocation = await uploadFiletoS3(file, "inventory");
@@ -297,7 +298,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
     document.getElementById("nameOfAsset").focus()
-    document.getElementById("nameOfAsset").blur()
+
   }
 
   const handleStatusCheckChange = (event) => {
