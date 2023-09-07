@@ -182,6 +182,7 @@ const EditAssetForm = ({
 
   const handleSubmitForm = async (event) => {
     handleUnfocus();
+    toast.info("Editing Asset... Please wait")
     event.preventDefault();
     setDisableButton(true);
     setLogoClicked(true);
