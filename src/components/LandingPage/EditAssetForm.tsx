@@ -185,7 +185,6 @@ const EditAssetForm = ({
     toast.info("Editing Asset... Please wait")
     event.preventDefault();
     setDisableButton(true);
-    setLogoClicked(true);
 
     let updatedFormData = { ...formData };
 
@@ -220,6 +219,8 @@ const EditAssetForm = ({
     try {
       assetUpdateMutation.mutateAsync(updatedFormData);
       closeAsset();
+      setLogoClicked(true);
+
     } catch (error) {
       console.error("Failed to update asset:", error);
     }
