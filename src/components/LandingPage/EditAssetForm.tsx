@@ -219,11 +219,12 @@ const EditAssetForm = ({
     try {
       assetUpdateMutation.mutateAsync(updatedFormData);
       closeAsset();
-      setLogoClicked(true);
-
     } catch (error) {
       console.error("Failed to update asset:", error);
     }
+    setTimeout(() => {
+      setLogoClicked(true)
+    }, 1000)
   };
 
   const assetUpdateMutation = useMutation({
