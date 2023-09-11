@@ -113,6 +113,7 @@ const EditAssetForm = ({
       asset.asset_condition === "ACTIVE"
         ? AssetCondition.ACTIVE
         : AssetCondition.INACTIVE,
+    asset_uuid: asset.asset_uuid
   };
   const [formData, setFormData] = useState<Asset>(defaultFormData);
 

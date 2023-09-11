@@ -56,6 +56,7 @@ export interface Asset {
   images_id?: string;
   status_check_interval: number;
   asset_condition: string;
+  asset_uuid: string;
 }
 
 export interface IncomingAsset {
@@ -80,6 +81,7 @@ export interface IncomingAsset {
   asset_location?: string;
   asset_placement?: string;
   asset_section?: string;
+  asset_uuid: string;
 }
 
 export interface Document {

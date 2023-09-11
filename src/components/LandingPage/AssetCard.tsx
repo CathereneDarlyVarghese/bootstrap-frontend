@@ -23,9 +23,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   const [showQr, setShowQr] = useState(false);
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
-  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
-    props.asset.asset_name
-  )}&locationId=${encodeURIComponent(props.asset.asset_location)}`;
+  const QRLink = props.asset.asset_uuid
+    ? `${redirectURL}/home?search=${encodeURIComponent(
+        props.asset.asset_uuid
+      )}`
+    : null;
 
   const handleClick = () => {
     props.updatedDetailsTabIndex(0);
