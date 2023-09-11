@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useAtom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { LogoClickedAtom } from "components/NavBar";
 import "./cardstyles.css";
 import AssetCard from "./AssetCard";
@@ -17,6 +17,7 @@ import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
+import { AssetCondition, StatusTypes } from "enums";
 import {
   FilterOptions,
   selectedStatusIds,
@@ -26,6 +27,8 @@ import {
 import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
+
+export const searchTermAtom = atom("")
 
 const ListsLayout = () => {
   // ----------------------- REFS -----------------------
@@ -49,7 +52,7 @@ const ListsLayout = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   // UI States
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [showOptions, setShowOptions] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [assetDetailsOpen, setAssetDetailsOpen] = useState(false);
@@ -278,6 +281,8 @@ const ListsLayout = () => {
     if (logoClicked === true) {
       setAssetDetailsOpen(false);
       setLogoClicked(false);
+      setSelectedAsset(null)
+
     }
   }, [logoClicked]);
 
@@ -296,9 +301,8 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
-          assetDetailsOpen ? "lg:hidden" : ""
-        } ${addAssetOpen ? "lg:hidden" : ""} `}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
+          } ${addAssetOpen ? "lg:hidden" : ""} `}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -405,9 +409,8 @@ const ListsLayout = () => {
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${
-                filtersOpen ? "hidden" : ""
-              }`}
+              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
+                }`}
             >
               <select
                 name=""
@@ -455,8 +458,10 @@ const ListsLayout = () => {
             <div className={`${assetDetailsOpen ? "lg:hidden" : ""}`}>
               {/* Render asset cards */}
               {incomingAssets &&
-                incomingAssets
-                  .filter((asset) => {
+                (() => {
+                  const activeAssets = incomingAssets.filter((item) => item.asset_condition === "ACTIVE");
+                  const inactiveAssets = incomingAssets.filter((item) => item.asset_condition === "INACTIVE");
+                  return [...activeAssets, ...inactiveAssets].filter((asset) => {
                     const searchTermMatch =
                       searchTerm === "" ||
                       asset.asset_name
@@ -481,16 +486,16 @@ const ListsLayout = () => {
                     /* sectionFilterMatch AND placementFilterMatch */
                     const intersectionFilterMatch =
                       sectionFilterMatch && placementFilterMatch;
-
                     return (
                       searchTermMatch &&
                       statusFilterMatch &&
                       (selectedSectionNames.length === 0 ||
-                      selectedPlacementNames.length === 0
+                        selectedPlacementNames.length === 0
                         ? intersectionFilterMatch
                         : intersectionFilterMatch)
                     );
-                  })
+                  });
+                })()
                   .map((asset) => (
                     <div
                       style={{ cursor: "pointer" }}
@@ -499,15 +504,6 @@ const ListsLayout = () => {
                         setAssetId(asset.asset_id);
                         setAddAssetOpen(false);
                         setAssetDetailsOpen(true);
-                        // removeClass(
-                        //   "#parent-element .asset-details-card",
-                        //   "lg:hidden"
-                        // );
-                        // addClass(
-                        //   "#parent-element .asset-details-card",
-                        //   "lg:w-full"
-                        // );
-                        // addClass("#parent-element .asset-card", "lg:hidden");
                       }}
                     >
                       <AssetCard
@@ -522,15 +518,14 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
-          logoClicked
-            ? "lg:hidden"
-            : assetDetailsOpen
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked
+          ? "lg:hidden"
+          : assetDetailsOpen
             ? "w-2/3 lg:w-full"
             : addAssetOpen
-            ? "lg:w-full"
-            : "lg:hidden"
-        }`}
+              ? "lg:w-full"
+              : "lg:hidden"
+          }`}
         id="style-7"
       >
         {/* Render asset details */}

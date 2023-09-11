@@ -3,7 +3,7 @@ import StatusCard from "./StatusCard";
 import StatusDetails from "./StatusDetails";
 import AddStatusForm from "./AddStatusForm";
 import { getAssetCheckById } from "services/assetCheckServices";
-import { IncomingAssetCheck } from "types";
+import { IncomingAsset, IncomingAssetCheck } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
 
@@ -33,6 +33,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [getResult, setGetResult] = useState<string | null>(null);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+
 
   // Helper function to format response
   const formatResponse = (res: any) => {
@@ -70,6 +71,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     enabled: !!selectedAsset, // only enabled if there's a selectedAsset
   });
 
+
   return (
     <div className="w-full">
       {addFormOpen ? (
@@ -84,40 +86,46 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           />
         </div>
       ) : (
-        <div>
-          <div className="flex flex-row items-center">
-            <h1 className="text-blue-900 dark:text-blue-600 text-lg md:text-sm font-sans font-semibold">
-              Status Checks - {selectedAsset.asset_name}
-            </h1>
-            <button
-              className="btn bg-blue-900 ml-auto"
-              onClick={() => setAddFormOpen(true)}
-            >
-              +Add
-            </button>
-          </div>
-          <div>
-            <h1 className="text-blue-800 text-sm italic">*Click on the card for more info</h1>
-          </div>
-          <div className={`${detailsOpen ? "hidden" : ""}`}>
+        selectedAsset.status_check_enabled === true ?
+          (<div>
+            <div className="flex flex-row items-center">
+              <h1 className="text-blue-900 dark:text-blue-600 text-lg md:text-sm font-sans font-semibold">
+                Status Checks - {selectedAsset.asset_name}
+              </h1>
+              <button
+                className="btn bg-blue-900 ml-auto"
+                onClick={() => setAddFormOpen(true)}
+              >
+                +Add
+              </button>
+            </div>
+            <div>
+              <h1 className="text-blue-800 text-sm italic">*Click on the card for more info</h1>
+            </div>
+            <div className={`${detailsOpen ? "hidden" : ""}`}>
 
-            {
-              assetChecks.sort((a, b) =>
-                new Date(b.modified_date).getTime() -
-                new Date(a.modified_date).getTime()
-              )
-                .map((assetCheck) => (
-                  <StatusCard
-                    status={assetCheck.status_check}
-                    date={new Date(assetCheck.modified_date)}
-                    onClick={() =>
-                      handleStatusCardClick(assetCheck.uptime_check_id)
-                    }
-                    uptime_notes={assetCheck.uptime_notes}
-                  />
-                ))}
-          </div>
-        </div>
+              {
+                assetChecks.sort((a, b) =>
+                  new Date(b.modified_date).getTime() -
+                  new Date(a.modified_date).getTime()
+                )
+                  .map((assetCheck) => (
+                    <StatusCard
+                      status={assetCheck.status_check}
+                      date={new Date(assetCheck.modified_date)}
+                      onClick={() =>
+                        handleStatusCardClick(assetCheck.uptime_check_id)
+                      }
+                      uptime_notes={assetCheck.uptime_notes}
+                    />
+                  ))}
+            </div>
+          </div>)
+          : (
+            <div className="flex flex-row justify-center">
+              <h1 className="font-sans font-semibold mt-10 text-center">Status Checks disabled. Edit asset to enable status checks</h1>
+            </div>
+          )
       )}
 
       <div className={`${detailsOpen ? "" : "hidden"}`}>

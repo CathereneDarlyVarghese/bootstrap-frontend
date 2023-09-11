@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
 import useAssetTypeNames from "hooks/useAssetTypeNames";
+import { useAtom } from "jotai";
+import { LogoClickedAtom } from "components/NavBar";
 import {
   Asset,
   AssetLocation,
@@ -51,6 +53,7 @@ const EditAssetForm = ({
   assetPlacement,
 }) => {
   const assetTypeNames = useAssetTypeNames();
+  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom)
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const queryClient = useQueryClient();
@@ -72,6 +75,7 @@ const EditAssetForm = ({
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState("");
+  const [disableButton, setDisableButton] = useState(false)
 
   const assetConditionOptionsReverse = {
     ACTIVE: AssetCondition.ACTIVE,
@@ -177,7 +181,10 @@ const EditAssetForm = ({
   }, [formData.asset_section]);
 
   const handleSubmitForm = async (event) => {
+    handleUnfocus();
+    toast.info("Editing Asset... Please wait")
     event.preventDefault();
+    setDisableButton(true);
 
     let updatedFormData = { ...formData };
 
@@ -215,12 +222,15 @@ const EditAssetForm = ({
     } catch (error) {
       console.error("Failed to update asset:", error);
     }
+    setTimeout(() => {
+      setLogoClicked(true)
+    }, 1000)
   };
 
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedData: any) =>
       updateAsset(token, asset.asset_id, updatedData),
-    onSettled: () => {},
+    onSettled: () => { },
     onSuccess: () => {
       toast.success("Asset Edited Successfully");
       setEditFormOpen(false);
@@ -343,6 +353,11 @@ const EditAssetForm = ({
 
     console.log("Form Data Field ==>> ", e.target.value);
   };
+
+  const handleUnfocus = () => {
+    document.getElementById("asset_name").focus()
+
+  }
 
   return (
     <>
@@ -468,11 +483,10 @@ const EditAssetForm = ({
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
-                    file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
-                  }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
+                    ? "text-black dark:text-white"
+                    : "text-gray-400"
+                    }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -576,7 +590,7 @@ const EditAssetForm = ({
                           selected={
                             formData.asset_section === null &&
                             formData.asset_location !==
-                              defaultFormData.asset_location
+                            defaultFormData.asset_location
                           }
                         >
                           Select Section
@@ -633,7 +647,7 @@ const EditAssetForm = ({
                           selected={
                             formData.asset_placement === null &&
                             formData.asset_section !==
-                              defaultFormData.asset_section
+                            defaultFormData.asset_section
                           }
                         >
                           Select Placement
@@ -854,15 +868,15 @@ const EditAssetForm = ({
                     setFormData((prevState) => ({
                       ...prevState,
                       status_check_enabled: isChecked,
-                      status_check_interval: isChecked
-                        ? prevState.status_check_interval
-                        : null,
-                      asset_finance_purchase: isChecked
-                        ? prevState.asset_finance_purchase
-                        : null,
-                      asset_finance_current_value: isChecked
-                        ? prevState.asset_finance_current_value
-                        : null,
+                      // status_check_interval: isChecked
+                      //   ? prevState.status_check_interval
+                      //   : null,
+                      // asset_finance_purchase: isChecked
+                      //   ? prevState.asset_finance_purchase
+                      //   : null,
+                      // asset_finance_current_value: isChecked
+                      //   ? prevState.asset_finance_current_value
+                      //   : null,
                     }));
                   }}
                 />
@@ -888,46 +902,47 @@ const EditAssetForm = ({
                     className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
                   />
 
-                  <div className="flex flex-row md:flex-col gap-3 md:gap-0">
-                    {/* Input field for finance purchase */}
-                    <div className="w-1/2 md:w-auto">
-                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                        Finance Purchase
-                      </label>
-                      <input
-                        required
-                        type="number"
-                        id="asset_finance_purchase"
-                        name="asset_finance_purchase"
-                        placeholder="Enter Finance Purchase"
-                        value={formData.asset_finance_purchase}
-                        onChange={(e) => {
-                          handleFormDataChange(e);
-                        }}
-                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                      />
-                    </div>
-                    {/* Input field for finance current value */}
-                    <div className="w-1/2 md:w-auto">
-                      <label className="font-sans font-semibold text-sm text-black dark:text-white">
-                        Finance Current Value
-                      </label>
-                      <input
-                        required
-                        type="number"
-                        id="asset_finance_current_value"
-                        name="asset_finance_current_value"
-                        placeholder="Enter Finance Current Value"
-                        value={formData.asset_finance_current_value}
-                        onChange={(e) => {
-                          handleFormDataChange(e);
-                        }}
-                        className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
-                      />
-                    </div>
-                  </div>
+
                 </div>
               ) : null}
+              <div className="flex flex-row md:flex-col gap-3 md:gap-0">
+                {/* Input field for finance purchase */}
+                <div className="w-1/2 md:w-auto">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    Finance Purchase
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    id="asset_finance_purchase"
+                    name="asset_finance_purchase"
+                    placeholder="Enter Finance Purchase"
+                    value={Math.trunc(formData.asset_finance_purchase)}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                  />
+                </div>
+                {/* Input field for finance current value */}
+                <div className="w-1/2 md:w-auto">
+                  <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    Finance Current Value
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    id="asset_finance_current_value"
+                    name="asset_finance_current_value"
+                    placeholder="Enter Finance Current Value"
+                    value={Math.trunc(formData.asset_finance_current_value)}
+                    onChange={(e) => {
+                      handleFormDataChange(e);
+                    }}
+                    className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Modal action */}
@@ -937,8 +952,10 @@ const EditAssetForm = ({
                 <WorkOrderButton
                   title="Submit"
                   workPending={false}
+                  disableButton={disableButton}
                   onClick={() => {
                     console.log("Asset Submitted");
+
                   }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}
