@@ -16,6 +16,7 @@ import DocumentsPage from "components/DocumentsPage/DocumentsPage";
 import AdminPage from "components/AdminPage/AdminPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QrLinkingPage from "components/QrLinking/QrLinkingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ function AppContent() {
           <Route path="/work-orders" element={<WorkOrdersPage />} />
           <Route path="/document/location" element={<DocumentsPage />} />
           <Route path="/status-checks" element={<StatusChecksPage />} />
+          <Route path="linkqr" element={<QrLinkingPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </div>

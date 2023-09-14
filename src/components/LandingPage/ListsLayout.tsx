@@ -420,6 +420,7 @@ const ListsLayout = () => {
                 className="select select-sm bg-white dark:bg-gray-700 text-black dark:text-white border border-slate-300 dark:border-slate-600 w-8/12"
               >
                 <option value="">All Sections</option>
+
                 {assetSections &&
                   assetSections
                     .sort((a, b) =>
