@@ -286,7 +286,7 @@ const EditDocumentsForm = ({
                             documentFile.file_array[
                               documentFile.file_array.length - 1
                             ][0]
-                          ).substring(51)
+                          ).substring(66)
                         : ""
                     })`}
                   </h1>

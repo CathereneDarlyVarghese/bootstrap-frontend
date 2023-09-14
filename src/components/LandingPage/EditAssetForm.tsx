@@ -463,8 +463,9 @@ const EditAssetForm = ({
                   className="text-xs text-blue-800 underline"
                   onClick={() => window.open(assetImage, "_blank")}
                 >
-                  {`(Latest File: ${assetImage ? String(assetImage).substring(52) : ""
-                    })`}
+                  {`(Latest File: ${
+                    assetImage ? String(assetImage).substring(67) : ""
+                  })`}
                 </h1>
               </label>
 

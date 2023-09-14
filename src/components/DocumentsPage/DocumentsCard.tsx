@@ -123,7 +123,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
           onClick={() => window.open(file, "_blank")}
         >
           <img src={documentIcon} />
-          {String(file).substring(51)}
+          {String(file).substring(66)}
         </td>
         <td>{modifiedBy}</td>
         <td>{modifiedDate}</td>
