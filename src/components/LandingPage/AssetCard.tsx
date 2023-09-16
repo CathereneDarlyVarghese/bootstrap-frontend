@@ -24,7 +24,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
   const QRLink = props.asset.asset_uuid
-    ? `${redirectURL}/home?search=${encodeURIComponent(
+    ? `${redirectURL}/home?asset_uuid=${encodeURIComponent(
         props.asset.asset_uuid
       )}`
     : null;
@@ -46,10 +46,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   return (
     <div
       className={`flex flex-row justify-between card card-side w-auto my-3 mx-2 p-5 bg-gray-100 dark:bg-gray-700 
-      ${props.asset.asset_condition === "INACTIVE"
+      ${
+        props.asset.asset_condition === "INACTIVE"
           ? "bg-[#cdcfd1] dark:bg-[#1f2937] dark:border dark:border-gray-500"
           : "bg-gray-100 dark:bg-gray-700"
-        } 
+      } 
       max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
       // style={{ backgroundColor: assetCardStyle.backgroundColor }}
       onClick={handleClick}
@@ -81,11 +82,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           )}
         </div>
         <h1
-          className={`flex ml-2 ${props.asset.asset_condition === "INACTIVE"
-            ? "text-gray-400 dark:text-gray-600"
-            : "text-gray-800 dark:text-white"
-            } ${props.asset.asset_name.length > 10 ? "text-md" : "text-lg"
-            }  font-semibold font-sans tracking-wide xl:text-sm`}
+          className={`flex ml-2 ${
+            props.asset.asset_condition === "INACTIVE"
+              ? "text-gray-400 dark:text-gray-600"
+              : "text-gray-800 dark:text-white"
+          } ${
+            props.asset.asset_name.length > 10 ? "text-md" : "text-lg"
+          }  font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
         >
           {props.asset.asset_name}
@@ -98,16 +101,17 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           />
           {/* <PinIcon /> */}
           <p
-            className={`text-sm text-start ${props.asset.asset_condition === "INACTIVE"
-              ? "text-gray-500 dark:text-gray-400"
-              : "text-gray-500 dark:text-gray-300"
-              }  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
+            className={`text-sm text-start ${
+              props.asset.asset_condition === "INACTIVE"
+                ? "text-gray-500 dark:text-gray-400"
+                : "text-gray-500 dark:text-gray-300"
+            }  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
           >
             {props.asset.location_name === "tsd"
               ? "The Spiffy Dapper"
               : props.asset.location_name === "mdb"
-                ? "MadDog Bistro & Bar"
-                : props.asset.location_name}
+              ? "MadDog Bistro & Bar"
+              : props.asset.location_name}
           </p>
           <button
             onClick={(e) => {

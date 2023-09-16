@@ -36,7 +36,7 @@ const QrLinkingPage = () => {
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [showOptions, setShowOptions] = useState(true);
 
-  const [selectedAsset, setSelectedAsset] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState<IncomingAsset>();
 
   //filter states
 
@@ -121,6 +121,22 @@ const QrLinkingPage = () => {
       scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : ""
     );
   }, []);
+
+  // Handle when an asset is selected
+  const handleAssetSelect = (asset) => {
+    // Extract the asset_uuid from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const assetUuidFromUrl = urlParams.get("asset_uuid");
+
+    // Update the selectedAsset state with the asset_uuid from the URL
+    setSelectedAsset({
+      ...asset,
+      asset_uuid: assetUuidFromUrl || "", // Use the value from the URL or an empty string if not found
+    });
+
+    // Open the modal or perform any other actions
+    setModalOpen(true);
+  };
 
   const handleSectionSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -347,8 +363,9 @@ const QrLinkingPage = () => {
                   className="w-1/3 lg:w-1/2 md:w-full"
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    setSelectedAsset(asset.asset_name);
+                    // setSelectedAsset(asset);
                     setModalOpen(true);
+                    handleAssetSelect(asset);
                     // setSelectedAsset(asset);
                     // setAssetId(asset.asset_id);
                     // setAddAssetOpen(false);
@@ -367,11 +384,13 @@ const QrLinkingPage = () => {
       )}
 
       {/* Modal for asking confirmation */}
-      <ConfirmModal
-        selectedAssetName={selectedAsset}
-        open={modalOpen}
-        setOpen={() => setModalOpen(false)}
-      />
+      {selectedAsset && selectedAsset.asset_name && (
+        <ConfirmModal
+          selectedAsset={selectedAsset}
+          open={modalOpen}
+          setOpen={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
