@@ -74,15 +74,10 @@ const QRCodeReader = () => {
           );
 
           if (scannedAsset) {
-            // Redirect to the scanned asset's URL
-            if (
-              scannedAsset.asset_uuid.startsWith("http://") ||
-              scannedAsset.asset_uuid.startsWith("https://")
-            ) {
-              window.location.href = scannedAsset.asset_uuid;
-            }
+            // Redirect to /home if it's a match
+            window.location.href = `/home?asset_uuid=${decodedText}`;
           } else {
-            // Redirect to /linkqr with the asset_uuid as a parameter
+            // Redirect to /linkqr if it's not a match
             window.location.href = `/linkqr?asset_uuid=${decodedText}`;
           }
         }
