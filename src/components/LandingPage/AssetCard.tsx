@@ -25,9 +25,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
   const QRLink = props.asset.asset_uuid
-    ? `${redirectURL}/home?asset_uuid=${encodeURIComponent(
-        props.asset.asset_uuid
-      )}`
+    ? `${encodeURIComponent(props.asset.asset_uuid)}`
     : null;
 
   const handleClick = () => {
