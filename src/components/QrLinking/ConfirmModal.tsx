@@ -6,7 +6,7 @@ import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
 import { AssetCondition } from "../../enums";
 
-const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
+const ConfirmModal = ({ selectedAsset, assetUUID, open, setOpen }) => {
   const {
     asset_type,
     location_name,
@@ -28,14 +28,14 @@ const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
     try {
       updatedAsset.asset_condition =
         AssetCondition[selectedAsset.asset_condition];
+
+      updatedAsset.asset_uuid = assetUUID;
+
       console.log("Submitting Asset ==>> ", updatedAsset);
       assetUpdateMutation.mutateAsync(updatedAsset);
     } catch (error) {
       console.error("Failed to update asset:", error);
     }
-    // setTimeout(() => {
-    //   setLogoClicked(true);
-    // }, 1000);
   };
 
   const assetUpdateMutation = useMutation({
@@ -51,7 +51,6 @@ const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
     },
   });
 
-  // useEffect hook to retrieve the session token from localStorage
   useEffect(() => {
     const data = window.localStorage.getItem("sessionToken");
     setToken(data);
@@ -67,15 +66,25 @@ const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
           checked={open}
         />
         <div className="modal">
-          <div className="modal-box">
+          <div className="modal-box flex flex-col gap-5">
             <h3 className="font-bold text-lg">Confirm</h3>
-            <p className="py-4">
-              Do you want to link the asset {selectedAsset.asset_name} to the QR
-            </p>
+            {selectedAsset.asset_uuid === null ? (
+              <p>
+                Do you want to link the asset,{" "}
+                <strong>{selectedAsset.asset_name}</strong> to this unassigned
+                QR Code?
+              </p>
+            ) : (
+              <p>
+                Do you want to <strong>UPDATE</strong> the asset,{" "}
+                <strong>{selectedAsset.asset_name}</strong>'s existing QR Code
+                with this one?
+              </p>
+            )}
             <div className="flex flex-row justify-center w-full gap-5">
               <button
                 type="submit"
-                className="btn bg-blue-900 hover:bg-blue-900"
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
                 onClick={(e) => {
                   setOpen();
                   setLinkedMessage(true);
@@ -85,7 +94,7 @@ const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
                 Yes
               </button>
               <button
-                className="btn bg-blue-900 hover:bg-blue-900"
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
                 onClick={setOpen}
               >
                 Cancel
@@ -116,7 +125,7 @@ const ConfirmModal = ({ selectedAsset, open, setOpen }) => {
                 className="btn bg-blue-900 hover:bg-blue-900"
                 onClick={() => {
                   setLinkedMessage(false);
-                  // navigate("/home");
+                  navigate("/home");
                 }}
               >
                 Done
