@@ -80,10 +80,7 @@ const QrLinkingPage = () => {
           location.locationId
         );
 
-        // Use the filter method to include only elements with asset_uuid === null
-        const filteredAssets = res.filter((asset) => asset.asset_uuid === null);
-
-        setIncomingAssets(filteredAssets);
+        setIncomingAssets(res);
       }
     } catch (err) {
       setGetResult(formatResponse(err.response?.data || err));
@@ -121,22 +118,6 @@ const QrLinkingPage = () => {
       scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : ""
     );
   }, []);
-
-  // Handle when an asset is selected
-  const handleAssetSelect = (asset) => {
-    // Extract the asset_uuid from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const assetUuidFromUrl = urlParams.get("asset_uuid");
-
-    // Update the selectedAsset state with the asset_uuid from the URL
-    setSelectedAsset({
-      ...asset,
-      asset_uuid: assetUuidFromUrl || "", // Use the value from the URL or an empty string if not found
-    });
-
-    // Open the modal or perform any other actions
-    setModalOpen(true);
-  };
 
   const handleSectionSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -363,10 +344,8 @@ const QrLinkingPage = () => {
                   className="w-1/3 lg:w-1/2 md:w-full"
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    // setSelectedAsset(asset);
+                    setSelectedAsset(asset);
                     setModalOpen(true);
-                    handleAssetSelect(asset);
-                    // setSelectedAsset(asset);
                     // setAssetId(asset.asset_id);
                     // setAddAssetOpen(false);
                     // setAssetDetailsOpen(true);
@@ -387,6 +366,9 @@ const QrLinkingPage = () => {
       {selectedAsset && selectedAsset.asset_name && (
         <ConfirmModal
           selectedAsset={selectedAsset}
+          assetUUID={new URLSearchParams(window.location.search).get(
+            "asset_uuid"
+          )}
           open={modalOpen}
           setOpen={() => setModalOpen(false)}
         />

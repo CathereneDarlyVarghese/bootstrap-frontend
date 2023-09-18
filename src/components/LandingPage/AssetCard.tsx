@@ -11,6 +11,7 @@ import {
   BsFillXCircleFill,
   BsInfoCircleFill,
 } from "react-icons/bs";
+import { TbQrcode, TbQrcodeOff } from "react-icons/tb";
 import { IncomingAsset } from "types";
 
 type AssetCardProps = {
@@ -119,7 +120,17 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
               e.stopPropagation();
             }}
           >
-            <BsQrCode className="text-xl text-black dark:text-white" />
+            {props.asset.asset_uuid ? (
+              <TbQrcode
+                className="text-3xl text-green-600 ml-2"
+                title="QR Code assigned"
+              />
+            ) : (
+              <TbQrcodeOff
+                className="text-3xl text-red-700 ml-2"
+                title="QR Code not assigned"
+              />
+            )}
           </button>
 
           <DisplayQR
