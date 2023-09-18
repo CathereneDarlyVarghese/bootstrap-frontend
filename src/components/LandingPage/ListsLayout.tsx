@@ -50,7 +50,7 @@ const ListsLayout = () => {
   const [assets, setAssets] = useState<IncomingAsset[]>([]);
   const [assetId, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [currentAssetUuid, setCurrentAssetUuid] = useState("");
+  const [currentAssetUuid, setCurrentAssetUuid] = useState(null);
 
   // UI States
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
@@ -522,6 +522,16 @@ const ListsLayout = () => {
                   />
                 </div>
               ))}
+              {currentAssetUuid && (
+                <button
+                  className="btn bt-sm mx-auto text-center text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
+                  onClick={() => {
+                    navigate(`/linkqr?asset_uuid=${currentAssetUuid}`);
+                  }}
+                >
+                  Link this QR Code to another asset?
+                </button>
+              )}
             </div>
           )}
         </div>
