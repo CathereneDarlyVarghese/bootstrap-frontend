@@ -48,9 +48,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     AssetPlacement[]
   >([]);
 
-  const [statusCheckEnabled, setStatusCheckEnabled] = useState(false)
+  const [statusCheckEnabled, setStatusCheckEnabled] = useState(false);
   //disable submit button after submission
-  const [disableButton, setDisableButton] = useState(false)
+  const [disableButton, setDisableButton] = useState(false);
 
   // Auth
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
@@ -64,7 +64,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const queryClient = useQueryClient();
 
   //edit search term when adding asset
-  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom)
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
 
   // ====== Effects ======
 
@@ -109,11 +109,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Form submission handler
   const handleSubmit = async (event) => {
-    handleUnfocus()
-    toast.info("Adding asset. Please wait")
+    handleUnfocus();
+    toast.info("Adding asset. Please wait");
     event.preventDefault();
-    setDisableButton(true)
-
+    setDisableButton(true);
 
     // Step 1: Upload the file to S3 bucket
     const imageLocation = await uploadFiletoS3(file, "inventory");
@@ -157,7 +156,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       ),
     };
 
-    setSearchTerm(assetData.asset_name)
+    setSearchTerm(assetData.asset_name);
 
     // Step 4: Create the asset in the backend
     try {
@@ -297,13 +296,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
-    document.getElementById("nameOfAsset").focus()
-
-  }
+    document.getElementById("nameOfAsset").focus();
+  };
 
   const handleStatusCheckChange = (event) => {
-    setStatusCheckEnabled(event.target.checked)
-  }
+    setStatusCheckEnabled(event.target.checked);
+  };
 
   return (
     <>
@@ -313,8 +311,17 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         id="my-modal-3"
         className="modal-toggle"
       />
-      <button id="hiddenButton" style={{ position: "absolute", left: "-9999px" }}>Hidden button</button>
-      <input placeholder="unfocus" id="hiddenInput" style={{ position: "absolute", left: "-9999px" }} />
+      <button
+        id="hiddenButton"
+        style={{ position: "absolute", left: "-9999px" }}
+      >
+        Hidden button
+      </button>
+      <input
+        placeholder="unfocus"
+        id="hiddenInput"
+        style={{ position: "absolute", left: "-9999px" }}
+      />
       <div className="p-2 md:p-0 md:pl-0 md:pb-32 pb-32">
         <div className="p-0 sm:mx-2 bg-white dark:bg-gray-700 rounded-2xl">
           <form method="post" onSubmit={handleSubmit}>
@@ -409,10 +416,11 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${file && file
-                    ? "text-black dark:text-white"
-                    : "text-gray-400"
-                    }`}
+                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
                   value={file && file.name ? file.name : "No file chosen"}
                   disabled
                 />
@@ -633,7 +641,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   className="form-checkbox text-blue-600"
                 />
               </div>
-              {statusCheckEnabled &&
+              {statusCheckEnabled && (
                 <div>
                   {/* Input field for status check interval */}
                   <label className="font-sans font-semibold text-sm text-black dark:text-white mt-2">
@@ -647,8 +655,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     className="input input-bordered input-sm text-sm w-full dark:text-white bg-transparent dark:border-gray-500 my-2 font-sans"
                   />
                 </div>
-              }
-
+              )}
 
               <div className="flex flex-row md:flex-col gap-3 md:gap-0">
                 {/* Input field for finance purchase */}
@@ -676,7 +683,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   />
                 </div>
               </div>
-
             </div>
 
             {/* Modal action */}
@@ -688,7 +694,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   workPending={false}
                   disableButton={disableButton}
                   onClick={() => {
-                    handleUnfocus()
+                    handleUnfocus();
                     console.log("Asset Submitted");
                   }}
                   buttonColor={"bg-blue-900"}
@@ -743,7 +749,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <div className="w-full mt-4 flex justify-center">
                     <button
                       onClick={(e) => {
-                        handleUnfocus()
+                        handleUnfocus();
                         handleAddPlacement(e);
                         setAddPlacement(false);
                       }}
