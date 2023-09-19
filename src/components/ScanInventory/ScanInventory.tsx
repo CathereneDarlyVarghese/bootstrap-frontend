@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { getAssets } from "services/assetServices";
+import { getAllAssets } from "services/assetServices";
 import { IncomingAsset } from "types";
 
 const QRCodeReader = () => {
@@ -27,10 +27,7 @@ const QRCodeReader = () => {
   const fetchAllAssets = async () => {
     try {
       if (location.locationId !== "") {
-        const res = await getAssets(
-          authTokenObj.authToken,
-          location.locationId
-        );
+        const res = await getAllAssets(authTokenObj.authToken);
         return Array.isArray(res) ? res : res ? [res] : [];
       }
     } catch (err) {
@@ -75,7 +72,7 @@ const QRCodeReader = () => {
 
           if (scannedAsset) {
             // Redirect to /home if it's a match
-            window.location.href = `/home?asset_uuid=${decodedText}`;
+            window.location.href = `/home?asset_uuid=${decodedText}&location_id=${scannedAsset.asset_location}&linked_asset_id=${scannedAsset.asset_id}`;
           } else {
             // Redirect to /linkqr if it's not a match
             window.location.href = `/linkqr?asset_uuid=${decodedText}`;

@@ -51,6 +51,7 @@ const ListsLayout = () => {
   const [assetId, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [currentAssetUuid, setCurrentAssetUuid] = useState(null);
+  const [linkedAssetId, setLinkedAssetId] = useState(null);
 
   // UI States
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
@@ -138,15 +139,16 @@ const ListsLayout = () => {
     window.history.pushState(null, "", urlWithoutParams);
   };
 
-  function getAssetUuidFromQueryString() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("asset_uuid");
-  }
-
   useEffect(() => {
-    // Get the asset_uuid from the current URL and update the state.
-    const assetUuidFromUrl = getAssetUuidFromQueryString();
+    const assetUuidFromUrl = new URLSearchParams(window.location.search).get(
+      "asset_uuid"
+    );
     setCurrentAssetUuid(assetUuidFromUrl);
+
+    const linkedAssetIdFromUrl = new URLSearchParams(
+      window.location.search
+    ).get("linked_asset_id");
+    setLinkedAssetId(linkedAssetIdFromUrl);
   }, [window.location.search]);
 
   function assetFilter(asset) {
@@ -526,7 +528,9 @@ const ListsLayout = () => {
                 <button
                   className="btn bt-sm mx-auto text-center text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
                   onClick={() => {
-                    navigate(`/linkqr?asset_uuid=${currentAssetUuid}`);
+                    navigate(
+                      `/linkqr?asset_uuid=${currentAssetUuid}&linked_asset_id=${linkedAssetId}`
+                    );
                   }}
                 >
                   Link this QR Code to another asset?
