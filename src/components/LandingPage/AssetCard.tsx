@@ -132,7 +132,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           </button>
 
           <DisplayQR
-            assetName={props.asset.asset_name}
+            asset={props.asset}
             link={QRLink}
             closeQr={() => {
               setShowQr(false);

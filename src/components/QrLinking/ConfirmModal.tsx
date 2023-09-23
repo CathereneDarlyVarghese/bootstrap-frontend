@@ -82,7 +82,7 @@ const ConfirmModal = ({
       queryClient.invalidateQueries(["query-asset"]);
     },
     onError: (err: any) => {
-      toast.error("Failed to update asset");
+      toast.error("Failed to Update Asset's QR Code");
     },
   });
 
