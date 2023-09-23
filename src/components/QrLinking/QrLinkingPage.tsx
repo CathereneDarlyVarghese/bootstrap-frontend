@@ -21,6 +21,7 @@ import SearchIcon from "../../icons/circle2017.png";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import ConfirmModal from "./ConfirmModal";
+import { toast } from "react-toastify";
 
 const QrLinkingPage = () => {
   const selectRef = useRef<HTMLSelectElement>(null); // For resetting the section selector
@@ -37,6 +38,7 @@ const QrLinkingPage = () => {
   const [showOptions, setShowOptions] = useState(true);
 
   const [selectedAsset, setSelectedAsset] = useState<IncomingAsset>();
+  const [linkedAsset, setLinkedAsset] = useState<IncomingAsset>();
 
   //filter states
 
@@ -81,6 +83,19 @@ const QrLinkingPage = () => {
         );
 
         setIncomingAssets(res);
+
+        const linkedAssetId = new URLSearchParams(window.location.search).get(
+          "linked_asset_id"
+        );
+        const matchedAsset = res.find(
+          (asset) => asset.asset_id === linkedAssetId
+        );
+        if (matchedAsset) {
+          setLinkedAsset(matchedAsset);
+          setMessage(false);
+        } else {
+          setLinkedAsset(null);
+        }
       }
     } catch (err) {
       setGetResult(formatResponse(err.response?.data || err));
@@ -174,38 +189,40 @@ const QrLinkingPage = () => {
 
   return (
     <div className="p-2 mb-16">
-      <div className="flex flex-col items-center">
-        <h1 className="font-sans font-semibold my-5 text-black text-2xl">
-          Link QR
-        </h1>
-        {message && (
-          <div className="border rounded-2xl w-1/2 lg:w-2/3 md:w-fit border-slate-400 p-8">
-            <div>
-              <div className="flex flex-row justify-center">
-                <h1 className="font-sans">
-                  This QR is not linked with any asset
-                </h1>
-              </div>
-              <div className="flex flex-row gap-5 mt-5 justify-center">
-                <button
-                  className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-                  onClick={() => {
-                    setMessage(false);
-                  }}
-                >
-                  Link Now
-                </button>
-                <button
-                  className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-                  onClick={() => navigate("/scan")}
-                >
-                  Cancel
-                </button>
+      {!linkedAsset && (
+        <div className="flex flex-col items-center">
+          <h1 className="font-sans font-semibold my-5 text-black text-2xl">
+            Link QR
+          </h1>
+          {message && (
+            <div className="border rounded-2xl w-1/2 lg:w-2/3 md:w-fit border-slate-400 p-8">
+              <div>
+                <div className="flex flex-row justify-center">
+                  <h1 className="font-sans">
+                    This QR is not linked with any asset
+                  </h1>
+                </div>
+                <div className="flex flex-row gap-5 mt-5 justify-center">
+                  <button
+                    className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+                    onClick={() => {
+                      setMessage(false);
+                    }}
+                  >
+                    Link Now
+                  </button>
+                  <button
+                    className="btn btn-sm bg-blue-900 hover:bg-blue-900"
+                    onClick={() => navigate("/scan")}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       {!message && (
         <div>
           <div className="flex flex-col items-center">
@@ -344,7 +361,13 @@ const QrLinkingPage = () => {
                   className="w-1/3 lg:w-1/2 md:w-full"
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    setSelectedAsset(asset);
+                    if (asset === linkedAsset) {
+                      toast.warn(
+                        "This QR Code is already linked to this Asset!"
+                      );
+                    } else {
+                      setSelectedAsset(asset);
+                    }
                     setModalOpen(true);
                     // setAssetId(asset.asset_id);
                     // setAddAssetOpen(false);
@@ -365,6 +388,7 @@ const QrLinkingPage = () => {
       {/* Modal for asking confirmation */}
       {selectedAsset && selectedAsset.asset_name && (
         <ConfirmModal
+          linkedAsset={linkedAsset}
           selectedAsset={selectedAsset}
           assetUUID={new URLSearchParams(window.location.search).get(
             "asset_uuid"

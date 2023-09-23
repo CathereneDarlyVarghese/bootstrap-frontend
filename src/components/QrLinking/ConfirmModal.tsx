@@ -6,8 +6,14 @@ import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
 import { AssetCondition } from "../../enums";
 
-const ConfirmModal = ({ selectedAsset, assetUUID, open, setOpen }) => {
-  const {
+const ConfirmModal = ({
+  linkedAsset,
+  selectedAsset,
+  assetUUID,
+  open,
+  setOpen,
+}) => {
+  var {
     asset_type,
     location_name,
     placement_name,
@@ -16,6 +22,25 @@ const ConfirmModal = ({ selectedAsset, assetUUID, open, setOpen }) => {
     next_asset_check_date,
     ...updatedAsset
   } = selectedAsset;
+
+  console.log("Selected Asset ==>> ", selectedAsset);
+  console.log("Linked Asset ==>> ", linkedAsset);
+
+  var toBeUnlinkedAsset = null;
+
+  if (linkedAsset) {
+    var {
+      asset_type,
+      location_name,
+      placement_name,
+      section_name,
+      images_array,
+      next_asset_check_date,
+      ...rest
+    } = linkedAsset;
+
+    toBeUnlinkedAsset = rest;
+  }
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -31,6 +56,16 @@ const ConfirmModal = ({ selectedAsset, assetUUID, open, setOpen }) => {
 
       updatedAsset.asset_uuid = assetUUID;
 
+      if (toBeUnlinkedAsset) {
+        toBeUnlinkedAsset.asset_condition =
+          AssetCondition[linkedAsset.asset_condition];
+
+        toBeUnlinkedAsset.asset_uuid = null;
+
+        console.log("Unlinked Asset ==>> ", toBeUnlinkedAsset);
+        assetUpdateMutation.mutateAsync(toBeUnlinkedAsset);
+      }
+
       console.log("Submitting Asset ==>> ", updatedAsset);
       assetUpdateMutation.mutateAsync(updatedAsset);
     } catch (error) {
@@ -43,7 +78,7 @@ const ConfirmModal = ({ selectedAsset, assetUUID, open, setOpen }) => {
       updateAsset(token, updatedAsset.asset_id, updatedAsset),
     onSettled: () => {},
     onSuccess: () => {
-      toast.success("Asset Edited Successfully");
+      toast.success("Asset's QR Updated Successfully");
       queryClient.invalidateQueries(["query-asset"]);
     },
     onError: (err: any) => {
