@@ -362,6 +362,7 @@ const QrLinkingPage = () => {
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     if (asset === linkedAsset) {
+                      setSelectedAsset(null);
                       toast.warn(
                         "This QR Code is already linked to this Asset!"
                       );
