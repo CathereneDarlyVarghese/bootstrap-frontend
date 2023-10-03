@@ -5,10 +5,12 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
 import { AssetCondition } from "../../enums";
+import { useNavigate } from "react-router";
 
 const DisplayQR = ({ showQr, closeQr, asset, link }) => {
   const qrCodeRef = useRef(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [token, setToken] = useState<string>("");
 
   const handleDownload = () => {
@@ -101,6 +103,16 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
                   Download
                 </button>
                 <button
+                  className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeQr();
+                    navigate("/scan");
+                  }}
+                >
+                  Update QR
+                </button>
+                <button
                   type="submit"
                   className="btn btn-sm bg-red-700 hover:bg-red-700 border-none"
                   onClick={(e) => {
@@ -117,6 +129,18 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
                   Unlink QR
                 </button>
               </>
+            )}
+            {!asset.asset_uuid && (
+              <button
+                className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeQr();
+                  navigate("/scan");
+                }}
+              >
+                Link QR
+              </button>
             )}
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
