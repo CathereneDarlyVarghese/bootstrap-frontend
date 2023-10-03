@@ -14,8 +14,7 @@ const WorkOrderButton: React.FC<WorkOrderButtonProps> = ({
   buttonColor,
   hoverColor,
   disableButton,
-}) => {
-  return (
+}) => (
     <button
       onClick={onClick}
       className={`btn ${buttonColor} gap-5 ${hoverColor}  capitalize`}
@@ -27,7 +26,6 @@ const WorkOrderButton: React.FC<WorkOrderButtonProps> = ({
         {workPending ? "pending" : ""}
       </div>
     </button>
-  );
-};
+);
 
 export default WorkOrderButton;

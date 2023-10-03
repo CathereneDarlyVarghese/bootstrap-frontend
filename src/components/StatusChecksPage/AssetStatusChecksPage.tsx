@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getAssetCheckById } from "services/assetCheckServices";
-import { Asset, IncomingAssetCheck } from "types";
+import { IncomingAsset, IncomingAssetCheck } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
 import AddStatusForm from "./AddStatusForm";
@@ -13,7 +13,7 @@ interface AssetStatusChecksPageProps {
   setAssetId: React.Dispatch<React.SetStateAction<string | null>>;
   assetType: string;
   assetTypeId: string;
-  selectedAsset: Asset;
+  selectedAsset: IncomingAsset;
 }
 
 const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
@@ -75,7 +75,6 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
             addFormOpen={addFormOpen}
             setAddFormOpen={() => setAddFormOpen(false)}
             assetId={assetId || ""}
-            onStatusAdded={() => console.log("")}
             assetType={assetType}
             assetTypeId={assetTypeId}
           />

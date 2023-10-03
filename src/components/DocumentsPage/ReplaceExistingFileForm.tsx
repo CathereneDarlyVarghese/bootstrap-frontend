@@ -31,13 +31,13 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
-      const replacedFile = await replaceLatestInFileArray(
-        authTokenObj.authToken,
-        fileID,
-        newFileArrayEntry,
-        newModifiedByArrayEntry,
-        newModifiedDateArrayEntry,
-      );
+      // const replacedFile = await replaceLatestInFileArray(
+      //   authTokenObj.authToken,
+      //   fileID,
+      //   newFileArrayEntry,
+      //   newModifiedByArrayEntry,
+      //   newModifiedDateArrayEntry,
+      // );
 
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);

@@ -12,7 +12,6 @@ import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
-import { AssetCondition, StatusTypes } from "enums";
 import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
@@ -47,8 +46,7 @@ const ListsLayout = () => {
 
   // Assets management
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
-  const [assets, setAssets] = useState<IncomingAsset[]>([]);
-  const [assetId, setAssetId] = useState(null);
+  const [, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   // UI States
@@ -89,7 +87,7 @@ const ListsLayout = () => {
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
   // Miscellaneous states
-  const [getResult, setGetResult] = useState<string | null>(null);
+  const [, setGetResult] = useState<string | null>(null);
 
   // ----------------------- FUNCTION DECLARATIONS -----------------------
 
@@ -100,10 +98,6 @@ const ListsLayout = () => {
     const element = document.querySelector(selectClass);
     if (element) {
       element.classList.add(addClassObj);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to add class.`,
-      );
     }
   };
 
@@ -111,10 +105,6 @@ const ListsLayout = () => {
     const element = document.querySelector(selectClass);
     if (element) {
       element.classList.remove(removeClassObj);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to remove class.`,
-      );
     }
   };
 
@@ -252,13 +242,13 @@ const ListsLayout = () => {
 
   // ----------------------- QUERY HOOKS -----------------------
 
-  const { data: Assets } = useQuery({
+  useQuery({
     queryKey: ["query-asset", location, authTokenObj.authToken],
     queryFn: fetchAllAssets,
     enabled: !!authTokenObj.authToken,
   });
 
-  const { data: AssetsSections } = useQuery({
+  useQuery({
     queryKey: ["query-assetSections", location],
     queryFn: fetchAssetSections,
     enabled: !!authTokenObj.authToken,

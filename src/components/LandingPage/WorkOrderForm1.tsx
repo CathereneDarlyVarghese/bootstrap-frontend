@@ -1,6 +1,4 @@
-import {
-  FC, useState, useEffect, useMemo,
-} from "react";
+import { FC, useState, useEffect } from "react";
 import { uploadFiletoS3 } from "utils";
 import { WorkOrderTypes, WorkOrderStatuses } from "enums";
 import { Asset, WorkOrder } from "types";

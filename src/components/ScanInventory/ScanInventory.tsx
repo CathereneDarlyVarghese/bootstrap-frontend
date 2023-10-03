@@ -17,7 +17,7 @@ const QRCodeReader = () => {
         qrbox: 250,
         supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
       },
-      false
+      false,
     );
 
     html5QrcodeScanner.render(
@@ -29,16 +29,16 @@ const QRCodeReader = () => {
 
           // Redirect to the scanned URL
           if (
-            decodedText.startsWith("http://") ||
-            decodedText.startsWith("https://")
+            decodedText.startsWith("http://")
+            || decodedText.startsWith("https://")
           ) {
             window.location.href = decodedText;
           }
         }
       },
       (errorMessage) => {
-        return;
-      }
+        // TODO: Handle scanning errors in the future
+      },
     );
 
     return () => {

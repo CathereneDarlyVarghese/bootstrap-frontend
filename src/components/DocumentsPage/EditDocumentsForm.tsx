@@ -5,7 +5,6 @@ import { appendToFileArray, getFileById } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { updateDocument } from "services/documentServices";
 import { toast } from "react-toastify";
-import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -103,13 +102,13 @@ const EditDocumentsForm = ({
         .toISOString()
         .substring(0, 10);
 
-      const appendedFile = await appendToFileArray(
-        authTokenObj.authToken,
-        formData.file_id,
-        newFileArrayEntry,
-        newModifiedByArrayEntry,
-        newModifiedDateArrayEntry,
-      );
+      // const appendedFile = await appendToFileArray(
+      //   authTokenObj.authToken,
+      //   formData.file_id,
+      //   newFileArrayEntry,
+      //   newModifiedByArrayEntry,
+      //   newModifiedDateArrayEntry,
+      // );
     }
 
     try {

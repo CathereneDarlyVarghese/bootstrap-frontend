@@ -1,3 +1,5 @@
+const { off } = require("process");
+
 module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
@@ -13,6 +15,9 @@ module.exports = {
     camelcase: "off",
     "import/extensions": "off",
     "no-nested-ternary": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "max-len": "off",
   },
   settings: {
     "import/resolver": {

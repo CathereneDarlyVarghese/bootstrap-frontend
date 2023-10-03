@@ -14,11 +14,18 @@ import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AssetCheck } from "types";
 
-const AddStatusForm = ({
+interface AddStatusFormProps {
+  addFormOpen: boolean;
+  setAddFormOpen: (boolean) => void;
+  assetId: string;
+  assetType: string;
+  assetTypeId: string;
+}
+
+const AddStatusForm: React.FC<AddStatusFormProps> = ({
   addFormOpen,
   setAddFormOpen,
   assetId,
-  onStatusAdded,
   assetType,
   assetTypeId,
 }) => {
@@ -43,7 +50,6 @@ const AddStatusForm = ({
     onSettled: () => {
       // Actions to perform after the mutation is settled (whether success or failure)
       toast.success("Asset Check Added Successfully");
-      onStatusAdded();
       // Invalidate cache to ensure fresh data is fetched next time
       queryClient.invalidateQueries(["query-asset"]);
       queryClient.invalidateQueries(["query-assetChecks"]);
@@ -77,7 +83,7 @@ const AddStatusForm = ({
     if (assetType) {
       fetchForm();
     }
-  }, [assetType, assetTypeId]);
+  }, [assetType, assetTypeId, authTokenObj.authToken]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
     return Object.keys(object).find((key) => object[key] === value);

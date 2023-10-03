@@ -24,10 +24,7 @@ import {
 } from "components/StatusChecksPage/statusUtils";
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
-import {
-  createAssetSection,
-  getAssetSections,
-} from "services/assetSectionServices";
+import { getAssetSections } from "services/assetSectionServices";
 import EditAssetForm from "./EditAssetForm";
 
 interface AssetDetailsProps {
@@ -55,7 +52,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
-  const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
+  const [, setFilteredSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
   const [selectedLocation] = useState<string>(Asset.location_name);
 
@@ -83,7 +80,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     setAssetPlacements(res);
   };
 
-  const AssetPlacements = useQuery({
+  useQuery({
     queryKey: ["query-assetPlacementsForm"],
     queryFn: fetchAssetPlacements,
     enabled: !!selectedLocation,
@@ -99,7 +96,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     setFilteredSections(sections);
   };
 
-  const { data: AssetSections } = useQuery({
+  useQuery({
     queryKey: ["query-assetSectionsForm"],
     queryFn: fetchAssetSections,
   });
@@ -288,7 +285,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 <figure className="rounded-none">
                   <img
                     src={Asset.images_array[0]}
-                    alt="an image"
+                    alt="Asset Image"
                     className="rounded-xl h-48 object-cover mx-auto"
                   />
                 </figure>

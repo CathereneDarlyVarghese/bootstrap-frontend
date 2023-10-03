@@ -55,7 +55,7 @@ const AddAssetType = () => {
       onError: () => {
         toast.error("Failed to delete AssetType");
       },
-    }
+    },
   );
 
   return (

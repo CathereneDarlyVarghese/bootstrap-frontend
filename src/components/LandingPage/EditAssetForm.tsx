@@ -1,41 +1,20 @@
 import { useEffect, useState } from "react";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-import useAssetTypeNames from "hooks/useAssetTypeNames";
 import { useAtom } from "jotai";
 import { LogoClickedAtom } from "components/NavBar";
-import {
-  Asset,
-  AssetLocation,
-  AssetPlacement,
-  AssetSection,
-  AssetType,
-  IncomingAsset,
-} from "types";
+import { Asset, AssetPlacement, AssetSection } from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
-import { getAllAssetTypes } from "services/assetTypeServices";
-import { getAllAssetLocations } from "services/locationServices";
-import {
-  createAssetPlacement,
-  getAssetPlacements,
-} from "services/assetPlacementServices";
-import {
-  createAssetSection,
-  getAssetSections,
-} from "services/assetSectionServices";
+import { createAssetPlacement } from "services/assetPlacementServices";
+import { createAssetSection } from "services/assetSectionServices";
 import { createFile } from "services/fileServices";
 import { updateAsset } from "services/assetServices";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
-import useAssetCondition from "hooks/useAssetCondition";
 import { Auth } from "aws-amplify";
 import { AssetCondition } from "enums";
-import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import AddSectionModal from "./AddSectionModal";
 
 const EditAssetForm = ({
@@ -52,8 +31,7 @@ const EditAssetForm = ({
   assetPlacements,
   assetPlacement,
 }) => {
-  const assetTypeNames = useAssetTypeNames();
-  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
+  const [, setLogoClicked] = useAtom(LogoClickedAtom);
   const [token, setToken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const queryClient = useQueryClient();
@@ -71,10 +49,8 @@ const EditAssetForm = ({
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
   >([]);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
-  const [selectedCondition, setSelectedCondition] = useState("");
   const [disableButton, setDisableButton] = useState(false);
 
   const assetConditionOptionsReverse = {
@@ -113,7 +89,6 @@ const EditAssetForm = ({
   const [formData, setFormData] = useState<Asset>(defaultFormData);
 
   const statusTypeNames = useStatusTypeNames();
-  const assetConditionOptions = useAssetCondition();
 
   useEffect(() => {
     const handleLocationChange = async () => {
@@ -128,7 +103,7 @@ const EditAssetForm = ({
       // Reset filtered sections
       setFilteredSections(Sections);
 
-      if (formData.asset_location != defaultFormData.asset_location) {
+      if (formData.asset_location !== defaultFormData.asset_location) {
         setFormData((prevState) => ({
           ...prevState,
           asset_section: null,
@@ -156,7 +131,7 @@ const EditAssetForm = ({
       );
       setFilteredPlacements(placements);
 
-      if (formData.asset_section != defaultFormData.asset_section) {
+      if (formData.asset_section !== defaultFormData.asset_section) {
         setFormData((prevState) => ({
           ...prevState,
           asset_placement: null,
@@ -237,16 +212,16 @@ const EditAssetForm = ({
     setToken(data);
   }, []);
 
-  const handleStatusCheckDisabled = () => {
-    if (!formData.status_check_enabled) {
-      setFormData((prevState) => ({
-        ...prevState,
-        status_check_interval: null,
-        asset_finance_purchase: null,
-        asset_finance_current_value: null,
-      }));
-    }
-  };
+  // const handleStatusCheckDisabled = () => {
+  //   if (!formData.status_check_enabled) {
+  //     setFormData((prevState) => ({
+  //       ...prevState,
+  //       status_check_interval: null,
+  //       asset_finance_purchase: null,
+  //       asset_finance_current_value: null,
+  //     }));
+  //   }
+  // };
 
   // handleStatusCheckDisabled();
   // }, [formData.status_check_enabled]);
@@ -443,7 +418,6 @@ const EditAssetForm = ({
                   type="file"
                   onChange={(e) => {
                     setFile(e.target.files[0]);
-                    const palceholderText = e.target.files[0];
                   }}
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"

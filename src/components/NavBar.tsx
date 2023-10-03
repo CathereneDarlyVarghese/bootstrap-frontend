@@ -31,9 +31,7 @@ const NavBar = () => {
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
-  const [getResult, setGetResult] = useState<string | null>(null);
-  const [, setSessionToken] = useState<string | null>(null);
-  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
+  const [, setLogoClicked] = useAtom(LogoClickedAtom);
 
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);
@@ -45,21 +43,17 @@ const NavBar = () => {
   };
 
   // Utility functions to add/remove class
-  const addClass = (selectClass, addClass) => {
+  const addClass = (selectClass, addClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.add(addClass);
-    } else {
-      console.warn(`Element with selector ${selectClass} not found!`);
+      element.classList.add(addClassObj);
     }
   };
 
-  const removeClass = (selectClass, removeClass) => {
+  const removeClass = (selectClass, removeClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.remove(removeClass);
-    } else {
-      console.warn(`Element with selector ${selectClass} not found!`);
+      element.classList.remove(removeClassObj);
     }
   };
 
@@ -79,7 +73,7 @@ const NavBar = () => {
         removeClass(TABS[path], "border-b-white");
       }
     });
-  }, [routePage]);
+  }, [routePage, TABS]);
 
   // Effect: Check user authentication
   useEffect(() => {
@@ -102,7 +96,7 @@ const NavBar = () => {
       }
     };
     checkUser();
-  }, []);
+  }, [setAuthToken]);
 
   // Fetch location data
   const fetchLocations = async () => {
@@ -138,7 +132,7 @@ const NavBar = () => {
   };
 
   // UseQuery to get locations
-  const { data: Locations } = useQuery({
+  useQuery({
     queryKey: ["query-locations"],
     queryFn: fetchLocations,
   });
@@ -255,7 +249,7 @@ const NavBar = () => {
                 />
               </svg>
               <div className="md:hidden">
-                {location.locationName != ""
+                {location.locationName !== ""
                   ? location.locationName
                   : "Not Selected"}
               </div>

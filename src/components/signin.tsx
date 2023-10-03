@@ -4,7 +4,7 @@ import { Auth, Hub } from "aws-amplify";
 
 export const SignInWithGoogle1 = () => {
   const [user, setUser] = useState(null);
-  const [customState, setCustomState] = useState(null);
+  const [, setCustomState] = useState(null);
   useEffect(() => {
     // Check for an existing Google client initialization
     if (!window.google && !window.google?.accounts) createScript();
@@ -60,14 +60,14 @@ export const SignInWithGoogle1 = () => {
   // Exchange Google token for temporary AWS credentials
   const getAWSCredentials = async (credential: string) => {
     const token = jwt(credential) as any;
-    const user = {
+    const userNw = {
       email: token.email,
       name: token.name,
     };
     await Auth.federatedSignIn(
       "google",
       { token: credential, expires_at: token.exp },
-      user,
+      userNw,
     );
   };
 

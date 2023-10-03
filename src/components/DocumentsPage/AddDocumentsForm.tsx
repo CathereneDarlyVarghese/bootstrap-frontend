@@ -33,7 +33,6 @@ const AddDocumentsForm = ({
   const {
     documentName,
     documentDescription,
-    documentTypeID,
     startDate,
     endDate,
     documentNotes,
