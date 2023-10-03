@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import validator from "@rjsf/validator-ajv8";
-import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { createAssetCheck } from "services/assetCheckServices";
-import { createFile } from "services/fileServices";
 import { TfiClose } from "react-icons/tfi";
 import {
   createAssetCheckForm,
@@ -40,8 +38,7 @@ const AddStatusForm = ({
 
   // Mutation for adding an asset check
   const assetCheckAddMutation = useMutation({
-    mutationFn: (assetCheck: AssetCheck) =>
-      createAssetCheck(authTokenObj.authToken, assetCheck),
+    mutationFn: (assetCheck: AssetCheck) => createAssetCheck(authTokenObj.authToken, assetCheck),
 
     onSettled: () => {
       // Actions to perform after the mutation is settled (whether success or failure)
@@ -63,7 +60,7 @@ const AddStatusForm = ({
       try {
         const form = await getAssetCheckFormById(
           authTokenObj.authToken,
-          assetTypeId
+          assetTypeId,
         );
         setJsonForm(form.form_json);
       } catch (error) {

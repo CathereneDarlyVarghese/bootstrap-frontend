@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SignInWithGoogle from "../GoogleSignIn/SignInWithGoogle";
 import { Auth, Hub } from "aws-amplify";
+import SignInWithGoogle from "../GoogleSignIn/SignInWithGoogle";
 import "./LoginPage.css";
 
 const LoginPage = () => {

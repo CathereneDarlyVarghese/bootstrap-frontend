@@ -1,12 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-
-import ScanInventory from "components/ScanInventory";
 import { Amplify } from "aws-amplify";
 import awsConfig from "aws-exports";
 import NavBar from "components/NavBar";
 import { ToastContainer } from "react-toastify";
-
 import ListsLayout from "components/LandingPage/ListsLayout";
 import LoginPage from "components/LoginPage/LoginPage";
 import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
@@ -17,6 +13,7 @@ import AdminPage from "components/AdminPage/AdminPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import QrLinkingPage from "components/QrLinking/QrLinkingPage";
+import ScanInventory from "components/ScanInventory/ScanInventory";
 
 const queryClient = new QueryClient({
   defaultOptions: {

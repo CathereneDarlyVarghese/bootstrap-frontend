@@ -24,7 +24,7 @@ const QRCodeReader = () => {
       (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
-          countResults = countResults + 1;
+          countResults += 1;
           lastResult = decodedText;
 
           // Redirect to the scanned URL
@@ -37,8 +37,7 @@ const QRCodeReader = () => {
         }
       },
       (errorMessage) => {
-        // This will be called in case of errors
-        console.log(`Error scanning: ${errorMessage}`);
+        return;
       }
     );
 

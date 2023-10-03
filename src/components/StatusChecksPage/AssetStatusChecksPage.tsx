@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import StatusCard from "./StatusCard";
-import StatusDetails from "./StatusDetails";
-import AddStatusForm from "./AddStatusForm";
+import React, { useState } from "react";
 import { getAssetCheckById } from "services/assetCheckServices";
-import { IncomingAsset, IncomingAssetCheck } from "types";
+import { Asset, IncomingAssetCheck } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
+import AddStatusForm from "./AddStatusForm";
+import StatusDetails from "./StatusDetails";
+import StatusCard from "./StatusCard";
 
 interface AssetStatusChecksPageProps {
   sessionToken: string;
@@ -13,7 +13,7 @@ interface AssetStatusChecksPageProps {
   setAssetId: React.Dispatch<React.SetStateAction<string | null>>;
   assetType: string;
   assetTypeId: string;
-  selectedAsset: any;
+  selectedAsset: Asset;
 }
 
 const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
@@ -26,18 +26,15 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
 }) => {
   // State Initialization
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
-  const [selectedAssetCheck, setSelectedAssetCheck] =
-    useState<IncomingAssetCheck>();
+  const [selectedAssetCheck, setSelectedAssetCheck] = useState<IncomingAssetCheck>();
   const [, setStatusCheckId] = useState<string | null>(null);
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [getResult, setGetResult] = useState<string | null>(null);
+  const [, setGetResult] = useState<string | null>(null);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   // Helper function to format response
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
 
   // Function to handle status card click and show details
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
@@ -45,17 +42,17 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     setDetailsOpen(true);
 
     const selectedCheck = assetChecks.find(
-      (assetCheck) => assetCheck.uptime_check_id === selectedStatusCheckId
+      (assetCheck) => assetCheck.uptime_check_id === selectedStatusCheckId,
     );
     setSelectedAssetCheck(selectedCheck);
   };
 
   // Async function to fetch all asset checks based on assetId
-  const fetchAllAssetChecks = async (assetId) => {
+  const fetchAllAssetChecks = async (assetIdObj) => {
     try {
       const res = await getAssetCheckById(
         authTokenObj.authToken,
-        assetId.queryKey[1]
+        assetIdObj.queryKey[1],
       );
       setAssetChecks(res);
     } catch (error) {
@@ -64,7 +61,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   };
 
   // Fetching all asset checks using React Query's useQuery
-  const { data: AllAssetChecks } = useQuery({
+  useQuery({
     queryKey: ["query-assetChecks", assetId, authTokenObj.authToken],
     queryFn: fetchAllAssetChecks,
     enabled: !!selectedAsset, // only enabled if there's a selectedAsset
@@ -104,16 +101,14 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           <div className={`${detailsOpen ? "hidden" : ""}`}>
             {assetChecks
               .sort(
-                (a, b) =>
-                  new Date(b.modified_date).getTime() -
-                  new Date(a.modified_date).getTime()
+                (a, b) => new Date(b.modified_date).getTime()
+                  - new Date(a.modified_date).getTime(),
               )
               .map((assetCheck) => (
                 <StatusCard
                   status={assetCheck.status_check}
                   date={new Date(assetCheck.modified_date)}
-                  onClick={() =>
-                    handleStatusCardClick(assetCheck.uptime_check_id)
+                  onClick={() => handleStatusCardClick(assetCheck.uptime_check_id)
                   }
                   uptime_notes={assetCheck.uptime_notes}
                 />
