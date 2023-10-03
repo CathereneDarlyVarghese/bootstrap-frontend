@@ -20,8 +20,12 @@ const Placements = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   // Fetching sections and placements using react-query
-  const { data: AssetSections } = useQuery(["query-assetSectionsAdmin"], () => getAssetSections(authTokenObj.authToken));
-  const { data: PlacementsData } = useQuery(["query-PlacementsAdmin"], () => getAssetPlacements(authTokenObj.authToken));
+  const { data: AssetSections } = useQuery(["query-assetSectionsAdmin"], () =>
+    getAssetSections(authTokenObj.authToken)
+  );
+  const { data: PlacementsData } = useQuery(["query-PlacementsAdmin"], () =>
+    getAssetPlacements(authTokenObj.authToken)
+  );
 
   // Local cached data for locations
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([
@@ -30,7 +34,8 @@ const Placements = () => {
 
   // Mutations for adding and deleting placements
   const PlacementAddMutation = useMutation(
-    (assetPlacementObj: AssetPlacement) => createAssetPlacement(authTokenObj.authToken, assetPlacementObj),
+    (assetPlacementObj: AssetPlacement) =>
+      createAssetPlacement(authTokenObj.authToken, assetPlacementObj),
     {
       onSuccess: () => {
         toast.success("Placement Added Successfully");
@@ -39,7 +44,7 @@ const Placements = () => {
       onError: () => {
         toast.error("Failed to Add Placement");
       },
-    },
+    }
   );
 
   const PlacementDeleteMutation = useMutation(
@@ -53,7 +58,7 @@ const Placements = () => {
       onError: () => {
         toast.error("Failed to delete Placement");
       },
-    },
+    }
   );
 
   return (
@@ -94,7 +99,7 @@ const Placements = () => {
                 Select a Section
               </option>
               {AssetSections.filter(
-                (Section) => Section.location_id === selectedLocation,
+                (Section) => Section.location_id === selectedLocation
               ).map((Section) => (
                 <option key={Section.section_id} value={Section.section_id}>
                   {Section.section_name}
@@ -145,7 +150,7 @@ const Placements = () => {
                 Select a Placement
               </option>
               {PlacementsData.filter(
-                (Placement) => Placement.section_id === selectedSection,
+                (Placement) => Placement.section_id === selectedSection
               ).map((Placement) => (
                 <option
                   key={Placement.placement_id}

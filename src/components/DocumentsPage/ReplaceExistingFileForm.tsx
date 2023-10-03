@@ -1,4 +1,3 @@
-import { Auth } from "aws-amplify";
 import React, { useState } from "react";
 import { replaceLatestInFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
@@ -8,18 +7,18 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   const queryClient = useQueryClient();
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<File>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
-    setFile(file);
+    const newFile = event.target.files[0];
+    setFile(newFile);
   };
 
   const handleSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
 
@@ -37,7 +36,7 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
         fileID,
         newFileArrayEntry,
         newModifiedByArrayEntry,
-        newModifiedDateArrayEntry
+        newModifiedDateArrayEntry,
       );
 
       queryClient.invalidateQueries(["query-documentsByLocationId"]);

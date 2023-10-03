@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Auth } from "aws-amplify";
-import DocumentsCard from "./DocumentsCard";
-import AddDocumentsForm from "./AddDocumentsForm";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { IncomingDocument } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
+import AddDocumentsForm from "./AddDocumentsForm";
+import DocumentsCard from "./DocumentsCard";
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
   // const searchParams = new URLSearchParams(location.search);
@@ -15,19 +14,17 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
   const [incomingDocuments, setIncomingDocuments] = useState<
     IncomingDocument[]
-  >([]); //This is because the fetched documents are a mixture from documents and document_types tables
-  const [documentID, setDocumentID] = useState(null);
-  const [getResult, setGetResult] = useState<string | null>(null);
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
-  const [fileOpen, setFileOpen] = useState(false);
+  >([]);
+  const [, setDocumentID] = useState(null);
+  const [, setGetResult] = useState<string | null>(null);
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
+  const [fileOpen] = useState(false);
 
   const fetchDocumentsById = async () => {
     try {
       const documents = await getDocumentsByAssetId(
         authTokenObj.authToken,
-        selectedAssetID
+        selectedAssetID,
       );
       setIncomingDocuments(documents);
     } catch (error) {
@@ -35,7 +32,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
     }
   };
 
-  const { data: DocumentsById } = useQuery({
+  useQuery({
     queryKey: ["query-documentsByAssetId"],
     queryFn: fetchDocumentsById,
   });
@@ -80,10 +77,10 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
               addDocumentsOpen
                 ? "w-3/5 hidden"
                 : fileOpen
-                ? "w-3/5 hidden"
-                : !fileOpen
-                ? "w-full"
-                : "w-full"
+                  ? "w-3/5 hidden"
+                  : !fileOpen
+                    ? "w-full"
+                    : "w-full"
             }`}
           >
             {incomingDocuments.map((document) => (
