@@ -8,8 +8,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({
   setToggleContent,
   setQrOptions,
-}) => {
-  return (
+}) => (
     <div className="bg-gray-200 h-screen p-5">
       <div className="flex flex-col gap-5 items-start">
         {/* <button
@@ -68,7 +67,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+);
 
 export default Sidebar;

@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { on } from "events";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import {
   createAssetLocation,
@@ -22,14 +21,13 @@ const Locations = () => {
     setData(locationData);
   };
 
-  const { data: Locations } = useQuery({
+  useQuery({
     queryKey: ["query-locationsAdmin"],
     queryFn: fetchLocations,
   });
 
   const locationAddMutation = useMutation(
-    (assetLocationObj: AssetLocation) =>
-      createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    (assetLocationObj: AssetLocation) => createAssetLocation(authTokenObj.authToken, assetLocationObj),
     {
       onSuccess: async () => {
         toast.success("Location Added Successfully");
@@ -39,7 +37,7 @@ const Locations = () => {
       onError: () => {
         toast.error("Failed to Add Asset");
       },
-    }
+    },
   );
 
   const locationDeleteMutation = useMutation(
@@ -54,7 +52,7 @@ const Locations = () => {
       onError: () => {
         toast.error("Failed to delete location");
       },
-    }
+    },
   );
 
   return (

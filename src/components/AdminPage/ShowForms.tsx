@@ -13,8 +13,7 @@ const ShowForms: React.FC<ShowFormsProps> = ({
   selectedAssetType,
   setSelectedAssetType,
   jsonForm,
-}) => {
-  return (
+}) => (
     <div>
       <div className="flex flex-col justify-center">
         <select
@@ -37,7 +36,6 @@ const ShowForms: React.FC<ShowFormsProps> = ({
         {jsonForm && <Form schema={jsonForm} />}
       </div>
     </div>
-  );
-};
+);
 
 export default ShowForms;

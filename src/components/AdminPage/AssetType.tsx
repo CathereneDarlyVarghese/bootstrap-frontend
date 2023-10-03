@@ -9,36 +9,29 @@ import {
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { AssetType } from "types";
 
-interface AddAssetTypeProps {
-  assetType: string;
-  setAssetType: (value: string) => void;
-}
-
-const AddAssetType: React.FC<AddAssetTypeProps> = ({
-  assetType,
-  setAssetType,
-}) => {
+const AddAssetType = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [data, setData] = useState<AssetType[]>(null);
   const [selectedAssetType, setSelectedAssetType] = useState<string>("");
   const queryClient = useQueryClient();
+  const [newAssetType, setNewAssetType] = useState<string>("");
 
   // Handler for adding asset type
   const handleAddAssetType = async (e) => {
     e.preventDefault();
 
-    if (assetType.trim() === "") {
+    if (newAssetType.trim() === "") {
       toast.error("Asset Type type must not be empty");
       return;
     }
 
-    const newAssetType = await createAssetType(authTokenObj.authToken, {
+    await createAssetType(authTokenObj.authToken, {
       asset_type_id: "",
-      asset_type: assetType,
+      asset_type: newAssetType,
     });
     queryClient.invalidateQueries(["query-assetTypesAdmin"]);
     toast.success("Asset Type added successfully");
-    setAssetType("");
+    setNewAssetType("");
   };
 
   const fetchAssetTypes = async () => {
@@ -46,7 +39,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
     setData(assetTypeData);
   };
 
-  const { data: AssetType } = useQuery({
+  useQuery({
     queryKey: ["query-assetTypesAdmin"],
     queryFn: fetchAssetTypes,
   });
@@ -77,8 +70,8 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
             required
             placeholder="Enter Asset Type"
             className="input input-sm w-full border border-slate-300 my-5"
-            value={assetType}
-            onChange={(e) => setAssetType(e.target.value)}
+            value={newAssetType}
+            onChange={(e) => setNewAssetType(e.target.value)}
           />
           <div className="flex flex-row justify-left">
             <button
@@ -105,12 +98,12 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
               <option value="" disabled>
                 Select a Asset Type
               </option>
-              {data.map((assetType) => (
+              {data.map((assetTypeObj) => (
                 <option
-                  key={assetType.asset_type_id}
-                  value={assetType.asset_type_id}
+                  key={assetTypeObj.asset_type_id}
+                  value={assetTypeObj.asset_type_id}
                 >
-                  {assetType.asset_type}
+                  {assetTypeObj.asset_type}
                 </option>
               ))}
             </select>

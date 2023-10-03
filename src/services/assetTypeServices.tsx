@@ -5,7 +5,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
 export async function createAssetType(
   accessToken: string,
-  assetType: AssetType,
+  assetType: AssetType
 ): Promise<AssetType> {
   const config = {
     headers: {
@@ -17,14 +17,14 @@ export async function createAssetType(
   const response = await axios.post<AssetType>(
     `${BASE_URL}/protected/asset-type/`,
     JSON.stringify(assetType),
-    config,
+    config
   );
   return response.data;
 }
 
 export async function getAssetTypeById(
   accessToken: string,
-  id: string,
+  id: string
 ): Promise<AssetType> {
   const config = {
     headers: {
@@ -35,13 +35,13 @@ export async function getAssetTypeById(
 
   const response = await axios.get<AssetType>(
     `${BASE_URL}/protected/asset-type/${id}`,
-    config,
+    config
   );
   return response.data;
 }
 
 export async function getAllAssetTypes(
-  accessToken: string,
+  accessToken: string
 ): Promise<AssetType[]> {
   const config = {
     headers: {
@@ -52,7 +52,7 @@ export async function getAllAssetTypes(
 
   const response = await axios.get<AssetType[]>(
     `${BASE_URL}/protected/asset-type/`,
-    config,
+    config
   );
   return response.data;
 }
@@ -60,7 +60,7 @@ export async function getAllAssetTypes(
 export async function updateAssetType(
   accessToken: string,
   id: string,
-  updatedAssetType: AssetType,
+  updatedAssetType: AssetType
 ): Promise<AssetType> {
   const config = {
     headers: {
@@ -72,14 +72,14 @@ export async function updateAssetType(
   const response = await axios.put<AssetType>(
     `${BASE_URL}/protected/asset-type/${id}`,
     JSON.stringify(updatedAssetType),
-    config,
+    config
   );
   return response.data;
 }
 
 export async function deleteAssetType(
   accessToken: string,
-  id: string,
+  id: string
 ): Promise<void> {
   const config = {
     headers: {

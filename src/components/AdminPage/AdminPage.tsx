@@ -1,39 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { createAssetType, getAllAssetTypes } from "services/assetTypeServices";
-import { Auth } from "aws-amplify";
-import {
-  createAssetCheckForm,
-  getAssetCheckFormById,
-} from "services/assetCheckFormServices";
-import Form from "react-jsonschema-form";
-import { Helmet } from "react-helmet";
+import React, { useState } from "react";
 
 import "./MyStyle.css";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import Sidebar from "./Sidebar";
-import ShowForms from "./ShowForms";
 import AddAssetType from "./AssetType";
-import QRCodes from "./QRCodes";
 import Locations from "./Locations";
-import { AssetLocation } from "types";
-import { useQueryClient } from "@tanstack/react-query";
 import Sections from "./Section";
 import Placements from "./Placement";
 
 const AdminPage = () => {
   // State declarations
-  const [assetTypes, setAssetTypes] = useState([]);
-  const [selectedAssetType, setSelectedAssetType] = useState(null);
-  const [jsonForm, setJsonForm] = useState(null);
-  const [, setShowModal] = useState(false); // You might want to replace ',' with a state variable if you're using it
   const [toggleContent, setToggleContent] = useState(1);
-  const [qrOptions, setQrOptions] = useState(0);
-  const [assetType, setAssetType] = useState<string>("");
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [openSidebar, setOpenSidebar] = useState(true);
-
-  // Handler for showing modal
-  const handleShow = () => setShowModal(true);
 
   // Effect to fetch all asset types on mount
   // useEffect(() => {
@@ -83,7 +59,8 @@ const AdminPage = () => {
         />
         <div className="drawer-content">
           {/* Page content here */}
-          {/* <label onClick={() => setOpenSidebar(true)} htmlFor="my-drawer" className="btn bg-blue-900 hover:bg-blue-900 drawer-button">Open drawer</label> */}
+          {/* <label onClick={() => setOpenSidebar(true)} htmlFor="my-drawer" className="btn
+          bg-blue-900 hover:bg-blue-900 drawer-button">Open drawer</label> */}
           <button
             className="m-2 btn btn-sm bg-blue-900 hover:bg-blue-900"
             onClick={() => setOpenSidebar(true)}
@@ -91,9 +68,7 @@ const AdminPage = () => {
             Menu
           </button>
           <div>
-            {toggleContent === 1 && (
-              <AddAssetType assetType={assetType} setAssetType={setAssetType} />
-            )}
+            {toggleContent === 1 && <AddAssetType />}
             {/* {toggleContent === 2 && <QRCodes />} */}
             {toggleContent === 3 && <Locations />}
             {toggleContent === 4 && <Sections />}
