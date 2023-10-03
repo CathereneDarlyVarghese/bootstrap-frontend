@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getAsset } from "services/apiServices";
 
-const WorkOrdersPage = (props: any) => {
+const WorkOrdersPage = () => {
   const [asset, setAsset] = useState(null);
   // const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const [searchParams] = useSearchParams();

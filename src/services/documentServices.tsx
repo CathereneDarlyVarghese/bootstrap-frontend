@@ -8,7 +8,7 @@ import { Document, IncomingDocument } from "../types"; // Import the Document in
 
 export async function createDocument(
   accessToken: string,
-  documentData: Document
+  documentData: Document,
 ): Promise<Document> {
   const config = {
     headers: {
@@ -20,14 +20,14 @@ export async function createDocument(
   const response = await axios.post<Document>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     JSON.stringify(documentData),
-    config
+    config,
   );
   return response.data;
 }
 
 export async function getDocumentsByLocationIdOnly(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<IncomingDocument[]> {
   const config = {
     headers: {
@@ -38,14 +38,14 @@ export async function getDocumentsByLocationIdOnly(
 
   const response = await axios.get<IncomingDocument[]>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/location/${id}`,
-    config
+    config,
   );
   return response.data;
 }
 
 export async function getDocumentsByAssetId(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<IncomingDocument[]> {
   const config = {
     headers: {
@@ -56,13 +56,13 @@ export async function getDocumentsByAssetId(
 
   const response = await axios.get<IncomingDocument[]>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/asset/${id}`,
-    config
+    config,
   );
   return response.data;
 }
 
 export async function getAllDocuments(
-  accessToken: string
+  accessToken: string,
 ): Promise<IncomingDocument[]> {
   const config = {
     headers: {
@@ -73,7 +73,7 @@ export async function getAllDocuments(
 
   const response = await axios.get<IncomingDocument[]>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/`,
-    config
+    config,
   );
   return response.data;
 }
@@ -81,7 +81,7 @@ export async function getAllDocuments(
 export async function updateDocument(
   accessToken: string,
   id: string,
-  updatedData: Document
+  updatedData: Document,
 ): Promise<Document> {
   const config = {
     headers: {
@@ -93,14 +93,14 @@ export async function updateDocument(
   const response = await axios.put<Document>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
     JSON.stringify(updatedData),
-    config
+    config,
   );
   return response.data;
 }
 
 export async function deleteDocument(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> {
   const config = {
     headers: {
@@ -111,6 +111,6 @@ export async function deleteDocument(
 
   await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/protected/document/${id}`,
-    config
+    config,
   );
 }

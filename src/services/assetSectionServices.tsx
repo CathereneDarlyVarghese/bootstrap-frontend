@@ -8,7 +8,7 @@ import { AssetSection } from "../types";
 // };
 
 export const getAssetSections = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<AssetSection[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
@@ -17,14 +17,14 @@ export const getAssetSections = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const getAssetSectionById = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<AssetSection> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
@@ -33,14 +33,14 @@ export const getAssetSectionById = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const createAssetSection = async (
   accessToken: string,
-  assetSection: AssetSection
+  assetSection: AssetSection,
 ): Promise<AssetSection> => {
   const response = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-section/`,
@@ -50,7 +50,7 @@ export const createAssetSection = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
@@ -58,7 +58,7 @@ export const createAssetSection = async (
 export const updateAssetSection = async (
   accessToken: string,
   id: string,
-  assetSection: AssetSection
+  assetSection: AssetSection,
 ): Promise<AssetSection> => {
   const response = await axios.put(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
@@ -68,14 +68,14 @@ export const updateAssetSection = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const deleteAssetSection = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> => {
   await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-section/${id}`,
@@ -84,6 +84,6 @@ export const deleteAssetSection = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };

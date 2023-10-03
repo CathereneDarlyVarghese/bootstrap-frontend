@@ -123,7 +123,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       toast.info("Asset Deleted Successfully");
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Delete Asset");
     },
   });
@@ -148,7 +148,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     onSettled: () => {
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to toggle asset condition");
     },
   });

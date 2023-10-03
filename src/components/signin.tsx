@@ -35,7 +35,7 @@ export const SignInWithGoogle1 = () => {
           theme: "outline",
           size: "large",
           type: "standard",
-        }
+        },
       );
     }
   };
@@ -67,7 +67,7 @@ export const SignInWithGoogle1 = () => {
     await Auth.federatedSignIn(
       "google",
       { token: credential, expires_at: token.exp },
-      user
+      user,
     );
   };
 

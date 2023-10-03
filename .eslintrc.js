@@ -1,12 +1,12 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  extends: [
-    "airbnb-base", // Use 'airbnb' if you're using React
-    "plugin:@typescript-eslint/recommended",
-  ],
+  extends: ["airbnb-base", "plugin:@typescript-eslint/recommended"],
   plugins: ["@typescript-eslint"],
   rules: {
-    // Add your custom rules and overrides here
+    quotes: "off",
+    "import/prefer-default-export": "off",
+    "import/no-unresolved": "off",
+    camelcase: "off",
   },
   settings: {
     "import/resolver": {

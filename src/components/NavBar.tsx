@@ -2,19 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
-import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AssetLocation } from "types";
+import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
 import ScanButton from "./widgets/ScanButton";
-import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
-import ThemeSwitcher from "./ThemeSwitcher";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AssetLocation } from "types";
 
 export const LogoClickedAtom = atom(false);
 
@@ -35,11 +34,6 @@ const NavBar = () => {
   const [getResult, setGetResult] = useState<string | null>(null);
   const [, setSessionToken] = useState<string | null>(null);
   const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
-
-  // Utility to format the response
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
 
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);

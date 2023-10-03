@@ -8,7 +8,7 @@ import { AssetPlacement } from "../types";
 // };
 
 export const getAssetPlacements = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<AssetPlacement[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
@@ -17,14 +17,14 @@ export const getAssetPlacements = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const getAssetPlacementById = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<AssetPlacement> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
@@ -33,14 +33,14 @@ export const getAssetPlacementById = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const createAssetPlacement = async (
   accessToken: string,
-  assetPlacement: AssetPlacement
+  assetPlacement: AssetPlacement,
 ): Promise<AssetPlacement> => {
   const response = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/`,
@@ -50,7 +50,7 @@ export const createAssetPlacement = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
@@ -58,7 +58,7 @@ export const createAssetPlacement = async (
 export const updateAssetPlacement = async (
   accessToken: string,
   id: string,
-  assetPlacement: AssetPlacement
+  assetPlacement: AssetPlacement,
 ): Promise<AssetPlacement> => {
   const response = await axios.put(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
@@ -68,14 +68,14 @@ export const updateAssetPlacement = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const deleteAssetPlacement = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> => {
   await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-placement/${id}`,
@@ -84,6 +84,6 @@ export const deleteAssetPlacement = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };

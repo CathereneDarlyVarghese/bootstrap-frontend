@@ -28,7 +28,7 @@ const Locations = () => {
   });
 
   const locationAddMutation = useMutation(
-    (assetLocationObj: any) =>
+    (assetLocationObj: AssetLocation) =>
       createAssetLocation(authTokenObj.authToken, assetLocationObj),
     {
       onSuccess: async () => {
@@ -36,7 +36,7 @@ const Locations = () => {
         queryClient.invalidateQueries(["query-locationsAdmin"]);
         queryClient.invalidateQueries(["query-locations"]);
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error("Failed to Add Asset");
       },
     }
@@ -51,7 +51,7 @@ const Locations = () => {
         queryClient.invalidateQueries(["query-locationsAdmin"]);
         queryClient.invalidateQueries(["query-locations"]);
       },
-      onError: (error: any) => {
+      onError: () => {
         toast.error("Failed to delete location");
       },
     }
@@ -74,7 +74,10 @@ const Locations = () => {
           <button
             onClick={() => {
               if (newLocationName.length !== 0) {
-                locationAddMutation.mutate({ location_name: newLocationName });
+                locationAddMutation.mutate({
+                  location_id: "",
+                  location_name: newLocationName,
+                });
                 setNewLocationName("");
               } else {
                 toast.error("Location field must not be empty");

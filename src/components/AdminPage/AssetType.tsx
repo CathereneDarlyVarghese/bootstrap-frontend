@@ -59,7 +59,7 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
         setSelectedAssetType("");
         queryClient.invalidateQueries(["query-assetTypesAdmin"]);
       },
-      onError: (error: any) => {
+      onError: () => {
         toast.error("Failed to delete AssetType");
       },
     }

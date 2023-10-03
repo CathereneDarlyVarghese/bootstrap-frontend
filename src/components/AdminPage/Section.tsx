@@ -39,7 +39,7 @@ const Sections = () => {
         toast.success("Asset Added Successfully");
         queryClient.invalidateQueries(["query-SectionsAdmin"]);
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error("Failed to Add Asset");
       },
     }
@@ -53,7 +53,7 @@ const Sections = () => {
         setSelectedSection("");
         queryClient.invalidateQueries(["query-SectionsAdmin"]);
       },
-      onError: (error: any) => {
+      onError: () => {
         toast.error("Failed to delete Section");
       },
     }

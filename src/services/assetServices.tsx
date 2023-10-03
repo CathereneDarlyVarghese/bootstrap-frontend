@@ -95,14 +95,8 @@ export async function deleteAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    await axios.delete(url, config);
-    console.log(`Deleted asset with id: ${id}`);
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  await axios.delete(url, config);
 }
 
 export async function toggleAssetCondition(

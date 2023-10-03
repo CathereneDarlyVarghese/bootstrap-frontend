@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BsFillSunFill } from "react-icons/bs";
-import { BsFillMoonFill } from "react-icons/bs";
+import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 
 const ThemeSwitcher = () => {
   const getDefaultTheme = () => {
     const preferThemeMode = window.matchMedia(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
     return preferThemeMode;
   };

@@ -232,7 +232,7 @@ const EditAssetForm = ({
       queryClient.invalidateQueries(["query-asset"]);
       closeAsset();
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to update asset");
     },
   });

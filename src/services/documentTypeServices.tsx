@@ -4,7 +4,7 @@ import { DocumentType } from "../types"; // Import the DocumentType interface
 const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
 export async function getAllDocumentTypes(
-  accessToken: string
+  accessToken: string,
 ): Promise<DocumentType[]> {
   const config = {
     headers: {
@@ -15,14 +15,14 @@ export async function getAllDocumentTypes(
 
   const response = await axios.get<DocumentType[]>(
     `${BASE_URL}/protected/document-type/`,
-    config
+    config,
   );
   return response.data;
 }
 
 export async function getDocumentTypeById(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<DocumentType> {
   const config = {
     headers: {
@@ -33,7 +33,7 @@ export async function getDocumentTypeById(
 
   const response = await axios.get<DocumentType>(
     `${process.env.REACT_APP_BASE_URL}/protected/document-type/${id}`,
-    config
+    config,
   );
   return response.data;
 }

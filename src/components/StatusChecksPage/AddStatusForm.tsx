@@ -14,6 +14,7 @@ import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AssetCheck } from "types";
 
 const AddStatusForm = ({
   addFormOpen,
@@ -39,7 +40,7 @@ const AddStatusForm = ({
 
   // Mutation for adding an asset check
   const assetCheckAddMutation = useMutation({
-    mutationFn: (assetCheck: any) =>
+    mutationFn: (assetCheck: AssetCheck) =>
       createAssetCheck(authTokenObj.authToken, assetCheck),
 
     onSettled: () => {
@@ -51,7 +52,7 @@ const AddStatusForm = ({
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
 
-    onError: (err: any) => {
+    onError: () => {
       // Handle errors from the mutation
       toast.error("Failed to Add Status Check");
     },

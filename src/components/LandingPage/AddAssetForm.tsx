@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { atom, useAtom } from "jotai";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-import { AssetLocation, AssetPlacement, AssetSection, AssetType } from "types";
+import {
+  Asset,
+  AssetLocation,
+  AssetPlacement,
+  AssetSection,
+  AssetType,
+} from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
@@ -228,14 +234,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // ====== Mutations ======
   const assetAddMutation = useMutation({
-    mutationFn: (assetData: any) =>
+    mutationFn: (assetData: Asset) =>
       createAsset(authTokenObj.authToken, assetData),
     onSettled: () => {
       toast.success("Asset Added Successfully");
       setAddAssetOpen(false);
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Asset");
     },
   });
@@ -250,7 +256,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       queryClient.invalidateQueries(["query-assetSectionsForm"]);
       setSelectedSection(null);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Section");
     },
   });
@@ -263,7 +269,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
       refetch();
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Placement");
     },
   });

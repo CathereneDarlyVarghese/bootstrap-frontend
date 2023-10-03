@@ -73,7 +73,7 @@ const AddDocumentsForm = ({
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Document");
     },
   });

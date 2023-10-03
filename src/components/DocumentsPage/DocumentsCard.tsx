@@ -91,7 +91,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Delete Document");
     },
   });

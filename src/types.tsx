@@ -186,3 +186,5 @@ export interface IncomingAssetCheckForm
   extends Omit<AssetCheckForm, "form_json"> {
   form_json: JSON;
 }
+
+// Arbitarary Types

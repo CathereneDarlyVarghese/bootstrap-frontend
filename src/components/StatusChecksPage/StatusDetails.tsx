@@ -54,7 +54,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
       toast.info("Asset's Status Check Deleted Successfully");
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Delete Asset's Status Check");
     },
   });

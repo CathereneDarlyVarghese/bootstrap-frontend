@@ -21,7 +21,7 @@ export async function getInventory(accessToken: string): Promise<Asset[]> {
 
 export async function getAsset(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<Asset | null> {
   const config = {
     headers: {
@@ -37,7 +37,7 @@ export async function getAsset(
 
 export async function addInventory(
   accessToken: string,
-  assetData: Asset
+  assetData: Asset,
 ): Promise<Asset[]> {
   const config = {
     headers: {
@@ -52,15 +52,15 @@ export async function addInventory(
   const response = await axios.post<Asset[]>(
     url,
     JSON.stringify(assetData),
-    config
+    config,
   );
   return response.data;
 }
 
 export async function addWorkOrder(
   accessToken: string,
-  inventoryId: string, //Inventory Id is same as Asset Id
-  workOrderData: WorkOrder
+  inventoryId: string, // Inventory Id is same as Asset Id
+  workOrderData: WorkOrder,
 ): Promise<WorkOrder> {
   const config = {
     headers: {
@@ -75,14 +75,14 @@ export async function addWorkOrder(
   const response = await axios.post<WorkOrder>(
     url,
     JSON.stringify(workOrderData),
-    config
+    config,
   );
   return response.data;
 }
 
 export async function deleteInventory(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> {
   const config = {
     headers: {
@@ -99,7 +99,7 @@ export async function updateWorkOrderStatus(
   accessToken: string,
   inventoryId: string,
   workOrderId: string,
-  status: string
+  status: string,
 ): Promise<WorkOrder> {
   const config = {
     headers: {
@@ -113,8 +113,8 @@ export async function updateWorkOrderStatus(
   const url = `${process.env.REACT_APP_BASE_URL}/inventory/${inventoryId}/workorder/${workOrderId}`;
   const response = await axios.post<WorkOrder>(
     url,
-    JSON.stringify({ status: status }),
-    config
+    JSON.stringify({ status }),
+    config,
   );
   return response.data;
 }
