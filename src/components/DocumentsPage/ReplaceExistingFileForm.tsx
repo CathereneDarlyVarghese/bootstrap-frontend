@@ -39,13 +39,12 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
         newModifiedByArrayEntry,
         newModifiedDateArrayEntry
       );
-      console.log("New File ==>> ", replacedFile);
+
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       queryClient.invalidateQueries(["fetch-document-details"]);
       toast.success("Existing File Replaced Successfully");
     } catch (error) {
-      console.error("Failed to Replace Existing File:", error);
       toast.error("Failed to replace existing file");
     }
   };

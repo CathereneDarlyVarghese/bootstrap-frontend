@@ -35,7 +35,6 @@ import {
   getAssetSections,
 } from "services/assetSectionServices";
 
-
 interface AssetDetailsProps {
   sessionToken: string | null;
   setAssetId: (id: string | null) => void;
@@ -79,27 +78,19 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
 
   // Logic for fetching initial data
   const fetchData = async () => {
-    try {
-      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        "query-locations",
-      ]);
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-      fetchAssetPlacements();
-      fetchAssetSections();
-      setAssetTypes(types);
-      setLocations(queryLocations);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+      "query-locations",
+    ]);
+    const types = await getAllAssetTypes(authTokenObj.authToken);
+    fetchAssetPlacements();
+    fetchAssetSections();
+    setAssetTypes(types);
+    setLocations(queryLocations);
   };
 
   const fetchAssetPlacements = async () => {
-    try {
-      const res = await getAssetPlacements(authTokenObj.authToken);
-      setAssetPlacements(res);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getAssetPlacements(authTokenObj.authToken);
+    setAssetPlacements(res);
   };
 
   const AssetPlacements = useQuery({
@@ -110,16 +101,12 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
 
   // ====== Data Fetching using useQuery ======
   const fetchAssetSections = async () => {
-    try {
-      const res = await getAssetSections(authTokenObj.authToken);
-      setAssetSections(res);
-      const sections = res.filter(
-        (section) => section.location_id === selectedLocation
-      );
-      setFilteredSections(sections);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getAssetSections(authTokenObj.authToken);
+    setAssetSections(res);
+    const sections = res.filter(
+      (section) => section.location_id === selectedLocation
+    );
+    setFilteredSections(sections);
   };
 
   const { data: AssetSections } = useQuery({
@@ -132,7 +119,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     mutationFn: () => deleteAsset(authTokenObj.authToken, Asset.asset_id),
     onSettled: () => {
       setAssetId(null);
-      closeAsset()
+      closeAsset();
       toast.info("Asset Deleted Successfully");
       queryClient.invalidateQueries(["query-asset"]);
     },
@@ -169,7 +156,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   // const [, setActiveTab] = useState(0);
 
   // const handleToggleAssetCondition = async () => {
-  //   try {
   //     const toggledAssetCondition =
   //       assetCondition === assetConditions[AssetCondition.ACTIVE]
   //         ? assetConditions[AssetCondition.INACTIVE]
@@ -180,10 +166,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   //       assetId,
   //       toggledAssetCondition
   //     );
-  //   } catch (error) {
-  //     console.error("Error toggling asset condition:", error);
-  //     toast("Oops, Something went wrong");
-  //   }
   // };
 
   return (
@@ -211,39 +193,39 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
           <div className="sticky top-0">
             <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
               <div className="flex flex-col">
-
                 <button
                   className="ml-auto 2xl:hidden lg:block md:my-2"
                   onClick={() => {
                     if (tabIndex !== 0) {
-                      setTabIndex(0)
+                      setTabIndex(0);
                     } else {
                       setAssetId(null);
-                      closeAsset()
+                      closeAsset();
                     }
                   }}
                 >
                   {/* <img src={closeIcon} onClick={closeAsset} /> */}
                   <TfiClose
                     className="font-bold text-black dark:text-white"
-                  // onClick={closeAsset}
-                  // onClick={() => {
-                  //   if (tabIndex !== 0) {
-                  //     setTabIndex(0)
-                  //   }
-                  //   else {
-                  //     closeAsset()
-                  //   }
-                  // }}
+                    // onClick={closeAsset}
+                    // onClick={() => {
+                    //   if (tabIndex !== 0) {
+                    //     setTabIndex(0)
+                    //   }
+                    //   else {
+                    //     closeAsset()
+                    //   }
+                    // }}
                   />
                 </button>
 
                 <div className="flex flex-row">
                   <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${tabIndex === 0
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                      }`}
+                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${
+                      tabIndex === 0
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                    }`}
                     onClick={() => {
                       setTabIndex(0);
                     }}
@@ -251,10 +233,11 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     Info
                   </button>
                   <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                      }`}
+                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${
+                      tabIndex === 1
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                    }`}
                     onClick={() => {
                       setTabIndex(1);
                     }}
@@ -262,10 +245,11 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     Documents
                   </button>
                   <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                      }`}
+                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${
+                      tabIndex === 2
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                    }`}
                     onClick={() => {
                       setTabIndex(2);
                     }}
@@ -273,10 +257,11 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     Status Checks
                   </button>
                   <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
-                      ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                      : "text-gray-400 font-normal"
-                      }`}
+                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${
+                      tabIndex === 3
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                    }`}
                     onClick={() => {
                       setTabIndex(3);
                     }}
@@ -291,10 +276,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 // onClick={() => setAssetId(null)}
                 onClick={() => {
                   if (tabIndex !== 0) {
-                    setTabIndex(0)
+                    setTabIndex(0);
                   } else {
                     setAssetId(null);
-                    closeAsset()
+                    closeAsset();
                   }
                 }}
               >
@@ -413,7 +398,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     }}
                   >
                     {Asset.asset_condition ===
-                      assetConditions[AssetCondition.ACTIVE]
+                    assetConditions[AssetCondition.ACTIVE]
                       ? "Mark as Inactive"
                       : "Mark as Active"}
                     {/* {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"} */}

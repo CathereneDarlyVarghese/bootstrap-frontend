@@ -22,12 +22,8 @@ const Sections = () => {
   ]);
 
   const fetchSections = async () => {
-    try {
-      const SectionData = await getAssetSections(authTokenObj.authToken);
-      setData(SectionData);
-    } catch (error) {
-      console.log(error);
-    }
+    const SectionData = await getAssetSections(authTokenObj.authToken);
+    setData(SectionData);
   };
 
   const { data: Sections } = useQuery({

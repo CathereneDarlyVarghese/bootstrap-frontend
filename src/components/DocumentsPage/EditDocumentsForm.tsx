@@ -47,23 +47,16 @@ const EditDocumentsForm = ({
   // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
     const fetchDetails = async () => {
-      try {
-        const fetchedDocumentTypes = await getAllDocumentTypes(
-          authTokenObj.authToken
-        );
-        const fetchedDocumentFile = await getFileById(
-          authTokenObj.authToken,
-          document.file_id
-        );
+      const fetchedDocumentTypes = await getAllDocumentTypes(
+        authTokenObj.authToken
+      );
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id
+      );
 
-        setDocumentTypes(fetchedDocumentTypes);
-        setDocumentFile(fetchedDocumentFile);
-      } catch (error) {
-        console.error(
-          "Failed to fetch Session Token and Document Types:",
-          error
-        );
-      }
+      setDocumentTypes(fetchedDocumentTypes);
+      setDocumentFile(fetchedDocumentFile);
     };
 
     fetchDetails();

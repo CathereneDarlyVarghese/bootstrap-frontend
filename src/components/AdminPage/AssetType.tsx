@@ -32,26 +32,18 @@ const AddAssetType: React.FC<AddAssetTypeProps> = ({
       return;
     }
 
-    try {
-      const newAssetType = await createAssetType(authTokenObj.authToken, {
-        asset_type_id: "",
-        asset_type: assetType,
-      });
-      queryClient.invalidateQueries(["query-assetTypesAdmin"]);
-      toast.success("Asset Type added successfully");
-      setAssetType("");
-    } catch (error) {
-      console.error("Error creating asset type:", error);
-    }
+    const newAssetType = await createAssetType(authTokenObj.authToken, {
+      asset_type_id: "",
+      asset_type: assetType,
+    });
+    queryClient.invalidateQueries(["query-assetTypesAdmin"]);
+    toast.success("Asset Type added successfully");
+    setAssetType("");
   };
 
   const fetchAssetTypes = async () => {
-    try {
-      const assetTypeData = await getAllAssetTypes(authTokenObj.authToken);
-      setData(assetTypeData);
-    } catch (error) {
-      console.log(error);
-    }
+    const assetTypeData = await getAllAssetTypes(authTokenObj.authToken);
+    setData(assetTypeData);
   };
 
   const { data: AssetType } = useQuery({

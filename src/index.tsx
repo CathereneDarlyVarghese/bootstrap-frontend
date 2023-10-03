@@ -16,14 +16,10 @@ import ReactDOM from "react-dom";
 //     navigator.serviceWorker.register("/service-worker.js").then(
 //       function (registration) {
 //         // Registration was successful
-//         console.log(
-//           "ServiceWorker registration successful with scope: ",
-//           registration.scope
-//         );
+
 //       },
 //       function (err) {
 //         // registration failed :(
-//         console.log("ServiceWorker registration failed: ", err);
 //       }
 //     );
 //   });
@@ -36,12 +32,6 @@ import ReactDOM from "react-dom";
 // beamsClient
 //   .start()
 //   .then(() => beamsClient.addDeviceInterest("hello"))
-//   .then(() => {
-//     console.log("Pusher Beams client started successfully");
-//   })
-//   .catch((e) => {
-//     console.error("Error starting Pusher Beams client:", e);
-//   });
 
 ReactDOM.render(
   <Provider>

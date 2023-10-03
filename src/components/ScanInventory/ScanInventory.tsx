@@ -26,7 +26,6 @@ const QRCodeReader = () => {
         if (decodedText !== lastResult) {
           countResults = countResults + 1;
           lastResult = decodedText;
-          console.log(`Scan result ${decodedText}`, decodedResult);
 
           // Redirect to the scanned URL
           if (

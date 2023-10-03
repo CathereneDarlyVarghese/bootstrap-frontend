@@ -14,14 +14,9 @@ export async function getInventory(accessToken: string): Promise<Asset[]> {
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
-    const response = await axios.get<Asset[]>(url, config);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
+  const response = await axios.get<Asset[]>(url, config);
+  return response.data;
 }
 
 export async function getAsset(
@@ -35,15 +30,9 @@ export async function getAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
-    const response = await axios.get<Asset>(url, config);
-    console.log(response);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
+  const response = await axios.get<Asset>(url, config);
+  return response.data;
 }
 
 export async function addInventory(
@@ -59,18 +48,13 @@ export async function addInventory(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
-    const response = await axios.post<Asset[]>(
-      url,
-      JSON.stringify(assetData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/inventory`;
+  const response = await axios.post<Asset[]>(
+    url,
+    JSON.stringify(assetData),
+    config
+  );
+  return response.data;
 }
 
 export async function addWorkOrder(
@@ -87,18 +71,13 @@ export async function addWorkOrder(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/${inventoryId}/workorder`;
-    const response = await axios.post<WorkOrder>(
-      url,
-      JSON.stringify(workOrderData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/${inventoryId}/workorder`;
+  const response = await axios.post<WorkOrder>(
+    url,
+    JSON.stringify(workOrderData),
+    config
+  );
+  return response.data;
 }
 
 export async function deleteInventory(
@@ -112,14 +91,8 @@ export async function deleteInventory(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
-    await axios.delete(url, config);
-    console.log(`Deleted inventory with id: ${id}`);
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/inventory/${id}`;
+  await axios.delete(url, config);
 }
 
 export async function updateWorkOrderStatus(
@@ -137,16 +110,11 @@ export async function updateWorkOrderStatus(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/inventory/${inventoryId}/workorder/${workOrderId}`;
-    const response = await axios.post<WorkOrder>(
-      url,
-      JSON.stringify({ status: status }),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/inventory/${inventoryId}/workorder/${workOrderId}`;
+  const response = await axios.post<WorkOrder>(
+    url,
+    JSON.stringify({ status: status }),
+    config
+  );
+  return response.data;
 }

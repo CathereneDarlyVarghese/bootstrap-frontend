@@ -104,7 +104,6 @@ const NavBar = () => {
 
         setIsLoading(false);
       } catch {
-        console.log("Not signed in");
         setIsLoading(false);
       }
     };
@@ -113,39 +112,34 @@ const NavBar = () => {
 
   // Fetch location data
   const fetchLocations = async () => {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      const locationData = await getAllAssetLocations(
-        userData.signInUserSession.idToken.jwtToken
+    const userData = await Auth.currentAuthenticatedUser();
+    const locationData = await getAllAssetLocations(
+      userData.signInUserSession.idToken.jwtToken
+    );
+    queryClient.setQueryData(["query-locations"], locationData);
+    setLocations(locationData);
+
+    if (urlLocationId) {
+      // Find the location with the specified ID from the URL.
+      const urlLocation = locationData.find(
+        (loc) => loc.location_id === urlLocationId
       );
-      queryClient.setQueryData(["query-locations"], locationData);
-      setLocations(locationData);
-
-      if (urlLocationId) {
-        // Find the location with the specified ID from the URL.
-        const urlLocation = locationData.find(
-          (loc) => loc.location_id === urlLocationId
-        );
-        if (urlLocation) {
-          setLocation({
-            locationName: urlLocation.location_name,
-            locationId: urlLocation.location_id,
-          });
-          return;
-        }
+      if (urlLocation) {
+        setLocation({
+          locationName: urlLocation.location_name,
+          locationId: urlLocation.location_id,
+        });
+        return;
       }
+    }
 
-      if (!location.locationId) {
-        if (locationData.length > 0) {
-          console.log("location is empty but data is there", locationData);
-          setLocation({
-            locationName: locationData[0].location_name,
-            locationId: locationData[0].location_id,
-          });
-        }
+    if (!location.locationId) {
+      if (locationData.length > 0) {
+        setLocation({
+          locationName: locationData[0].location_name,
+          locationId: locationData[0].location_id,
+        });
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -163,7 +157,6 @@ const NavBar = () => {
   // Effect: Store location in local storage when it changes
   useEffect(() => {
     mountCount.current += 1;
-    console.log("mountCount", mountCount.current);
     // Skip the effect for the first two renders
     if (mountCount.current <= 2) {
       return;
@@ -177,7 +170,6 @@ const NavBar = () => {
 
   return (
     <>
-      {/* {console.log("locations fetched")} */}
       <div className="navbar bg-blue-900">
         <div className="flex-1">
           <button

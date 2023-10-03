@@ -70,7 +70,6 @@ const AddDocumentsForm = ({
       setAddDocumentsOpen(false);
     },
     onSuccess: (res) => {
-      console.log("Return from createDocument ==>> ", res);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
     },
@@ -89,7 +88,6 @@ const AddDocumentsForm = ({
 
     // Step 1: Upload the document to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
-    console.log("documentLocation ==>> ", documentLocation);
 
     // Step 2: Register the uploaded file in the backend
     const createdFile = await createFile(authTokenObj.authToken, {
@@ -125,7 +123,6 @@ const AddDocumentsForm = ({
     try {
       documentAddMutation.mutateAsync(documentData);
     } catch (error) {
-      console.error("Failed to create document:", error);
       toast.error("Failed to create document");
     }
 
@@ -135,14 +132,10 @@ const AddDocumentsForm = ({
   // Function to fetch available document types on component mount
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const fetchedDocumentTypes = await getAllDocumentTypes(
-          authTokenObj.authToken
-        );
-        setDocumentTypes(fetchedDocumentTypes);
-      } catch (error) {
-        console.error("Failed to fetch Document Types:", error);
-      }
+      const fetchedDocumentTypes = await getAllDocumentTypes(
+        authTokenObj.authToken
+      );
+      setDocumentTypes(fetchedDocumentTypes);
     };
 
     fetchData();
@@ -211,7 +204,7 @@ const AddDocumentsForm = ({
                 className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                 required
               >
-                <option value="" disabled selected >
+                <option value="" disabled selected>
                   Select Document Type
                 </option>
                 {documentTypes.map((documentType) => (
@@ -299,10 +292,11 @@ const AddDocumentsForm = ({
                 <input
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
-                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${file && file
-                    ? "text-black dark:text-white"
-                    : "text-gray-400"
-                    }`}
+                  className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${
+                    file && file
+                      ? "text-black dark:text-white"
+                      : "text-gray-400"
+                  }`}
                 />
                 <button
                   className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"

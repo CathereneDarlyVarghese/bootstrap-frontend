@@ -38,12 +38,8 @@ const AdminPage = () => {
   // Effect to fetch all asset types on mount
   // useEffect(() => {
   //   const fetchToken = async () => {
-  //     try {
   //       const assetTypes1 = await getAllAssetTypes(authTokenObj.authToken);
   //       setAssetTypes(assetTypes1);
-  //     } catch (error) {
-  //       console.error("Failed to fetch data:", error);
-  //     }
   //   };
 
   //   fetchToken();
@@ -61,18 +57,12 @@ const AdminPage = () => {
   //       handleShow();
   //     } catch (error) {
   //       if (error.response?.status === 404) {
-  //         try {
   //           const newForm = await createAssetCheckForm(authTokenObj.authToken, {
   //             form_json: {},
   //             asset_type_id: selectedAssetType,
   //           });
   //           setJsonForm(newForm.form_json); // Adjust according to your returned data structure
   //           handleShow();
-  //         } catch (error) {
-  //           console.error("Failed to create a new form:", error);
-  //         }
-  //       } else {
-  //         console.error("Failed to fetch form:", error);
   //       }
   //     }
   //   };
@@ -85,11 +75,21 @@ const AdminPage = () => {
   return (
     <div>
       <div className="drawer">
-        <input id="my-drawer" type="checkbox" checked={openSidebar} className="drawer-toggle" />
+        <input
+          id="my-drawer"
+          type="checkbox"
+          checked={openSidebar}
+          className="drawer-toggle"
+        />
         <div className="drawer-content">
           {/* Page content here */}
           {/* <label onClick={() => setOpenSidebar(true)} htmlFor="my-drawer" className="btn bg-blue-900 hover:bg-blue-900 drawer-button">Open drawer</label> */}
-          <button className="m-2 btn btn-sm bg-blue-900 hover:bg-blue-900" onClick={() => setOpenSidebar(true)}>Menu</button>
+          <button
+            className="m-2 btn btn-sm bg-blue-900 hover:bg-blue-900"
+            onClick={() => setOpenSidebar(true)}
+          >
+            Menu
+          </button>
           <div>
             {toggleContent === 1 && (
               <AddAssetType assetType={assetType} setAssetType={setAssetType} />
@@ -103,29 +103,49 @@ const AdminPage = () => {
         <div className="drawer-side">
           <label htmlFor="my-drawer" className="drawer-overlay"></label>
           <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-            <li className="" onClick={() => {
-              setOpenSidebar(false)
-              setToggleContent(1)
-            }}>
-              <button className="focus:bg-blue-900 focus:text-white">Add Asset Types</button>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(1);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Add Asset Types
+              </button>
             </li>
-            <li className="" onClick={() => {
-              setOpenSidebar(false)
-              setToggleContent(3)
-            }}>
-              <button className="focus:bg-blue-900 focus:text-white">Locations</button>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(3);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Locations
+              </button>
             </li>
-            <li className="" onClick={() => {
-              setOpenSidebar(false)
-              setToggleContent(4)
-            }}>
-              <button className="focus:bg-blue-900 focus:text-white">Sections</button>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(4);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Sections
+              </button>
             </li>
-            <li className="" onClick={() => {
-              setOpenSidebar(false)
-              setToggleContent(5)
-            }}>
-              <button className="focus:bg-blue-900 focus:text-white">Placements</button>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(5);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Placements
+              </button>
             </li>
           </ul>
         </div>

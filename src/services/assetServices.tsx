@@ -18,14 +18,9 @@ export async function getAllAssets(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
-    const response = await axios.get<IncomingAsset[]>(url, config);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+  const response = await axios.get<IncomingAsset[]>(url, config);
+  return response.data;
 }
 
 export async function getAssets(
@@ -39,15 +34,9 @@ export async function getAssets(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.get<IncomingAsset[]>(url, config);
-    console.log(response);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  const response = await axios.get<IncomingAsset[]>(url, config);
+  return response.data;
 }
 
 export async function createAsset(
@@ -63,18 +52,13 @@ export async function createAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
-    const response = await axios.post<Asset>(
-      url,
-      JSON.stringify(assetData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+  const response = await axios.post<Asset>(
+    url,
+    JSON.stringify(assetData),
+    config
+  );
+  return response.data;
 }
 
 export async function updateAsset(
@@ -91,18 +75,13 @@ export async function updateAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.put<Asset>(
-      url,
-      JSON.stringify(assetData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.error("Error updating asset:", err);
-    throw new Error("Failed to update asset. Please try again.");
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  const response = await axios.put<Asset>(
+    url,
+    JSON.stringify(assetData),
+    config
+  );
+  return response.data;
 }
 
 export async function deleteAsset(

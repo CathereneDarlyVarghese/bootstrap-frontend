@@ -18,12 +18,8 @@ const Locations = () => {
   const [data, setData] = useState<AssetLocation[]>(null);
 
   const fetchLocations = async () => {
-    try {
-      const locationData = await getAllAssetLocations(authTokenObj.authToken);
-      setData(locationData);
-    } catch (error) {
-      console.log(error);
-    }
+    const locationData = await getAllAssetLocations(authTokenObj.authToken);
+    setData(locationData);
   };
 
   const { data: Locations } = useQuery({
@@ -81,9 +77,8 @@ const Locations = () => {
                 locationAddMutation.mutate({ location_name: newLocationName });
                 setNewLocationName("");
               } else {
-                toast.error("Location field must not be empty")
+                toast.error("Location field must not be empty");
               }
-
             }}
             className="btn btn-sm bg-blue-500 hover:bg-blue-700"
           >

@@ -20,7 +20,6 @@ const LoginPage = () => {
           break;
         case "signIn_failure":
         case "cognitoHostedUI_failure":
-          console.log("Sign in failure", data);
           break;
       }
     });
@@ -29,12 +28,8 @@ const LoginPage = () => {
   }, []);
 
   async function getUser() {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      return userData;
-    } catch {
-      console.log("Not signed in");
-    }
+    const userData = await Auth.currentAuthenticatedUser();
+    return userData;
   }
 
   // Redirect to Home page if user is signed in

@@ -25,10 +25,8 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
 
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
-    console.log("documentLocation ==>> ", documentLocation);
 
     const newFileArrayEntry: string = documentLocation.location;
-    console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
     const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
@@ -45,7 +43,6 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       toast.success("File Added Successfully");
     } catch (error) {
-      console.error("Failed to Add File:", error);
       toast.error("Failed to add file");
     }
   };

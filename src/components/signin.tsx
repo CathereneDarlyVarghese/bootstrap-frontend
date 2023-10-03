@@ -53,9 +53,7 @@ export const SignInWithGoogle1 = () => {
       }
     });
 
-    Auth.currentAuthenticatedUser()
-      .then((currentUser) => setUser(currentUser))
-      .catch(() => console.log("Not signed in"));
+    Auth.currentAuthenticatedUser().then((currentUser) => setUser(currentUser));
 
     return unsubscribe;
   }, []);

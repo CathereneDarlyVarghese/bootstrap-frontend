@@ -21,7 +21,6 @@ export const getAssetCheckFormById = async (
   accessToken: string,
   id: string
 ): Promise<IncomingAssetCheckForm> => {
-  console.log("id at the getAssetCheckFormById", id);
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/${id}`,
     {

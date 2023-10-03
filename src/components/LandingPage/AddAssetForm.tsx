@@ -93,18 +93,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Logic for fetching initial data
   const fetchData = async () => {
-    try {
-      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        "query-locations",
-      ]);
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-      fetchAssetPlacements();
-      fetchAssetSections();
-      setAssetTypes(types);
-      setLocations(queryLocations);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+      "query-locations",
+    ]);
+    const types = await getAllAssetTypes(authTokenObj.authToken);
+    fetchAssetPlacements();
+    fetchAssetSections();
+    setAssetTypes(types);
+    setLocations(queryLocations);
   };
 
   // Form submission handler
@@ -159,11 +155,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setSearchTerm(assetData.asset_name);
 
     // Step 4: Create the asset in the backend
-    try {
-      assetAddMutation.mutateAsync(assetData);
-    } catch (error) {
-      console.error("Failed to create asset:", error);
-    }
+
+    assetAddMutation.mutateAsync(assetData);
   };
 
   // Function to handle adding a section
@@ -175,11 +168,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         section_name: selectedSection,
         location_id: location.locationId,
       };
-      try {
-        sectionAddMutation.mutateAsync(newSection);
-      } catch (error) {
-        console.error("Failed to create section:", error);
-      }
+
+      sectionAddMutation.mutateAsync(newSection);
     } else {
       alert("Please select a location first.");
     }
@@ -195,11 +185,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
           section_id: selectedSection,
           location_id: location.locationId,
         };
-        try {
-          placementAddMutation.mutate(newPlacement);
-        } catch (error) {
-          console.error("Failed to create placement:", error);
-        }
+
+        placementAddMutation.mutate(newPlacement);
       }
     } else {
       alert("Please select a location and section first.");
@@ -208,16 +195,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // ====== Data Fetching using useQuery ======
   const fetchAssetSections = async () => {
-    try {
-      const res = await getAssetSections(authTokenObj.authToken);
-      setAssetSections(res);
-      const sections = res.filter(
-        (section) => section.location_id === location.locationId
-      );
-      setFilteredSections(sections);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getAssetSections(authTokenObj.authToken);
+    setAssetSections(res);
+    const sections = res.filter(
+      (section) => section.location_id === location.locationId
+    );
+    setFilteredSections(sections);
   };
 
   const { data: AssetSections } = useQuery({
@@ -226,19 +209,15 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   });
 
   const fetchAssetPlacements = async () => {
-    try {
-      const res = await getAssetPlacements(authTokenObj.authToken);
-      if (!res || typeof res === "undefined") {
-        throw new Error("No data received from API");
-      }
-      const placements = res.filter(
-        (placement) => placement.section_id === selectedSection
-      );
-      await setFilteredPlacements(placements);
-      setAssetPlacements(res);
-    } catch (error) {
-      console.log(error);
+    const res = await getAssetPlacements(authTokenObj.authToken);
+    if (!res || typeof res === "undefined") {
+      throw new Error("No data received from API");
     }
+    const placements = res.filter(
+      (placement) => placement.section_id === selectedSection
+    );
+    await setFilteredPlacements(placements);
+    setAssetPlacements(res);
   };
 
   const { refetch } = useQuery({
@@ -695,7 +674,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   disableButton={disableButton}
                   onClick={() => {
                     handleUnfocus();
-                    console.log("Asset Submitted");
                   }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}

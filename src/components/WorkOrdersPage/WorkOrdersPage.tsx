@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getAsset } from "services/apiServices";
 
@@ -17,8 +17,6 @@ const WorkOrdersPage = (props: any) => {
           const fetchedAsset = await getAsset(sessionToken, assetId);
           setAsset(fetchedAsset);
         }
-      } else {
-        console.error("Asset ID is not provided");
       }
     })();
   }, [assetId, asset]);
@@ -33,7 +31,9 @@ const WorkOrdersPage = (props: any) => {
 
   return (
     <div className="flex flex-row justify-center h-screen items-center bg-white dark:bg-black">
-      <h1 className="text-black dark:text-gray-300 text-3xl font-sans font-semibold mb-10">Page Coming Soon</h1>
+      <h1 className="text-black dark:text-gray-300 text-3xl font-sans font-semibold mb-10">
+        Page Coming Soon
+      </h1>
     </div>
     // <div
     //   className="bg-primary-content h-full"
@@ -66,7 +66,6 @@ const WorkOrdersPage = (props: any) => {
     //         + Add
     //       </button>
     //     </div>
-
 
     //     <div
     //       style={{ cursor: "pointer" }}

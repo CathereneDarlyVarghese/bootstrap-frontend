@@ -32,14 +32,11 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
   });
 
   const handleSubmit = async () => {
-    console.log(data);
     try {
       const imageLocation = await uploadFiletoS3(file, "work-order");
-      console.log("Image Location ==>>", imageLocation);
 
       data.image = imageLocation.location;
 
-      console.log("Location on submit ==>>", data.image);
       closeModal();
       await addWorkOrder(token, inventoryId, data)
         .then(() => {
@@ -67,7 +64,6 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
     settoken(data);
     assetId = assetId1 as string;
     setInventoryId(assetId); // set inventoryId from location state
-    console.log("assetId WO ==>>", assetId); // log the assetId
   }, [assetId]);
 
   return (
@@ -76,7 +72,10 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
         htmlFor="my-modal-3"
         className="btn w-fit mx-3 bg-transparent text-slate-800 border-none hover:bg-transparent"
       >
-        <AiOutlineFileAdd className="text-black dark:text-white" style={{ fontSize: 25 }} />
+        <AiOutlineFileAdd
+          className="text-black dark:text-white"
+          style={{ fontSize: 25 }}
+        />
 
         {/* Add Work Order */}
       </label>
@@ -153,9 +152,6 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             />
 
             <input
-              onClick={() => {
-                console.log(data);
-              }}
               type="submit"
               value="Submit"
               className="btn w-fit mx-auto bg-blue-900 border-none text-slate-200 hover:bg-gradient-to-r from-blue-600 to-blue-400 hover:text-white"

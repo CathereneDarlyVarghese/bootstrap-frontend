@@ -74,10 +74,6 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       setDocumentType(data.fetchedDocumentType.document_type);
       setDocumentFile(data.fetchedDocumentFile);
     },
-
-    onError: (error: any) => {
-      console.error("Error fetching document details:", error);
-    },
   });
 
   useEffect(() => {
@@ -178,9 +174,11 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   : "Not Available"}
               </h1>
               <div
-                className={
-                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
-                }
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
+                  documentType && documentType.length > 15
+                    ? "text-[10px] w-40"
+                    : "text-md"
+                }`}
               >
                 {documentType ? documentType : "Not Available"}
               </div>
@@ -188,12 +186,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
           </div>
           <div>
             <h1 className="font-sans">Document History</h1>
-            <div
-              className="flex flex-row gap-2 items-center my-3 "
-              onClick={() => {
-                console.log("clicked");
-              }}
-            >
+            <div className="flex flex-row gap-2 items-center my-3 ">
               {/* Document History */}
               {tableRows.length === 1 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>
@@ -266,9 +259,11 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   : "Not Available"}
               </h1>
               <div
-                className={
-                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
-                }
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
+                  documentType && documentType.length > 15
+                    ? "text-[10px] w-40"
+                    : "text-md"
+                }`}
               >
                 {documentType ? documentType : "Not Available"}
               </div>
@@ -319,7 +314,6 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                     ) {
                       deleteSelectedDocument.mutateAsync();
                     }
-                    console.log("Delete document button clicked");
                   }}
                 >
                   <AiOutlineDelete className="text-2xl text-blue-900 dark:text-white" />
@@ -328,12 +322,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
             </div>
           </div>
           <div className="mt-4 flex flex-col lg:flex-col gap-5 ">
-            <div
-              className="flex flex-row gap-2 items-center md:mr-auto lg:w-full"
-              onClick={() => {
-                console.log("clicked");
-              }}
-            >
+            <div className="flex flex-row gap-2 items-center md:mr-auto lg:w-full">
               {/* Display Latest Entry in file table */}
               {tableRows.length === 0 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>

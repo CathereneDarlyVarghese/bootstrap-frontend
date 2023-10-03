@@ -108,14 +108,16 @@ const DocumentsPage = () => {
   return (
     <>
       <div
-        className={`h-full overflow-y-auto p-5 pb-20 ${addDocumentsOpen && !fileOpen
+        className={`h-full overflow-y-auto p-5 pb-20 ${
+          addDocumentsOpen && !fileOpen
             ? "2xl:bg-gray-200 dark:2xl:bg-black xl:bg-white dark:xl:bg-gray-800"
             : "bg-gray-200 dark:bg-black"
-          }`}
+        }`}
       >
         <div
-          className={`flex flex-grow items-center ${addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
-            } `}
+          className={`flex flex-grow items-center ${
+            addDocumentsOpen && !fileOpen ? "xl:hidden" : ""
+          } `}
         >
           <h1 className="text-blue-800 text-xl font-sans font-semibold">
             Documents
@@ -130,27 +132,27 @@ const DocumentsPage = () => {
           </button>
         </div>
         <div
-          className={`flex ${addDocumentsOpen || fileOpen ? "flex-row" : "flex-col"
-            } items-start gap-2 mt-5`}
+          className={`flex ${
+            addDocumentsOpen || fileOpen ? "flex-row" : "flex-col"
+          } items-start gap-2 mt-5`}
         >
           <div
             // className={`${addDocumentsOpen ? "w-3/5 xl:hidden" : "w-full"}`}
-            className={`${addDocumentsOpen
+            className={`${
+              addDocumentsOpen
                 ? "w-3/5 xl:hidden"
                 : fileOpen
-                  ? "w-2/5 xl:hidden"
-                  : !fileOpen
-                    ? "w-full"
-                    : "w-full"
-              }`}
+                ? "w-2/5 xl:hidden"
+                : !fileOpen
+                ? "w-full"
+                : "w-full"
+            }`}
           >
             {incomingDocuments.map((document) => (
               <div
                 className="mb-5"
                 onClick={() => {
                   setSelectedDocument(document);
-                  console.log("File array ==>> ", document.file_id);
-                  console.log("File ID ==>> ", selectedDocument.file_id);
                 }}
               >
                 <DocumentsCard
@@ -162,8 +164,9 @@ const DocumentsPage = () => {
             ))}
           </div>
           <div
-            className={`${addDocumentsOpen && !fileOpen ? "w-2/5 xl:w-full" : "hidden"
-              }`}
+            className={`${
+              addDocumentsOpen && !fileOpen ? "w-2/5 xl:w-full" : "hidden"
+            }`}
           >
             <AddDocumentsForm
               addDocumentsOpen={addDocumentsOpen}

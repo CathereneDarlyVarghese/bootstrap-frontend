@@ -67,17 +67,11 @@ const AddStatusForm = ({
         setJsonForm(form.form_json);
       } catch (error) {
         if (error.response?.status === 404) {
-          try {
-            const newForm = await createAssetCheckForm(authTokenObj.authToken, {
-              form_json: {},
-              asset_type_id: assetTypeId,
-            });
-            setJsonForm(newForm.form_json);
-          } catch (error) {
-            console.error("Failed to create a new form:", error);
-          }
-        } else {
-          console.error("Failed to fetch form:", error);
+          const newForm = await createAssetCheckForm(authTokenObj.authToken, {
+            form_json: {},
+            asset_type_id: assetTypeId,
+          });
+          setJsonForm(newForm.form_json);
         }
       }
     };
@@ -94,7 +88,6 @@ const AddStatusForm = ({
   const handleSubmit = async (formData: any) => {
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
 
-    console.log("Modified by==>", authTokenObj.attributes.given_name);
     const assetCheck = {
       uptime_check_id: "",
       asset_id: assetId,
@@ -105,7 +98,6 @@ const AddStatusForm = ({
       modified_date: new Date(),
       status_check_data: JSON.parse(JSON.stringify(formData)),
     };
-    console.log("modified date is", assetCheck.modified_date)
 
     try {
       // Add inventory using the API service
@@ -113,10 +105,6 @@ const AddStatusForm = ({
     } catch (error) {
       toast.error("Failed to add asset");
     }
-
-    // Log the form submission
-    console.log("Form submitted:", formData);
-    console.log(assetCheck)
   };
 
   return (
