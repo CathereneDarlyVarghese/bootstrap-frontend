@@ -9,7 +9,7 @@ import { Asset, IncomingAsset } from "types"; // ensure the Asset type is define
 // };
 
 export async function getAllAssets(
-  accessToken: string
+  accessToken: string,
 ): Promise<IncomingAsset[]> {
   const config = {
     headers: {
@@ -25,7 +25,7 @@ export async function getAllAssets(
 
 export async function getAssets(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<IncomingAsset[] | null> {
   const config = {
     headers: {
@@ -41,7 +41,7 @@ export async function getAssets(
 
 export async function createAsset(
   accessToken: string,
-  assetData: Asset
+  assetData: Asset,
 ): Promise<Asset> {
   const config = {
     headers: {
@@ -56,7 +56,7 @@ export async function createAsset(
   const response = await axios.post<Asset>(
     url,
     JSON.stringify(assetData),
-    config
+    config,
   );
   return response.data;
 }
@@ -64,7 +64,7 @@ export async function createAsset(
 export async function updateAsset(
   accessToken: string,
   id: string,
-  assetData: Partial<Asset>
+  assetData: Partial<Asset>,
 ): Promise<Asset> {
   const config = {
     headers: {
@@ -79,14 +79,14 @@ export async function updateAsset(
   const response = await axios.put<Asset>(
     url,
     JSON.stringify(assetData),
-    config
+    config,
   );
   return response.data;
 }
 
 export async function deleteAsset(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> {
   const config = {
     headers: {
@@ -102,7 +102,7 @@ export async function deleteAsset(
 export async function toggleAssetCondition(
   accessToken: string,
   id: string,
-  changedCondition: string
+  changedCondition: string,
 ): Promise<void> {
   const assetConditionMap: Record<string, string> = {
     [AssetCondition.ACTIVE]: "ACTIVE",
@@ -110,13 +110,12 @@ export async function toggleAssetCondition(
     // Add more condition mappings if needed
   };
 
-  const toggledConditionText =
-    changedCondition === assetConditionMap[AssetCondition.ACTIVE]
-      ? assetConditionMap[AssetCondition.ACTIVE]
-      : assetConditionMap[AssetCondition.INACTIVE];
+  const toggledConditionText = changedCondition === assetConditionMap[AssetCondition.ACTIVE]
+    ? assetConditionMap[AssetCondition.ACTIVE]
+    : assetConditionMap[AssetCondition.INACTIVE];
 
   const toggledConditionUUID = Object.keys(assetConditionMap).find(
-    (key) => assetConditionMap[key] === toggledConditionText
+    (key) => assetConditionMap[key] === toggledConditionText,
   );
 
   if (!toggledConditionUUID) {

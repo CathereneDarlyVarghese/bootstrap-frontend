@@ -29,7 +29,6 @@ import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
-import AddSectionModal from "./AddSectionModal";
 import { Auth } from "aws-amplify";
 import { AssetCondition } from "enums";
 import {
@@ -37,6 +36,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import AddSectionModal from "./AddSectionModal";
 
 const EditAssetForm = ({
   closeAsset,
@@ -59,13 +59,13 @@ const EditAssetForm = ({
   const queryClient = useQueryClient();
   // const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>(
-    assetLocation.locationId
+    assetLocation.locationId,
   );
   const [selectedSection, setSelectedSection] = useState<string>(
-    asset.asset_section
+    asset.asset_section,
   );
   const [selectedPlacement, setSelectedPlacement] = useState<string>(
-    asset.asset_placement
+    asset.asset_placement,
   );
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
@@ -82,13 +82,9 @@ const EditAssetForm = ({
     INACTIVE: AssetCondition.INACTIVE,
   };
   // Custom function to get the correct label ("ACTIVE" or "INACTIVE") based on the UUID
-  const getAssetConditionLabel = (uuid: string) => {
-    return (
-      Object.keys(assetConditionOptionsReverse).find(
-        (key) => assetConditionOptionsReverse[key] === uuid
-      ) || ""
-    );
-  };
+  const getAssetConditionLabel = (uuid: string) => Object.keys(assetConditionOptionsReverse).find(
+    (key) => assetConditionOptionsReverse[key] === uuid,
+  ) || "";
 
   const defaultFormData: Asset = {
     asset_id: asset.asset_id,
@@ -104,7 +100,7 @@ const EditAssetForm = ({
     modified_date: asset.modified_date,
     modified_by: asset.modified_by,
     org_id: null,
-    //status_check_enabled: asset.status_check_enabled, CORRECT VERSION
+    // status_check_enabled: asset.status_check_enabled, CORRECT VERSION
     status_check_enabled: asset.status_check_enabled,
     images_id: asset.images_id,
     // status_check_interval: asset.status_check_interval, CORRECT VERSION
@@ -121,27 +117,27 @@ const EditAssetForm = ({
 
   useEffect(() => {
     const handleLocationChange = async () => {
-      //formData has latest selected Asset Location ID, store it in selectedLocation state
+      // formData has latest selected Asset Location ID, store it in selectedLocation state
       setSelectedLocation(formData.asset_location);
 
       // Filter all sections based on the selected location
-      const filteredSections = assetSections.filter(
-        (section) => section.location_id === formData.asset_location
+      const Sections = assetSections.filter(
+        (section) => section.location_id === formData.asset_location,
       );
 
       // Reset filtered sections
-      setFilteredSections(filteredSections);
+      setFilteredSections(Sections);
 
       if (formData.asset_location != defaultFormData.asset_location) {
         setFormData((prevState) => ({
           ...prevState,
-          ["asset_section"]: null,
+          asset_section: null,
         }));
         setSelectedSection(formData.asset_section);
       } else {
         setFormData((prevState) => ({
           ...prevState,
-          ["asset_section"]: defaultFormData.asset_section,
+          asset_section: defaultFormData.asset_section,
         }));
         setSelectedSection(defaultFormData.asset_section);
       }
@@ -156,20 +152,20 @@ const EditAssetForm = ({
 
       // Filter placements based on the selected section
       const placements = assetPlacements.filter(
-        (placement) => placement.section_id === formData.asset_section
+        (placement) => placement.section_id === formData.asset_section,
       );
       setFilteredPlacements(placements);
 
       if (formData.asset_section != defaultFormData.asset_section) {
         setFormData((prevState) => ({
           ...prevState,
-          ["asset_placement"]: null,
+          asset_placement: null,
         }));
         setSelectedPlacement(formData.asset_placement);
       } else {
         setFormData((prevState) => ({
           ...prevState,
-          ["asset_placement"]: defaultFormData.asset_placement,
+          asset_placement: defaultFormData.asset_placement,
         }));
         setSelectedPlacement(defaultFormData.asset_placement);
       }
@@ -186,7 +182,7 @@ const EditAssetForm = ({
     event.preventDefault();
     setDisableButton(true);
 
-    let updatedFormData = { ...formData };
+    const updatedFormData = { ...formData };
 
     if (file) {
       // Step 1: Upload the file to S3 bucket
@@ -223,9 +219,7 @@ const EditAssetForm = ({
   };
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedData: any) =>
-      updateAsset(token, asset.asset_id, updatedData),
-    onSettled: () => {},
+    mutationFn: (updatedData: any) => updateAsset(token, asset.asset_id, updatedData),
     onSuccess: () => {
       toast.success("Asset Edited Successfully");
       setEditFormOpen(false);
@@ -293,16 +287,16 @@ const EditAssetForm = ({
 
         const createdPlacement = await createAssetPlacement(
           token,
-          newPlacement
+          newPlacement,
         );
         const updatedPlacements = [...assetPlacements, createdPlacement];
         // setAssetPlacements(updatedPlacements);
 
         // Update filtered placements
-        const filteredPlacements = updatedPlacements.filter(
-          (placement) => placement.section_id === selectedSection
+        const Placements = updatedPlacements.filter(
+          (placement) => placement.section_id === selectedSection,
         );
-        setFilteredPlacements(filteredPlacements);
+        setFilteredPlacements(Placements);
 
         // Fetch updated data and call handleSectionChange
         // fetchData();
@@ -321,11 +315,11 @@ const EditAssetForm = ({
   const handleFormDataChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setFormData((prevState) => ({
       ...prevState,
-      //"id" and "name" of <elements> in <form> has to be same for this to work
+      // "id" and "name" of <elements> in <form> has to be same for this to work
       [e.target.id]: e.target.value,
     }));
   };
@@ -470,7 +464,7 @@ const EditAssetForm = ({
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
-                      "#upload"
+                      "#upload",
                     ) as HTMLElement;
                     uploadButton.click();
                   }}
@@ -508,7 +502,7 @@ const EditAssetForm = ({
                         >
                           {statusName}
                         </option>
-                      )
+                      ),
                     )}
                   </select>
                 </div>
@@ -528,13 +522,13 @@ const EditAssetForm = ({
                     <option value="" disabled hidden>
                       Select Location
                     </option>
-                    {assetLocations.map((assetLocation) => (
+                    {assetLocations.map((assetLocationObj) => (
                       <option
-                        key={assetLocation.location_id}
-                        value={assetLocation.location_id}
+                        key={assetLocationObj.location_id}
+                        value={assetLocationObj.location_id}
                         className="text-black bg-white dark:text-white dark:bg-gray-800"
                       >
-                        {assetLocation.location_name}
+                        {assetLocationObj.location_name}
                       </option>
                     ))}
                   </select>
@@ -555,27 +549,28 @@ const EditAssetForm = ({
                         name="asset_section"
                         value={formData.asset_section || null}
                         onChange={(e) => handleFormDataChange(e)}
-                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white
+                        bg-transparent dark:border-gray-500 w-full"
                       >
                         {/* Render "Select Section" if selected location is not fetched location OR if formData.asset_section === null */}
                         <option
                           value=""
                           hidden
                           selected={
-                            formData.asset_section === null &&
-                            formData.asset_location !==
-                              defaultFormData.asset_location
+                            formData.asset_section === null
+                            && formData.asset_location
+                              !== defaultFormData.asset_location
                           }
                         >
                           Select Section
                         </option>
-                        {filteredSections.map((assetSection) => (
+                        {filteredSections.map((assetSectionObj) => (
                           <option
-                            key={assetSection.section_id}
-                            value={assetSection.section_id}
+                            key={assetSectionObj.section_id}
+                            value={assetSectionObj.section_id}
                             className="text-black bg-white dark:text-white dark:bg-gray-800"
                           >
-                            {assetSection.section_name}
+                            {assetSectionObj.section_name}
                           </option>
                         ))}
                       </select>
@@ -612,27 +607,29 @@ const EditAssetForm = ({
                         name="asset_placement"
                         value={formData.asset_placement}
                         onChange={(e) => handleFormDataChange(e)}
-                        className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+                        className="select select-sm font-normal my-3 border border-slate-300
+                        dark:text-white bg-transparent dark:border-gray-500 w-full"
                       >
-                        {/* Render "Select Placement" if selected section is not fetched section OR if formData.asset_placement === null */}
+                        {/* Render "Select Placement" if selected section is not fetched
+                        section OR if formData.asset_placement === null */}
                         <option
                           value=""
                           hidden
                           selected={
-                            formData.asset_placement === null &&
-                            formData.asset_section !==
-                              defaultFormData.asset_section
+                            formData.asset_placement === null
+                            && formData.asset_section
+                              !== defaultFormData.asset_section
                           }
                         >
                           Select Placement
                         </option>
-                        {filteredPlacements.map((assetPlacement) => (
+                        {filteredPlacements.map((assetPlacementObj) => (
                           <option
-                            key={assetPlacement.placement_id}
-                            value={assetPlacement.placement_id}
+                            key={assetPlacementObj.placement_id}
+                            value={assetPlacementObj.placement_id}
                             className="text-black bg-white dark:text-white dark:bg-gray-800"
                           >
-                            {assetPlacement.placement_name}
+                            {assetPlacementObj.placement_name}
                           </option>
                         ))}
                       </select>
@@ -646,7 +643,7 @@ const EditAssetForm = ({
                             setAddPlacement(true);
                           } else {
                             alert(
-                              "Please select a location and section first."
+                              "Please select a location and section first.",
                             );
                           }
                         }}
@@ -668,11 +665,10 @@ const EditAssetForm = ({
                   id="asset_condition"
                   name="asset_condition"
                   value={formData.asset_condition}
-                  onChange={(e) =>
-                    setFormData((prevState) => ({
-                      ...prevState,
-                      asset_condition: e.target.value,
-                    }))
+                  onChange={(e) => setFormData((prevState) => ({
+                    ...prevState,
+                    asset_condition: e.target.value,
+                  }))
                   }
                   className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
                 >
@@ -925,7 +921,6 @@ const EditAssetForm = ({
                   title="Submit"
                   workPending={false}
                   disableButton={disableButton}
-                  onClick={() => {}}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}
                 />

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
-import { AiOutlineCalendar } from "react-icons/ai";
 import { toast } from "react-toastify";
-import { AssetCondition, StatusTypes } from "enums";
+import { AssetCondition } from "enums";
 import {
-  Asset,
   IncomingAsset,
   AssetLocation,
   AssetType,
@@ -24,16 +22,13 @@ import {
   getStatusColor,
   getStatusText,
 } from "components/StatusChecksPage/statusUtils";
-import EditAssetForm from "./EditAssetForm";
 import { getAllAssetTypes } from "services/assetTypeServices";
-import {
-  createAssetPlacement,
-  getAssetPlacements,
-} from "services/assetPlacementServices";
+import { getAssetPlacements } from "services/assetPlacementServices";
 import {
   createAssetSection,
   getAssetSections,
 } from "services/assetSectionServices";
+import EditAssetForm from "./EditAssetForm";
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -56,18 +51,13 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const [assetConditionState, setAssetConditionState] = useState(
-    assetConditions[AssetCondition.ACTIVE]
-  );
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<string>(
-    Asset.location_name
-  );
+  const [selectedLocation] = useState<string>(Asset.location_name);
 
   // ====== Effects ======
 
@@ -104,7 +94,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     const res = await getAssetSections(authTokenObj.authToken);
     setAssetSections(res);
     const sections = res.filter(
-      (section) => section.location_id === selectedLocation
+      (section) => section.location_id === selectedLocation,
     );
     setFilteredSections(sections);
   };
@@ -135,15 +125,14 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
         return toggleAssetCondition(
           authTokenObj.authToken,
           Asset.asset_id,
-          assetConditions[AssetCondition.INACTIVE]
-        );
-      } else {
-        return toggleAssetCondition(
-          authTokenObj.authToken,
-          Asset.asset_id,
-          assetConditions[AssetCondition.ACTIVE]
+          assetConditions[AssetCondition.INACTIVE],
         );
       }
+      return toggleAssetCondition(
+        authTokenObj.authToken,
+        Asset.asset_id,
+        assetConditions[AssetCondition.ACTIVE],
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries(["query-asset"]);
@@ -318,7 +307,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       </button>
                       <button
                         className={`badge text-white font-semibold font-sans cursor-default capitalize border-white border-none ml-auto mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2 ${getStatusColor(
-                          Asset.asset_status
+                          Asset.asset_status,
                         )}`}
                       >
                         {getStatusText(Asset?.asset_status)}
@@ -359,14 +348,14 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                       Purchase Value:{" "}
-                      {parseInt(Asset.asset_finance_purchase)
-                        ? `$${parseInt(Asset.asset_finance_purchase)}`
+                      {parseInt(Asset.asset_finance_purchase, 10)
+                        ? `$${parseInt(Asset.asset_finance_purchase, 10)}`
                         : "Not Available"}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
                       Current Value:{" "}
-                      {parseInt(Asset.asset_finance_current_value)
-                        ? `$${parseInt(Asset.asset_finance_current_value)}`
+                      {parseInt(Asset.asset_finance_current_value, 10)
+                        ? `$${parseInt(Asset.asset_finance_current_value, 10)}`
                         : "Not Available"}
                     </p>
                     <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
@@ -397,11 +386,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       // }, 1000);
                     }}
                   >
-                    {Asset.asset_condition ===
-                    assetConditions[AssetCondition.ACTIVE]
+                    {Asset.asset_condition
+                    === assetConditions[AssetCondition.ACTIVE]
                       ? "Mark as Inactive"
                       : "Mark as Active"}
-                    {/* {assetConditionState === assetConditions[AssetCondition.ACTIVE] ? "Mark as Inactive" : "Mark as Active"} */}
                   </button>
                   <button
                     title="Edit Asset"
@@ -417,7 +405,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     onClick={async () => {
                       if (
                         window.confirm(
-                          "Are you sure you want to delete this asset?"
+                          "Are you sure you want to delete this asset?",
                         )
                       ) {
                         deleteAssetMutation.mutate();

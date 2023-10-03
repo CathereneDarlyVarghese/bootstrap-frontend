@@ -1,16 +1,19 @@
-// interface ButtonProps {
-//   title: string;
-//   primary: boolean;
-//   onClick: () => void;
-// }
+type WorkOrderButtonProps = {
+  title: string;
+  workPending: boolean;
+  onClick?: () => void; // Making onClick optional
+  buttonColor: string;
+  hoverColor: string;
+  disableButton: boolean;
+};
 
-const WorkOrderButton = ({
+const WorkOrderButton: React.FC<WorkOrderButtonProps> = ({
   title,
   workPending,
   onClick,
   buttonColor,
   hoverColor,
-  disableButton
+  disableButton,
 }) => {
   return (
     <button

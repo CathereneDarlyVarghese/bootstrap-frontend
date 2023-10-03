@@ -89,7 +89,7 @@ const NavBar = () => {
         setUser(userData);
         window.localStorage.setItem(
           "sessionToken",
-          userData.signInUserSession.idToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken,
         );
         setAuthToken({
           authToken: userData.signInUserSession.idToken.jwtToken,
@@ -108,7 +108,7 @@ const NavBar = () => {
   const fetchLocations = async () => {
     const userData = await Auth.currentAuthenticatedUser();
     const locationData = await getAllAssetLocations(
-      userData.signInUserSession.idToken.jwtToken
+      userData.signInUserSession.idToken.jwtToken,
     );
     queryClient.setQueryData(["query-locations"], locationData);
     setLocations(locationData);
@@ -116,7 +116,7 @@ const NavBar = () => {
     if (urlLocationId) {
       // Find the location with the specified ID from the URL.
       const urlLocation = locationData.find(
-        (loc) => loc.location_id === urlLocationId
+        (loc) => loc.location_id === urlLocationId,
       );
       if (urlLocation) {
         setLocation({

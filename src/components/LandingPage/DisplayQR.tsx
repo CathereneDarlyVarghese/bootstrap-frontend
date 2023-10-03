@@ -2,7 +2,9 @@ import QRCode from "react-qr-code";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
 
-const DisplayQR = ({ showQr, closeQr, assetName, link }) => {
+const DisplayQR = ({
+  showQr, closeQr, assetName, link,
+}) => {
   const qrCodeRef = useRef(null);
 
   const handleDownload = () => {
