@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
   const queryClient = useQueryClient();
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<File>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

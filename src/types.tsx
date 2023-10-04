@@ -159,7 +159,7 @@ export interface AssetSection {
   location_id: string;
 }
 
-export interface File {
+export interface dubeFile {
   file_id: string;
   file_array: string[];
   modified_by_array: string[];

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { File } from "../types"; // Import the File interface
+import { dubeFile } from "../types"; // Import the File interface
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
@@ -10,8 +10,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
 export async function createFile(
   accessToken: string,
-  fileData: File,
-): Promise<File> {
+  fileData: dubeFile
+): Promise<dubeFile> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -19,18 +19,18 @@ export async function createFile(
     },
   };
 
-  const response = await axios.post<File>(
+  const response = await axios.post<dubeFile>(
     `${BASE_URL}/protected/file/`,
     JSON.stringify(fileData),
-    config,
+    config
   );
   return response.data;
 }
 
 export async function getFileById(
   accessToken: string,
-  id: string,
-): Promise<File> {
+  id: string
+): Promise<dubeFile> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -38,14 +38,14 @@ export async function getFileById(
     },
   };
 
-  const response = await axios.get<File>(
+  const response = await axios.get<dubeFile>(
     `${BASE_URL}/protected/file/${id}`,
-    config,
+    config
   );
   return response.data;
 }
 
-export async function getAllFiles(accessToken: string): Promise<File[]> {
+export async function getAllFiles(accessToken: string): Promise<dubeFile[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -53,9 +53,9 @@ export async function getAllFiles(accessToken: string): Promise<File[]> {
     },
   };
 
-  const response = await axios.get<File[]>(
+  const response = await axios.get<dubeFile[]>(
     `${BASE_URL}/protected/file/`,
-    config,
+    config
   );
   return response.data;
 }
@@ -63,8 +63,8 @@ export async function getAllFiles(accessToken: string): Promise<File[]> {
 export async function updateFile(
   accessToken: string,
   id: string,
-  updatedData: File,
-): Promise<File> {
+  updatedData: dubeFile
+): Promise<dubeFile> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -72,17 +72,17 @@ export async function updateFile(
     },
   };
 
-  const response = await axios.put<File>(
+  const response = await axios.put<dubeFile>(
     `${BASE_URL}/protected/file/${id}`,
     JSON.stringify(updatedData),
-    config,
+    config
   );
   return response.data;
 }
 
 export async function deleteFile(
   accessToken: string,
-  id: string,
+  id: string
 ): Promise<void> {
   const config = {
     headers: {
@@ -99,7 +99,7 @@ export async function appendToFileArray(
   file_id: string,
   new_file_array_entry: string,
   new_modified_by_array_entry: string,
-  new_modified_date_array_entry: string,
+  new_modified_date_array_entry: string
 ): Promise<void> {
   const config = {
     headers: {
@@ -118,7 +118,7 @@ export async function appendToFileArray(
   const response = await axios.post(
     `${BASE_URL}/protected/file/${file_id}/append`,
     requestObject,
-    config,
+    config
   );
   return response.data;
 }
@@ -128,7 +128,7 @@ export async function replaceLatestInFileArray(
   file_id: string,
   new_file_array_entry: string,
   new_modified_by_array_entry: string,
-  new_modified_date_array_entry: string,
+  new_modified_date_array_entry: string
 ): Promise<void> {
   const config = {
     headers: {
@@ -147,7 +147,7 @@ export async function replaceLatestInFileArray(
   const response = await axios.put(
     `${BASE_URL}/protected/file/${file_id}/replace-latest`,
     requestObject,
-    config,
+    config
   );
   return response.data;
 }

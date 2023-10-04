@@ -44,7 +44,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Asset Collections
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
+  const [, setAssetSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
@@ -67,7 +67,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const queryClient = useQueryClient();
 
   // edit search term when adding asset
-  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+  const [, setSearchTerm] = useAtom(searchTermAtom);
 
   // ====== Effects ======
 

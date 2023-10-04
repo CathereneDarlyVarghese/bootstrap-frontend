@@ -11,8 +11,8 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = event.target.files[0];
-    setFile(newFile);
+    const nwFile = event.target.files[0];
+    setFile(nwFile);
   };
 
   const handleSubmit = async (
@@ -31,14 +31,13 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
-      // const replacedFile = await replaceLatestInFileArray(
-      //   authTokenObj.authToken,
-      //   fileID,
-      //   newFileArrayEntry,
-      //   newModifiedByArrayEntry,
-      //   newModifiedDateArrayEntry,
-      // );
-
+      const replacedFile = await replaceLatestInFileArray(
+        authTokenObj.authToken,
+        fileID,
+        newFileArrayEntry,
+        newModifiedByArrayEntry,
+        newModifiedDateArrayEntry,
+      );
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       queryClient.invalidateQueries(["fetch-document-details"]);

@@ -20,7 +20,7 @@ const DocumentsPage = () => {
   >([]);
 
   // State for error/result messages
-  const [getResult, setGetResult] = useState<string | null>(null);
+  const [, setGetResult] = useState<string | null>(null);
 
   // Default document state
   const defaultDocument = {

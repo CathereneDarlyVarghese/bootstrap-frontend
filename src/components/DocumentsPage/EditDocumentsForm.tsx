@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAllDocumentTypes } from "services/documentTypeServices";
-import { Document, DocumentType, File } from "types";
+import { Document, DocumentType, dubeFile } from "types";
 import { appendToFileArray, getFileById } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { updateDocument } from "services/documentServices";
@@ -18,7 +18,7 @@ const EditDocumentsForm = ({
   // QueryClient
   const queryClient = useQueryClient();
   // States
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Document>({
     // Initializing formData with passed document properties
     ...document,
@@ -35,13 +35,13 @@ const EditDocumentsForm = ({
     String(formData.end_date).substring(0, 10),
   );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const defaultDocumentFile: File = {
+  const defaultDocumentFile: dubeFile = {
     file_id: "",
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
 
   // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
@@ -102,18 +102,18 @@ const EditDocumentsForm = ({
         .toISOString()
         .substring(0, 10);
 
-      // const appendedFile = await appendToFileArray(
-      //   authTokenObj.authToken,
-      //   formData.file_id,
-      //   newFileArrayEntry,
-      //   newModifiedByArrayEntry,
-      //   newModifiedDateArrayEntry,
-      // );
+      await appendToFileArray(
+        authTokenObj.authToken,
+        formData.file_id,
+        newFileArrayEntry,
+        newModifiedByArrayEntry,
+        newModifiedDateArrayEntry,
+      );
     }
 
     try {
       // Update the document
-      const updatedDocument = await updateDocument(
+      await updateDocument(
         authTokenObj.authToken,
         formData.document_id,
         formData,
@@ -287,7 +287,12 @@ const EditDocumentsForm = ({
                   required
                   id="file"
                   name="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const NwFile: File | null = e.target.files
+                      ? e.target.files[0]
+                      : null;
+                    setFile(NwFile);
+                  }}
                   className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
                 />
                 {/* file upload same as desing. (not working now) */}
@@ -297,13 +302,9 @@ const EditDocumentsForm = ({
                   id="file"
                   name="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="block w-full text-md text-white border border-gray-300
-                  rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none
-                  dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white
-                  file:font-sans my-3 hidden"
+                  className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                 /> */}
-                {/* <div className="flex flex-row rounded-lg border border-gray-300
-                dark:border-gray-500 p-2 my-2">
+                {/* <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2">
                     <input
                       type="text"
                       value={`${file ? file.name : "No file chosen"}`}
@@ -314,10 +315,7 @@ const EditDocumentsForm = ({
                       }`}
                     />
                     <button
-                      className="btn btn-xs bg-transparent border border-gray-400
-                      hover:border-gray-400 hover:bg-transparent normal-case font-normal
-                      w-fit border text-blue-600 dark:text-white font-sans text-xs md:text-[9px]
-                      p-0.5  rounded-xl ml-auto"
+                      className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto"
                       onClick={(e) => {
                         e.preventDefault();
                         const uploadButton = document.querySelector(

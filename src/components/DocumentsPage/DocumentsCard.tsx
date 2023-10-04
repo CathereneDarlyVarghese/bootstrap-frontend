@@ -14,7 +14,7 @@ import { getDocumentTypeById } from "services/documentTypeServices";
 import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
-import { File, IncomingDocument } from "types";
+import { IncomingDocument, dubeFile } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import EditDocumentsForm from "./EditDocumentsForm";
@@ -35,13 +35,13 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
 }) => {
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
-  const defaultDocumentFile: File = {
+  const defaultDocumentFile: dubeFile = {
     file_id: "",
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
