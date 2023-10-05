@@ -5,6 +5,7 @@ import AddAssetType from "./AssetType";
 import Locations from "./Locations";
 import Sections from "./Section";
 import Placements from "./Placement";
+import AddDocumentType from "./DocumentType";
 
 const AdminPage = () => {
   // State declarations
@@ -69,7 +70,7 @@ const AdminPage = () => {
           </button>
           <div>
             {toggleContent === 1 && <AddAssetType />}
-            {/* {toggleContent === 2 && <QRCodes />} */}
+            {toggleContent === 2 && <AddDocumentType />}
             {toggleContent === 3 && <Locations />}
             {toggleContent === 4 && <Sections />}
             {toggleContent === 5 && <Placements />}
@@ -87,6 +88,17 @@ const AdminPage = () => {
             >
               <button className="focus:bg-blue-900 focus:text-white">
                 Add Asset Types
+              </button>
+            </li>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(2);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Add Document Types
               </button>
             </li>
             <li
