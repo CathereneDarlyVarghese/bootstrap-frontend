@@ -171,7 +171,7 @@ export interface AssetType {
   asset_type: string;
 }
 
-export interface DocumentType {
+export interface DocType {
   document_type_id: string;
   document_type: string;
 }

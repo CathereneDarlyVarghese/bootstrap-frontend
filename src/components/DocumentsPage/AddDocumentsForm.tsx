@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Document, DocumentType } from "types";
+import { Document, DocType } from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { createFile } from "services/fileServices";
@@ -18,7 +18,7 @@ const AddDocumentsForm = ({
   // State Initialization
   const [file, setFile] = useState<any>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
+  const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const queryClient = useQueryClient();
 
   const defaultFormData = {
@@ -42,7 +42,7 @@ const AddDocumentsForm = ({
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
+      | React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { id, value } = e.target;
 
@@ -62,7 +62,8 @@ const AddDocumentsForm = ({
 
   // Mutation function to add a new document
   const documentAddMutation = useMutation({
-    mutationFn: (documentData: Document) => createDocument(authTokenObj.authToken, documentData),
+    mutationFn: (documentData: Document) =>
+      createDocument(authTokenObj.authToken, documentData),
     onSettled: () => {
       toast.success("Document Added Successfully");
       setAddDocumentsOpen(false);
@@ -131,7 +132,7 @@ const AddDocumentsForm = ({
   useEffect(() => {
     const fetchData = async () => {
       const fetchedDocumentTypes = await getAllDocumentTypes(
-        authTokenObj.authToken,
+        authTokenObj.authToken
       );
       setDocumentTypes(fetchedDocumentTypes);
     };
@@ -301,7 +302,7 @@ const AddDocumentsForm = ({
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
-                      "#file",
+                      "#file"
                     ) as HTMLElement;
                     uploadButton.click();
                   }}
