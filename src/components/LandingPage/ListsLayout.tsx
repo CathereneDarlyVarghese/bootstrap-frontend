@@ -2,31 +2,30 @@ import { useEffect, useRef, useState } from "react";
 import { atom, useAtom } from "jotai";
 import { LogoClickedAtom } from "components/NavBar";
 import "./cardstyles.css";
-import AssetCard from "./AssetCard";
-import AssetDetails from "./AssetDetails";
 // import Pusher from "pusher-js";
-import AddAssetForm from "./AddAssetForm";
-import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SearchIcon from "../../icons/circle2017.png";
 import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
-import { AssetCondition, StatusTypes } from "enums";
+import { useNavigate } from "react-router";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQuery } from "@tanstack/react-query";
 import {
   FilterOptions,
   selectedStatusIds,
   // selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
-import { useNavigate } from "react-router";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "@tanstack/react-query";
+import SearchIcon from "../../icons/circle2017.png";
+import { locationAtom, useSyncedAtom } from "../../store/locationStore";
+import AddAssetForm from "./AddAssetForm";
+import AssetDetails from "./AssetDetails";
+import AssetCard from "./AssetCard";
 
 export const searchTermAtom = atom("");
 
@@ -47,8 +46,7 @@ const ListsLayout = () => {
 
   // Assets management
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
-  const [assets, setAssets] = useState<IncomingAsset[]>([]);
-  const [assetId, setAssetId] = useState(null);
+  const [, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [currentAssetUuid, setCurrentAssetUuid] = useState(null);
   const [linkedAssetId, setLinkedAssetId] = useState(null);
@@ -67,7 +65,12 @@ const ListsLayout = () => {
     { section_id: "", section_name: "", location_id: "" },
   ];
   const defaultAssetPlacements = [
-    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
+    {
+      placement_id: "",
+      placement_name: "",
+      section_id: "",
+      location_id: "",
+    },
   ];
   const [assetSections, setAssetSections] =
     useState<AssetSection[]>(defaultAssetSections);
@@ -87,34 +90,24 @@ const ListsLayout = () => {
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
   // Miscellaneous states
-  const [getResult, setGetResult] = useState<string | null>(null);
+  const [, setGetResult] = useState<string | null>(null);
 
   // ----------------------- FUNCTION DECLARATIONS -----------------------
 
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
 
   // Functions for UI manipulation
-  const addClass = (selectClass, addClass) => {
+  const addClass = (selectClass, addClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.add(addClass);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to add class.`
-      );
+      element.classList.add(addClassObj);
     }
   };
 
-  const removeClass = (selectClass, removeClass) => {
+  const removeClass = (selectClass, removeClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.remove(removeClass);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to remove class.`
-      );
+      element.classList.remove(removeClassObj);
     }
   };
 
@@ -284,15 +277,11 @@ const ListsLayout = () => {
   //     if (Notification.permission !== "granted") {
   //       Notification.requestPermission().then((permission) => {
   //         if (permission === "granted") {
-  // console.log("Notification permission granted");
   //           setNotificationEnabled(true);
   //           // subscribeToPusherChannel();
-  //         } else {
-  //           console.log("Notification permission denied");
   //         }
   //       });
   //     } else {
-  //       console.log("Notification permission already granted");
   //       setNotificationEnabled(true);
   //       // subscribeToPusherChannel();
   //     }
@@ -303,19 +292,19 @@ const ListsLayout = () => {
 
   // ----------------------- QUERY HOOKS -----------------------
 
-  const { data: Assets } = useQuery({
+  useQuery({
     queryKey: ["query-asset", location, authTokenObj.authToken],
     queryFn: fetchAllAssets,
     enabled: !!authTokenObj.authToken,
   });
 
-  const { data: AssetsSections } = useQuery({
+  useQuery({
     queryKey: ["query-assetSections", location],
     queryFn: fetchAssetSections,
     enabled: !!authTokenObj.authToken,
   });
 
-  const { data: AssetsPlacements } = useQuery({
+  useQuery({
     queryKey: [
       "query-assetPlacement",
       location,
@@ -331,7 +320,7 @@ const ListsLayout = () => {
       setLogoClicked(false);
       setSelectedAsset(null);
     }
-  }, [logoClicked]);
+  }, [logoClicked, setLogoClicked]);
 
   return (
     <div
@@ -376,7 +365,7 @@ const ListsLayout = () => {
 
                   <input
                     type="text"
-                    placeholder={"Search " + location.locationName}
+                    placeholder={`Search ${location.locationName}`}
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {

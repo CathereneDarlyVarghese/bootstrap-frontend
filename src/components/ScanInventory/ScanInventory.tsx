@@ -61,9 +61,8 @@ const QRCodeReader = () => {
       (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
-          countResults = countResults + 1;
+          countResults += 1;
           lastResult = decodedText;
-          console.log(`Scan result ${decodedText}`, decodedResult);
 
           // Check if the scanned asset_uuid exists in the assets data
           const scannedAsset = assets.find(
@@ -80,8 +79,7 @@ const QRCodeReader = () => {
         }
       },
       (errorMessage) => {
-        // This will be called in case of errors
-        console.log(`Error scanning: ${errorMessage}`);
+        // TODO: Handle scanning errors in the future
       }
     );
 

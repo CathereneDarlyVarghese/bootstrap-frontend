@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { createAssetLocation } from "../services/locationServices";
 import { AssetLocation } from "types";
 import { toast } from "react-toastify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createAssetLocation } from "../services/locationServices";
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const [inputLocation, setInputLocation] = useState<string>("");
@@ -11,13 +11,12 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
   const queryClient = useQueryClient();
 
   const locationAddMutation = useMutation({
-    mutationFn: (assetLocationObj: any) =>
-      createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    mutationFn: (assetLocationObj: AssetLocation) => createAssetLocation(authTokenObj.authToken, assetLocationObj),
     onSettled: () => {
       toast.success("Location Added Successfully");
       queryClient.invalidateQueries(["query-locations"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Location");
     },
   });

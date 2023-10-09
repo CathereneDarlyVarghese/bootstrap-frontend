@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { atom, useAtom } from "jotai";
-import { locationAtom, useSyncedAtom } from "../../store/locationStore";
+import { useAtom } from "jotai";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
@@ -10,6 +9,8 @@ import { useNavigate } from "react-router";
 import { searchTermAtom } from "components/LandingPage/ListsLayout";
 import { AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { getAssetPlacements } from "services/assetPlacementServices";
+import { TfiClose } from "react-icons/tfi";
+import { BsFilter } from "react-icons/bs";
 import {
   FilterOptions,
   selectedStatusIds,
@@ -18,8 +19,7 @@ import {
 } from "../LandingPage/FilterOptions";
 
 import SearchIcon from "../../icons/circle2017.png";
-import { TfiClose } from "react-icons/tfi";
-import { BsFilter } from "react-icons/bs";
+import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import ConfirmModal from "./ConfirmModal";
 import { toast } from "react-toastify";
 
@@ -40,7 +40,7 @@ const QrLinkingPage = () => {
   const [selectedAsset, setSelectedAsset] = useState<IncomingAsset>();
   const [linkedAsset, setLinkedAsset] = useState<IncomingAsset>();
 
-  //filter states
+  // filter states
 
   const defaultAssetSections = [
     { section_id: "", section_name: "", location_id: "" },

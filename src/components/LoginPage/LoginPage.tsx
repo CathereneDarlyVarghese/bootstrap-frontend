@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SignInWithGoogle from "../GoogleSignIn/SignInWithGoogle";
 import { Auth, Hub } from "aws-amplify";
+import SignInWithGoogle from "../GoogleSignIn/SignInWithGoogle";
 import "./LoginPage.css";
 
 const LoginPage = () => {
@@ -20,7 +20,6 @@ const LoginPage = () => {
           break;
         case "signIn_failure":
         case "cognitoHostedUI_failure":
-          console.log("Sign in failure", data);
           break;
       }
     });
@@ -29,12 +28,8 @@ const LoginPage = () => {
   }, []);
 
   async function getUser() {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      return userData;
-    } catch {
-      console.log("Not signed in");
-    }
+    const userData = await Auth.currentAuthenticatedUser();
+    return userData;
   }
 
   // Redirect to Home page if user is signed in

@@ -159,7 +159,7 @@ export interface AssetSection {
   location_id: string;
 }
 
-export interface File {
+export interface dubeFile {
   file_id: string;
   file_array: string[];
   modified_by_array: string[];
@@ -171,7 +171,7 @@ export interface AssetType {
   asset_type: string;
 }
 
-export interface DocumentType {
+export interface DocType {
   document_type_id: string;
   document_type: string;
 }
@@ -186,3 +186,5 @@ export interface IncomingAssetCheckForm
   extends Omit<AssetCheckForm, "form_json"> {
   form_json: JSON;
 }
+
+// Arbitarary Types

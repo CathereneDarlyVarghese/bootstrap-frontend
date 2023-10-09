@@ -3,9 +3,9 @@ import { TfiClose } from "react-icons/tfi";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
-export let selectedStatusIds: string[] = [];
+export let selectedStatusIds: string[] = []; // eslint-disable-line
 // export var selectedSectionNames: string[] = [];
-export let selectedPlacementNames: string[] = [];
+export let selectedPlacementNames: string[] = []; // eslint-disable-line
 
 export const resetFilterOptions = () => {
   selectedStatusIds = [];
@@ -14,8 +14,8 @@ export const resetFilterOptions = () => {
 
 export const FilterOptions = ({
   filterClose,
-  /*sections, */ placements,
-  /*selectedButtonsSection, */ /*setSelectedButtonsSection, */ selectedButtonsPlacement,
+  /* sections, */ placements,
+  /* selectedButtonsSection, */ /* setSelectedButtonsSection, */ selectedButtonsPlacement,
   setSelectedButtonsPlacement,
   selectedButtonsStatus,
   setSelectedButtonsStatus,
@@ -57,32 +57,30 @@ export const FilterOptions = ({
       } else {
         // If "All" button is not selected, select it and all other buttons
         const allIndices = [];
-        for (let i = 0; i < statuses.length; i++) {
+        for (let i = 0; i < statuses.length; i += 1) {
           allIndices.push(i);
         }
         setSelectedButtonsStatus([-1, ...allIndices]);
         selectedStatusIds = statuses.map((status) => status.status_id);
       }
+    } else if (selectedButtonsStatus.includes(buttonIndex)) {
+      setSelectedButtonsStatus(
+        selectedButtonsStatus.filter((index) => index !== buttonIndex)
+      );
+      selectedStatusIds = selectedStatusIds.filter(
+        (statusId) => statusId !== statuses[buttonIndex].status_id
+      );
     } else {
-      if (selectedButtonsStatus.includes(buttonIndex)) {
-        setSelectedButtonsStatus(
-          selectedButtonsStatus.filter((index) => index !== buttonIndex)
-        );
-        selectedStatusIds = selectedStatusIds.filter(
-          (statusId) => statusId !== statuses[buttonIndex].status_id
-        );
-      } else {
-        setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
-        selectedStatusIds = [
-          ...selectedStatusIds,
-          statuses[buttonIndex].status_id,
-        ];
-      }
+      setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
+      selectedStatusIds = [
+        ...selectedStatusIds,
+        statuses[buttonIndex].status_id,
+      ];
     }
   };
 
   /* Section Select Moved to ListsLayout.tsx */
-  /*const handleSectionClick = (buttonIndex) => {
+  /* const handleSectionClick = (buttonIndex) => {
     if (buttonIndex === -1) {
       if (selectedButtonsSection.includes(-1)) {
         // If "All" button is already selected, unselect it and all other buttons
@@ -115,7 +113,7 @@ export const FilterOptions = ({
         ]);
       }
     }
-  };*/
+  }; */
 
   const handlePlacementClick = (buttonIndex) => {
     if (buttonIndex === -1) {
@@ -126,7 +124,7 @@ export const FilterOptions = ({
       } else {
         // If "All" button is not selected, select it and all other buttons
         const allIndices = [];
-        for (let i = 0; i < placements.length; i++) {
+        for (let i = 0; i < placements.length; i += 1) {
           allIndices.push(i);
         }
         setSelectedButtonsPlacement([-1, ...allIndices]);
@@ -134,22 +132,20 @@ export const FilterOptions = ({
           (placement) => placement.placement_name
         );
       }
+    } else if (selectedButtonsPlacement.includes(buttonIndex)) {
+      setSelectedButtonsPlacement(
+        selectedButtonsPlacement.filter((index) => index !== buttonIndex)
+      );
+      selectedPlacementNames = selectedPlacementNames.filter(
+        (placementName) =>
+          placementName !== placements[buttonIndex].placement_name
+      );
     } else {
-      if (selectedButtonsPlacement.includes(buttonIndex)) {
-        setSelectedButtonsPlacement(
-          selectedButtonsPlacement.filter((index) => index !== buttonIndex)
-        );
-        selectedPlacementNames = selectedPlacementNames.filter(
-          (placementName) =>
-            placementName !== placements[buttonIndex].placement_name
-        );
-      } else {
-        setSelectedButtonsPlacement([...selectedButtonsPlacement, buttonIndex]);
-        selectedPlacementNames = [
-          ...selectedPlacementNames,
-          placements[buttonIndex].placement_name,
-        ];
-      }
+      setSelectedButtonsPlacement([...selectedButtonsPlacement, buttonIndex]);
+      selectedPlacementNames = [
+        ...selectedPlacementNames,
+        placements[buttonIndex].placement_name,
+      ];
     }
   };
 
@@ -224,7 +220,8 @@ export const FilterOptions = ({
       {/* <div className="my-3">
         <h1 className="font-sans">Section</h1>
         <button
-          className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsSection.includes(-1)
+          className={`btn btn-sm text-blue-700 font-normal
+          capitalize font-sans ${selectedButtonsSection.includes(-1)
             ? "bg-blue-200 hover:bg-blue-200"
             : "bg-white hover:bg-white"
             } border-blue-500 hover:border-blue-500 rounded-full m-1`}
@@ -237,7 +234,8 @@ export const FilterOptions = ({
           .map((section, index) => (
             <button
               key={index}
-              className={`btn btn-sm text-blue-700 font-normal capitalize font-sans ${selectedButtonsSection.includes(index)
+              className={`btn btn-sm text-blue-700 font-normal
+              capitalize font-sans ${selectedButtonsSection.includes(index)
                 ? "bg-blue-200 hover:bg-blue-200"
                 : "bg-white hover:bg-white"
                 } border-blue-500 hover:border-blue-500 rounded-full m-1`}

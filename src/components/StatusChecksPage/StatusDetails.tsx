@@ -1,5 +1,4 @@
 import React from "react";
-import closeIcon from "../../icons/closeIcon.svg";
 import { AiOutlineDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { TfiClose } from "react-icons/tfi";
@@ -7,6 +6,7 @@ import { deleteAssetCheck } from "services/assetCheckServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IncomingAssetCheck } from "types";
+import closeIcon from "../../icons/closeIcon.svg";
 
 interface StatusDetailsProps {
   selectedAssetCheck: IncomingAssetCheck | undefined;
@@ -45,16 +45,15 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
    * On failure, it shows an error toast.
    */
   const assetCheckMutation = useMutation({
-    mutationFn: () =>
-      deleteAssetCheck(
-        authTokenObj.authToken,
-        selectedAssetCheck?.uptime_check_id
-      ),
+    mutationFn: () => deleteAssetCheck(
+      authTokenObj.authToken,
+      selectedAssetCheck?.uptime_check_id,
+    ),
     onSettled: () => {
       toast.info("Asset's Status Check Deleted Successfully");
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Delete Asset's Status Check");
     },
   });
@@ -76,14 +75,14 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
         </button>
       </div>
       <figure className="rounded-none">
-        {selectedAssetCheck?.images_array &&
-          selectedAssetCheck?.images_array[0] && (
+        {selectedAssetCheck?.images_array
+          && selectedAssetCheck?.images_array[0] && (
             <img
               src={selectedAssetCheck?.images_array[0][0]}
               alt="Images of the status checks"
               className="rounded-xl h-32 w-fit object-cover mx-auto"
             />
-          )}
+        )}
       </figure>
       <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
         <div className="flex 2xl:flex-row lg:flex-col">
@@ -124,16 +123,18 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
                     : "Data Not Available"}
                 </td>
               </tr>
-              {status_check_data &&
-                Object.entries(status_check_data).map(([key, value], index) => (
+              {status_check_data
+                && Object.entries(status_check_data).map(([key, value], index) => (
                   // <div
                   //   key={index}
                   // >
                   //   <div className="flex flex-row ">
-                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold
+                  // font-sans my-1 text-sm">
                   //       {key} :
                   //     </p>
-                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold font-sans my-1 text-sm">
+                  //     <p className="text-blue-900 dark:text-blue-500 font-semibold
+                  // font-sans my-1 text-sm">
                   //       {value}
                   //     </p>
                   //   </div>
@@ -145,7 +146,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
                   >
                     <td>{camelCaseToNormal(key)}</td>
                     <td>:</td>
-                    <td>{value ? value : "Data not available"}</td>
+                    <td>{value || "Data not available"}</td>
                   </tr>
                 ))}
             </tbody>

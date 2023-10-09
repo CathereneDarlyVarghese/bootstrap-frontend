@@ -8,7 +8,7 @@ import { AssetCheck, IncomingAssetCheck } from "../types";
 // };
 
 export const getAssetChecks = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
@@ -17,14 +17,14 @@ export const getAssetChecks = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const getAssetCheckById = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<IncomingAssetCheck[]> => {
   const response = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
@@ -33,14 +33,14 @@ export const getAssetCheckById = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const createAssetCheck = async (
   accessToken: string,
-  assetCheck: AssetCheck
+  assetCheck: AssetCheck,
 ): Promise<AssetCheck> => {
   const response = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/`,
@@ -50,7 +50,7 @@ export const createAssetCheck = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
@@ -58,7 +58,7 @@ export const createAssetCheck = async (
 export const updateAssetCheck = async (
   accessToken: string,
   id: string,
-  assetCheck: AssetCheck
+  assetCheck: AssetCheck,
 ): Promise<AssetCheck> => {
   const response = await axios.put(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
@@ -68,14 +68,14 @@ export const updateAssetCheck = async (
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };
 
 export const deleteAssetCheck = async (
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> => {
   const config = {
     headers: {
@@ -85,6 +85,6 @@ export const deleteAssetCheck = async (
   };
   await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/protected/asset-check/${id}`,
-    config
+    config,
   );
 };

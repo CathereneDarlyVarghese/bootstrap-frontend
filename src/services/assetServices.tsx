@@ -9,7 +9,7 @@ import { Asset, IncomingAsset } from "types"; // ensure the Asset type is define
 // };
 
 export async function getAllAssets(
-  accessToken: string
+  accessToken: string,
 ): Promise<IncomingAsset[]> {
   const config = {
     headers: {
@@ -18,19 +18,14 @@ export async function getAllAssets(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
-    const response = await axios.get<IncomingAsset[]>(url, config);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+  const response = await axios.get<IncomingAsset[]>(url, config);
+  return response.data;
 }
 
 export async function getAssets(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<IncomingAsset[] | null> {
   const config = {
     headers: {
@@ -39,20 +34,14 @@ export async function getAssets(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.get<IncomingAsset[]>(url, config);
-    console.log(response);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  const response = await axios.get<IncomingAsset[]>(url, config);
+  return response.data;
 }
 
 export async function createAsset(
   accessToken: string,
-  assetData: Asset
+  assetData: Asset,
 ): Promise<Asset> {
   const config = {
     headers: {
@@ -63,24 +52,19 @@ export async function createAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
-    const response = await axios.post<Asset>(
-      url,
-      JSON.stringify(assetData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
+  const response = await axios.post<Asset>(
+    url,
+    JSON.stringify(assetData),
+    config,
+  );
+  return response.data;
 }
 
 export async function updateAsset(
   accessToken: string,
   id: string,
-  assetData: Partial<Asset>
+  assetData: Partial<Asset>,
 ): Promise<Asset> {
   const config = {
     headers: {
@@ -91,23 +75,18 @@ export async function updateAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    const response = await axios.put<Asset>(
-      url,
-      JSON.stringify(assetData),
-      config
-    );
-    return response.data;
-  } catch (err) {
-    console.error("Error updating asset:", err);
-    throw new Error("Failed to update asset. Please try again.");
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  const response = await axios.put<Asset>(
+    url,
+    JSON.stringify(assetData),
+    config,
+  );
+  return response.data;
 }
 
 export async function deleteAsset(
   accessToken: string,
-  id: string
+  id: string,
 ): Promise<void> {
   const config = {
     headers: {
@@ -116,20 +95,14 @@ export async function deleteAsset(
     },
   };
 
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
-    await axios.delete(url, config);
-    console.log(`Deleted asset with id: ${id}`);
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
+  const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
+  await axios.delete(url, config);
 }
 
 export async function toggleAssetCondition(
   accessToken: string,
   id: string,
-  changedCondition: string
+  changedCondition: string,
 ): Promise<void> {
   const assetConditionMap: Record<string, string> = {
     [AssetCondition.ACTIVE]: "ACTIVE",
@@ -137,13 +110,12 @@ export async function toggleAssetCondition(
     // Add more condition mappings if needed
   };
 
-  const toggledConditionText =
-    changedCondition === assetConditionMap[AssetCondition.ACTIVE]
-      ? assetConditionMap[AssetCondition.ACTIVE]
-      : assetConditionMap[AssetCondition.INACTIVE];
+  const toggledConditionText = changedCondition === assetConditionMap[AssetCondition.ACTIVE]
+    ? assetConditionMap[AssetCondition.ACTIVE]
+    : assetConditionMap[AssetCondition.INACTIVE];
 
   const toggledConditionUUID = Object.keys(assetConditionMap).find(
-    (key) => assetConditionMap[key] === toggledConditionText
+    (key) => assetConditionMap[key] === toggledConditionText,
   );
 
   if (!toggledConditionUUID) {

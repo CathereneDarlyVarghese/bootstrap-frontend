@@ -4,8 +4,7 @@ const WorkOrderCard = ({
   WorkOrderName,
   WorkOrderStatus,
   WorkOrderDescription,
-}) => {
-  return (
+}) => (
     <div className="card max-h-40 overflow-y-hidden p-5 my-3 bg-slate-100 hover:border hover:border-blue-900">
       <div className="flex flex-col">
         <button
@@ -13,8 +12,8 @@ const WorkOrderCard = ({
             WorkOrderStatus === "open"
               ? "badge-secondary"
               : WorkOrderStatus === "closed"
-              ? "badge-success"
-              : "badge-primary"
+                ? "badge-success"
+                : "badge-primary"
           }`}
         >
           {WorkOrderStatus}
@@ -28,7 +27,6 @@ const WorkOrderCard = ({
         </p>
       </div>
     </div>
-  );
-};
+);
 
 export default WorkOrderCard;

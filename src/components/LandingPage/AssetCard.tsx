@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-
-import MapIcon from "../../icons/mapIcon.svg";
-import { BsQrCode } from "react-icons/bs";
-import { BsCircleFill } from "react-icons/bs";
-import DisplayQR from "./DisplayQR";
-import { StatusTypes } from "enums";
 import {
+  BsQrCode,
   BsFillCheckCircleFill,
   BsFillXCircleFill,
   BsInfoCircleFill,
 } from "react-icons/bs";
 import { TbQrcode, TbQrcodeOff } from "react-icons/tb";
+import { StatusTypes } from "enums";
 import { IncomingAsset } from "types";
+import DisplayQR from "./DisplayQR";
+import MapIcon from "../../icons/mapIcon.svg";
 
 type AssetCardProps = {
   asset: IncomingAsset;

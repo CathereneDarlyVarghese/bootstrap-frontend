@@ -1,9 +1,7 @@
 import { AssetTypes } from "enums";
 
-const useAssetTypeNames = () => {
-  return {
-    [AssetTypes.Appliances]: "Appliances",
-  };
-};
+const useAssetTypeNames = () => ({
+  [AssetTypes.Appliances]: "Appliances",
+});
 
 export default useAssetTypeNames;

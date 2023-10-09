@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import validator from "@rjsf/validator-ajv8";
-import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { createAssetCheck } from "services/assetCheckServices";
-import { createFile } from "services/fileServices";
 import { TfiClose } from "react-icons/tfi";
 import {
   createAssetCheckForm,
@@ -14,12 +12,20 @@ import "./formstyles.css";
 import useStatusTypeNames from "hooks/useStatusTypes";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AssetCheck } from "types";
 
-const AddStatusForm = ({
+interface AddStatusFormProps {
+  addFormOpen: boolean;
+  setAddFormOpen: (boolean) => void;
+  assetId: string;
+  assetType: string;
+  assetTypeId: string;
+}
+
+const AddStatusForm: React.FC<AddStatusFormProps> = ({
   addFormOpen,
   setAddFormOpen,
   assetId,
-  onStatusAdded,
   assetType,
   assetTypeId,
 }) => {
@@ -39,19 +45,17 @@ const AddStatusForm = ({
 
   // Mutation for adding an asset check
   const assetCheckAddMutation = useMutation({
-    mutationFn: (assetCheck: any) =>
-      createAssetCheck(authTokenObj.authToken, assetCheck),
+    mutationFn: (assetCheck: AssetCheck) => createAssetCheck(authTokenObj.authToken, assetCheck),
 
     onSettled: () => {
       // Actions to perform after the mutation is settled (whether success or failure)
       toast.success("Asset Check Added Successfully");
-      onStatusAdded();
       // Invalidate cache to ensure fresh data is fetched next time
       queryClient.invalidateQueries(["query-asset"]);
       queryClient.invalidateQueries(["query-assetChecks"]);
     },
 
-    onError: (err: any) => {
+    onError: () => {
       // Handle errors from the mutation
       toast.error("Failed to Add Status Check");
     },
@@ -62,22 +66,16 @@ const AddStatusForm = ({
       try {
         const form = await getAssetCheckFormById(
           authTokenObj.authToken,
-          assetTypeId
+          assetTypeId,
         );
         setJsonForm(form.form_json);
       } catch (error) {
         if (error.response?.status === 404) {
-          try {
-            const newForm = await createAssetCheckForm(authTokenObj.authToken, {
-              form_json: {},
-              asset_type_id: assetTypeId,
-            });
-            setJsonForm(newForm.form_json);
-          } catch (error) {
-            console.error("Failed to create a new form:", error);
-          }
-        } else {
-          console.error("Failed to fetch form:", error);
+          const newForm = await createAssetCheckForm(authTokenObj.authToken, {
+            form_json: {},
+            asset_type_id: assetTypeId,
+          });
+          setJsonForm(newForm.form_json);
         }
       }
     };
@@ -85,7 +83,7 @@ const AddStatusForm = ({
     if (assetType) {
       fetchForm();
     }
-  }, [assetType, assetTypeId]);
+  }, [assetType, assetTypeId, authTokenObj.authToken]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
     return Object.keys(object).find((key) => object[key] === value);
@@ -94,7 +92,6 @@ const AddStatusForm = ({
   const handleSubmit = async (formData: any) => {
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
 
-    console.log("Modified by==>", authTokenObj.attributes.given_name);
     const assetCheck = {
       uptime_check_id: "",
       asset_id: assetId,
@@ -105,7 +102,6 @@ const AddStatusForm = ({
       modified_date: new Date(),
       status_check_data: JSON.parse(JSON.stringify(formData)),
     };
-    console.log("modified date is", assetCheck.modified_date)
 
     try {
       // Add inventory using the API service
@@ -113,10 +109,6 @@ const AddStatusForm = ({
     } catch (error) {
       toast.error("Failed to add asset");
     }
-
-    // Log the form submission
-    console.log("Form submitted:", formData);
-    console.log(assetCheck)
   };
 
   return (

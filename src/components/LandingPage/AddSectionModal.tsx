@@ -1,8 +1,7 @@
 import React from "react";
 import { TfiClose } from "react-icons/tfi";
 
-const AddSectionModal = () => {
-    return (
+const AddSectionModal = () => (
         <>
             <input type="checkbox" checked={false} id="my_modal_6" className="modal-toggle" />
             <div className="modal">
@@ -21,7 +20,6 @@ const AddSectionModal = () => {
             </div>
 
         </>
-    )
-}
+);
 
 export default AddSectionModal;
