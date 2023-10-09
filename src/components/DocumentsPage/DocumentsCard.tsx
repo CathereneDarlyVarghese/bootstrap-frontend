@@ -1,28 +1,26 @@
 import { useState, useEffect } from "react";
-import { AiOutlineCalendar } from "react-icons/ai";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { AiFillExclamationCircle } from "react-icons/ai";
-import { AiFillPlusCircle } from "react-icons/ai";
-import { TiArrowBackOutline } from "react-icons/ti";
-import { MdAutorenew } from "react-icons/md";
 import {
+  AiOutlineCalendar,
+  AiFillExclamationCircle,
+  AiFillPlusCircle,
   AiOutlineDelete,
   AiOutlineHistory,
   AiOutlineEdit,
 } from "react-icons/ai";
-import { BsFillXCircleFill } from "react-icons/bs";
-import documentIcon from "../../icons/documentIcon.svg";
-import { Auth } from "aws-amplify";
+import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
+import { TiArrowBackOutline } from "react-icons/ti";
+import { MdAutorenew } from "react-icons/md";
 import { getDocumentTypeById } from "services/documentTypeServices";
 import { getFileById } from "services/fileServices";
 import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
-import EditDocumentsForm from "./EditDocumentsForm";
-import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
-import { File, IncomingDocument } from "types";
-import AddNewFileForm from "./AddNewFileForm";
+import { IncomingDocument, dubeFile } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import EditDocumentsForm from "./EditDocumentsForm";
+import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
+import AddNewFileForm from "./AddNewFileForm";
+import documentIcon from "../../icons/documentIcon.svg";
 
 interface DocumentsCardProps {
   document: IncomingDocument;
@@ -37,13 +35,13 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
 }) => {
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
-  const defaultDocumentFile: File = {
+  const defaultDocumentFile: dubeFile = {
     file_id: "",
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
@@ -59,12 +57,12 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
     mutationFn: async () => {
       const fetchedDocumentType = await getDocumentTypeById(
         authTokenObj.authToken,
-        document.document_type_id
+        document.document_type_id,
       );
 
       const fetchedDocumentFile = await getFileById(
         authTokenObj.authToken,
-        document.file_id
+        document.file_id,
       );
 
       return { fetchedDocumentType, fetchedDocumentFile };
@@ -74,10 +72,6 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       setDocumentType(data.fetchedDocumentType.document_type);
       setDocumentFile(data.fetchedDocumentFile);
     },
-
-    onError: (error: any) => {
-      console.error("Error fetching document details:", error);
-    },
   });
 
   useEffect(() => {
@@ -86,8 +80,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
-    mutationFn: () =>
-      deleteDocument(authTokenObj.authToken, document.document_id),
+    mutationFn: () => deleteDocument(authTokenObj.authToken, document.document_id),
     onSettled: () => {
       toast.info("Document Deleted Successfully");
     },
@@ -95,7 +88,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Delete Document");
     },
   });
@@ -104,14 +97,14 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
   const fileArray = documentFile.file_array.slice(0).reverse();
   const modifiedByArray = documentFile.modified_by_array.slice(0).reverse();
   const modifiedDateArray = documentFile.modified_date_array.slice(0).reverse();
-  let maxLength = Math.max(
+  const maxLength = Math.max(
     fileArray.length,
     modifiedByArray.length,
-    modifiedDateArray.length
+    modifiedDateArray.length,
   );
   const tableRows = [];
-  for (let i = 0; i < maxLength; i++) {
-    let serialNumber = maxLength - i;
+  for (let i = 0; i < maxLength; i += 1) {
+    const serialNumber = maxLength - i;
     const file = fileArray[i] ? fileArray[i] : "Null";
     const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
     const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
@@ -122,12 +115,12 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
           className="flex flex-row gap-1 text-blue-800 underline"
           onClick={() => window.open(file, "_blank")}
         >
-          <img src={documentIcon} />
+          <img src={documentIcon} alt="Document Icon" />
           {String(file).substring(66)}
         </td>
         <td>{modifiedBy}</td>
         <td>{modifiedDate}</td>
-      </tr>
+      </tr>,
     );
   }
 
@@ -178,22 +171,19 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   : "Not Available"}
               </h1>
               <div
-                className={
-                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
-                }
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
+                  documentType && documentType.length > 15
+                    ? "text-[10px] w-40"
+                    : "text-md"
+                }`}
               >
-                {documentType ? documentType : "Not Available"}
+                {documentType || "Not Available"}
               </div>
             </div>
           </div>
           <div>
             <h1 className="font-sans">Document History</h1>
-            <div
-              className="flex flex-row gap-2 items-center my-3 "
-              onClick={() => {
-                console.log("clicked");
-              }}
-            >
+            <div className="flex flex-row gap-2 items-center my-3 ">
               {/* Document History */}
               {tableRows.length === 1 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>
@@ -266,11 +256,13 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   : "Not Available"}
               </h1>
               <div
-                className={
-                  `badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${documentType && documentType.length > 15 ? "text-[10px] w-40" : "text-md"}`
-                }
+                className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
+                  documentType && documentType.length > 15
+                    ? "text-[10px] w-40"
+                    : "text-md"
+                }`}
               >
-                {documentType ? documentType : "Not Available"}
+                {documentType || "Not Available"}
               </div>
             </div>
           </div>
@@ -314,12 +306,11 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                     e.stopPropagation();
                     if (
                       window.confirm(
-                        "Are you sure you want to delete this document?"
+                        "Are you sure you want to delete this document?",
                       )
                     ) {
                       deleteSelectedDocument.mutateAsync();
                     }
-                    console.log("Delete document button clicked");
                   }}
                 >
                   <AiOutlineDelete className="text-2xl text-blue-900 dark:text-white" />
@@ -328,12 +319,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
             </div>
           </div>
           <div className="mt-4 flex flex-col lg:flex-col gap-5 ">
-            <div
-              className="flex flex-row gap-2 items-center md:mr-auto lg:w-full"
-              onClick={() => {
-                console.log("clicked");
-              }}
-            >
+            <div className="flex flex-row gap-2 items-center md:mr-auto lg:w-full">
               {/* Display Latest Entry in file table */}
               {tableRows.length === 0 ? (
                 <p className="text-xl text-slate-400">Unavailable</p>

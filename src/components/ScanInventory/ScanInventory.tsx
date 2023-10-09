@@ -17,30 +17,28 @@ const QRCodeReader = () => {
         qrbox: 250,
         supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
       },
-      false
+      false,
     );
 
     html5QrcodeScanner.render(
       (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
-          countResults = countResults + 1;
+          countResults += 1;
           lastResult = decodedText;
-          console.log(`Scan result ${decodedText}`, decodedResult);
 
           // Redirect to the scanned URL
           if (
-            decodedText.startsWith("http://") ||
-            decodedText.startsWith("https://")
+            decodedText.startsWith("http://")
+            || decodedText.startsWith("https://")
           ) {
             window.location.href = decodedText;
           }
         }
       },
       (errorMessage) => {
-        // This will be called in case of errors
-        console.log(`Error scanning: ${errorMessage}`);
-      }
+        // TODO: Handle scanning errors in the future
+      },
     );
 
     return () => {

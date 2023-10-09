@@ -22,31 +22,26 @@ const Sections = () => {
   ]);
 
   const fetchSections = async () => {
-    try {
-      const SectionData = await getAssetSections(authTokenObj.authToken);
-      setData(SectionData);
-    } catch (error) {
-      console.log(error);
-    }
+    const SectionData = await getAssetSections(authTokenObj.authToken);
+    setData(SectionData);
   };
 
-  const { data: Sections } = useQuery({
+  useQuery({
     queryKey: ["query-SectionsAdmin"],
     queryFn: fetchSections,
   });
 
   const SectionAddMutation = useMutation(
-    (assetSectionObj: AssetSection) =>
-      createAssetSection(authTokenObj.authToken, assetSectionObj),
+    (assetSectionObj: AssetSection) => createAssetSection(authTokenObj.authToken, assetSectionObj),
     {
       onSuccess: async () => {
         toast.success("Asset Added Successfully");
         queryClient.invalidateQueries(["query-SectionsAdmin"]);
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error("Failed to Add Asset");
       },
-    }
+    },
   );
 
   const SectionDeleteMutation = useMutation(
@@ -57,10 +52,10 @@ const Sections = () => {
         setSelectedSection("");
         queryClient.invalidateQueries(["query-SectionsAdmin"]);
       },
-      onError: (error: any) => {
+      onError: () => {
         toast.error("Failed to delete Section");
       },
-    }
+    },
   );
 
   return (

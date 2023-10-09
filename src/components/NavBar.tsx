@@ -2,19 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
-import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AssetLocation } from "types";
+import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
 import { getAllAssetLocations } from "../services/locationServices";
 import { resetFilterOptions } from "./LandingPage/FilterOptions";
 import B from "../icons/B.svg";
 import ootstrap from "../icons/ootstrap.svg";
 import ScanButton from "./widgets/ScanButton";
-import { GiHamburgerMenu } from "react-icons/gi";
 import AddLocationForm from "./AddLocationForm";
-import ThemeSwitcher from "./ThemeSwitcher";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AssetLocation } from "types";
 
 export const LogoClickedAtom = atom(false);
 
@@ -32,14 +31,7 @@ const NavBar = () => {
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
   const [addLocationForm, setAddLocationForm] = useState(false);
-  const [getResult, setGetResult] = useState<string | null>(null);
-  const [, setSessionToken] = useState<string | null>(null);
-  const [logoClicked, setLogoClicked] = useAtom(LogoClickedAtom);
-
-  // Utility to format the response
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
+  const [, setLogoClicked] = useAtom(LogoClickedAtom);
 
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);
@@ -51,21 +43,17 @@ const NavBar = () => {
   };
 
   // Utility functions to add/remove class
-  const addClass = (selectClass, addClass) => {
+  const addClass = (selectClass, addClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.add(addClass);
-    } else {
-      console.warn(`Element with selector ${selectClass} not found!`);
+      element.classList.add(addClassObj);
     }
   };
 
-  const removeClass = (selectClass, removeClass) => {
+  const removeClass = (selectClass, removeClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.remove(removeClass);
-    } else {
-      console.warn(`Element with selector ${selectClass} not found!`);
+      element.classList.remove(removeClassObj);
     }
   };
 
@@ -85,7 +73,7 @@ const NavBar = () => {
         removeClass(TABS[path], "border-b-white");
       }
     });
-  }, [routePage]);
+  }, [routePage, TABS]);
 
   // Effect: Check user authentication
   useEffect(() => {
@@ -95,7 +83,7 @@ const NavBar = () => {
         setUser(userData);
         window.localStorage.setItem(
           "sessionToken",
-          userData.signInUserSession.idToken.jwtToken
+          userData.signInUserSession.idToken.jwtToken,
         );
         setAuthToken({
           authToken: userData.signInUserSession.idToken.jwtToken,
@@ -104,53 +92,47 @@ const NavBar = () => {
 
         setIsLoading(false);
       } catch {
-        console.log("Not signed in");
         setIsLoading(false);
       }
     };
     checkUser();
-  }, []);
+  }, [setAuthToken]);
 
   // Fetch location data
   const fetchLocations = async () => {
-    try {
-      const userData = await Auth.currentAuthenticatedUser();
-      const locationData = await getAllAssetLocations(
-        userData.signInUserSession.idToken.jwtToken
+    const userData = await Auth.currentAuthenticatedUser();
+    const locationData = await getAllAssetLocations(
+      userData.signInUserSession.idToken.jwtToken,
+    );
+    queryClient.setQueryData(["query-locations"], locationData);
+    setLocations(locationData);
+
+    if (urlLocationId) {
+      // Find the location with the specified ID from the URL.
+      const urlLocation = locationData.find(
+        (loc) => loc.location_id === urlLocationId,
       );
-      queryClient.setQueryData(["query-locations"], locationData);
-      setLocations(locationData);
-
-      if (urlLocationId) {
-        // Find the location with the specified ID from the URL.
-        const urlLocation = locationData.find(
-          (loc) => loc.location_id === urlLocationId
-        );
-        if (urlLocation) {
-          setLocation({
-            locationName: urlLocation.location_name,
-            locationId: urlLocation.location_id,
-          });
-          return;
-        }
+      if (urlLocation) {
+        setLocation({
+          locationName: urlLocation.location_name,
+          locationId: urlLocation.location_id,
+        });
+        return;
       }
+    }
 
-      if (!location.locationId) {
-        if (locationData.length > 0) {
-          console.log("location is empty but data is there", locationData);
-          setLocation({
-            locationName: locationData[0].location_name,
-            locationId: locationData[0].location_id,
-          });
-        }
+    if (!location.locationId) {
+      if (locationData.length > 0) {
+        setLocation({
+          locationName: locationData[0].location_name,
+          locationId: locationData[0].location_id,
+        });
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
   // UseQuery to get locations
-  const { data: Locations } = useQuery({
+  useQuery({
     queryKey: ["query-locations"],
     queryFn: fetchLocations,
   });
@@ -163,7 +145,6 @@ const NavBar = () => {
   // Effect: Store location in local storage when it changes
   useEffect(() => {
     mountCount.current += 1;
-    console.log("mountCount", mountCount.current);
     // Skip the effect for the first two renders
     if (mountCount.current <= 2) {
       return;
@@ -177,7 +158,6 @@ const NavBar = () => {
 
   return (
     <>
-      {/* {console.log("locations fetched")} */}
       <div className="navbar bg-blue-900">
         <div className="flex-1">
           <button
@@ -269,7 +249,7 @@ const NavBar = () => {
                 />
               </svg>
               <div className="md:hidden">
-                {location.locationName != ""
+                {location.locationName !== ""
                   ? location.locationName
                   : "Not Selected"}
               </div>

@@ -2,7 +2,8 @@ import { uploadFile } from "react-s3";
 import { Buffer } from "buffer";
 
 Buffer.from("anything", "base64");
-window.Buffer = window.Buffer || require("buffer").Buffer;
+
+window.Buffer = window.Buffer || require("buffer").Buffer; // eslint-disable-line
 
 // type Props = {
 //   file: File;
@@ -11,7 +12,10 @@ window.Buffer = window.Buffer || require("buffer").Buffer;
 
 export async function uploadFiletoS3(file, dir) {
   const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().slice(0, 19).replace(/[-T:/]/g, '');
+  const formattedDate = currentDate
+    .toISOString()
+    .slice(0, 19)
+    .replace(/[-T:/]/g, "");
   const originalFileName = file.name;
   const newFileName = `${formattedDate}_${originalFileName}`;
 
@@ -25,9 +29,7 @@ export async function uploadFiletoS3(file, dir) {
     secretAccessKey: `${process.env.REACT_APP_S3_SECRET_KEY}`,
   };
 
-  const result = uploadFile(renamedFile, config)
-    .then((data) => data)
-    .catch((err) => console.error(err));
+  const result = uploadFile(renamedFile, config).then((data) => data);
 
   return result;
 }

@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-
-import MapIcon from "../../icons/mapIcon.svg";
-import { BsQrCode } from "react-icons/bs";
-import { BsCircleFill } from "react-icons/bs";
-import DisplayQR from "./DisplayQR";
-import { StatusTypes } from "enums";
 import {
+  BsQrCode,
   BsFillCheckCircleFill,
   BsFillXCircleFill,
   BsInfoCircleFill,
 } from "react-icons/bs";
+import { StatusTypes } from "enums";
 import { IncomingAsset } from "types";
+import DisplayQR from "./DisplayQR";
+import MapIcon from "../../icons/mapIcon.svg";
 
 type AssetCardProps = {
   asset: IncomingAsset;
@@ -24,7 +21,7 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
   const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
-    props.asset.asset_name
+    props.asset.asset_name,
   )}&locationId=${encodeURIComponent(props.asset.asset_location)}`;
 
   const handleClick = () => {
@@ -44,10 +41,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   return (
     <div
       className={`flex flex-row justify-between card card-side w-auto my-3 mx-2 p-5 bg-gray-100 dark:bg-gray-700 
-      ${props.asset.asset_condition === "INACTIVE"
+      ${
+        props.asset.asset_condition === "INACTIVE"
           ? "bg-[#cdcfd1] dark:bg-[#1f2937] dark:border dark:border-gray-500"
           : "bg-gray-100 dark:bg-gray-700"
-        } 
+      } 
       max-h-40 overflow-hidden hover:border hover:border-blue-900 hover:dark:border-white hide-scrollbar`}
       // style={{ backgroundColor: assetCardStyle.backgroundColor }}
       onClick={handleClick}
@@ -79,11 +77,13 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           )}
         </div>
         <h1
-          className={`flex ml-2 ${props.asset.asset_condition === "INACTIVE"
-            ? "text-gray-400 dark:text-gray-600"
-            : "text-gray-800 dark:text-white"
-            } ${props.asset.asset_name.length > 10 ? "text-md" : "text-lg"
-            }  font-semibold font-sans tracking-wide xl:text-sm`}
+          className={`flex ml-2 ${
+            props.asset.asset_condition === "INACTIVE"
+              ? "text-gray-400 dark:text-gray-600"
+              : "text-gray-800 dark:text-white"
+          } ${
+            props.asset.asset_name.length > 10 ? "text-md" : "text-lg"
+          }  font-semibold font-sans tracking-wide xl:text-sm`}
           style={{ wordSpacing: 3 }}
         >
           {props.asset.asset_name}
@@ -96,10 +96,11 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
           />
           {/* <PinIcon /> */}
           <p
-            className={`text-sm text-start ${props.asset.asset_condition === "INACTIVE"
-              ? "text-gray-500 dark:text-gray-400"
-              : "text-gray-500 dark:text-gray-300"
-              }  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
+            className={`text-sm text-start ${
+              props.asset.asset_condition === "INACTIVE"
+                ? "text-gray-500 dark:text-gray-400"
+                : "text-gray-500 dark:text-gray-300"
+            }  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
           >
             {props.asset.location_name === "tsd"
               ? "The Spiffy Dapper"

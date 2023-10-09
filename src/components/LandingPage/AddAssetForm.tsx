@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import WorkOrderButton from "components/widgets/WorkOrderButton";
-import { AssetLocation, AssetPlacement, AssetSection, AssetType } from "types";
+import {
+  Asset,
+  AssetLocation,
+  AssetPlacement,
+  AssetSection,
+  AssetType,
+} from "types";
 import { uploadFiletoS3 } from "utils";
 import { toast } from "react-toastify";
 import { getAllAssetTypes } from "services/assetTypeServices";
-import { getAllAssetLocations } from "services/locationServices";
 import {
   createAssetPlacement,
   getAssetPlacements,
@@ -20,8 +25,6 @@ import useStatusTypeNames from "hooks/useStatusTypes";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { TfiClose } from "react-icons/tfi";
 import useAssetCondition from "hooks/useAssetCondition";
-import AddSectionModal from "./AddSectionModal";
-import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { locationAtom, useSyncedAtom } from "store/locationStore";
@@ -41,7 +44,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Asset Collections
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const [assetSections, setAssetSections] = useState<AssetSection[]>([]);
+  const [, setAssetSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
   const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
@@ -49,7 +52,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   >([]);
 
   const [statusCheckEnabled, setStatusCheckEnabled] = useState(false);
-  //disable submit button after submission
+  // disable submit button after submission
   const [disableButton, setDisableButton] = useState(false);
 
   // Auth
@@ -63,8 +66,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // Hooks & External Services
   const queryClient = useQueryClient();
 
-  //edit search term when adding asset
-  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+  // edit search term when adding asset
+  const [, setSearchTerm] = useAtom(searchTermAtom);
 
   // ====== Effects ======
 
@@ -85,7 +88,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const handleSectionChange = async (sectionId: string) => {
     await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
     const placements = assetPlacements.filter(
-      (placement) => placement.section_id === sectionId
+      (placement) => placement.section_id === sectionId,
     );
     setFilteredPlacements(placements);
     setSelectedPlacement("");
@@ -93,18 +96,14 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // Logic for fetching initial data
   const fetchData = async () => {
-    try {
-      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        "query-locations",
-      ]);
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-      fetchAssetPlacements();
-      fetchAssetSections();
-      setAssetTypes(types);
-      setLocations(queryLocations);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+      "query-locations",
+    ]);
+    const types = await getAllAssetTypes(authTokenObj.authToken);
+    fetchAssetPlacements();
+    fetchAssetSections();
+    setAssetTypes(types);
+    setLocations(queryLocations);
   };
 
   // Form submission handler
@@ -144,26 +143,24 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       asset_status: selectedStatus,
       asset_condition: selectedCondition,
       asset_finance_purchase: parseFloat(
-        formData.get("finance_purchase") as string
+        formData.get("finance_purchase") as string,
       ),
       asset_finance_current_value: parseFloat(
-        formData.get("finance_current_value") as string
+        formData.get("finance_current_value") as string,
       ),
       images_id: fileId,
       status_check_enabled: statusCheckEnabled,
       status_check_interval: parseInt(
-        formData.get("status_check_interval") as string
+        formData.get("status_check_interval") as string,
+        10,
       ),
     };
 
     setSearchTerm(assetData.asset_name);
 
     // Step 4: Create the asset in the backend
-    try {
-      assetAddMutation.mutateAsync(assetData);
-    } catch (error) {
-      console.error("Failed to create asset:", error);
-    }
+
+    assetAddMutation.mutateAsync(assetData);
   };
 
   // Function to handle adding a section
@@ -175,11 +172,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         section_name: selectedSection,
         location_id: location.locationId,
       };
-      try {
-        sectionAddMutation.mutateAsync(newSection);
-      } catch (error) {
-        console.error("Failed to create section:", error);
-      }
+
+      sectionAddMutation.mutateAsync(newSection);
     } else {
       alert("Please select a location first.");
     }
@@ -195,11 +189,8 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
           section_id: selectedSection,
           location_id: location.locationId,
         };
-        try {
-          placementAddMutation.mutate(newPlacement);
-        } catch (error) {
-          console.error("Failed to create placement:", error);
-        }
+
+        placementAddMutation.mutate(newPlacement);
       }
     } else {
       alert("Please select a location and section first.");
@@ -208,16 +199,12 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // ====== Data Fetching using useQuery ======
   const fetchAssetSections = async () => {
-    try {
-      const res = await getAssetSections(authTokenObj.authToken);
-      setAssetSections(res);
-      const sections = res.filter(
-        (section) => section.location_id === location.locationId
-      );
-      setFilteredSections(sections);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getAssetSections(authTokenObj.authToken);
+    setAssetSections(res);
+    const sections = res.filter(
+      (section) => section.location_id === location.locationId,
+    );
+    setFilteredSections(sections);
   };
 
   const { data: AssetSections } = useQuery({
@@ -226,19 +213,15 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   });
 
   const fetchAssetPlacements = async () => {
-    try {
-      const res = await getAssetPlacements(authTokenObj.authToken);
-      if (!res || typeof res === "undefined") {
-        throw new Error("No data received from API");
-      }
-      const placements = res.filter(
-        (placement) => placement.section_id === selectedSection
-      );
-      await setFilteredPlacements(placements);
-      setAssetPlacements(res);
-    } catch (error) {
-      console.log(error);
+    const res = await getAssetPlacements(authTokenObj.authToken);
+    if (!res || typeof res === "undefined") {
+      throw new Error("No data received from API");
     }
+    const placements = res.filter(
+      (placement) => placement.section_id === selectedSection,
+    );
+    await setFilteredPlacements(placements);
+    setAssetPlacements(res);
   };
 
   const { refetch } = useQuery({
@@ -249,21 +232,19 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // ====== Mutations ======
   const assetAddMutation = useMutation({
-    mutationFn: (assetData: any) =>
-      createAsset(authTokenObj.authToken, assetData),
+    mutationFn: (assetData: Asset) => createAsset(authTokenObj.authToken, assetData),
     onSettled: () => {
       toast.success("Asset Added Successfully");
       setAddAssetOpen(false);
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Asset");
     },
   });
 
   const sectionAddMutation = useMutation({
-    mutationFn: (newSection: AssetSection) =>
-      createAssetSection(authTokenObj.authToken, newSection),
+    mutationFn: (newSection: AssetSection) => createAssetSection(authTokenObj.authToken, newSection),
     onSettled: () => {
       toast.success("Section Added Successfully");
     },
@@ -271,20 +252,19 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       queryClient.invalidateQueries(["query-assetSectionsForm"]);
       setSelectedSection(null);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Section");
     },
   });
 
   const placementAddMutation = useMutation({
-    mutationFn: (newPlacement: AssetPlacement) =>
-      createAssetPlacement(authTokenObj.authToken, newPlacement),
+    mutationFn: (newPlacement: AssetPlacement) => createAssetPlacement(authTokenObj.authToken, newPlacement),
     onSuccess: async (data) => {
       toast.success("Placement Added Successfully");
       await queryClient.invalidateQueries(["query-assetPlacementsForm"]);
       refetch();
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Add Placement");
     },
   });
@@ -430,7 +410,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
-                      "#upload"
+                      "#upload",
                     ) as HTMLElement;
                     uploadButton.click();
                   }}
@@ -467,7 +447,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         >
                           {statusName}
                         </option>
-                      )
+                      ),
                     )}
                   </select>
                 </div>
@@ -479,8 +459,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <select
                     required
                     disabled
-                    className="select select-sm font-normal my-3 border border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
-                    value={location.locationId} // Setting the value to 'location' variable's location_id
+                    className="select select-sm font-normal my-3 border
+                    border-slate-300 dark:text-white bg-transparent dark:border-gray-500 w-full"
+                    value={location.locationId}
                   >
                     <option value="" disabled hidden>
                       Select Location
@@ -584,7 +565,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                             setAddPlacement(true);
                           } else {
                             alert(
-                              "Please select a location and section first."
+                              "Please select a location and section first.",
                             );
                           }
                         }}
@@ -620,7 +601,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       >
                         {conditionValue}
                       </option>
-                    )
+                    ),
                   )}
                 </select>
               </div>
@@ -695,7 +676,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   disableButton={disableButton}
                   onClick={() => {
                     handleUnfocus();
-                    console.log("Asset Submitted");
                   }}
                   buttonColor={"bg-blue-900"}
                   hoverColor={"hover:bg-blue-900"}

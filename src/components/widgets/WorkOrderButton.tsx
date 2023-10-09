@@ -1,18 +1,20 @@
-// interface ButtonProps {
-//   title: string;
-//   primary: boolean;
-//   onClick: () => void;
-// }
+type WorkOrderButtonProps = {
+  title: string;
+  workPending: boolean;
+  onClick?: () => void; // Making onClick optional
+  buttonColor: string;
+  hoverColor: string;
+  disableButton: boolean;
+};
 
-const WorkOrderButton = ({
+const WorkOrderButton: React.FC<WorkOrderButtonProps> = ({
   title,
   workPending,
   onClick,
   buttonColor,
   hoverColor,
-  disableButton
-}) => {
-  return (
+  disableButton,
+}) => (
     <button
       onClick={onClick}
       className={`btn ${buttonColor} gap-5 ${hoverColor}  capitalize`}
@@ -24,7 +26,6 @@ const WorkOrderButton = ({
         {workPending ? "pending" : ""}
       </div>
     </button>
-  );
-};
+);
 
 export default WorkOrderButton;

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getAllDocumentTypes } from "services/documentTypeServices";
-import { Document, DocumentType, File } from "types";
+import { Document, DocType, dubeFile } from "types";
 import { appendToFileArray, getFileById } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
 import { updateDocument } from "services/documentServices";
 import { toast } from "react-toastify";
-import { Auth } from "aws-amplify";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -19,7 +18,7 @@ const EditDocumentsForm = ({
   // QueryClient
   const queryClient = useQueryClient();
   // States
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Document>({
     // Initializing formData with passed document properties
     ...document,
@@ -28,52 +27,45 @@ const EditDocumentsForm = ({
     org_id: null,
     document_type: null,
   });
-  const [documentTypes, setDocumentTypes] = useState<DocumentType[]>([]);
+  const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const [selectedStartDate, setSelectedStartDate] = useState<string>(
-    String(formData.start_date).substring(0, 10)
+    String(formData.start_date).substring(0, 10),
   );
   const [selectedEndDate, setSelectedEndDate] = useState<string>(
-    String(formData.end_date).substring(0, 10)
+    String(formData.end_date).substring(0, 10),
   );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
-  const defaultDocumentFile: File = {
+  const defaultDocumentFile: dubeFile = {
     file_id: "",
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<File>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
 
   // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
     const fetchDetails = async () => {
-      try {
-        const fetchedDocumentTypes = await getAllDocumentTypes(
-          authTokenObj.authToken
-        );
-        const fetchedDocumentFile = await getFileById(
-          authTokenObj.authToken,
-          document.file_id
-        );
+      const fetchedDocumentTypes = await getAllDocumentTypes(
+        authTokenObj.authToken,
+      );
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id,
+      );
 
-        setDocumentTypes(fetchedDocumentTypes);
-        setDocumentFile(fetchedDocumentFile);
-      } catch (error) {
-        console.error(
-          "Failed to fetch Session Token and Document Types:",
-          error
-        );
-      }
+      setDocumentTypes(fetchedDocumentTypes);
+      setDocumentFile(fetchedDocumentFile);
     };
 
     fetchDetails();
-  }, []);
+  }, [authTokenObj.authToken, document.file_id]);
 
   // Handlers
   const handleFormDataChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
 
@@ -96,7 +88,7 @@ const EditDocumentsForm = ({
   const handleSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
 
@@ -110,21 +102,21 @@ const EditDocumentsForm = ({
         .toISOString()
         .substring(0, 10);
 
-      const appendedFile = await appendToFileArray(
+      await appendToFileArray(
         authTokenObj.authToken,
         formData.file_id,
         newFileArrayEntry,
         newModifiedByArrayEntry,
-        newModifiedDateArrayEntry
+        newModifiedDateArrayEntry,
       );
     }
 
     try {
       // Update the document
-      const updatedDocument = await updateDocument(
+      await updateDocument(
         authTokenObj.authToken,
         formData.document_id,
-        formData
+        formData,
       );
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
@@ -195,13 +187,13 @@ const EditDocumentsForm = ({
                   className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   required
                 >
-                  {documentTypes.map((documentTypes) => (
+                  {documentTypes.map((documentTypesObj) => (
                     <option
                       className="text-black bg-white dark:text-white dark:bg-gray-800"
-                      key={documentTypes.document_type}
-                      value={documentTypes.document_type_id}
+                      key={documentTypesObj.document_type}
+                      value={documentTypesObj.document_type_id}
                     >
-                      {documentTypes.document_type}
+                      {documentTypesObj.document_type}
                     </option>
                   ))}
                 </select>
@@ -217,7 +209,7 @@ const EditDocumentsForm = ({
                       name="start_date"
                       defaultValue={String(formData.start_date).substring(
                         0,
-                        10
+                        10,
                       )}
                       onChange={(e) => {
                         handleFormDataChange(e);
@@ -271,22 +263,21 @@ const EditDocumentsForm = ({
                   Add a New File
                   <h1
                     className="text-xs text-blue-800 underline"
-                    onClick={() =>
-                      window.open(
-                        documentFile.file_array[
-                          documentFile.file_array.length - 1
-                        ][0],
-                        "_blank"
-                      )
+                    onClick={() => window.open(
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0],
+                      "_blank",
+                    )
                     }
                   >
                     {`(Latest File: ${
                       documentFile.file_array.length > 0
                         ? String(
-                            documentFile.file_array[
-                              documentFile.file_array.length - 1
-                            ][0]
-                          ).substring(66)
+                          documentFile.file_array[
+                            documentFile.file_array.length - 1
+                          ][0],
+                        ).substring(66)
                         : ""
                     })`}
                   </h1>
@@ -296,7 +287,12 @@ const EditDocumentsForm = ({
                   required
                   id="file"
                   name="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const NwFile: File | null = e.target.files
+                      ? e.target.files[0]
+                      : null;
+                    setFile(NwFile);
+                  }}
                   className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
                 />
                 {/* file upload same as desing. (not working now) */}

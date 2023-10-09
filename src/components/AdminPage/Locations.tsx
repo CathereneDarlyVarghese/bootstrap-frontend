@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { on } from "events";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import {
   createAssetLocation,
@@ -18,32 +17,27 @@ const Locations = () => {
   const [data, setData] = useState<AssetLocation[]>(null);
 
   const fetchLocations = async () => {
-    try {
-      const locationData = await getAllAssetLocations(authTokenObj.authToken);
-      setData(locationData);
-    } catch (error) {
-      console.log(error);
-    }
+    const locationData = await getAllAssetLocations(authTokenObj.authToken);
+    setData(locationData);
   };
 
-  const { data: Locations } = useQuery({
+  useQuery({
     queryKey: ["query-locationsAdmin"],
     queryFn: fetchLocations,
   });
 
   const locationAddMutation = useMutation(
-    (assetLocationObj: any) =>
-      createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    (assetLocationObj: AssetLocation) => createAssetLocation(authTokenObj.authToken, assetLocationObj),
     {
       onSuccess: async () => {
         toast.success("Location Added Successfully");
         queryClient.invalidateQueries(["query-locationsAdmin"]);
         queryClient.invalidateQueries(["query-locations"]);
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error("Failed to Add Asset");
       },
-    }
+    },
   );
 
   const locationDeleteMutation = useMutation(
@@ -55,10 +49,10 @@ const Locations = () => {
         queryClient.invalidateQueries(["query-locationsAdmin"]);
         queryClient.invalidateQueries(["query-locations"]);
       },
-      onError: (error: any) => {
+      onError: () => {
         toast.error("Failed to delete location");
       },
-    }
+    },
   );
 
   return (
@@ -78,12 +72,14 @@ const Locations = () => {
           <button
             onClick={() => {
               if (newLocationName.length !== 0) {
-                locationAddMutation.mutate({ location_name: newLocationName });
+                locationAddMutation.mutate({
+                  location_id: "",
+                  location_name: newLocationName,
+                });
                 setNewLocationName("");
               } else {
-                toast.error("Location field must not be empty")
+                toast.error("Location field must not be empty");
               }
-
             }}
             className="btn btn-sm bg-blue-500 hover:bg-blue-700"
           >

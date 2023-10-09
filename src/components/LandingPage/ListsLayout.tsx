@@ -2,33 +2,32 @@ import { useEffect, useRef, useState } from "react";
 import { atom, useAtom } from "jotai";
 import { LogoClickedAtom } from "components/NavBar";
 import "./cardstyles.css";
-import AssetCard from "./AssetCard";
-import AssetDetails from "./AssetDetails";
 // import Pusher from "pusher-js";
-import AddAssetForm from "./AddAssetForm";
-import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { AssetPlacement, AssetSection, IncomingAsset } from "types";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SearchIcon from "../../icons/circle2017.png";
 import { getAssets } from "services/assetServices";
 import { getAssetSections } from "services/assetSectionServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
-import { AssetCondition, StatusTypes } from "enums";
+import { useNavigate } from "react-router";
+import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { useQuery } from "@tanstack/react-query";
 import {
   FilterOptions,
   selectedStatusIds,
   // selectedSectionNames,
   selectedPlacementNames,
 } from "./FilterOptions";
-import { useNavigate } from "react-router";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "@tanstack/react-query";
+import SearchIcon from "../../icons/circle2017.png";
+import { locationAtom, useSyncedAtom } from "../../store/locationStore";
+import AddAssetForm from "./AddAssetForm";
+import AssetDetails from "./AssetDetails";
+import AssetCard from "./AssetCard";
 
-export const searchTermAtom = atom("")
+export const searchTermAtom = atom("");
 
 const ListsLayout = () => {
   // ----------------------- REFS -----------------------
@@ -47,8 +46,7 @@ const ListsLayout = () => {
 
   // Assets management
   const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
-  const [assets, setAssets] = useState<IncomingAsset[]>([]);
-  const [assetId, setAssetId] = useState(null);
+  const [, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   // UI States
@@ -65,19 +63,23 @@ const ListsLayout = () => {
     { section_id: "", section_name: "", location_id: "" },
   ];
   const defaultAssetPlacements = [
-    { placement_id: "", placement_name: "", section_id: "", location_id: "" },
+    {
+      placement_id: "",
+      placement_name: "",
+      section_id: "",
+      location_id: "",
+    },
   ];
-  const [assetSections, setAssetSections] =
-    useState<AssetSection[]>(defaultAssetSections);
+  const [assetSections, setAssetSections] = useState<AssetSection[]>(defaultAssetSections);
   const [selectedAssetSection] = useState<AssetSection>(
-    defaultAssetSections[0]
+    defaultAssetSections[0],
   );
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
-    defaultAssetPlacements
+    defaultAssetPlacements,
   );
   const [selectedAssetPlacementName] = useState<string>("");
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
-    []
+    [],
   );
 
   // Buttons and filters
@@ -85,34 +87,24 @@ const ListsLayout = () => {
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
   // Miscellaneous states
-  const [getResult, setGetResult] = useState<string | null>(null);
+  const [, setGetResult] = useState<string | null>(null);
 
   // ----------------------- FUNCTION DECLARATIONS -----------------------
 
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
 
   // Functions for UI manipulation
-  const addClass = (selectClass, addClass) => {
+  const addClass = (selectClass, addClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.add(addClass);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to add class.`
-      );
+      element.classList.add(addClassObj);
     }
   };
 
-  const removeClass = (selectClass, removeClass) => {
+  const removeClass = (selectClass, removeClassObj) => {
     const element = document.querySelector(selectClass);
     if (element) {
-      element.classList.remove(removeClass);
-    } else {
-      console.warn(
-        `Element with selector ${selectClass} not found when trying to remove class.`
-      );
+      element.classList.remove(removeClassObj);
     }
   };
 
@@ -121,7 +113,7 @@ const ListsLayout = () => {
   };
 
   const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
@@ -143,7 +135,7 @@ const ListsLayout = () => {
       if (location.locationId !== "") {
         const res = await getAssets(
           authTokenObj.authToken,
-          location.locationId
+          location.locationId,
         );
         setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
       }
@@ -156,7 +148,7 @@ const ListsLayout = () => {
     try {
       const res = await getAssetSections(authTokenObj.authToken);
       const filtered = res.filter(
-        (section: AssetSection) => section.location_id === location.locationId
+        (section: AssetSection) => section.location_id === location.locationId,
       );
       setAssetSections(filtered);
     } catch (err) {
@@ -168,8 +160,7 @@ const ListsLayout = () => {
     try {
       const res = await getAssetPlacements(authTokenObj.authToken);
       const filtered = res.filter(
-        (placement: AssetPlacement) =>
-          placement.location_id === location.locationId
+        (placement: AssetPlacement) => placement.location_id === location.locationId,
       );
       setAssetPlacements(filtered);
     } catch (err) {
@@ -182,7 +173,7 @@ const ListsLayout = () => {
   };
 
   const handleSectionSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const selectedValue = event.target.value;
     setSelectedSectionNames(selectedValue === "" ? [] : [selectedValue]);
@@ -202,7 +193,7 @@ const ListsLayout = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const scannedSearchTerm = urlParams.get("search");
     setSearchTerm(
-      scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : ""
+      scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : "",
     );
   }, []);
 
@@ -236,15 +227,11 @@ const ListsLayout = () => {
   //     if (Notification.permission !== "granted") {
   //       Notification.requestPermission().then((permission) => {
   //         if (permission === "granted") {
-  // console.log("Notification permission granted");
   //           setNotificationEnabled(true);
   //           // subscribeToPusherChannel();
-  //         } else {
-  //           console.log("Notification permission denied");
   //         }
   //       });
   //     } else {
-  //       console.log("Notification permission already granted");
   //       setNotificationEnabled(true);
   //       // subscribeToPusherChannel();
   //     }
@@ -255,19 +242,19 @@ const ListsLayout = () => {
 
   // ----------------------- QUERY HOOKS -----------------------
 
-  const { data: Assets } = useQuery({
+  useQuery({
     queryKey: ["query-asset", location, authTokenObj.authToken],
     queryFn: fetchAllAssets,
     enabled: !!authTokenObj.authToken,
   });
 
-  const { data: AssetsSections } = useQuery({
+  useQuery({
     queryKey: ["query-assetSections", location],
     queryFn: fetchAssetSections,
     enabled: !!authTokenObj.authToken,
   });
 
-  const { data: AssetsPlacements } = useQuery({
+  useQuery({
     queryKey: [
       "query-assetPlacement",
       location,
@@ -281,10 +268,9 @@ const ListsLayout = () => {
     if (logoClicked === true) {
       setAssetDetailsOpen(false);
       setLogoClicked(false);
-      setSelectedAsset(null)
-
+      setSelectedAsset(null);
     }
-  }, [logoClicked]);
+  }, [logoClicked, setLogoClicked]);
 
   return (
     <div
@@ -301,8 +287,9 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
-          } ${addAssetOpen ? "lg:hidden" : ""} `}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
+          assetDetailsOpen ? "lg:hidden" : ""
+        } ${addAssetOpen ? "lg:hidden" : ""} `}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -328,7 +315,7 @@ const ListsLayout = () => {
 
                   <input
                     type="text"
-                    placeholder={"Search " + location.locationName}
+                    placeholder={`Search ${location.locationName}`}
                     value={searchTerm}
                     className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
                     onChange={(e) => {
@@ -355,11 +342,11 @@ const ListsLayout = () => {
                     handleAddAssetOpen();
                     removeClass(
                       "#parent-element .asset-details-card",
-                      "lg:hidden"
+                      "lg:hidden",
                     );
                     addClass(
                       "#parent-element .asset-details-card",
-                      "lg:w-full"
+                      "lg:w-full",
                     );
                     addClass("#parent-element .asset-card", "lg:hidden");
                   }}
@@ -379,14 +366,13 @@ const ListsLayout = () => {
               <div
                 className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}
               >
-                {incomingAssets &&
-                  incomingAssets
+                {incomingAssets
+                  && incomingAssets
                     .filter((a) => {
-                      const SearchTermMatch =
-                        a.asset_name
-                          .toLowerCase()
-                          .startsWith(searchTerm.toLowerCase()) &&
-                        searchTerm !== "";
+                      const SearchTermMatch = a.asset_name
+                        .toLowerCase()
+                        .startsWith(searchTerm.toLowerCase())
+                        && searchTerm !== "";
 
                       return SearchTermMatch;
                     })
@@ -409,8 +395,9 @@ const ListsLayout = () => {
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              className={`flex flex-row w-full justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
+              }`}
             >
               <select
                 name=""
@@ -421,11 +408,9 @@ const ListsLayout = () => {
               >
                 <option value="">All Sections</option>
 
-                {assetSections &&
-                  assetSections
-                    .sort((a, b) =>
-                      a.section_name.localeCompare(b.section_name)
-                    )
+                {assetSections
+                  && assetSections
+                    .sort((a, b) => a.section_name.localeCompare(b.section_name))
                     .map((section: AssetSection, index: number) => (
                       <option key={index} value={section.section_name}>
                         {section.section_name}
@@ -458,75 +443,76 @@ const ListsLayout = () => {
           ) : (
             <div className={`${assetDetailsOpen ? "lg:hidden" : ""}`}>
               {/* Render asset cards */}
-              {incomingAssets &&
-                (() => {
-                  const activeAssets = incomingAssets.filter((item) => item.asset_condition === "ACTIVE");
-                  const inactiveAssets = incomingAssets.filter((item) => item.asset_condition === "INACTIVE");
-                  return [...activeAssets, ...inactiveAssets].filter((asset) => {
-                    const searchTermMatch =
-                      searchTerm === "" ||
-                      asset.asset_name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                      asset.asset_type
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase());
+              {incomingAssets
+                && (() => {
+                  const activeAssets = incomingAssets.filter(
+                    (item) => item.asset_condition === "ACTIVE",
+                  );
+                  const inactiveAssets = incomingAssets.filter(
+                    (item) => item.asset_condition === "INACTIVE",
+                  );
+                  return [...activeAssets, ...inactiveAssets].filter(
+                    (asset) => {
+                      const searchTermMatch = searchTerm === ""
+                        || asset.asset_name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                        || asset.asset_type
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase());
 
-                    const statusFilterMatch =
-                      selectedStatusIds.length === 0 ||
-                      selectedStatusIds.includes(asset.asset_status);
+                      const statusFilterMatch = selectedStatusIds.length === 0
+                        || selectedStatusIds.includes(asset.asset_status);
 
-                    const sectionFilterMatch =
-                      selectedSectionNames.length === 0 ||
-                      selectedSectionNames.includes(asset.section_name);
+                      const sectionFilterMatch = selectedSectionNames.length === 0
+                        || selectedSectionNames.includes(asset.section_name);
 
-                    const placementFilterMatch =
-                      selectedPlacementNames.length === 0 ||
-                      selectedPlacementNames.includes(asset.placement_name);
+                      const placementFilterMatch = selectedPlacementNames.length === 0
+                        || selectedPlacementNames.includes(asset.placement_name);
 
-                    /* sectionFilterMatch AND placementFilterMatch */
-                    const intersectionFilterMatch =
-                      sectionFilterMatch && placementFilterMatch;
-                    return (
-                      searchTermMatch &&
-                      statusFilterMatch &&
-                      (selectedSectionNames.length === 0 ||
-                        selectedPlacementNames.length === 0
-                        ? intersectionFilterMatch
-                        : intersectionFilterMatch)
-                    );
-                  });
-                })()
-                  .map((asset) => (
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        setSelectedAsset(asset);
-                        setAssetId(asset.asset_id);
-                        setAddAssetOpen(false);
-                        setAssetDetailsOpen(true);
-                      }}
-                    >
-                      <AssetCard
-                        asset={asset}
-                        imagePlaceholder="img"
-                        updatedDetailsTabIndex={detailsTabIndexRefresh}
-                      />
-                    </div>
-                  ))}
+                      /* sectionFilterMatch AND placementFilterMatch */
+                      const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
+                      return (
+                        searchTermMatch
+                        && statusFilterMatch
+                        && (selectedSectionNames.length === 0
+                        || selectedPlacementNames.length === 0
+                          ? intersectionFilterMatch
+                          : intersectionFilterMatch)
+                      );
+                    },
+                  );
+                })().map((asset) => (
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedAsset(asset);
+                      setAssetId(asset.asset_id);
+                      setAddAssetOpen(false);
+                      setAssetDetailsOpen(true);
+                    }}
+                  >
+                    <AssetCard
+                      asset={asset}
+                      imagePlaceholder="img"
+                      updatedDetailsTabIndex={detailsTabIndexRefresh}
+                    />
+                  </div>
+                ))}
             </div>
           )}
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked
-          ? "lg:hidden"
-          : assetDetailsOpen
-            ? "w-2/3 lg:w-full"
-            : addAssetOpen
-              ? "lg:w-full"
-              : "lg:hidden"
-          }`}
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
+          logoClicked
+            ? "lg:hidden"
+            : assetDetailsOpen
+              ? "w-2/3 lg:w-full"
+              : addAssetOpen
+                ? "lg:w-full"
+                : "lg:hidden"
+        }`}
         id="style-7"
       >
         {/* Render asset details */}

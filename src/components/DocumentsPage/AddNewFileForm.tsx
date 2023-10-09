@@ -1,4 +1,3 @@
-import { Auth } from "aws-amplify";
 import React, { useState } from "react";
 import { appendToFileArray } from "services/fileServices";
 import { uploadFiletoS3 } from "utils";
@@ -8,44 +7,41 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
   const queryClient = useQueryClient();
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<File>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
-    setFile(file);
+    const newFile = event.target.files[0];
+    setFile(newFile);
   };
 
   const handleSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
 
     // Step 1: Upload the file to S3 bucket
     const documentLocation = await uploadFiletoS3(file, "document");
-    console.log("documentLocation ==>> ", documentLocation);
 
     const newFileArrayEntry: string = documentLocation.location;
-    console.log("newFileArrayEntry ==>> ", newFileArrayEntry);
 
     const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
-      const appendedFile = await appendToFileArray(
+      await appendToFileArray(
         authTokenObj.authToken,
         fileID,
         newFileArrayEntry,
         newModifiedByArrayEntry,
-        newModifiedDateArrayEntry
+        newModifiedDateArrayEntry,
       );
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
       toast.success("File Added Successfully");
     } catch (error) {
-      console.error("Failed to Add File:", error);
       toast.error("Failed to add file");
     }
   };
@@ -105,9 +101,13 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
                 id="file"
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                className="block w-full text-md text-white border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
+                className="block w-full text-md text-white border border-gray-300
+                rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none
+                dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white
+                file:font-sans my-3 hidden"
               />
-              <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2">
+              <div className="flex flex-row rounded-lg border border-gray-300
+              dark:border-gray-500 p-2 my-2">
                 <input
                   type="text"
                   value={`${file ? file.name : "No file chosen"}`}
@@ -118,7 +118,10 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
                   }`}
                 />
                 <button
-                  className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit border text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5  rounded-xl ml-auto"
+                  className="btn btn-xs bg-transparent border border-gray-400
+                  hover:border-gray-400 hover:bg-transparent normal-case font-normal
+                  w-fit border text-blue-600 dark:text-white font-sans text-xs
+                  md:text-[9px] p-0.5  rounded-xl ml-auto"
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
