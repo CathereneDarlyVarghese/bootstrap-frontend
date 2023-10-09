@@ -42,7 +42,7 @@ const AddDocumentsForm = ({
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
 
@@ -62,8 +62,7 @@ const AddDocumentsForm = ({
 
   // Mutation function to add a new document
   const documentAddMutation = useMutation({
-    mutationFn: (documentData: Document) =>
-      createDocument(authTokenObj.authToken, documentData),
+    mutationFn: (documentData: Document) => createDocument(authTokenObj.authToken, documentData),
     onSettled: () => {
       toast.success("Document Added Successfully");
       setAddDocumentsOpen(false);
@@ -132,7 +131,7 @@ const AddDocumentsForm = ({
   useEffect(() => {
     const fetchData = async () => {
       const fetchedDocumentTypes = await getAllDocumentTypes(
-        authTokenObj.authToken
+        authTokenObj.authToken,
       );
       setDocumentTypes(fetchedDocumentTypes);
     };
@@ -302,7 +301,7 @@ const AddDocumentsForm = ({
                   onClick={(e) => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
-                      "#file"
+                      "#file",
                     ) as HTMLElement;
                     uploadButton.click();
                   }}

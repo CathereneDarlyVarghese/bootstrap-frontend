@@ -2,7 +2,8 @@ import { uploadFile } from "react-s3";
 import { Buffer } from "buffer";
 
 Buffer.from("anything", "base64");
-window.Buffer = window.Buffer || require("buffer").Buffer;
+
+window.Buffer = window.Buffer || require("buffer").Buffer; // eslint-disable-line
 
 // type Props = {
 //   file: File;

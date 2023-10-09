@@ -29,10 +29,10 @@ const EditDocumentsForm = ({
   });
   const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const [selectedStartDate, setSelectedStartDate] = useState<string>(
-    String(formData.start_date).substring(0, 10)
+    String(formData.start_date).substring(0, 10),
   );
   const [selectedEndDate, setSelectedEndDate] = useState<string>(
-    String(formData.end_date).substring(0, 10)
+    String(formData.end_date).substring(0, 10),
   );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const defaultDocumentFile: dubeFile = {
@@ -41,18 +41,17 @@ const EditDocumentsForm = ({
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] =
-    useState<dubeFile>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
 
   // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
     const fetchDetails = async () => {
       const fetchedDocumentTypes = await getAllDocumentTypes(
-        authTokenObj.authToken
+        authTokenObj.authToken,
       );
       const fetchedDocumentFile = await getFileById(
         authTokenObj.authToken,
-        document.file_id
+        document.file_id,
       );
 
       setDocumentTypes(fetchedDocumentTypes);
@@ -66,7 +65,7 @@ const EditDocumentsForm = ({
   const handleFormDataChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
 
@@ -89,7 +88,7 @@ const EditDocumentsForm = ({
   const handleSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
 
@@ -108,7 +107,7 @@ const EditDocumentsForm = ({
         formData.file_id,
         newFileArrayEntry,
         newModifiedByArrayEntry,
-        newModifiedDateArrayEntry
+        newModifiedDateArrayEntry,
       );
     }
 
@@ -117,7 +116,7 @@ const EditDocumentsForm = ({
       await updateDocument(
         authTokenObj.authToken,
         formData.document_id,
-        formData
+        formData,
       );
       queryClient.invalidateQueries(["query-documentsByLocationId"]);
       queryClient.invalidateQueries(["query-documentsByAssetId"]);
@@ -210,7 +209,7 @@ const EditDocumentsForm = ({
                       name="start_date"
                       defaultValue={String(formData.start_date).substring(
                         0,
-                        10
+                        10,
                       )}
                       onChange={(e) => {
                         handleFormDataChange(e);
@@ -264,22 +263,21 @@ const EditDocumentsForm = ({
                   Add a New File
                   <h1
                     className="text-xs text-blue-800 underline"
-                    onClick={() =>
-                      window.open(
-                        documentFile.file_array[
-                          documentFile.file_array.length - 1
-                        ][0],
-                        "_blank"
-                      )
+                    onClick={() => window.open(
+                      documentFile.file_array[
+                        documentFile.file_array.length - 1
+                      ][0],
+                      "_blank",
+                    )
                     }
                   >
                     {`(Latest File: ${
                       documentFile.file_array.length > 0
                         ? String(
-                            documentFile.file_array[
-                              documentFile.file_array.length - 1
-                            ][0]
-                          ).substring(66)
+                          documentFile.file_array[
+                            documentFile.file_array.length - 1
+                          ][0],
+                        ).substring(66)
                         : ""
                     })`}
                   </h1>

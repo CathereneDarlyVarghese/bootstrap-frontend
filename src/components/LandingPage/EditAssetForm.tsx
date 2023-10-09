@@ -246,7 +246,7 @@ const EditAssetForm = ({
         // handleLocationChange(selectedLocation);
       }
     } else {
-      alert("Please select a location first.");
+      alert("Please select a location first."); // eslint-disable-line
     }
   };
 
@@ -278,7 +278,7 @@ const EditAssetForm = ({
         // handleSectionChange(selectedSection);
       }
     } else {
-      alert("Please select a location and section first.");
+      alert("Please select a location and section first."); // eslint-disable-line
     }
   };
 
@@ -617,6 +617,7 @@ const EditAssetForm = ({
                             setAddPlacement(true);
                           } else {
                             alert(
+                              // eslint-disable-line
                               "Please select a location and section first.",
                             );
                           }

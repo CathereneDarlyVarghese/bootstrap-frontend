@@ -3,9 +3,9 @@ import { TfiClose } from "react-icons/tfi";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 
-export let selectedStatusIds: string[] = [];
+export let selectedStatusIds: string[] = []; // eslint-disable-line
 // export var selectedSectionNames: string[] = [];
-export let selectedPlacementNames: string[] = [];
+export let selectedPlacementNames: string[] = []; // eslint-disable-line
 
 export const resetFilterOptions = () => {
   selectedStatusIds = [];
@@ -155,7 +155,7 @@ export const FilterOptions = ({
           authTokenObj.authToken,
         );
         if (placements.length === 0) {
-          placements = fetchedPlacements;
+          placements = fetchedPlacements; // eslint-disable-line
         }
       }
     };

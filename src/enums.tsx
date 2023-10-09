@@ -1,3 +1,4 @@
+/* eslint-disable */
 export enum WorkOrderStatuses {
   Open = "open",
   Closed = "closed",
