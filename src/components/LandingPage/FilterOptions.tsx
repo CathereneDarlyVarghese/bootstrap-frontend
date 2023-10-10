@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
@@ -65,10 +65,10 @@ export const FilterOptions = ({
       }
     } else if (selectedButtonsStatus.includes(buttonIndex)) {
       setSelectedButtonsStatus(
-        selectedButtonsStatus.filter((index) => index !== buttonIndex),
+        selectedButtonsStatus.filter((index) => index !== buttonIndex)
       );
       selectedStatusIds = selectedStatusIds.filter(
-        (statusId) => statusId !== statuses[buttonIndex].status_id,
+        (statusId) => statusId !== statuses[buttonIndex].status_id
       );
     } else {
       setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
@@ -129,15 +129,16 @@ export const FilterOptions = ({
         }
         setSelectedButtonsPlacement([-1, ...allIndices]);
         selectedPlacementNames = placements.map(
-          (placement) => placement.placement_name,
+          (placement) => placement.placement_name
         );
       }
     } else if (selectedButtonsPlacement.includes(buttonIndex)) {
       setSelectedButtonsPlacement(
-        selectedButtonsPlacement.filter((index) => index !== buttonIndex),
+        selectedButtonsPlacement.filter((index) => index !== buttonIndex)
       );
       selectedPlacementNames = selectedPlacementNames.filter(
-        (placementName) => placementName !== placements[buttonIndex].placement_name,
+        (placementName) =>
+          placementName !== placements[buttonIndex].placement_name
       );
     } else {
       setSelectedButtonsPlacement([...selectedButtonsPlacement, buttonIndex]);
@@ -148,16 +149,21 @@ export const FilterOptions = ({
     }
   };
 
+  const placementsRef = useRef([]);
+
   useEffect(() => {
     const getPlacements = async () => {
-      if (selectedButtonsPlacement.length === 0) {
-        const fetchedPlacements = await getAssetPlacements(
-          authTokenObj.authToken,
-        );
-        if (placements.length === 0) {
-          placements = fetchedPlacements; // eslint-disable-line
+      try {
+        if (selectedButtonsPlacement.length === 0) {
+          const fetchedPlacements = await getAssetPlacements(
+            authTokenObj.authToken
+          );
+
+          if (placementsRef.current.length === 0) {
+            placementsRef.current = fetchedPlacements;
+          }
         }
-      }
+      } catch (error) {}
     };
     getPlacements();
   }, []);

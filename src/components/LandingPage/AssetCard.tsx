@@ -5,6 +5,7 @@ import {
   BsFillXCircleFill,
   BsInfoCircleFill,
 } from "react-icons/bs";
+import { TbQrcode, TbQrcodeOff } from "react-icons/tb";
 import { StatusTypes } from "enums";
 import { IncomingAsset } from "types";
 import DisplayQR from "./DisplayQR";
@@ -20,9 +21,9 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
   const [showQr, setShowQr] = useState(false);
 
   const redirectURL = process.env.REACT_APP_REDIRECT_URL;
-  const QRLink = `${redirectURL}/home?search=${encodeURIComponent(
-    props.asset.asset_name,
-  )}&locationId=${encodeURIComponent(props.asset.asset_location)}`;
+  const QRLink = props.asset.asset_uuid
+    ? `${encodeURIComponent(props.asset.asset_uuid)}`
+    : null;
 
   const handleClick = () => {
     props.updatedDetailsTabIndex(0);
@@ -105,8 +106,8 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.asset.location_name === "tsd"
               ? "The Spiffy Dapper"
               : props.asset.location_name === "mdb"
-                ? "MadDog Bistro & Bar"
-                : props.asset.location_name}
+              ? "MadDog Bistro & Bar"
+              : props.asset.location_name}
           </p>
           <button
             onClick={(e) => {
@@ -114,11 +115,21 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
               e.stopPropagation();
             }}
           >
-            <BsQrCode className="text-xl text-black dark:text-white" />
+            {props.asset.asset_uuid ? (
+              <TbQrcode
+                className="text-3xl text-green-600 ml-2"
+                title="QR Code assigned"
+              />
+            ) : (
+              <TbQrcodeOff
+                className="text-3xl text-red-700 ml-2"
+                title="QR Code not assigned"
+              />
+            )}
           </button>
 
           <DisplayQR
-            assetName={props.asset.asset_name}
+            asset={props.asset}
             link={QRLink}
             closeQr={() => {
               setShowQr(false);

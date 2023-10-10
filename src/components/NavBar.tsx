@@ -35,7 +35,7 @@ const NavBar = () => {
 
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);
-  const urlLocationId = searchParams.get("locationId");
+  const urlLocationId = searchParams.get("location_id");
 
   // Toggle dropdown state
   const toggleDropDown = () => {
@@ -130,6 +130,10 @@ const NavBar = () => {
       }
     }
   };
+
+  useEffect(() => {
+    fetchLocations();
+  }, [urlLocationId]);
 
   // UseQuery to get locations
   useQuery({
