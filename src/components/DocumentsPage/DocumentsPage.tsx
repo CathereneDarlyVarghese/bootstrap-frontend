@@ -52,7 +52,7 @@ const DocumentsPage = () => {
   // --- HELPER FUNCTIONS ---
 
   // Format API response
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
   // Fetch documents by location
   const fetchDocumentsByLocation = async () => {

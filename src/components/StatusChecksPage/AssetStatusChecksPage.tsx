@@ -34,7 +34,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
 
   // Helper function to format response
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
   // Function to handle status card click and show details
   const handleStatusCardClick = (selectedStatusCheckId: string) => {

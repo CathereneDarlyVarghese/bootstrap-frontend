@@ -30,7 +30,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
   assetTypeId,
 }) => {
   // State initialization
-  const [, setFormDataState] = useState<any>({});
+  const [, setFormDataState] = useState<any>({}); // eslint-disable-line
   const [jsonForm, setJsonForm] = useState(null); // Form in JSON format
 
   const now = new Date(); // Current date and time
@@ -89,7 +89,9 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
     return Object.keys(object).find((key) => object[key] === value);
   }
 
+  // eslint-disable-next-line
   const handleSubmit = async (formData: any) => {
+    // eslint-disable-line
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
 
     const assetCheck = {

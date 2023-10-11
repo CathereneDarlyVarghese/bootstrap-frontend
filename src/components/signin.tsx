@@ -5,40 +5,42 @@ import { Auth, Hub } from "aws-amplify";
 export const SignInWithGoogle1 = () => {
   const [user, setUser] = useState(null);
   const [, setCustomState] = useState(null);
+
   useEffect(() => {
+    // Load the Google client
+    const createScript = () => {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = initGsi;
+      document.body.appendChild(script);
+    };
+
+    // Initialize Google client and render Google button
+    const initGsi = () => {
+      if (window.google && window.google?.accounts) {
+        window.google.accounts.id.initialize({
+          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+          // eslint-disable-next-line
+          callback: (response: any) => {
+            getAWSCredentials(response.credential);
+          },
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("googleSignInButton"),
+          {
+            theme: "outline",
+            size: "large",
+            type: "standard",
+          },
+        );
+      }
+    };
     // Check for an existing Google client initialization
     if (!window.google && !window.google?.accounts) createScript();
   }, []);
 
-  // Load the Google client
-  const createScript = () => {
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    script.onload = initGsi;
-    document.body.appendChild(script);
-  };
-
-  // Initialize Google client and render Google button
-  const initGsi = () => {
-    if (window.google && window.google?.accounts) {
-      window.google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-        callback: (response: any) => {
-          getAWSCredentials(response.credential);
-        },
-      });
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInButton"),
-        {
-          theme: "outline",
-          size: "large",
-          type: "standard",
-        },
-      );
-    }
-  };
   useEffect(() => {
     const unsubscribe = Hub.listen("auth", ({ payload: { event, data } }) => {
       switch (event) {
@@ -59,7 +61,7 @@ export const SignInWithGoogle1 = () => {
   }, []);
   // Exchange Google token for temporary AWS credentials
   const getAWSCredentials = async (credential: string) => {
-    const token = jwt(credential) as any;
+    const token = jwt(credential) as any; // eslint-disable-line
     const userNw = {
       email: token.email,
       name: token.name,

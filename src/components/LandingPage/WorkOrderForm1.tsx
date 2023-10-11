@@ -12,8 +12,6 @@ interface AddWorkOrderProps {
 }
 
 const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
-  let assetId = assetId1;
-
   const [token, settoken] = useState<string>("");
   const [file, setFile] = useState<File>();
   const [inventoryId, setInventoryId] = useState<string | undefined>("");
@@ -53,9 +51,8 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
   useEffect(() => {
     const tokenData = window.localStorage.getItem("sessionToken");
     settoken(tokenData);
-    assetId = assetId1 as string;
-    setInventoryId(assetId); // set inventoryId from location state
-  }, [assetId]);
+    setInventoryId(assetId1 as string); // set inventoryId from location state
+  }, [assetId1]);
 
   return (
     <div className="flex justify-end">

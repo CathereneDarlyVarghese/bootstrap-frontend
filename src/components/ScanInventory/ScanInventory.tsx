@@ -1,38 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
-import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { getAllAssets } from "services/assetServices";
 import { IncomingAsset } from "types";
+import { locationAtom, useSyncedAtom } from "../../store/locationStore";
 
 const QRCodeReader = () => {
   const resultRef = useRef(null);
   const qrRef = useRef(null);
-  let html5QrcodeScanner = null; // Declare scanner variable
+  const html5QrcodeScannerRef = useRef(null);
 
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   // Location states
   const [location] = useSyncedAtom(locationAtom);
-  // Assets management
-  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
-  // Miscellaneous states
-  const [getResult, setGetResult] = useState<string | null>(null);
 
-  const formatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  };
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
   const fetchAllAssets = async () => {
-    try {
-      if (location.locationId !== "") {
-        const res = await getAllAssets(authTokenObj.authToken);
-        return Array.isArray(res) ? res : res ? [res] : [];
-      }
-    } catch (err) {
-      throw new Error(formatResponse(err.response?.data || err));
+    if (location.locationId !== "") {
+      const res = await getAllAssets(authTokenObj.authToken);
+      return Array.isArray(res) ? res : res ? [res] : [];
     }
+    return [];
   };
 
   const { data: assets } = useQuery<IncomingAsset[], Error>(
@@ -40,24 +31,24 @@ const QRCodeReader = () => {
     fetchAllAssets,
     {
       enabled: !!authTokenObj.authToken,
-    }
+    },
   );
 
   useEffect(() => {
     let lastResult;
-    let countResults = 0;
+    let countResults = 0; // eslint-disable-line
 
-    html5QrcodeScanner = new Html5QrcodeScanner(
+    html5QrcodeScannerRef.current = new Html5QrcodeScanner(
       qrRef.current.id,
       {
         fps: 10,
         qrbox: 250,
         supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
       },
-      false
+      false,
     );
 
-    html5QrcodeScanner.render(
+    html5QrcodeScannerRef.current.render(
       (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
@@ -66,7 +57,7 @@ const QRCodeReader = () => {
 
           // Check if the scanned asset_uuid exists in the assets data
           const scannedAsset = assets.find(
-            (asset) => asset.asset_uuid === decodedText
+            (asset) => asset.asset_uuid === decodedText,
           );
 
           if (scannedAsset) {
@@ -80,14 +71,13 @@ const QRCodeReader = () => {
       },
       (errorMessage) => {
         // TODO: Handle scanning errors in the future
-      }
+      },
     );
 
     return () => {
-      // Cleanup when the component unmounts
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear();
-        html5QrcodeScanner = null; // Clear the scanner instance
+      if (html5QrcodeScannerRef.current) {
+        html5QrcodeScannerRef.current.clear();
+        html5QrcodeScannerRef.current = null;
       }
     };
   }, [assets]);

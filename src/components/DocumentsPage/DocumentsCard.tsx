@@ -16,7 +16,7 @@ import { deleteDocument } from "services/documentServices";
 import { toast } from "react-toastify";
 import { IncomingDocument, dubeFile } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import EditDocumentsForm from "./EditDocumentsForm";
 import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
 import AddNewFileForm from "./AddNewFileForm";
@@ -52,31 +52,32 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
   const queryClient = useQueryClient();
 
   // Fetch document details on component mount
-  const fetchDocumentDetailsMutation = useMutation({
-    mutationKey: ["fetch-document-details", document],
-    mutationFn: async () => {
-      const fetchedDocumentType = await getDocumentTypeById(
-        authTokenObj.authToken,
-        document.document_type_id,
-      );
+  const fetchDocumentDetails = async () => {
+    const fetchedDocumentType = await getDocumentTypeById(
+      authTokenObj.authToken,
+      document.document_type_id,
+    );
 
-      const fetchedDocumentFile = await getFileById(
-        authTokenObj.authToken,
-        document.file_id,
-      );
+    const fetchedDocumentFile = await getFileById(
+      authTokenObj.authToken,
+      document.file_id,
+    );
 
-      return { fetchedDocumentType, fetchedDocumentFile };
-    },
+    return { fetchedDocumentType, fetchedDocumentFile };
+  };
 
-    onSuccess: (data) => {
-      setDocumentType(data.fetchedDocumentType.document_type);
-      setDocumentFile(data.fetchedDocumentFile);
-    },
+  const { data } = useQuery({
+    queryKey: ["fetch-document-details", document],
+    queryFn: fetchDocumentDetails,
+    enabled: !!authTokenObj,
   });
 
   useEffect(() => {
-    fetchDocumentDetailsMutation.mutate();
-  }, [document]);
+    if (data) {
+      setDocumentType(data.fetchedDocumentType.document_type);
+      setDocumentFile(data.fetchedDocumentFile);
+    }
+  }, [data]);
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
@@ -305,6 +306,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     if (
+                      // eslint-disable-next-line
                       window.confirm(
                         "Are you sure you want to delete this document?",
                       )

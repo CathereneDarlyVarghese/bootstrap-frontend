@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getDocumentsByAssetId } from "services/documentServices";
 import { IncomingDocument } from "types";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
@@ -17,7 +17,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   >([]);
   const [, setDocumentID] = useState(null);
   const [, setGetResult] = useState<string | null>(null);
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
   const [fileOpen] = useState(false);
 
   const fetchDocumentsById = async () => {
@@ -33,13 +33,10 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   };
 
   useQuery({
-    queryKey: ["query-documentsByAssetId"],
+    queryKey: ["query-documentsByAssetId", selectedAssetID],
     queryFn: fetchDocumentsById,
+    enabled: !!selectedAssetID,
   });
-
-  useEffect(() => {
-    fetchDocumentsById();
-  }, [selectedAssetID]);
 
   return (
     <>

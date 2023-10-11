@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  BsQrCode,
   BsFillCheckCircleFill,
   BsFillXCircleFill,
   BsInfoCircleFill,
@@ -14,13 +13,14 @@ import MapIcon from "../../icons/mapIcon.svg";
 type AssetCardProps = {
   asset: IncomingAsset;
   imagePlaceholder: string;
+  // eslint-disable-next-line
   updatedDetailsTabIndex: any;
 };
 
 const AssetCard: React.FC<AssetCardProps> = (props) => {
   const [showQr, setShowQr] = useState(false);
 
-  const redirectURL = process.env.REACT_APP_REDIRECT_URL;
+  // const redirectURL = process.env.REACT_APP_REDIRECT_URL;
   const QRLink = props.asset.asset_uuid
     ? `${encodeURIComponent(props.asset.asset_uuid)}`
     : null;
@@ -106,8 +106,8 @@ const AssetCard: React.FC<AssetCardProps> = (props) => {
             {props.asset.location_name === "tsd"
               ? "The Spiffy Dapper"
               : props.asset.location_name === "mdb"
-              ? "MadDog Bistro & Bar"
-              : props.asset.location_name}
+                ? "MadDog Bistro & Bar"
+                : props.asset.location_name}
           </p>
           <button
             onClick={(e) => {

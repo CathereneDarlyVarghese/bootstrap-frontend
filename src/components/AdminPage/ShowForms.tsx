@@ -6,7 +6,7 @@ interface ShowFormsProps {
   assetTypes: AssetType[];
   selectedAssetType: string | null;
   setSelectedAssetType: (value: string) => void;
-  jsonForm: any;
+  jsonForm: any; // eslint-disable-line
 }
 
 const ShowForms: React.FC<ShowFormsProps> = ({

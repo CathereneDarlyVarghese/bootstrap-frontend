@@ -31,7 +31,7 @@ const ReplaceExistingFileForm = ({ fileID, open, closeForm }) => {
     const newModifiedDateArrayEntry = new Date().toISOString().substring(0, 10);
 
     try {
-      const replacedFile = await replaceLatestInFileArray(
+      await replaceLatestInFileArray(
         authTokenObj.authToken,
         fileID,
         newFileArrayEntry,

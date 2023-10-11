@@ -85,7 +85,7 @@ const EditAssetForm = ({
       asset.asset_condition === "ACTIVE"
         ? AssetCondition.ACTIVE
         : AssetCondition.INACTIVE,
-    asset_uuid: asset.asset_uuid
+    asset_uuid: asset.asset_uuid,
   };
   const [formData, setFormData] = useState<Asset>(defaultFormData);
 
@@ -120,7 +120,13 @@ const EditAssetForm = ({
     };
 
     handleLocationChange();
-  }, [formData.asset_location]);
+  }, [
+    formData.asset_location,
+    assetSections,
+    defaultFormData.asset_location,
+    defaultFormData.asset_section,
+    formData.asset_section,
+  ]);
 
   useEffect(() => {
     const handleSectionChange = async () => {
@@ -150,7 +156,13 @@ const EditAssetForm = ({
     };
 
     handleSectionChange();
-  }, [formData.asset_section]);
+  }, [
+    formData.asset_section,
+    assetPlacements,
+    defaultFormData.asset_placement,
+    defaultFormData.asset_section,
+    formData.asset_placement,
+  ]);
 
   const handleSubmitForm = async (event) => {
     handleUnfocus();
@@ -195,7 +207,7 @@ const EditAssetForm = ({
   };
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedData: any) => updateAsset(token, asset.asset_id, updatedData),
+    mutationFn: (updatedData: Asset) => updateAsset(token, asset.asset_id, updatedData),
     onSuccess: () => {
       toast.success("Asset Edited Successfully");
       setEditFormOpen(false);
@@ -559,6 +571,7 @@ const EditAssetForm = ({
                           if (selectedLocation) {
                             setAddSection(true);
                           } else {
+                            // eslint-disable-next-line
                             alert("Please select a location first.");
                           }
                         }}
@@ -617,8 +630,8 @@ const EditAssetForm = ({
                           if (selectedLocation && selectedSection) {
                             setAddPlacement(true);
                           } else {
+                            // eslint-disable-next-line
                             alert(
-                              // eslint-disable-line
                               "Please select a location and section first.",
                             );
                           }

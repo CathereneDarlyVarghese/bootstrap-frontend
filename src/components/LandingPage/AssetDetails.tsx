@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -32,7 +32,7 @@ interface AssetDetailsProps {
   setAssetId: (id: string | null) => void;
   closeAsset: () => void;
   Asset: IncomingAsset | null;
-  tabIndex: any;
+  tabIndex: number;
   setTabIndex: (tabIndex) => void;
 }
 
@@ -57,23 +57,18 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const [selectedLocation] = useState<string>(Asset.location_name);
 
   // ====== Effects ======
-
-  // Initial data fetching
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchData = async () => {
+      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+        "query-locations",
+      ]);
+      const types = await getAllAssetTypes(authTokenObj.authToken);
+      setAssetTypes(types);
+      setLocations(queryLocations);
+    };
 
-  // Logic for fetching initial data
-  const fetchData = async () => {
-    const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-      "query-locations",
-    ]);
-    const types = await getAllAssetTypes(authTokenObj.authToken);
-    fetchAssetPlacements();
-    fetchAssetSections();
-    setAssetTypes(types);
-    setLocations(queryLocations);
-  };
+    fetchData();
+  }, [authTokenObj.authToken, queryClient]);
 
   const fetchAssetPlacements = async () => {
     const res = await getAssetPlacements(authTokenObj.authToken);
@@ -285,7 +280,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 <figure className="rounded-none">
                   <img
                     src={Asset.images_array[0]}
-                    alt="Asset Image"
+                    alt="An Asset"
                     className="rounded-xl h-48 object-cover mx-auto"
                   />
                 </figure>
@@ -401,6 +396,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     className="mx-3"
                     onClick={async () => {
                       if (
+                        // eslint-disable-next-line
                         window.confirm(
                           "Are you sure you want to delete this asset?",
                         )

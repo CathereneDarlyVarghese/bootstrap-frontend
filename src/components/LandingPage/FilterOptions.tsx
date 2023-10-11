@@ -65,10 +65,10 @@ export const FilterOptions = ({
       }
     } else if (selectedButtonsStatus.includes(buttonIndex)) {
       setSelectedButtonsStatus(
-        selectedButtonsStatus.filter((index) => index !== buttonIndex)
+        selectedButtonsStatus.filter((index) => index !== buttonIndex),
       );
       selectedStatusIds = selectedStatusIds.filter(
-        (statusId) => statusId !== statuses[buttonIndex].status_id
+        (statusId) => statusId !== statuses[buttonIndex].status_id,
       );
     } else {
       setSelectedButtonsStatus([...selectedButtonsStatus, buttonIndex]);
@@ -129,16 +129,15 @@ export const FilterOptions = ({
         }
         setSelectedButtonsPlacement([-1, ...allIndices]);
         selectedPlacementNames = placements.map(
-          (placement) => placement.placement_name
+          (placement) => placement.placement_name,
         );
       }
     } else if (selectedButtonsPlacement.includes(buttonIndex)) {
       setSelectedButtonsPlacement(
-        selectedButtonsPlacement.filter((index) => index !== buttonIndex)
+        selectedButtonsPlacement.filter((index) => index !== buttonIndex),
       );
       selectedPlacementNames = selectedPlacementNames.filter(
-        (placementName) =>
-          placementName !== placements[buttonIndex].placement_name
+        (placementName) => placementName !== placements[buttonIndex].placement_name,
       );
     } else {
       setSelectedButtonsPlacement([...selectedButtonsPlacement, buttonIndex]);
@@ -153,20 +152,18 @@ export const FilterOptions = ({
 
   useEffect(() => {
     const getPlacements = async () => {
-      try {
-        if (selectedButtonsPlacement.length === 0) {
-          const fetchedPlacements = await getAssetPlacements(
-            authTokenObj.authToken
-          );
+      if (selectedButtonsPlacement.length === 0) {
+        const fetchedPlacements = await getAssetPlacements(
+          authTokenObj.authToken,
+        );
 
-          if (placementsRef.current.length === 0) {
-            placementsRef.current = fetchedPlacements;
-          }
+        if (placementsRef.current.length === 0) {
+          placementsRef.current = fetchedPlacements;
         }
-      } catch (error) {}
+      }
     };
     getPlacements();
-  }, []);
+  }, [authTokenObj.authToken, selectedButtonsPlacement.length]);
 
   return (
     <div className="p-2">

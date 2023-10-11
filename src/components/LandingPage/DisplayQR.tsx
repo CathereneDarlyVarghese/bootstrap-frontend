@@ -4,10 +4,13 @@ import { useRef, useState, useEffect } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
-import { AssetCondition } from "../../enums";
 import { useNavigate } from "react-router";
+import { Asset } from "types";
+import { AssetCondition } from "../../enums";
 
-const DisplayQR = ({ showQr, closeQr, asset, link }) => {
+const DisplayQR = ({
+  showQr, closeQr, asset, link,
+}) => {
   const qrCodeRef = useRef(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -19,10 +22,10 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
     html2canvas(qrCodeElement).then((canvas) => {
       const imageURL = canvas.toDataURL("image/png");
 
-      const link = document.createElement("a");
-      link.href = imageURL;
-      link.download = `QR_Code_${asset.asset_name}.png`;
-      link.click();
+      const QRlink = document.createElement("a");
+      QRlink.href = imageURL;
+      QRlink.download = `QR_Code_${asset.asset_name}.png`;
+      QRlink.click();
     });
   };
 
@@ -31,7 +34,7 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
     setToken(data);
   }, []);
 
-  var {
+  const {
     asset_type,
     location_name,
     placement_name,
@@ -42,30 +45,23 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
   } = asset;
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedAsset: any) =>
-      updateAsset(token, updatedAsset.asset_id, updatedAsset),
-    onSettled: () => {},
+    mutationFn: (updatedAssetObj: Asset) => updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
     onSuccess: () => {
       toast.success("Asset's QR Code Unlinked Successfully!");
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Unlink QR Code from Asset");
     },
   });
 
   const handleSubmitForm = async (event) => {
     event.preventDefault();
-    try {
-      updatedAsset.asset_condition = AssetCondition[asset.asset_condition];
+    updatedAsset.asset_condition = AssetCondition[asset.asset_condition];
 
-      updatedAsset.asset_uuid = null;
+    updatedAsset.asset_uuid = null;
 
-      console.log("Submitting Asset ==>> ", updatedAsset);
-      assetUpdateMutation.mutateAsync(updatedAsset);
-    } catch (error) {
-      console.error("Failed to update asset:", error);
-    }
+    assetUpdateMutation.mutateAsync(updatedAsset);
   };
 
   return (
@@ -117,8 +113,9 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
                   className="btn btn-sm bg-red-700 hover:bg-red-700 border-none"
                   onClick={(e) => {
                     e.stopPropagation();
+                    // eslint-disable-next-line
                     const confirmed = window.confirm(
-                      "Are you sure you want to unlink the QR from this asset?"
+                      "Are you sure you want to unlink the QR from this asset?",
                     );
                     if (confirmed) {
                       handleSubmitForm(e);

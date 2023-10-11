@@ -16,7 +16,7 @@ const AddDocumentsForm = ({
   locationID = null,
 }) => {
   // State Initialization
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<File>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
   const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const queryClient = useQueryClient();

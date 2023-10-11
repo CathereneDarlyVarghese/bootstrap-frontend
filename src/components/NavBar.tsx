@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from "react";
 import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
@@ -57,12 +59,15 @@ const NavBar = () => {
     }
   };
 
-  const TABS = {
-    "/home": ".asset-tab",
-    "/work-orders": ".workorder-tab",
-    "/document/location": ".documents-tab",
-    "/status-checks": ".status-tab",
-  };
+  const TABS = useMemo(
+    () => ({
+      "/home": ".asset-tab",
+      "/work-orders": ".workorder-tab",
+      "/document/location": ".documents-tab",
+      "/status-checks": ".status-tab",
+    }),
+    [],
+  );
 
   // Effect: Update class based on route
   useEffect(() => {
@@ -131,13 +136,9 @@ const NavBar = () => {
     }
   };
 
-  useEffect(() => {
-    fetchLocations();
-  }, [urlLocationId]);
-
   // UseQuery to get locations
   useQuery({
-    queryKey: ["query-locations"],
+    queryKey: ["query-locations", urlLocationId],
     queryFn: fetchLocations,
   });
 

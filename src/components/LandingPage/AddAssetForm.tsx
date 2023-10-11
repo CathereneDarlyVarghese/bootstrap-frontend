@@ -69,13 +69,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   // edit search term when adding asset
   const [, setSearchTerm] = useAtom(searchTermAtom);
 
-  // ====== Effects ======
-
-  // Initial data fetching
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   // ====== Helpers & Handlers ======
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatus(event.target.value);
@@ -95,16 +88,19 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   };
 
   // Logic for fetching initial data
-  const fetchData = async () => {
-    const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-      "query-locations",
-    ]);
-    const types = await getAllAssetTypes(authTokenObj.authToken);
-    fetchAssetPlacements();
-    fetchAssetSections();
-    setAssetTypes(types);
-    setLocations(queryLocations);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+        "query-locations",
+      ]);
+      setLocations(queryLocations);
+
+      const types = await getAllAssetTypes(authTokenObj.authToken);
+      setAssetTypes(types);
+    };
+
+    fetchData();
+  }, [authTokenObj.authToken, queryClient]);
 
   // Form submission handler
   const handleSubmit = async (event) => {
@@ -175,7 +171,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
       sectionAddMutation.mutateAsync(newSection);
     } else {
-      alert("Please select a location first.");
+      alert("Please select a location first."); // eslint-disable-line
     }
   };
 
@@ -193,7 +189,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
         placementAddMutation.mutate(newPlacement);
       }
     } else {
-      alert("Please select a location and section first.");
+      alert("Please select a location and section first."); // eslint-disable-line
     }
   };
 
@@ -207,7 +203,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setFilteredSections(sections);
   };
 
-  const { data: AssetSections } = useQuery({
+  useQuery({
     queryKey: ["query-assetSectionsForm", location],
     queryFn: fetchAssetSections,
   });
@@ -389,7 +385,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   type="file"
                   onChange={(e) => {
                     setFile(e.target.files[0]);
-                    const palceholderText = e.target.files[0];
                   }}
                   className="block w-full text-md text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3 hidden"
                   id="upload"
@@ -519,7 +514,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                           if (location) {
                             setAddSection(true);
                           } else {
-                            alert("Please select a location first.");
+                            alert("Please select a location first."); // eslint-disable-line
                           }
                         }}
                       >
@@ -564,6 +559,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                           if (location && selectedSection) {
                             setAddPlacement(true);
                           } else {
+                            // eslint-disable-next-line
                             alert(
                               "Please select a location and section first.",
                             );

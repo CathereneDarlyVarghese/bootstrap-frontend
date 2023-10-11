@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
+import { Asset } from "types";
 import { AssetCondition } from "../../enums";
 
 const ConfirmModal = ({
@@ -13,29 +14,26 @@ const ConfirmModal = ({
   open,
   setOpen,
 }) => {
-  var {
-    asset_type,
-    location_name,
-    placement_name,
-    section_name,
-    images_array,
-    next_asset_check_date,
+  const {
+    asset_type: assetTypeSelected,
+    location_name: locationNameSelected,
+    placement_name: placementNameSelected,
+    section_name: sectionNameSelected,
+    images_array: imagesArraySelected,
+    next_asset_check_date: nextAssetCheckDateSelected,
     ...updatedAsset
   } = selectedAsset;
 
-  console.log("Selected Asset ==>> ", selectedAsset);
-  console.log("Linked Asset ==>> ", linkedAsset);
-
-  var toBeUnlinkedAsset = null;
+  let toBeUnlinkedAsset = null;
 
   if (linkedAsset) {
-    var {
-      asset_type,
-      location_name,
-      placement_name,
-      section_name,
-      images_array,
-      next_asset_check_date,
+    const {
+      asset_type: assetTypeLinked,
+      location_name: locationNameLinked,
+      placement_name: placementNameLinked,
+      section_name: sectionNameLinked,
+      images_array: imagesArrayLinked,
+      next_asset_check_date: nextAssetCheckDateLinked,
       ...rest
     } = linkedAsset;
 
@@ -50,38 +48,28 @@ const ConfirmModal = ({
 
   const handleSubmitForm = async (event) => {
     event.preventDefault();
-    try {
-      updatedAsset.asset_condition =
-        AssetCondition[selectedAsset.asset_condition];
+    updatedAsset.asset_condition = AssetCondition[selectedAsset.asset_condition];
 
-      updatedAsset.asset_uuid = assetUUID;
+    updatedAsset.asset_uuid = assetUUID;
 
-      if (toBeUnlinkedAsset) {
-        toBeUnlinkedAsset.asset_condition =
-          AssetCondition[linkedAsset.asset_condition];
+    if (toBeUnlinkedAsset) {
+      toBeUnlinkedAsset.asset_condition = AssetCondition[linkedAsset.asset_condition];
 
-        toBeUnlinkedAsset.asset_uuid = null;
+      toBeUnlinkedAsset.asset_uuid = null;
 
-        console.log("Unlinked Asset ==>> ", toBeUnlinkedAsset);
-        assetUpdateMutation.mutateAsync(toBeUnlinkedAsset);
-      }
-
-      console.log("Submitting Asset ==>> ", updatedAsset);
-      assetUpdateMutation.mutateAsync(updatedAsset);
-    } catch (error) {
-      console.error("Failed to update asset:", error);
+      assetUpdateMutation.mutateAsync(toBeUnlinkedAsset);
     }
+
+    assetUpdateMutation.mutateAsync(updatedAsset);
   };
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedAsset: any) =>
-      updateAsset(token, updatedAsset.asset_id, updatedAsset),
-    onSettled: () => {},
+    mutationFn: (updatedAssetObj: Asset) => updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
       queryClient.invalidateQueries(["query-asset"]);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("Failed to Update Asset's QR Code");
     },
   });
