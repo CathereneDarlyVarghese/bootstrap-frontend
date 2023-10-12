@@ -5,8 +5,8 @@ import { useEffect } from "react";
 // const tokenIdStorageAtom = atomWithStorage('tokenId', "")
 
 export const genericAtom = atom<any>({});
-export const useSyncedGenericAtom = (atom: PrimitiveAtom<any>, storeKey:string) => {
-  const [state, setState] = useAtom(atom);
+export const useSyncedGenericAtom = (atomObj: PrimitiveAtom<any>, storeKey:string) => {
+  const [state, setState] = useAtom(atomObj);
 
   useEffect(() => {
     localStorage.setItem(storeKey, JSON.stringify(state));
