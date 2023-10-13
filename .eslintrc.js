@@ -18,6 +18,7 @@ module.exports = {
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/anchor-has-content": "off",
     "max-len": "off",
+    "no-trailing-spaces": "off"
   },
   settings: {
     "import/resolver": {
