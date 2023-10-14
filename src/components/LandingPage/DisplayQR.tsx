@@ -6,6 +6,7 @@ import { updateAsset } from "services/assetServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { Asset } from "types";
+import { TfiClose } from "react-icons/tfi";
 import { AssetCondition } from "../../enums";
 
 const DisplayQR = ({
@@ -73,7 +74,15 @@ const DisplayQR = ({
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box">
+        <div className="modal-box cursor-default" onClick={(e) => e.stopPropagation()}>
+          <div className="ml-auto w-8">
+            <button onClick={(e) => {
+              e.stopPropagation();
+              closeQr();
+            }}>
+              <TfiClose className="font-bold text-black" />
+            </button>
+          </div>
           {link ? (
             <div className="flex flex-col gap-5 mx-auto p-8" ref={qrCodeRef}>
               <h3 className="font-bold text-lg place-self-center p-2">
@@ -139,7 +148,7 @@ const DisplayQR = ({
                 Link QR
               </button>
             )}
-            <button
+            {/* <button
               className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
               onClick={(e) => {
                 e.stopPropagation();
@@ -147,7 +156,7 @@ const DisplayQR = ({
               }}
             >
               Close
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

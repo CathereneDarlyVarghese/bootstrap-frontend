@@ -179,7 +179,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
             <div className="sticky top-0">
               <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
                 <div className="flex flex-col">
-                  {/* <button
+                  <button
                     className="ml-auto 2xl:hidden lg:block md:my-2"
                     onClick={() => {
                       if (tabIndex !== 0) {
@@ -194,7 +194,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       className="font-bold text-black dark:text-white"
 
                     />
-                  </button> */}
+                  </button>
 
                   <div className="flex flex-row">
                     <button
