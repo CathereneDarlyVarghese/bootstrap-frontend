@@ -329,9 +329,8 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
-          assetDetailsOpen ? "lg:hidden" : ""
-        } ${addAssetOpen ? "lg:hidden" : ""} `}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
+          } ${addAssetOpen ? "lg:hidden" : ""}`}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -437,9 +436,8 @@ const ListsLayout = () => {
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${
-                filtersOpen ? "hidden" : ""
-              }`}
+              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
+                }`}
             >
               <select
                 name=""
@@ -485,23 +483,57 @@ const ListsLayout = () => {
           ) : (
             <div className={`${assetDetailsOpen ? "lg:hidden" : ""}`}>
               {/* Render asset cards */}
-              {filteredAssets.map((asset) => (
-                <div
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setSelectedAsset(asset);
-                    setAssetId(asset.asset_id);
-                    setAddAssetOpen(false);
-                    setAssetDetailsOpen(true);
-                  }}
-                >
-                  <AssetCard
-                    asset={asset}
-                    imagePlaceholder="img"
-                    updatedDetailsTabIndex={detailsTabIndexRefresh}
-                  />
-                </div>
-              ))}
+              {incomingAssets
+                && (() => {
+                  const activeAssets = incomingAssets.filter((item) => item.asset_condition === "ACTIVE");
+                  const inactiveAssets = incomingAssets.filter((item) => item.asset_condition === "INACTIVE");
+                  return [...activeAssets, ...inactiveAssets].filter((asset) => {
+                    const searchTermMatch = searchTerm === ""
+                      || asset.asset_name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                      || asset.asset_type
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase());
+
+                    const statusFilterMatch = selectedStatusIds.length === 0
+                      || selectedStatusIds.includes(asset.asset_status);
+
+                    const sectionFilterMatch = selectedSectionNames.length === 0
+                      || selectedSectionNames.includes(asset.section_name);
+
+                    const placementFilterMatch = selectedPlacementNames.length === 0
+                      || selectedPlacementNames.includes(asset.placement_name);
+
+                    /* sectionFilterMatch AND placementFilterMatch */
+                    const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
+                    return (
+                      searchTermMatch
+                      && statusFilterMatch
+                      && (selectedSectionNames.length === 0
+                        || selectedPlacementNames.length === 0
+                        ? intersectionFilterMatch
+                        : intersectionFilterMatch)
+                    );
+                  });
+                })()
+                  .map((asset) => (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setSelectedAsset(asset);
+                        setAssetId(asset.asset_id);
+                        setAddAssetOpen(false);
+                        setAssetDetailsOpen(true);
+                      }}
+                    >
+                      <AssetCard
+                        asset={asset}
+                        imagePlaceholder="img"
+                        updatedDetailsTabIndex={detailsTabIndexRefresh}
+                      />
+                    </div>
+                  ))}
               {currentAssetUuid && (
                 <button
                   className="btn bt-sm mx-auto text-center text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
@@ -519,15 +551,14 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
-          logoClicked
-            ? "lg:hidden"
-            : assetDetailsOpen
-              ? "w-2/3 lg:w-full"
-              : addAssetOpen
-                ? "lg:w-full"
-                : "lg:hidden"
-        }`}
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked
+          ? "lg:hidden"
+          : assetDetailsOpen
+            ? "w-2/3 lg:w-full"
+            : addAssetOpen
+              ? "lg:w-full"
+              : "lg:hidden"
+          }`}
         id="style-7"
       >
         {/* Render asset details */}

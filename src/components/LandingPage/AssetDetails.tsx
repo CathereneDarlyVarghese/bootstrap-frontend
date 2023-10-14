@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useAtom } from "jotai";
 import { AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -25,6 +26,7 @@ import {
 import { getAllAssetTypes } from "services/assetTypeServices";
 import { getAssetPlacements } from "services/assetPlacementServices";
 import { getAssetSections } from "services/assetSectionServices";
+import { searchTermAtom } from "./ListsLayout";
 import EditAssetForm from "./EditAssetForm";
 
 interface AssetDetailsProps {
@@ -55,6 +57,8 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   const [, setFilteredSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
   const [selectedLocation] = useState<string>(Asset.location_name);
+  const [, setSearchTerm] = useAtom(searchTermAtom);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // ====== Effects ======
   useEffect(() => {
@@ -167,15 +171,82 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
           assetPlacement={Asset.placement_name}
         />
       ) : (
-        <div
-          className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
-          id="style-7"
-        >
-          <div className="sticky top-0">
-            <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
-              <div className="flex flex-col">
+        <>
+          <div
+            className="h-5/6 mx-4 md:mx-0 mt-2 p-5 pt-0 bg-white dark:bg-gray-800 border-blue-900 rounded-xl overflow-y-auto"
+            id="style-7"
+          >
+            <div className="sticky top-0">
+              <div className="flex 2xl:flex-row lg:flex-col gap-5 mb-3 mt-5 relative bg-white dark:bg-gray-800">
+                <div className="flex flex-col">
+                  {/* <button
+                    className="ml-auto 2xl:hidden lg:block md:my-2"
+                    onClick={() => {
+                      if (tabIndex !== 0) {
+                        setTabIndex(0);
+                      } else {
+                        setAssetId(null);
+                        closeAsset();
+                      }
+                    }}
+                  >
+                    <TfiClose
+                      className="font-bold text-black dark:text-white"
+
+                    />
+                  </button> */}
+
+                  <div className="flex flex-row">
+                    <button
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${tabIndex === 0
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                        }`}
+                      onClick={() => {
+                        setTabIndex(0);
+                      }}
+                    >
+                      Info
+                    </button>
+                    <button
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                        }`}
+                      onClick={() => {
+                        setTabIndex(1);
+                      }}
+                    >
+                      Documents
+                    </button>
+                    <button
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                        }`}
+                      onClick={() => {
+                        setTabIndex(2);
+                      }}
+                    >
+                      Status Checks
+                    </button>
+                    <button
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
+                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
+                        : "text-gray-400 font-normal"
+                        }`}
+                      onClick={() => {
+                        setTabIndex(3);
+                      }}
+                    >
+                      Maintenance
+                    </button>
+                  </div>
+                </div>
+
                 <button
-                  className="ml-auto 2xl:hidden lg:block md:my-2"
+                  className="ml-auto 2xl:block lg:hidden"
+                  // onClick={() => setAssetId(null)}
                   onClick={() => {
                     if (tabIndex !== 0) {
                       setTabIndex(0);
@@ -185,76 +256,15 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     }
                   }}
                 >
-                  {/* <img src={closeIcon} onClick={closeAsset} /> */}
                   <TfiClose
+
                     className="font-bold text-black dark:text-white"
-                    // onClick={closeAsset}
-                    // onClick={() => {
-                    //   if (tabIndex !== 0) {
-                    //     setTabIndex(0)
-                    //   }
-                    //   else {
-                    //     closeAsset()
-                    //   }
-                    // }}
                   />
                 </button>
-
-                <div className="flex flex-row">
-                  <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${
-                      tabIndex === 0
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
-                    }`}
-                    onClick={() => {
-                      setTabIndex(0);
-                    }}
-                  >
-                    Info
-                  </button>
-                  <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${
-                      tabIndex === 1
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
-                    }`}
-                    onClick={() => {
-                      setTabIndex(1);
-                    }}
-                  >
-                    Documents
-                  </button>
-                  <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${
-                      tabIndex === 2
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
-                    }`}
-                    onClick={() => {
-                      setTabIndex(2);
-                    }}
-                  >
-                    Status Checks
-                  </button>
-                  <button
-                    className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${
-                      tabIndex === 3
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
-                    }`}
-                    onClick={() => {
-                      setTabIndex(3);
-                    }}
-                  >
-                    Maintenance
-                  </button>
-                </div>
               </div>
 
-              <button
+              {/* <button
                 className="ml-auto 2xl:block lg:hidden"
-                // onClick={() => setAssetId(null)}
                 onClick={() => {
                   if (tabIndex !== 0) {
                     setTabIndex(0);
@@ -264,19 +274,12 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                   }
                 }}
               >
-                <TfiClose
-                  // onClick={() => {
-                  //   if (tabIndex !== 0) {
-                  //     setTabIndex(0)
-                  //   }
-                  // }}
-                  // onClick={closeAsset}
-                  className="font-bold text-black dark:text-white"
+                <TfiClose className="font-bold text-black dark:text-white"
                 />
-              </button>
+              </button> */}
             </div>
             {tabIndex === 0 ? (
-              <>
+              <div>
                 <figure className="rounded-none">
                   <img
                     src={Asset.images_array[0]}
@@ -320,41 +323,46 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       )}
                     </div>
                   </div>
+
+                  {/* more info section */}
                   <div>
-                    <h1 className="text-blue-900 dark:text-white font-semibold my-1">
-                      More Information:
-                    </h1>
+                    <div>
+                      <h1 className="text-blue-900 dark:text-white font-semibold my-1">
+                        More Information:
+                      </h1>
+                    </div>
+                    <div>
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                        Section:{" "}
+                        {Asset.section_name
+                          ? Asset.section_name
+                          : "Not Available"}
+                      </p>
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                        Placement:{" "}
+                        {Asset.placement_name
+                          ? Asset.placement_name
+                          : "Not Available"}
+                      </p>
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                        Purchase Value:{" "}
+                        {parseInt(Asset.asset_finance_purchase, 10)
+                          ? `$${parseInt(Asset.asset_finance_purchase, 10)}`
+                          : "Not Available"}
+                      </p>
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                        Current Value:{" "}
+                        {parseInt(Asset.asset_finance_current_value, 10)
+                          ? `$${parseInt(Asset.asset_finance_current_value, 10)}`
+                          : "Not Available"}
+                      </p>
+                      <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
+                        Notes:{" "}
+                        {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Section:{" "}
-                      {Asset.section_name
-                        ? Asset.section_name
-                        : "Not Available"}
-                    </p>
-                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Placement:{" "}
-                      {Asset.placement_name
-                        ? Asset.placement_name
-                        : "Not Available"}
-                    </p>
-                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Purchase Value:{" "}
-                      {parseInt(Asset.asset_finance_purchase, 10)
-                        ? `$${parseInt(Asset.asset_finance_purchase, 10)}`
-                        : "Not Available"}
-                    </p>
-                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Current Value:{" "}
-                      {parseInt(Asset.asset_finance_current_value, 10)
-                        ? `$${parseInt(Asset.asset_finance_current_value, 10)}`
-                        : "Not Available"}
-                    </p>
-                    <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                      Notes:{" "}
-                      {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
-                    </p>
-                  </div>
+
                   {/* <div className="my-2">
                     <h1 className="text-blue-900 dark:text-white font-semibold my-1">
                       Document:
@@ -366,6 +374,54 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       </h2>
                     </div>
                   </div> */}
+                  <div className="flex flex-row md:justify-center justify-start items-center my-2">
+                    <button
+                      className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
+                      onClick={() => {
+                        handleToggleAssetCondition.mutate(Asset.asset_condition);
+                        setSearchTerm(Asset.asset_name);
+                        setModalOpen(true);
+
+                        // setTimeout(() => {
+                        //   window.location.reload();
+                        // }, 1000);
+                      }}
+                    >
+                      {Asset.asset_condition
+                        === assetConditions[AssetCondition.ACTIVE]
+                        ? "Mark as Inactive"
+                        : "Mark as Active"}
+                    </button>
+                    <button
+                      title="Edit Asset"
+                      onClick={() => {
+                        setEditFormOpen(true);
+                      }}
+                      className="mx-3"
+                    >
+                      <FiEdit3 className="text-xl text-black dark:text-white" />
+                    </button>
+                    <button
+                      className="mx-3"
+                      onClick={async () => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this asset?",
+                          )
+                        ) {
+                          deleteAssetMutation.mutate();
+                        }
+                      }}
+                    >
+                      <AiOutlineDelete className="text-2xl mx-3 text-black dark:text-white" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : tabIndex === 1 ? (
+              <div>
+                <div>
+                  <AssetDocumentsPage selectedAsset={Asset} />
                 </div>
                 <div className="flex flex-row md:justify-center justify-start items-center my-2">
                   <button
@@ -379,7 +435,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     }}
                   >
                     {Asset.asset_condition
-                    === assetConditions[AssetCondition.ACTIVE]
+                      === assetConditions[AssetCondition.ACTIVE]
                       ? "Mark as Inactive"
                       : "Mark as Active"}
                   </button>
@@ -408,10 +464,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     <AiOutlineDelete className="text-2xl mx-3 text-black dark:text-white" />
                   </button>
                 </div>
-              </>
-            ) : tabIndex === 1 ? (
-              <div>
-                <AssetDocumentsPage selectedAsset={Asset} />
               </div>
             ) : tabIndex === 2 ? (
               <div>
@@ -431,8 +483,27 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 </p>
               </div>
             )}
+
           </div>
-        </div>
+
+          <div>
+            <input type="checkbox" id="my_modal_6" checked={modalOpen} className="modal-toggle" />
+            <div className="modal">
+              <div className="modal-box">
+                <div className="flex flex-row items-center justify-center">
+                  <p className="py-4 font-bold text-lg">{`Asset marked as ${Asset.asset_condition === "ACTIVE" ? "Inactive" : "Active"}`}</p>
+                </div>
+                <div className="flex flex-row items-center justify-center">
+                  <button className="btn bg-blue-900 hover:bg-blue-900" onClick={() => {
+                    setModalOpen(false);
+                    setAssetId(null);
+                    closeAsset();
+                  }}>Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );

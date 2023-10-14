@@ -86,11 +86,11 @@ const DisplayQR = ({
               <p>No QR code has been linked to this Asset</p>
             </div>
           )}
-          <div className="flex flex-row justify-center gap-3">
+          <div className="flex flex-row justify-center gap-3 md:gap-1">
             {link && (
               <>
                 <button
-                  className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
+                  className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDownload();
@@ -99,7 +99,7 @@ const DisplayQR = ({
                   Download
                 </button>
                 <button
-                  className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
+                  className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
                   onClick={(e) => {
                     e.stopPropagation();
                     closeQr();
@@ -110,7 +110,7 @@ const DisplayQR = ({
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-sm bg-red-700 hover:bg-red-700 border-none"
+                  className="btn btn-sm md:btn-xs bg-red-700 hover:bg-red-700 border-none"
                   onClick={(e) => {
                     e.stopPropagation();
                     // eslint-disable-next-line
@@ -140,7 +140,7 @@ const DisplayQR = ({
               </button>
             )}
             <button
-              className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
+              className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
               onClick={(e) => {
                 e.stopPropagation();
                 closeQr();
