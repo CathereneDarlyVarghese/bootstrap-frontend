@@ -4,7 +4,9 @@ import { useEffect } from "react";
 
 // const tokenIdStorageAtom = atomWithStorage('tokenId', "")
 
+// eslint-disable-next-line
 export const genericAtom = atom<any>({});
+// eslint-disable-next-line
 export const useSyncedGenericAtom = (atomObj: PrimitiveAtom<any>, storeKey:string) => {
   const [state, setState] = useAtom(atomObj);
 
