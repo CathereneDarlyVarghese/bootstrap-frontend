@@ -201,7 +201,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${tabIndex === 0
                         ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
                         : "text-gray-400 font-normal"
-                        }`}
+                      }`}
                       onClick={() => {
                         setTabIndex(0);
                       }}
@@ -212,7 +212,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
                         ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
                         : "text-gray-400 font-normal"
-                        }`}
+                      }`}
                       onClick={() => {
                         setTabIndex(1);
                       }}
@@ -223,7 +223,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
                         ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
                         : "text-gray-400 font-normal"
-                        }`}
+                      }`}
                       onClick={() => {
                         setTabIndex(2);
                       }}
@@ -234,7 +234,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
                         ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
                         : "text-gray-400 font-normal"
-                        }`}
+                      }`}
                       onClick={() => {
                         setTabIndex(3);
                       }}

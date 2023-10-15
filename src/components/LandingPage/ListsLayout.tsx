@@ -169,8 +169,6 @@ const ListsLayout = () => {
     );
   }
 
-  const filteredAssets = incomingAssets.filter(assetFilter);
-
   // Fetching assets data and handlers
   const fetchAllAssets = async () => {
     try {
@@ -330,7 +328,7 @@ const ListsLayout = () => {
       />
       <div
         className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
-          } ${addAssetOpen ? "lg:hidden" : ""}`}
+        } ${addAssetOpen ? "lg:hidden" : ""}`}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -437,7 +435,7 @@ const ListsLayout = () => {
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
               className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
-                }`}
+              }`}
             >
               <select
                 name=""
@@ -558,7 +556,7 @@ const ListsLayout = () => {
             : addAssetOpen
               ? "lg:w-full"
               : "lg:hidden"
-          }`}
+        }`}
         id="style-7"
       >
         {/* Render asset details */}
