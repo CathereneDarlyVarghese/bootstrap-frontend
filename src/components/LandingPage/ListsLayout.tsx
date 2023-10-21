@@ -12,7 +12,7 @@ import { getAssetPlacements } from "services/assetPlacementServices";
 import { TfiClose } from "react-icons/tfi";
 import { BsFilter } from "react-icons/bs";
 import { AiOutlineScan } from "react-icons/ai";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -40,7 +40,6 @@ const ListsLayout = () => {
 
   // Location states
   const [location] = useSyncedAtom(locationAtom);
-  const URL = useLocation();
 
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
@@ -74,12 +73,8 @@ const ListsLayout = () => {
     },
   ];
   const [assetSections, setAssetSections] = useState<AssetSection[]>(defaultAssetSections);
-  const [selectedAssetSection] = useState<AssetSection>(
-    defaultAssetSections[0],
-  );
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
-    defaultAssetPlacements,
-  );
+  const [selectedAssetSection] = useState<AssetSection>(defaultAssetSections[0]);
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(defaultAssetPlacements);
   const [selectedAssetPlacementName] = useState<string>("");
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     [],
@@ -94,7 +89,7 @@ const ListsLayout = () => {
 
   // ----------------------- FUNCTION DECLARATIONS -----------------------
 
-  const formatResponse = (res: unknown) => JSON.stringify(res, null, 2);
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
 
   // Functions for UI manipulation
   const addClass = (selectClass, addClassObj) => {
@@ -133,32 +128,35 @@ const ListsLayout = () => {
   };
 
   useEffect(() => {
-    const assetUuidFromUrl = new URLSearchParams(URL.search).get("asset_uuid");
+    const assetUuidFromUrl = new URLSearchParams(window.location.search).get(
+      "asset_uuid",
+    );
     setCurrentAssetUuid(assetUuidFromUrl);
 
     const linkedAssetIdFromUrl = new URLSearchParams(
       window.location.search,
     ).get("linked_asset_id");
     setLinkedAssetId(linkedAssetIdFromUrl);
-  }, [URL.search]);
+  }, [window.location.search]);
 
   function assetFilter(asset) {
     const searchTermMatch = searchTerm === ""
-      || asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase())
-      || asset.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
+    || asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase())
+    || asset.asset_type.toLowerCase().includes(searchTerm.toLowerCase());
 
     const statusFilterMatch = selectedStatusIds.length === 0
-      || selectedStatusIds.includes(asset.asset_status);
+    || selectedStatusIds.includes(asset.asset_status);
 
     const sectionFilterMatch = selectedSectionNames.length === 0
-      || selectedSectionNames.includes(asset.section_name);
+    || selectedSectionNames.includes(asset.section_name);
 
     const placementFilterMatch = selectedPlacementNames.length === 0
-      || selectedPlacementNames.includes(asset.placement_name);
+    || selectedPlacementNames.includes(asset.placement_name);
 
     const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
 
-    const assetUuidFilterMatch = currentAssetUuid === null || asset.asset_uuid === currentAssetUuid;
+    const assetUuidFilterMatch = currentAssetUuid === null
+    || asset.asset_uuid === currentAssetUuid;
 
     return (
       searchTermMatch
@@ -168,6 +166,8 @@ const ListsLayout = () => {
         : intersectionFilterMatch && assetUuidFilterMatch)
     );
   }
+
+  const filteredAssets = incomingAssets.filter(assetFilter);
 
   // Fetching assets data and handlers
   const fetchAllAssets = async () => {
@@ -235,7 +235,7 @@ const ListsLayout = () => {
     setSearchTerm(
       scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : "",
     );
-  }, [setSearchTerm]);
+  }, []);
 
   // Note: You can add other useEffect hooks here as necessary
 
@@ -327,8 +327,9 @@ const ListsLayout = () => {
         closeOnClick
       />
       <div
-        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${assetDetailsOpen ? "lg:hidden" : ""
-        } ${addAssetOpen ? "lg:hidden" : ""}`}
+        className={`w-1/3 h-5/6 rounded-xl px-2 py-0 overflow-y-auto lg:w-full asset-card bg-white dark:bg-gray-800 ${
+          assetDetailsOpen ? "lg:hidden" : ""
+        } ${addAssetOpen ? "lg:hidden" : ""} `}
         id="style-7"
       >
         <div className="flex flex-col">
@@ -406,35 +407,34 @@ const ListsLayout = () => {
                 className={`bg-gray-100 mt-1 ${showOptions ? "" : "hidden"} `}
               >
                 {incomingAssets
-                  && incomingAssets
-                    .filter((a) => {
-                      const SearchTermMatch = a.asset_name
-                        .toLowerCase()
-                        .startsWith(searchTerm.toLowerCase())
-                        && searchTerm !== "";
+                && incomingAssets
+                  .filter((a) => {
+                    const SearchTermMatch = a.asset_name.toLowerCase().startsWith(searchTerm.toLowerCase())
+                    && searchTerm !== "";
 
-                      return SearchTermMatch;
-                    })
-                    .slice(0, 5)
-                    .map((asset) => (
+                    return SearchTermMatch;
+                  })
+                  .slice(0, 5)
+                  .map((asset) => (
                       <div
                         className="bg-gray-100 hover:bg-gray-300"
                         onClick={() => {
                           setSearchTerm(asset.asset_name);
                           setShowOptions(false);
                         }}
-                      >
-                        <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
-                          {asset.asset_name}
-                        </p>
-                      </div>
-                    ))}
+                    >
+                      <p className="ml-10 font-sans text-blue-700 cursor-pointer py-1">
+                        {asset.asset_name}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
           <div className={`${assetDetailsOpen ? "lg:hidden" : ""} mt-5`}>
             <div
-              className={`flex flex-row w-full justify-around mt-12 ${filtersOpen ? "hidden" : ""
+              className={`flex flex-row w-full justify-around mt-12 ${
+                filtersOpen ? "hidden" : ""
               }`}
             >
               <select
@@ -447,13 +447,13 @@ const ListsLayout = () => {
                 <option value="">All Sections</option>
 
                 {assetSections
-                  && assetSections
-                    .sort((a, b) => a.section_name.localeCompare(b.section_name))
-                    .map((section: AssetSection, index: number) => (
+                && assetSections
+                  .sort((a, b) => a.section_name.localeCompare(b.section_name))
+                  .map((section: AssetSection, index: number) => (
                       <option key={index} value={section.section_name}>
                         {section.section_name}
                       </option>
-                    ))}
+                  ))}
               </select>
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize text-black"
@@ -481,57 +481,23 @@ const ListsLayout = () => {
           ) : (
             <div className={`${assetDetailsOpen ? "lg:hidden" : ""}`}>
               {/* Render asset cards */}
-              {incomingAssets
-                && (() => {
-                  const activeAssets = incomingAssets.filter((item) => item.asset_condition === "ACTIVE");
-                  const inactiveAssets = incomingAssets.filter((item) => item.asset_condition === "INACTIVE");
-                  return [...activeAssets, ...inactiveAssets].filter((asset) => {
-                    const searchTermMatch = searchTerm === ""
-                      || asset.asset_name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                      || asset.asset_type
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase());
-
-                    const statusFilterMatch = selectedStatusIds.length === 0
-                      || selectedStatusIds.includes(asset.asset_status);
-
-                    const sectionFilterMatch = selectedSectionNames.length === 0
-                      || selectedSectionNames.includes(asset.section_name);
-
-                    const placementFilterMatch = selectedPlacementNames.length === 0
-                      || selectedPlacementNames.includes(asset.placement_name);
-
-                    /* sectionFilterMatch AND placementFilterMatch */
-                    const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
-                    return (
-                      searchTermMatch
-                      && statusFilterMatch
-                      && (selectedSectionNames.length === 0
-                        || selectedPlacementNames.length === 0
-                        ? intersectionFilterMatch
-                        : intersectionFilterMatch)
-                    );
-                  });
-                })()
-                  .map((asset) => (
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        setSelectedAsset(asset);
-                        setAssetId(asset.asset_id);
-                        setAddAssetOpen(false);
-                        setAssetDetailsOpen(true);
-                      }}
-                    >
-                      <AssetCard
-                        asset={asset}
-                        imagePlaceholder="img"
-                        updatedDetailsTabIndex={detailsTabIndexRefresh}
-                      />
-                    </div>
-                  ))}
+              {filteredAssets.map((asset) => (
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setSelectedAsset(asset);
+                    setAssetId(asset.asset_id);
+                    setAddAssetOpen(false);
+                    setAssetDetailsOpen(true);
+                  }}
+                >
+                  <AssetCard
+                    asset={asset}
+                    imagePlaceholder="img"
+                    updatedDetailsTabIndex={detailsTabIndexRefresh}
+                  />
+                </div>
+              ))}
               {currentAssetUuid && (
                 <button
                   className="btn bt-sm mx-auto text-center text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
@@ -549,13 +515,14 @@ const ListsLayout = () => {
         </div>
       </div>
       <div
-        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${logoClicked
-          ? "lg:hidden"
-          : assetDetailsOpen
-            ? "w-2/3 lg:w-full"
-            : addAssetOpen
-              ? "lg:w-full"
-              : "lg:hidden"
+        className={`w-2/3 z-20 h-6/6 p-2 md:p-0 overflow-y-auto bg-gray-200 dark:bg-black lg:bg-white lg:dark:bg-gray-700 md:pb-14 ${
+          logoClicked
+            ? "lg:hidden"
+            : assetDetailsOpen
+              ? "w-2/3 lg:w-full"
+              : addAssetOpen
+                ? "lg:w-full"
+                : "lg:hidden"
         }`}
         id="style-7"
       >

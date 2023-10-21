@@ -1,5 +1,5 @@
-import React, {
-  useEffect, useMemo, useRef, useState,
+import { 
+  useEffect, useMemo, useRef, useState, 
 } from "react";
 import { atom, useAtom } from "jotai";
 import { useNavigate, useLocation } from "react-router-dom";
