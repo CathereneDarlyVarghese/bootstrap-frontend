@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useAtom } from "jotai";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { getAssets } from "services/assetServices";
-import { getAssetSections } from "services/assetSectionServices";
-import { useQuery } from "@tanstack/react-query";
-import AssetCard from "components/LandingPage/AssetCard";
-import { useNavigate } from "react-router";
-import { searchTermAtom } from "components/LandingPage/ListsLayout";
-import { AssetPlacement, AssetSection, IncomingAsset } from "types";
-import { getAssetPlacements } from "services/assetPlacementServices";
-import { TfiClose } from "react-icons/tfi";
-import { BsFilter } from "react-icons/bs";
-import { toast } from "react-toastify";
+import React, { useState, useEffect, useRef } from 'react';
+import { useAtom } from 'jotai';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { getAssets } from 'services/assetServices';
+import { getAssetSections } from 'services/assetSectionServices';
+import { useQuery } from '@tanstack/react-query';
+import AssetCard from 'components/LandingPage/AssetCard';
+import { useNavigate } from 'react-router';
+import { searchTermAtom } from 'components/LandingPage/ListsLayout';
+import { AssetPlacement, AssetSection, IncomingAsset } from 'types';
+import { getAssetPlacements } from 'services/assetPlacementServices';
+import { TfiClose } from 'react-icons/tfi';
+import { BsFilter } from 'react-icons/bs';
+import { toast } from 'react-toastify';
 import {
   FilterOptions,
   selectedStatusIds,
   // selectedSectionNames,
   selectedPlacementNames,
-} from "../LandingPage/FilterOptions";
+} from '../LandingPage/FilterOptions';
 
-import SearchIcon from "../../icons/circle2017.png";
-import { locationAtom, useSyncedAtom } from "../../store/locationStore";
-import ConfirmModal from "./ConfirmModal";
+import SearchIcon from '../../icons/circle2017.png';
+import { locationAtom, useSyncedAtom } from '../../store/locationStore';
+import ConfirmModal from './ConfirmModal';
 
 const QrLinkingPage = () => {
   const selectRef = useRef<HTMLSelectElement>(null); // For resetting the section selector
@@ -29,7 +29,7 @@ const QrLinkingPage = () => {
   // Location states
   const [location] = useSyncedAtom(locationAtom);
   // Authentication
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   // Miscellaneous states
   const [, setGetResult] = useState<string | null>(null);
   const [, setDetailsTab] = useState(0); // Active tabs in asset details card
@@ -43,33 +43,32 @@ const QrLinkingPage = () => {
   // filter states
 
   const defaultAssetSections = [
-    { section_id: "", section_name: "", location_id: "" },
+    { section_id: '', section_name: '', location_id: '' },
   ];
   const defaultAssetPlacements = [
     {
-      placement_id: "",
-      placement_name: "",
-      section_id: "",
-      location_id: "",
+      placement_id: '',
+      placement_name: '',
+      section_id: '',
+      location_id: '',
     },
   ];
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
-    defaultAssetPlacements
+    defaultAssetPlacements,
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
-    []
+    [],
   );
-  const [assetSections, setAssetSections] =
-    useState<AssetSection[]>(defaultAssetSections);
+  const [assetSections, setAssetSections] = useState<AssetSection[]>(defaultAssetSections);
 
   // Buttons and filters
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
   const [selectedAssetSection] = useState<AssetSection>(
-    defaultAssetSections[0]
+    defaultAssetSections[0],
   );
-  const [selectedAssetPlacementName] = useState<string>("");
+  const [selectedAssetPlacementName] = useState<string>('');
   const [modalOpen, setModalOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -79,19 +78,19 @@ const QrLinkingPage = () => {
   // Fetching assets data and handlers
   const fetchAllFilteredAssets = async () => {
     try {
-      if (location.locationId !== "") {
+      if (location.locationId !== '') {
         const res = await getAssets(
           authTokenObj.authToken,
-          location.locationId
+          location.locationId,
         );
 
         setIncomingAssets(res);
 
         const linkedAssetId = new URLSearchParams(window.location.search).get(
-          "linked_asset_id"
+          'linked_asset_id',
         );
         const matchedAsset = res.find(
-          (asset) => asset.asset_id === linkedAssetId
+          (asset) => asset.asset_id === linkedAssetId,
         );
         if (matchedAsset) {
           setLinkedAsset(matchedAsset);
@@ -106,7 +105,7 @@ const QrLinkingPage = () => {
   };
 
   useQuery({
-    queryKey: ["query-asset", location, authTokenObj.authToken],
+    queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: fetchAllFilteredAssets,
     enabled: !!authTokenObj.authToken,
   });
@@ -115,38 +114,38 @@ const QrLinkingPage = () => {
   };
 
   const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
 
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("search", encodeURIComponent(newSearchTerm));
+    urlParams.set('search', encodeURIComponent(newSearchTerm));
     const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
+    window.history.pushState({}, '', newUrl);
   };
   const clearQueryParams = () => {
     const urlWithoutParams = window.location.origin + window.location.pathname;
-    window.history.pushState(null, "", urlWithoutParams);
+    window.history.pushState(null, '', urlWithoutParams);
   };
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const scannedSearchTerm = urlParams.get("search");
+    const scannedSearchTerm = urlParams.get('search');
     setSearchTerm(
-      scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : ""
+      scannedSearchTerm ? decodeURIComponent(scannedSearchTerm) : '',
     );
   }, [setSearchTerm]);
 
   const handleSectionSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const selectedValue = event.target.value;
-    setSelectedSectionNames(selectedValue === "" ? [] : [selectedValue]);
+    setSelectedSectionNames(selectedValue === '' ? [] : [selectedValue]);
   };
 
   const handleSectionReset = () => {
     if (selectRef.current) {
-      selectRef.current.value = "";
+      selectRef.current.value = '';
       setSelectedSectionNames([]);
     }
   };
@@ -154,7 +153,7 @@ const QrLinkingPage = () => {
     try {
       const res = await getAssetSections(authTokenObj.authToken);
       const filtered = res.filter(
-        (section: AssetSection) => section.location_id === location.locationId
+        (section: AssetSection) => section.location_id === location.locationId,
       );
       setAssetSections(filtered);
     } catch (err) {
@@ -165,8 +164,7 @@ const QrLinkingPage = () => {
     try {
       const res = await getAssetPlacements(authTokenObj.authToken);
       const filtered = res.filter(
-        (placement: AssetPlacement) =>
-          placement.location_id === location.locationId
+        (placement: AssetPlacement) => placement.location_id === location.locationId,
       );
       setAssetPlacements(filtered);
     } catch (err) {
@@ -175,13 +173,13 @@ const QrLinkingPage = () => {
   };
 
   useQuery({
-    queryKey: ["query-assetSections", location],
+    queryKey: ['query-assetSections', location],
     queryFn: fetchAssetSections,
     enabled: !!authTokenObj.authToken,
   });
   useQuery({
     queryKey: [
-      "query-assetPlacement",
+      'query-assetPlacement',
       location,
       selectedAssetSection.section_id,
       selectedAssetPlacementName,
@@ -216,7 +214,7 @@ const QrLinkingPage = () => {
                   </button>
                   <button
                     className="btn btn-sm bg-blue-900 hover:bg-blue-900"
-                    onClick={() => navigate("/scan")}
+                    onClick={() => navigate('/scan')}
                   >
                     Cancel
                   </button>
@@ -251,11 +249,11 @@ const QrLinkingPage = () => {
                   setShowOptions(true);
                 }}
               />
-              {searchTerm !== "" && (
+              {searchTerm !== '' && (
                 <button
                   className="ml-auto mr-5"
                   onClick={() => {
-                    setSearchTerm("");
+                    setSearchTerm('');
                     clearQueryParams();
                   }}
                 >
@@ -265,7 +263,7 @@ const QrLinkingPage = () => {
             </div>
             <div
               className={`flex flex-row gap-5 w-3/4 justify-center mt-5 ${
-                filtersOpen ? "hidden" : ""
+                filtersOpen ? 'hidden' : ''
               }`}
             >
               <select
@@ -277,11 +275,9 @@ const QrLinkingPage = () => {
               >
                 <option value="">All Sections</option>
 
-                {assetSections &&
-                  assetSections
-                    .sort((a, b) =>
-                      a.section_name.localeCompare(b.section_name)
-                    )
+                {assetSections
+                  && assetSections
+                    .sort((a, b) => a.section_name.localeCompare(b.section_name))
                     .map((section: AssetSection, index: number) => (
                       <option key={index} value={section.section_name}>
                         {section.section_name}
@@ -315,53 +311,48 @@ const QrLinkingPage = () => {
           ) : (
             <div> </div>
           )}
-          <div className={`flex flex-wrap ${filtersOpen ? "hidden" : ""}`}>
+          <div className={`flex flex-wrap ${filtersOpen ? 'hidden' : ''}`}>
             {/* Render asset cards */}
-            {incomingAssets &&
-              (() => {
+            {incomingAssets
+              && (() => {
                 const assetsArray = Array.isArray(incomingAssets)
                   ? incomingAssets
                   : incomingAssets
-                  ? [incomingAssets]
-                  : [];
+                    ? [incomingAssets]
+                    : [];
                 const activeAssets = assetsArray.filter(
-                  (item) => item.asset_condition === "ACTIVE"
+                  (item) => item.asset_condition === 'ACTIVE',
                 );
 
                 const inactiveAssets = assetsArray.filter(
-                  (item) => item.asset_condition === "INACTIVE"
+                  (item) => item.asset_condition === 'INACTIVE',
                 );
 
                 return [...activeAssets, ...inactiveAssets].filter((asset) => {
-                  const searchTermMatch =
-                    searchTerm === "" ||
-                    asset.asset_name
+                  const searchTermMatch = searchTerm === ''
+                    || asset.asset_name
                       .toLowerCase()
-                      .includes(searchTerm.toLowerCase()) ||
-                    asset.asset_type
+                      .includes(searchTerm.toLowerCase())
+                    || asset.asset_type
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase());
 
-                  const statusFilterMatch =
-                    selectedStatusIds.length === 0 ||
-                    selectedStatusIds.includes(asset.asset_status);
+                  const statusFilterMatch = selectedStatusIds.length === 0
+                    || selectedStatusIds.includes(asset.asset_status);
 
-                  const sectionFilterMatch =
-                    selectedSectionNames.length === 0 ||
-                    selectedSectionNames.includes(asset.section_name);
+                  const sectionFilterMatch = selectedSectionNames.length === 0
+                    || selectedSectionNames.includes(asset.section_name);
 
-                  const placementFilterMatch =
-                    selectedPlacementNames.length === 0 ||
-                    selectedPlacementNames.includes(asset.placement_name);
+                  const placementFilterMatch = selectedPlacementNames.length === 0
+                    || selectedPlacementNames.includes(asset.placement_name);
 
                   /* sectionFilterMatch AND placementFilterMatch */
-                  const intersectionFilterMatch =
-                    sectionFilterMatch && placementFilterMatch;
+                  const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
                   return (
-                    searchTermMatch &&
-                    statusFilterMatch &&
-                    (selectedSectionNames.length === 0 ||
-                    selectedPlacementNames.length === 0
+                    searchTermMatch
+                    && statusFilterMatch
+                    && (selectedSectionNames.length === 0
+                      || selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : intersectionFilterMatch)
                   );
@@ -369,12 +360,12 @@ const QrLinkingPage = () => {
               })().map((asset) => (
                 <div
                   className="w-1/3 lg:w-1/2 md:w-full"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   onClick={() => {
                     if (asset === linkedAsset) {
                       setSelectedAsset(null);
                       toast.warn(
-                        "This QR Code is already linked to this Asset!"
+                        'This QR Code is already linked to this Asset!',
                       );
                     } else {
                       setSelectedAsset(asset);
@@ -402,7 +393,7 @@ const QrLinkingPage = () => {
           linkedAsset={linkedAsset}
           selectedAsset={selectedAsset}
           assetUUID={new URLSearchParams(window.location.search).get(
-            "asset_uuid"
+            'asset_uuid',
           )}
           open={modalOpen}
           setOpen={() => setModalOpen(false)}
