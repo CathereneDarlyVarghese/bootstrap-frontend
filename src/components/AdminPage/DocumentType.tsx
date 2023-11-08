@@ -1,27 +1,27 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   createDocumentType,
   deleteDocumentType,
   getAllDocumentTypes,
-} from "services/documentTypeServices";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { DocType } from "types";
+} from 'services/documentTypeServices';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { DocType } from 'types';
 
 const AddDocumentType = () => {
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<DocType[]>(null);
-  const [selectedDocumentType, setSelectedDocumentType] = useState<string>("");
+  const [selectedDocumentType, setSelectedDocumentType] = useState<string>('');
   const queryClient = useQueryClient();
-  const [newDocumentType, setNewDocumentType] = useState<string>("");
+  const [newDocumentType, setNewDocumentType] = useState<string>('');
 
   // Handler for adding document type
-  const handleAddDocumentType = async (e) => {
+  const handleAddDocumentType = async e => {
     e.preventDefault();
 
-    if (newDocumentType.trim() === "") {
-      toast.error("Document Type type must not be empty");
+    if (newDocumentType.trim() === '') {
+      toast.error('Document Type type must not be empty');
       return;
     }
 
@@ -29,9 +29,9 @@ const AddDocumentType = () => {
       document_type_id: null,
       document_type: newDocumentType,
     });
-    queryClient.invalidateQueries(["query-documentTypesAdmin"]);
-    toast.success("Document Type added successfully");
-    setNewDocumentType("");
+    queryClient.invalidateQueries(['query-documentTypesAdmin']);
+    toast.success('Document Type added successfully');
+    setNewDocumentType('');
   };
 
   const fetchDocumentTypes = async () => {
@@ -40,7 +40,7 @@ const AddDocumentType = () => {
   };
 
   useQuery({
-    queryKey: ["query-documentTypesAdmin"],
+    queryKey: ['query-documentTypesAdmin'],
     queryFn: fetchDocumentTypes,
   });
 
@@ -48,12 +48,12 @@ const AddDocumentType = () => {
     (id: string) => deleteDocumentType(authTokenObj.authToken, id),
     {
       onSuccess: () => {
-        toast.info("Document Type deleted successfully");
-        setSelectedDocumentType("");
-        queryClient.invalidateQueries(["query-documentTypesAdmin"]);
+        toast.info('Document Type deleted successfully');
+        setSelectedDocumentType('');
+        queryClient.invalidateQueries(['query-documentTypesAdmin']);
       },
       onError: () => {
-        toast.error("Failed to delete DocumentType");
+        toast.error('Failed to delete DocumentType');
       },
     },
   );
@@ -71,7 +71,7 @@ const AddDocumentType = () => {
             placeholder="Enter Document Type"
             className="input input-sm w-full border border-slate-300 my-5"
             value={newDocumentType}
-            onChange={(e) => setNewDocumentType(e.target.value)}
+            onChange={e => setNewDocumentType(e.target.value)}
           />
           <div className="flex flex-row justify-left">
             <button
@@ -92,13 +92,13 @@ const AddDocumentType = () => {
             </div>
             <select
               value={selectedDocumentType}
-              onChange={(e) => setSelectedDocumentType(e.target.value)}
+              onChange={e => setSelectedDocumentType(e.target.value)}
               className="input input-sm w-full border border-slate-300 my-5"
             >
               <option value="" disabled>
                 Select a Document Type
               </option>
-              {data.map((documentTypeObj) => (
+              {data.map(documentTypeObj => (
                 <option
                   key={documentTypeObj.document_type_id}
                   value={documentTypeObj.document_type_id}

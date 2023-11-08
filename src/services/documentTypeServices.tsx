@@ -1,7 +1,7 @@
-import axios from "axios";
-import { DocType } from "../types";
+import axios from 'axios';
+import { DocType } from '../types';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 export async function createDocumentType(
   accessToken: string,
@@ -10,7 +10,7 @@ export async function createDocumentType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -28,7 +28,7 @@ export async function getAllDocumentTypes(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -46,7 +46,7 @@ export async function getDocumentTypeById(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -65,7 +65,7 @@ export async function updateDocumentType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -84,7 +84,7 @@ export async function deleteDocumentType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 

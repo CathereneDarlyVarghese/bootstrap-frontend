@@ -1,8 +1,8 @@
-import { WorkOrderStatuses } from "enums";
+import { WorkOrderStatuses } from 'enums';
 
 const useWorkOrderStatusNames = () => ({
-  [WorkOrderStatuses.Closed]: "Closed",
-  [WorkOrderStatuses.Open]: "Open",
+  [WorkOrderStatuses.Closed]: 'Closed',
+  [WorkOrderStatuses.Open]: 'Open',
 });
 
 export default useWorkOrderStatusNames;

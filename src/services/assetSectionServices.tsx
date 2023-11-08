@@ -1,6 +1,6 @@
 // assetSectionService.ts
-import axios from "axios";
-import { AssetSection } from "../types";
+import axios from 'axios';
+import { AssetSection } from '../types';
 
 // type Props = {
 //   accessToken: string;
@@ -15,7 +15,7 @@ export const getAssetSections = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -31,7 +31,7 @@ export const getAssetSectionById = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -48,7 +48,7 @@ export const createAssetSection = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -66,7 +66,7 @@ export const updateAssetSection = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -82,7 +82,7 @@ export const deleteAssetSection = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );

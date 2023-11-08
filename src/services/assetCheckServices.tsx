@@ -1,6 +1,6 @@
 // assetCheckService.ts
-import axios from "axios";
-import { AssetCheck, IncomingAssetCheck } from "../types";
+import axios from 'axios';
+import { AssetCheck, IncomingAssetCheck } from '../types';
 
 // type Props = {
 //   accessToken: string;
@@ -15,7 +15,7 @@ export const getAssetChecks = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -31,7 +31,7 @@ export const getAssetCheckById = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -48,7 +48,7 @@ export const createAssetCheck = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -66,7 +66,7 @@ export const updateAssetCheck = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -80,7 +80,7 @@ export const deleteAssetCheck = async (
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
   await axios.delete(

@@ -1,37 +1,37 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   createAssetType,
   deleteAssetType,
   getAllAssetTypes,
-} from "services/assetTypeServices";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { AssetType } from "types";
+} from 'services/assetTypeServices';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { AssetType } from 'types';
 
 const AddAssetType = () => {
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<AssetType[]>(null);
-  const [selectedAssetType, setSelectedAssetType] = useState<string>("");
+  const [selectedAssetType, setSelectedAssetType] = useState<string>('');
   const queryClient = useQueryClient();
-  const [newAssetType, setNewAssetType] = useState<string>("");
+  const [newAssetType, setNewAssetType] = useState<string>('');
 
   // Handler for adding asset type
-  const handleAddAssetType = async (e) => {
+  const handleAddAssetType = async e => {
     e.preventDefault();
 
-    if (newAssetType.trim() === "") {
-      toast.error("Asset Type type must not be empty");
+    if (newAssetType.trim() === '') {
+      toast.error('Asset Type type must not be empty');
       return;
     }
 
     await createAssetType(authTokenObj.authToken, {
-      asset_type_id: "",
+      asset_type_id: '',
       asset_type: newAssetType,
     });
-    queryClient.invalidateQueries(["query-assetTypesAdmin"]);
-    toast.success("Asset Type added successfully");
-    setNewAssetType("");
+    queryClient.invalidateQueries(['query-assetTypesAdmin']);
+    toast.success('Asset Type added successfully');
+    setNewAssetType('');
   };
 
   const fetchAssetTypes = async () => {
@@ -40,7 +40,7 @@ const AddAssetType = () => {
   };
 
   useQuery({
-    queryKey: ["query-assetTypesAdmin"],
+    queryKey: ['query-assetTypesAdmin'],
     queryFn: fetchAssetTypes,
   });
 
@@ -48,12 +48,12 @@ const AddAssetType = () => {
     (id: string) => deleteAssetType(authTokenObj.authToken, id),
     {
       onSuccess: () => {
-        toast.info("Asset Type deleted successfully");
-        setSelectedAssetType("");
-        queryClient.invalidateQueries(["query-assetTypesAdmin"]);
+        toast.info('Asset Type deleted successfully');
+        setSelectedAssetType('');
+        queryClient.invalidateQueries(['query-assetTypesAdmin']);
       },
       onError: () => {
-        toast.error("Failed to delete AssetType");
+        toast.error('Failed to delete AssetType');
       },
     },
   );
@@ -71,7 +71,7 @@ const AddAssetType = () => {
             placeholder="Enter Asset Type"
             className="input input-sm w-full border border-slate-300 my-5"
             value={newAssetType}
-            onChange={(e) => setNewAssetType(e.target.value)}
+            onChange={e => setNewAssetType(e.target.value)}
           />
           <div className="flex flex-row justify-left">
             <button
@@ -92,13 +92,13 @@ const AddAssetType = () => {
             </div>
             <select
               value={selectedAssetType}
-              onChange={(e) => setSelectedAssetType(e.target.value)}
+              onChange={e => setSelectedAssetType(e.target.value)}
               className="input input-sm w-full border border-slate-300 my-5"
             >
               <option value="" disabled>
                 Select a Asset Type
               </option>
-              {data.map((assetTypeObj) => (
+              {data.map(assetTypeObj => (
                 <option
                   key={assetTypeObj.asset_type_id}
                   value={assetTypeObj.asset_type_id}

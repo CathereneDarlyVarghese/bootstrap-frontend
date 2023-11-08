@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
-import qr from "qrcode-generator";
-import { Button } from "react-daisyui";
+import React, { useRef } from 'react';
+import qr from 'qrcode-generator';
+import { Button } from 'react-daisyui';
 
 type QRCodeProps = {
   url: string;
@@ -11,7 +11,7 @@ const QRCode: React.FC<QRCodeProps> = ({ url }) => {
 
   const downloadQRCode = () => {
     // Generate QR Code
-    const qrCode = qr(0, "L");
+    const qrCode = qr(0, 'L');
     qrCode.addData(url);
     qrCode.make();
 
@@ -21,7 +21,7 @@ const QRCode: React.FC<QRCodeProps> = ({ url }) => {
 
       if (imgUrl) {
         qrCodeRef.current.href = imgUrl;
-        qrCodeRef.current.download = "qrcode.png";
+        qrCodeRef.current.download = 'qrcode.png';
         qrCodeRef.current.click();
       }
     }
@@ -32,7 +32,7 @@ const QRCode: React.FC<QRCodeProps> = ({ url }) => {
       <Button className="btn mr-6 btn-sm" onClick={downloadQRCode}>
         Download QR
       </Button>
-      <a ref={qrCodeRef} style={{ display: "none" }} download></a>
+      <a ref={qrCodeRef} style={{ display: 'none' }} download></a>
     </div>
   );
 };

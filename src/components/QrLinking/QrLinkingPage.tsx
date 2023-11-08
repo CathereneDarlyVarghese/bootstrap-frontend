@@ -60,7 +60,8 @@ const QrLinkingPage = () => {
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     [],
   );
-  const [assetSections, setAssetSections] = useState<AssetSection[]>(defaultAssetSections);
+  const [assetSections, setAssetSections] =
+    useState<AssetSection[]>(defaultAssetSections);
 
   // Buttons and filters
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
@@ -90,7 +91,7 @@ const QrLinkingPage = () => {
           'linked_asset_id',
         );
         const matchedAsset = res.find(
-          (asset) => asset.asset_id === linkedAssetId,
+          asset => asset.asset_id === linkedAssetId,
         );
         if (matchedAsset) {
           setLinkedAsset(matchedAsset);
@@ -164,7 +165,8 @@ const QrLinkingPage = () => {
     try {
       const res = await getAssetPlacements(authTokenObj.authToken);
       const filtered = res.filter(
-        (placement: AssetPlacement) => placement.location_id === location.locationId,
+        (placement: AssetPlacement) =>
+          placement.location_id === location.locationId,
       );
       setAssetPlacements(filtered);
     } catch (err) {
@@ -244,7 +246,7 @@ const QrLinkingPage = () => {
                 placeholder={`Search ${location.locationName}`}
                 value={searchTerm}
                 className="w-4/5 h-12 p-5 bg-gray-100 dark:bg-gray-700 placeholder-blue-700 dark:placeholder-white text-blue-700 dark:text-white text-sm border-none font-sans"
-                onChange={(e) => {
+                onChange={e => {
                   handleSearchInputChange(e);
                   setShowOptions(true);
                 }}
@@ -275,9 +277,11 @@ const QrLinkingPage = () => {
               >
                 <option value="">All Sections</option>
 
-                {assetSections
-                  && assetSections
-                    .sort((a, b) => a.section_name.localeCompare(b.section_name))
+                {assetSections &&
+                  assetSections
+                    .sort((a, b) =>
+                      a.section_name.localeCompare(b.section_name),
+                    )
                     .map((section: AssetSection, index: number) => (
                       <option key={index} value={section.section_name}>
                         {section.section_name}
@@ -313,51 +317,56 @@ const QrLinkingPage = () => {
           )}
           <div className={`flex flex-wrap ${filtersOpen ? 'hidden' : ''}`}>
             {/* Render asset cards */}
-            {incomingAssets
-              && (() => {
+            {incomingAssets &&
+              (() => {
                 const assetsArray = Array.isArray(incomingAssets)
                   ? incomingAssets
                   : incomingAssets
-                    ? [incomingAssets]
-                    : [];
+                  ? [incomingAssets]
+                  : [];
                 const activeAssets = assetsArray.filter(
-                  (item) => item.asset_condition === 'ACTIVE',
+                  item => item.asset_condition === 'ACTIVE',
                 );
 
                 const inactiveAssets = assetsArray.filter(
-                  (item) => item.asset_condition === 'INACTIVE',
+                  item => item.asset_condition === 'INACTIVE',
                 );
 
-                return [...activeAssets, ...inactiveAssets].filter((asset) => {
-                  const searchTermMatch = searchTerm === ''
-                    || asset.asset_name
+                return [...activeAssets, ...inactiveAssets].filter(asset => {
+                  const searchTermMatch =
+                    searchTerm === '' ||
+                    asset.asset_name
                       .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                    || asset.asset_type
+                      .includes(searchTerm.toLowerCase()) ||
+                    asset.asset_type
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase());
 
-                  const statusFilterMatch = selectedStatusIds.length === 0
-                    || selectedStatusIds.includes(asset.asset_status);
+                  const statusFilterMatch =
+                    selectedStatusIds.length === 0 ||
+                    selectedStatusIds.includes(asset.asset_status);
 
-                  const sectionFilterMatch = selectedSectionNames.length === 0
-                    || selectedSectionNames.includes(asset.section_name);
+                  const sectionFilterMatch =
+                    selectedSectionNames.length === 0 ||
+                    selectedSectionNames.includes(asset.section_name);
 
-                  const placementFilterMatch = selectedPlacementNames.length === 0
-                    || selectedPlacementNames.includes(asset.placement_name);
+                  const placementFilterMatch =
+                    selectedPlacementNames.length === 0 ||
+                    selectedPlacementNames.includes(asset.placement_name);
 
                   /* sectionFilterMatch AND placementFilterMatch */
-                  const intersectionFilterMatch = sectionFilterMatch && placementFilterMatch;
+                  const intersectionFilterMatch =
+                    sectionFilterMatch && placementFilterMatch;
                   return (
-                    searchTermMatch
-                    && statusFilterMatch
-                    && (selectedSectionNames.length === 0
-                      || selectedPlacementNames.length === 0
+                    searchTermMatch &&
+                    statusFilterMatch &&
+                    (selectedSectionNames.length === 0 ||
+                    selectedPlacementNames.length === 0
                       ? intersectionFilterMatch
                       : intersectionFilterMatch)
                   );
                 });
-              })().map((asset) => (
+              })().map(asset => (
                 <div
                   className="w-1/3 lg:w-1/2 md:w-full"
                   style={{ cursor: 'pointer' }}

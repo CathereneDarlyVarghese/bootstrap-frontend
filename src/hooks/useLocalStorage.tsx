@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 function useLocalStorage<T>(key: string, initialValue: T) {
   // State to store our value
@@ -17,7 +17,8 @@ function useLocalStorage<T>(key: string, initialValue: T) {
   // persists the new value to localStorage.
   const setValue = (value: T | ((val: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {

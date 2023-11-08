@@ -1,12 +1,12 @@
-import React from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { toast } from "react-toastify";
-import { TfiClose } from "react-icons/tfi";
-import { deleteAssetCheck } from "services/assetCheckServices";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IncomingAssetCheck } from "types";
-import closeIcon from "../../icons/closeIcon.svg";
+import React from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { toast } from 'react-toastify';
+import { TfiClose } from 'react-icons/tfi';
+import { deleteAssetCheck } from 'services/assetCheckServices';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { IncomingAssetCheck } from 'types';
+import closeIcon from '../../icons/closeIcon.svg';
 
 interface StatusDetailsProps {
   selectedAssetCheck: IncomingAssetCheck | undefined;
@@ -20,7 +20,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   status_check_data,
 }) => {
   // Hook to get the authentication token
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // React Query's client
   const queryClient = useQueryClient();
@@ -34,8 +34,8 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
    */
   function camelCaseToNormal(text) {
     return text
-      .replace(/([A-Z])/g, " $1") // Insert a space before each uppercase letter
-      .replace(/^./, (str) => str.toUpperCase()) // Uppercase the first character of the string
+      .replace(/([A-Z])/g, ' $1') // Insert a space before each uppercase letter
+      .replace(/^./, str => str.toUpperCase()) // Uppercase the first character of the string
       .trim(); // Remove any leading spaces
   }
 
@@ -45,13 +45,14 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
    * On failure, it shows an error toast.
    */
   const assetCheckMutation = useMutation({
-    mutationFn: () => deleteAssetCheck(
-      authTokenObj.authToken,
-      selectedAssetCheck?.uptime_check_id,
-    ),
+    mutationFn: () =>
+      deleteAssetCheck(
+        authTokenObj.authToken,
+        selectedAssetCheck?.uptime_check_id,
+      ),
     onSettled: () => {
       toast.info("Asset's Status Check Deleted Successfully");
-      queryClient.invalidateQueries(["query-assetChecks"]);
+      queryClient.invalidateQueries(['query-assetChecks']);
     },
     onError: () => {
       toast.error("Failed to Delete Asset's Status Check");
@@ -66,7 +67,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             <img src={closeIcon} alt="Close" />
           </button>
           <h1 className="font-sans font-bold text-xl text-black dark:text-white lg:text-lg capitalize my-auto mx-auto">
-            Status Check Date:{" "}
+            Status Check Date:{' '}
             {selectedAssetCheck?.modified_date.substring(0, 10)}
           </h1>
         </div>
@@ -75,14 +76,14 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
         </button>
       </div>
       <figure className="rounded-none">
-        {selectedAssetCheck?.images_array
-          && selectedAssetCheck?.images_array[0] && (
+        {selectedAssetCheck?.images_array &&
+          selectedAssetCheck?.images_array[0] && (
             <img
               src={selectedAssetCheck?.images_array[0][0]}
               alt="Images of the status checks"
               className="rounded-xl h-32 w-fit object-cover mx-auto"
             />
-        )}
+          )}
       </figure>
       <div className="px-0 overflow-auto flex flex-col h-fit mt-4">
         <div className="flex 2xl:flex-row lg:flex-col">
@@ -120,11 +121,11 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
                 <td>
                   {selectedAssetCheck?.modified_by
                     ? selectedAssetCheck?.modified_by
-                    : "Data Not Available"}
+                    : 'Data Not Available'}
                 </td>
               </tr>
-              {status_check_data
-                && Object.entries(status_check_data).map(([key, value], index) => (
+              {status_check_data &&
+                Object.entries(status_check_data).map(([key, value], index) => (
                   // <div
                   //   key={index}
                   // >
@@ -146,7 +147,7 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
                   >
                     <td>{camelCaseToNormal(key)}</td>
                     <td>:</td>
-                    <td>{value || "Data not available"}</td>
+                    <td>{value || 'Data not available'}</td>
                   </tr>
                 ))}
             </tbody>

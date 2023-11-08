@@ -1,29 +1,27 @@
-import QRCode from "react-qr-code";
-import html2canvas from "html2canvas";
-import { useRef, useState, useEffect } from "react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateAsset } from "services/assetServices";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
-import { Asset } from "types";
-import { TfiClose } from "react-icons/tfi";
-import { AssetCondition } from "../../enums";
+import QRCode from 'react-qr-code';
+import html2canvas from 'html2canvas';
+import { useRef, useState, useEffect } from 'react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { updateAsset } from 'services/assetServices';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import { Asset } from 'types';
+import { TfiClose } from 'react-icons/tfi';
+import { AssetCondition } from '../../enums';
 
-const DisplayQR = ({
-  showQr, closeQr, asset, link,
-}) => {
+const DisplayQR = ({ showQr, closeQr, asset, link }) => {
   const qrCodeRef = useRef(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [token, setToken] = useState<string>("");
+  const [token, setToken] = useState<string>('');
 
   const handleDownload = () => {
     const qrCodeElement = qrCodeRef.current;
 
-    html2canvas(qrCodeElement).then((canvas) => {
-      const imageURL = canvas.toDataURL("image/png");
+    html2canvas(qrCodeElement).then(canvas => {
+      const imageURL = canvas.toDataURL('image/png');
 
-      const QRlink = document.createElement("a");
+      const QRlink = document.createElement('a');
       QRlink.href = imageURL;
       QRlink.download = `QR_Code_${asset.asset_name}.png`;
       QRlink.click();
@@ -31,7 +29,7 @@ const DisplayQR = ({
   };
 
   useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
+    const data = window.localStorage.getItem('sessionToken');
     setToken(data);
   }, []);
 
@@ -46,17 +44,18 @@ const DisplayQR = ({
   } = asset;
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedAssetObj: Asset) => updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
+    mutationFn: (updatedAssetObj: Asset) =>
+      updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
     onSuccess: () => {
       toast.success("Asset's QR Code Unlinked Successfully!");
-      queryClient.invalidateQueries(["query-asset"]);
+      queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
-      toast.error("Failed to Unlink QR Code from Asset");
+      toast.error('Failed to Unlink QR Code from Asset');
     },
   });
 
-  const handleSubmitForm = async (event) => {
+  const handleSubmitForm = async event => {
     event.preventDefault();
     updatedAsset.asset_condition = AssetCondition[asset.asset_condition];
 
@@ -74,12 +73,17 @@ const DisplayQR = ({
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box cursor-default" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-box cursor-default"
+          onClick={e => e.stopPropagation()}
+        >
           <div className="ml-auto w-8">
-            <button onClick={(e) => {
-              e.stopPropagation();
-              closeQr();
-            }}>
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                closeQr();
+              }}
+            >
               <TfiClose className="font-bold text-black" />
             </button>
           </div>
@@ -100,7 +104,7 @@ const DisplayQR = ({
               <>
                 <button
                   className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     handleDownload();
                   }}
@@ -109,10 +113,10 @@ const DisplayQR = ({
                 </button>
                 <button
                   className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     closeQr();
-                    navigate("/scan");
+                    navigate('/scan');
                   }}
                 >
                   Update QR
@@ -120,11 +124,11 @@ const DisplayQR = ({
                 <button
                   type="submit"
                   className="btn btn-sm md:btn-xs bg-red-700 hover:bg-red-700 border-none"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     // eslint-disable-next-line
                     const confirmed = window.confirm(
-                      "Are you sure you want to unlink the QR from this asset?",
+                      'Are you sure you want to unlink the QR from this asset?',
                     );
                     if (confirmed) {
                       handleSubmitForm(e);
@@ -139,10 +143,10 @@ const DisplayQR = ({
             {!asset.asset_uuid && (
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   closeQr();
-                  navigate("/scan");
+                  navigate('/scan');
                 }}
               >
                 Link QR

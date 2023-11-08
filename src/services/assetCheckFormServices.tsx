@@ -1,6 +1,6 @@
 // assetCheckFormService.ts
-import axios from "axios";
-import { AssetCheckForm, IncomingAssetCheckForm } from "../types";
+import axios from 'axios';
+import { AssetCheckForm, IncomingAssetCheckForm } from '../types';
 
 export const getAssetCheckForms = async (
   accessToken: string,
@@ -10,7 +10,7 @@ export const getAssetCheckForms = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -26,7 +26,7 @@ export const getAssetCheckFormById = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -43,7 +43,7 @@ export const createAssetCheckForm = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -61,7 +61,7 @@ export const updateAssetCheckForm = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -77,7 +77,7 @@ export const deleteAssetCheckForm = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );

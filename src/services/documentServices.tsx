@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Document, IncomingDocument } from "../types"; // Import the Document interface
+import axios from 'axios';
+import { Document, IncomingDocument } from '../types'; // Import the Document interface
 
 // type Props = {
 //   accessToken: string;
@@ -13,7 +13,7 @@ export async function createDocument(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -32,7 +32,7 @@ export async function getDocumentsByLocationIdOnly(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -50,7 +50,7 @@ export async function getDocumentsByAssetId(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -67,7 +67,7 @@ export async function getAllDocuments(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -86,7 +86,7 @@ export async function updateDocument(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -105,7 +105,7 @@ export async function deleteDocument(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 

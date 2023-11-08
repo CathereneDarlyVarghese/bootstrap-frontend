@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
-import { useNavigate } from "react-router";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateAsset } from "services/assetServices";
-import { toast } from "react-toastify";
-import { Asset } from "types";
-import { AssetCondition } from "../../enums";
+import React, { useState, useEffect } from 'react';
+import { IoCheckmarkDoneCircleOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { updateAsset } from 'services/assetServices';
+import { toast } from 'react-toastify';
+import { Asset } from 'types';
+import { AssetCondition } from '../../enums';
 
 const ConfirmModal = ({
   linkedAsset,
@@ -44,16 +44,18 @@ const ConfirmModal = ({
   const queryClient = useQueryClient();
 
   const [linkedMessage, setLinkedMessage] = useState(false);
-  const [token, setToken] = useState<string>("");
+  const [token, setToken] = useState<string>('');
 
-  const handleSubmitForm = async (event) => {
+  const handleSubmitForm = async event => {
     event.preventDefault();
-    updatedAsset.asset_condition = AssetCondition[selectedAsset.asset_condition];
+    updatedAsset.asset_condition =
+      AssetCondition[selectedAsset.asset_condition];
 
     updatedAsset.asset_uuid = assetUUID;
 
     if (toBeUnlinkedAsset) {
-      toBeUnlinkedAsset.asset_condition = AssetCondition[linkedAsset.asset_condition];
+      toBeUnlinkedAsset.asset_condition =
+        AssetCondition[linkedAsset.asset_condition];
 
       toBeUnlinkedAsset.asset_uuid = null;
 
@@ -64,10 +66,11 @@ const ConfirmModal = ({
   };
 
   const assetUpdateMutation = useMutation({
-    mutationFn: (updatedAssetObj: Asset) => updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
+    mutationFn: (updatedAssetObj: Asset) =>
+      updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
-      queryClient.invalidateQueries(["query-asset"]);
+      queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
       toast.error("Failed to Update Asset's QR Code");
@@ -75,7 +78,7 @@ const ConfirmModal = ({
   });
 
   useEffect(() => {
-    const data = window.localStorage.getItem("sessionToken");
+    const data = window.localStorage.getItem('sessionToken');
     setToken(data);
   }, []);
 
@@ -93,13 +96,13 @@ const ConfirmModal = ({
             <h3 className="font-bold text-lg">Confirm</h3>
             {selectedAsset.asset_uuid === null ? (
               <p>
-                Do you want to link the asset,{" "}
+                Do you want to link the asset,{' '}
                 <strong>{selectedAsset.asset_name}</strong> to this unassigned
                 QR Code?
               </p>
             ) : (
               <p>
-                Do you want to <strong>UPDATE</strong> the asset,{" "}
+                Do you want to <strong>UPDATE</strong> the asset,{' '}
                 <strong>{selectedAsset.asset_name}</strong>'s existing QR Code
                 with this one?
               </p>
@@ -108,7 +111,7 @@ const ConfirmModal = ({
               <button
                 type="submit"
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 border-none"
-                onClick={(e) => {
+                onClick={e => {
                   setOpen();
                   setLinkedMessage(true);
                   handleSubmitForm(e);
@@ -148,7 +151,7 @@ const ConfirmModal = ({
                 className="btn bg-blue-900 hover:bg-blue-900"
                 onClick={() => {
                   setLinkedMessage(false);
-                  navigate("/home");
+                  navigate('/home');
                 }}
               >
                 Done

@@ -1,4 +1,4 @@
-import { AssetTypes, WorkOrderStatuses, WorkOrderTypes } from "./enums";
+import { AssetTypes, WorkOrderStatuses, WorkOrderTypes } from './enums';
 
 export interface GoogleUser {
   sub: string;
@@ -183,7 +183,7 @@ export interface AssetCheckForm {
 }
 
 export interface IncomingAssetCheckForm
-  extends Omit<AssetCheckForm, "form_json"> {
+  extends Omit<AssetCheckForm, 'form_json'> {
   form_json: JSON;
 }
 

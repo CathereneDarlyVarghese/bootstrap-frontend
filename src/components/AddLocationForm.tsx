@@ -1,30 +1,31 @@
-import { useState } from "react";
-import { AssetLocation } from "types";
-import { toast } from "react-toastify";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAssetLocation } from "../services/locationServices";
+import { useState } from 'react';
+import { AssetLocation } from 'types';
+import { toast } from 'react-toastify';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createAssetLocation } from '../services/locationServices';
 
 const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
-  const [inputLocation, setInputLocation] = useState<string>("");
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [inputLocation, setInputLocation] = useState<string>('');
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const queryClient = useQueryClient();
 
   const locationAddMutation = useMutation({
-    mutationFn: (assetLocationObj: AssetLocation) => createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    mutationFn: (assetLocationObj: AssetLocation) =>
+      createAssetLocation(authTokenObj.authToken, assetLocationObj),
     onSettled: () => {
-      toast.success("Location Added Successfully");
-      queryClient.invalidateQueries(["query-locations"]);
+      toast.success('Location Added Successfully');
+      queryClient.invalidateQueries(['query-locations']);
     },
     onError: () => {
-      toast.error("Failed to Add Location");
+      toast.error('Failed to Add Location');
     },
   });
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
     const assetLocationObj: AssetLocation = {
-      location_id: "",
+      location_id: '',
       location_name: inputLocation,
     };
     locationAddMutation.mutateAsync(assetLocationObj);
@@ -77,7 +78,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
                   placeholder="Location Name"
                   required
                   className="input input-bordered input-sm text-sm w-full my-3 font-sans"
-                  onChange={(e) => setInputLocation(e.target.value)}
+                  onChange={e => setInputLocation(e.target.value)}
                 />
               </div>
             </div>

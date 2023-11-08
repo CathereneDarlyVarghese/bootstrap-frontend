@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 type QRCodesProps = {
   someProp?: string;
   anotherProp?: number;
 };
 
-const QRCodes: React.FC<QRCodesProps> = (props) => {
+const QRCodes: React.FC<QRCodesProps> = props => {
   const [qrOptions, setQrOptions] = useState(0);
 
   return (

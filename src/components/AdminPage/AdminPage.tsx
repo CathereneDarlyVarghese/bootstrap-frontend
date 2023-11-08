@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import "./MyStyle.css";
-import AddAssetType from "./AssetType";
-import Locations from "./Locations";
-import Sections from "./Section";
-import Placements from "./Placement";
-import AddDocumentType from "./DocumentType";
+import './MyStyle.css';
+import AddAssetType from './AssetType';
+import Locations from './Locations';
+import Sections from './Section';
+import Placements from './Placement';
+import AddDocumentType from './DocumentType';
 
 const AdminPage = () => {
   // State declarations

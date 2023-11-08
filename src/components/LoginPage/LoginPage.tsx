@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Auth, Hub } from "aws-amplify";
-import SignInWithGoogle from "../GoogleSignIn/SignInWithGoogle";
-import "./LoginPage.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Auth, Hub } from 'aws-amplify';
+import SignInWithGoogle from './SignInWithGoogle';
+import './LoginPage.css';
 
 const LoginPage = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    Hub.listen("auth", ({ payload: { event, data } }) => {
+    Hub.listen('auth', ({ payload: { event, data } }) => {
       switch (event) {
-        case "signIn":
-        case "cognitoHostedUI":
-          getUser().then((userData) => setUser(userData));
+        case 'signIn':
+        case 'cognitoHostedUI':
+          getUser().then(userData => setUser(userData));
           break;
-        case "signOut":
+        case 'signOut':
           setUser(null);
           break;
-        case "signIn_failure":
-        case "cognitoHostedUI_failure":
+        case 'signIn_failure':
+        case 'cognitoHostedUI_failure':
           break;
       }
     });
 
-    getUser().then((userData) => setUser(userData));
+    getUser().then(userData => setUser(userData));
   }, []);
 
   async function getUser() {
@@ -34,7 +34,7 @@ const LoginPage = () => {
 
   // Redirect to Home page if user is signed in
   if (user) {
-    navigate("/home");
+    navigate('/home');
   }
 
   // Render SignInWithGoogle component

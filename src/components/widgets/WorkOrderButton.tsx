@@ -15,17 +15,17 @@ const WorkOrderButton: React.FC<WorkOrderButtonProps> = ({
   hoverColor,
   disableButton,
 }) => (
-    <button
-      onClick={onClick}
-      className={`btn ${buttonColor} gap-5 ${hoverColor}  capitalize`}
-      type="submit"
-      disabled={disableButton}
-    >
-      {title}
-      <div className={`${workPending ? "badge badge-error" : "hidden"}`}>
-        {workPending ? "pending" : ""}
-      </div>
-    </button>
+  <button
+    onClick={onClick}
+    className={`btn ${buttonColor} gap-5 ${hoverColor}  capitalize`}
+    type="submit"
+    disabled={disableButton}
+  >
+    {title}
+    <div className={`${workPending ? 'badge badge-error' : 'hidden'}`}>
+      {workPending ? 'pending' : ''}
+    </div>
+  </button>
 );
 
 export default WorkOrderButton;

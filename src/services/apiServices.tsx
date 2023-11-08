@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Asset, WorkOrder } from "types";
+import axios from 'axios';
+import { Asset, WorkOrder } from 'types';
 
 // type Props = {
 //   accessToken: string;
@@ -10,7 +10,7 @@ export async function getInventory(accessToken: string): Promise<Asset[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -26,7 +26,7 @@ export async function getAsset(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -41,10 +41,10 @@ export async function addInventory(
 ): Promise<Asset[]> {
   const config = {
     headers: {
-      method: "POST",
+      method: 'POST',
       maxBodyLength: Infinity,
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -64,10 +64,10 @@ export async function addWorkOrder(
 ): Promise<WorkOrder> {
   const config = {
     headers: {
-      method: "POST",
+      method: 'POST',
       maxBodyLength: Infinity,
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -87,7 +87,7 @@ export async function deleteInventory(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -103,10 +103,10 @@ export async function updateWorkOrderStatus(
 ): Promise<WorkOrder> {
   const config = {
     headers: {
-      method: "PATCH",
+      method: 'PATCH',
       maxBodyLength: Infinity,
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
