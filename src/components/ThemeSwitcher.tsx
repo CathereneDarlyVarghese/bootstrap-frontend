@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
+import React, { useState, useEffect } from 'react';
+import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs';
 
 const ThemeSwitcher = () => {
   const getDefaultTheme = () => {
     const preferThemeMode = window.matchMedia(
-      "(prefers-color-scheme: dark)",
+      '(prefers-color-scheme: dark)',
     ).matches;
     return preferThemeMode;
   };
@@ -16,25 +16,25 @@ const ThemeSwitcher = () => {
   };
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-    const handleThemeChange = (event) => {
+    const handleThemeChange = event => {
       setIsDarkMode(event.matches);
     };
 
-    mediaQuery.addEventListener("change", handleThemeChange);
+    mediaQuery.addEventListener('change', handleThemeChange);
 
     return () => {
-      mediaQuery.removeEventListener("change", handleThemeChange);
+      mediaQuery.removeEventListener('change', handleThemeChange);
     };
   }, []);
 
   useEffect(() => {
     if (document.documentElement) {
       if (isDarkMode) {
-        document.documentElement.classList.add("dark");
+        document.documentElement.classList.add('dark');
       } else {
-        document.documentElement.classList.remove("dark");
+        document.documentElement.classList.remove('dark');
       }
     }
   }, [isDarkMode]);

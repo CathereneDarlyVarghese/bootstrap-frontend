@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { getAssetCheckById } from "services/assetCheckServices";
-import { IncomingAsset, IncomingAssetCheck } from "types";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQuery } from "@tanstack/react-query";
-import AddStatusForm from "./AddStatusForm";
-import StatusDetails from "./StatusDetails";
-import StatusCard from "./StatusCard";
+import React, { useState } from 'react';
+import { getAssetCheckById } from 'services/assetCheckServices';
+import { IncomingAsset, IncomingAssetCheck } from 'types';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useQuery } from '@tanstack/react-query';
+import AddStatusForm from './AddStatusForm';
+import StatusDetails from './StatusDetails';
+import StatusCard from './StatusCard';
 
 interface AssetStatusChecksPageProps {
   sessionToken: string;
@@ -26,15 +26,14 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
 }) => {
   // State Initialization
   const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
-  const [selectedAssetCheck, setSelectedAssetCheck] = useState<IncomingAssetCheck>();
+  const [selectedAssetCheck, setSelectedAssetCheck] =
+    useState<IncomingAssetCheck>();
   const [, setStatusCheckId] = useState<string | null>(null);
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [, setGetResult] = useState<string | null>(null);
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Helper function to format response
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
   // Function to handle status card click and show details
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
@@ -42,29 +41,22 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     setDetailsOpen(true);
 
     const selectedCheck = assetChecks.find(
-      (assetCheck) => assetCheck.uptime_check_id === selectedStatusCheckId,
+      assetCheck => assetCheck.uptime_check_id === selectedStatusCheckId,
     );
     setSelectedAssetCheck(selectedCheck);
   };
 
-  // Async function to fetch all asset checks based on assetId
-  const fetchAllAssetChecks = async (assetIdObj) => {
-    try {
+  // Fetching all asset checks using React Query's useQuery
+  useQuery({
+    queryKey: ['query-assetChecks', assetId, authTokenObj.authToken],
+    queryFn: async assetIdObj => {
       const res = await getAssetCheckById(
         authTokenObj.authToken,
         assetIdObj.queryKey[1],
       );
       setAssetChecks(res);
-    } catch (error) {
-      setGetResult(formatResponse(error.response?.data || error));
-    }
-  };
-
-  // Fetching all asset checks using React Query's useQuery
-  useQuery({
-    queryKey: ["query-assetChecks", assetId, authTokenObj.authToken],
-    queryFn: fetchAllAssetChecks,
-    enabled: !!selectedAsset, // only enabled if there's a selectedAsset
+    },
+    enabled: !!selectedAsset,
   });
 
   return (
@@ -74,7 +66,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
           <AddStatusForm
             addFormOpen={addFormOpen}
             setAddFormOpen={() => setAddFormOpen(false)}
-            assetId={assetId || ""}
+            assetId={assetId || ''}
             assetType={assetType}
             assetTypeId={assetTypeId}
           />
@@ -97,17 +89,19 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
               *Click on the card for more info
             </h1>
           </div>
-          <div className={`${detailsOpen ? "hidden" : ""}`}>
+          <div className={`${detailsOpen ? 'hidden' : ''}`}>
             {assetChecks
               .sort(
-                (a, b) => new Date(b.modified_date).getTime()
-                  - new Date(a.modified_date).getTime(),
+                (a, b) =>
+                  new Date(b.modified_date).getTime() -
+                  new Date(a.modified_date).getTime(),
               )
-              .map((assetCheck) => (
+              .map(assetCheck => (
                 <StatusCard
                   status={assetCheck.status_check}
                   date={new Date(assetCheck.modified_date)}
-                  onClick={() => handleStatusCardClick(assetCheck.uptime_check_id)
+                  onClick={() =>
+                    handleStatusCardClick(assetCheck.uptime_check_id)
                   }
                   uptime_notes={assetCheck.uptime_notes}
                 />
@@ -122,7 +116,7 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
         </div>
       )}
 
-      <div className={`${detailsOpen ? "" : "hidden"}`}>
+      <div className={`${detailsOpen ? '' : 'hidden'}`}>
         {/* Map status details */}
         <StatusDetails
           selectedAssetCheck={selectedAssetCheck || undefined}

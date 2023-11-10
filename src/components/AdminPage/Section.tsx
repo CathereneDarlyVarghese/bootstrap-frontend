@@ -1,45 +1,45 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   createAssetSection,
   deleteAssetSection,
   getAssetSections,
-} from "services/assetSectionServices";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { AssetLocation, AssetSection } from "types";
+} from 'services/assetSectionServices';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { AssetLocation, AssetSection } from 'types';
 
 const Sections = () => {
   const queryClient = useQueryClient();
-  const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const [newSectionName, setNewSectionName] = useState("");
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [selectedSection, setSelectedSection] = useState<string>('');
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [newSectionName, setNewSectionName] = useState('');
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<AssetSection[]>(null);
 
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-    "query-locations",
+    'query-locations',
   ]);
 
-  const fetchSections = async () => {
-    const SectionData = await getAssetSections(authTokenObj.authToken);
-    setData(SectionData);
-  };
-
   useQuery({
-    queryKey: ["query-SectionsAdmin"],
-    queryFn: fetchSections,
+    queryKey: ['query-SectionsAdmin'],
+    queryFn: async () => {
+      const SectionData = await getAssetSections(authTokenObj.authToken);
+      setData(SectionData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const SectionAddMutation = useMutation(
-    (assetSectionObj: AssetSection) => createAssetSection(authTokenObj.authToken, assetSectionObj),
+    (assetSectionObj: AssetSection) =>
+      createAssetSection(authTokenObj.authToken, assetSectionObj),
     {
       onSuccess: async () => {
-        toast.success("Asset Added Successfully");
-        queryClient.invalidateQueries(["query-SectionsAdmin"]);
+        toast.success('Asset Added Successfully');
+        queryClient.invalidateQueries(['query-SectionsAdmin']);
       },
       onError: () => {
-        toast.error("Failed to Add Asset");
+        toast.error('Failed to Add Asset');
       },
     },
   );
@@ -48,12 +48,12 @@ const Sections = () => {
     (id: string) => deleteAssetSection(authTokenObj.authToken, id),
     {
       onSuccess: () => {
-        toast.success("Section deleted successfully");
-        setSelectedSection("");
-        queryClient.invalidateQueries(["query-SectionsAdmin"]);
+        toast.success('Section deleted successfully');
+        setSelectedSection('');
+        queryClient.invalidateQueries(['query-SectionsAdmin']);
       },
       onError: () => {
-        toast.error("Failed to delete Section");
+        toast.error('Failed to delete Section');
       },
     },
   );
@@ -68,13 +68,13 @@ const Sections = () => {
             <select
               required
               value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              onChange={e => setSelectedLocation(e.target.value)}
               className="input input-sm w-full border border-slate-300 my-5"
             >
               <option value="" disabled>
                 Select a Location
               </option>
-              {queryLocations.map((Location) => (
+              {queryLocations.map(Location => (
                 <option key={Location.location_id} value={Location.location_id}>
                   {Location.location_name}
                 </option>
@@ -89,21 +89,21 @@ const Sections = () => {
             type="text"
             placeholder="Add new Section"
             value={newSectionName}
-            onChange={(e) => setNewSectionName(e.target.value)}
+            onChange={e => setNewSectionName(e.target.value)}
             className="input input-sm w-full border border-slate-300 my-5"
           />
           <button
             onClick={() => {
               if (!selectedLocation) {
-                toast.error("Please select a location first!");
+                toast.error('Please select a location first!');
                 return;
               }
               SectionAddMutation.mutate({
-                section_id: "",
+                section_id: '',
                 section_name: newSectionName,
                 location_id: selectedLocation,
               });
-              setNewSectionName("");
+              setNewSectionName('');
             }}
             className="btn btn-sm bg-blue-500 hover:bg-blue-700"
           >
@@ -116,15 +116,15 @@ const Sections = () => {
           <div>
             <select
               value={selectedSection}
-              onChange={(e) => setSelectedSection(e.target.value)}
+              onChange={e => setSelectedSection(e.target.value)}
               className="input input-sm w-full border border-slate-300 my-5"
             >
               <option value="" disabled>
                 Select a Section
               </option>
               {data
-                .filter((Section) => Section.location_id === selectedLocation)
-                .map((Section) => (
+                .filter(Section => Section.location_id === selectedLocation)
+                .map(Section => (
                   <option key={Section.section_id} value={Section.section_id}>
                     {Section.section_name}
                   </option>

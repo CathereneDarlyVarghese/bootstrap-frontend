@@ -1,5 +1,5 @@
 # State mangement
-## Use Jotai
 
+## Use Jotai
 
 React Query

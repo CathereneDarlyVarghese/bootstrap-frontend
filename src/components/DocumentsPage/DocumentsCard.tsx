@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   AiOutlineCalendar,
   AiFillExclamationCircle,
@@ -6,21 +6,21 @@ import {
   AiOutlineDelete,
   AiOutlineHistory,
   AiOutlineEdit,
-} from "react-icons/ai";
-import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
-import { TiArrowBackOutline } from "react-icons/ti";
-import { MdAutorenew } from "react-icons/md";
-import { getDocumentTypeById } from "services/documentTypeServices";
-import { getFileById } from "services/fileServices";
-import { deleteDocument } from "services/documentServices";
-import { toast } from "react-toastify";
-import { IncomingDocument, dubeFile } from "types";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import EditDocumentsForm from "./EditDocumentsForm";
-import ReplaceExistingFileForm from "./ReplaceExistingFileForm";
-import AddNewFileForm from "./AddNewFileForm";
-import documentIcon from "../../icons/documentIcon.svg";
+} from 'react-icons/ai';
+import { BsFillCheckCircleFill, BsFillXCircleFill } from 'react-icons/bs';
+import { TiArrowBackOutline } from 'react-icons/ti';
+import { MdAutorenew } from 'react-icons/md';
+import { getDocumentTypeById } from 'services/documentTypeServices';
+import { getFileById } from 'services/fileServices';
+import { deleteDocument } from 'services/documentServices';
+import { toast } from 'react-toastify';
+import { IncomingDocument, dubeFile } from 'types';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import EditDocumentsForm from './EditDocumentsForm';
+import ReplaceExistingFileForm from './ReplaceExistingFileForm';
+import AddNewFileForm from './AddNewFileForm';
+import documentIcon from '../../icons/documentIcon.svg';
 
 interface DocumentsCardProps {
   document: IncomingDocument;
@@ -36,39 +36,39 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
   // States
   const [documentType, setDocumentType] = useState<string | null>(null);
   const defaultDocumentFile: dubeFile = {
-    file_id: "",
+    file_id: '',
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] =
+    useState<dubeFile>(defaultDocumentFile);
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [replaceFileForm, setReplaceFileForm] = useState(false);
   const [addFileForm, setAddFileForm] = useState(false);
 
   // Hooks and external data
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const queryClient = useQueryClient();
 
   // Fetch document details on component mount
-  const fetchDocumentDetails = async () => {
-    const fetchedDocumentType = await getDocumentTypeById(
-      authTokenObj.authToken,
-      document.document_type_id,
-    );
-
-    const fetchedDocumentFile = await getFileById(
-      authTokenObj.authToken,
-      document.file_id,
-    );
-
-    return { fetchedDocumentType, fetchedDocumentFile };
-  };
 
   const { data } = useQuery({
-    queryKey: ["fetch-document-details", document],
-    queryFn: fetchDocumentDetails,
+    queryKey: ['fetch-document-details', document],
+    queryFn: async () => {
+      const fetchedDocumentType = await getDocumentTypeById(
+        authTokenObj.authToken,
+        document.document_type_id,
+      );
+
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id,
+      );
+
+      return { fetchedDocumentType, fetchedDocumentFile };
+    },
     enabled: !!authTokenObj,
   });
 
@@ -81,16 +81,17 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
 
   // Mutation for deleting the selected document
   const deleteSelectedDocument = useMutation({
-    mutationFn: () => deleteDocument(authTokenObj.authToken, document.document_id),
+    mutationFn: () =>
+      deleteDocument(authTokenObj.authToken, document.document_id),
     onSettled: () => {
-      toast.info("Document Deleted Successfully");
+      toast.info('Document Deleted Successfully');
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["query-documentsByLocationId"]);
-      queryClient.invalidateQueries(["query-documentsByAssetId"]);
+      queryClient.invalidateQueries(['query-documentsByLocationId']);
+      queryClient.invalidateQueries(['query-documentsByAssetId']);
     },
     onError: () => {
-      toast.error("Failed to Delete Document");
+      toast.error('Failed to Delete Document');
     },
   });
 
@@ -106,15 +107,15 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
   const tableRows = [];
   for (let i = 0; i < maxLength; i += 1) {
     const serialNumber = maxLength - i;
-    const file = fileArray[i] ? fileArray[i] : "Null";
-    const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : "Null";
-    const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : "Null";
+    const file = fileArray[i] ? fileArray[i] : 'Null';
+    const modifiedBy = modifiedByArray[i] ? modifiedByArray[i] : 'Null';
+    const modifiedDate = modifiedDateArray[i] ? modifiedDateArray[i] : 'Null';
     tableRows.push(
       <tr key={i}>
         <td>{serialNumber}</td>
         <td
           className="flex flex-row gap-1 text-blue-800 underline"
-          onClick={() => window.open(file, "_blank")}
+          onClick={() => window.open(file, '_blank')}
         >
           <img src={documentIcon} alt="Document Icon" />
           {String(file).substring(66)}
@@ -130,7 +131,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       {showHistory ? (
         <div
           className="card bg-white dark:bg-gray-800 p-5"
-          style={{ height: "fit-content" }}
+          style={{ height: 'fit-content' }}
         >
           <div className="flex flex-row-reverse md:flex-col">
             <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
@@ -145,7 +146,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                     {document.start_date
                       ? document.start_date.substring(0, 10)
-                      : "Not Available"}
+                      : 'Not Available'}
                   </h1>
                 </div>
               </div>
@@ -160,7 +161,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                     {document.end_date
                       ? document.end_date.substring(0, 10)
-                      : "Not Available"}
+                      : 'Not Available'}
                   </h1>
                 </div>
               </div>
@@ -169,16 +170,16 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {document.document_name
                   ? document.document_name
-                  : "Not Available"}
+                  : 'Not Available'}
               </h1>
               <div
                 className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
                   documentType && documentType.length > 15
-                    ? "text-[10px] w-40"
-                    : "text-md"
+                    ? 'text-[10px] w-40'
+                    : 'text-md'
                 }`}
               >
-                {documentType || "Not Available"}
+                {documentType || 'Not Available'}
               </div>
             </div>
           </div>
@@ -215,7 +216,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
       ) : (
         <div
           className="card bg-white dark:bg-gray-800 p-5"
-          style={{ height: "fit-content" }}
+          style={{ height: 'fit-content' }}
         >
           <div className="flex flex-row-reverse md:flex-col">
             <div className="ml-auto mb-3 flex flex-row md:ml-0 gap-4 items-center">
@@ -230,7 +231,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-sm md:text-xs md:font-medium">
                     {document.start_date
                       ? document.start_date.substring(0, 10)
-                      : "Not Available"}
+                      : 'Not Available'}
                   </h1>
                 </div>
               </div>
@@ -245,7 +246,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                   <h1 className="text-blue-900 dark:text-gray-400 font-sans font-semibold text-md md:text-xs md:font-medium">
                     {document.end_date
                       ? document.end_date.substring(0, 10)
-                      : "Not Available"}
+                      : 'Not Available'}
                   </h1>
                 </div>
               </div>
@@ -254,16 +255,16 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
               <h1 className="text-black dark:text-white text-lg font-semibold font-sans md:w-1/2">
                 {document.document_name
                   ? document.document_name
-                  : "Not Available"}
+                  : 'Not Available'}
               </h1>
               <div
                 className={`badge bg-blue-200 border-none font-semibold text-blue-900 md:text-[10px] p-3 md:p-2 md:ml-auto mr-2 ${
                   documentType && documentType.length > 15
-                    ? "text-[10px] w-40"
-                    : "text-md"
+                    ? 'text-[10px] w-40'
+                    : 'text-md'
                 }`}
               >
-                {documentType || "Not Available"}
+                {documentType || 'Not Available'}
               </div>
             </div>
           </div>
@@ -271,7 +272,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
             <p className="text-gray-400">
               {document.document_description
                 ? document.document_description
-                : "Not Available"}
+                : 'Not Available'}
             </p>
           </div>
           <div className="mt-2 flex flex-row">
@@ -283,7 +284,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                 <p className="text-gray-400">
                   {document.document_notes
                     ? document.document_notes
-                    : "Not Available"}
+                    : 'Not Available'}
                 </p>
               </div>
             </div>
@@ -303,12 +304,12 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
                 </button>
                 <button
                   title="Delete Document"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     if (
                       // eslint-disable-next-line
                       window.confirm(
-                        "Are you sure you want to delete this document?",
+                        'Are you sure you want to delete this document?',
                       )
                     ) {
                       deleteSelectedDocument.mutateAsync();
@@ -385,9 +386,9 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
             </div>
 
             <div className="ml-auto">
-              {documentStatus === "active" ? (
+              {documentStatus === 'active' ? (
                 <BsFillCheckCircleFill className="text-green-600 text-3xl md:text-2xl " />
-              ) : documentStatus === "expiring soon" ? (
+              ) : documentStatus === 'expiring soon' ? (
                 <AiFillExclamationCircle className="text-yellow-600 text-3xl md:text-2xl" />
               ) : (
                 <BsFillXCircleFill className="text-red-600 text-3xl md:text-2xl" />

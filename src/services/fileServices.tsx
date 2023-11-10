@@ -1,7 +1,7 @@
-import axios from "axios";
-import { dubeFile } from "../types"; // Import the File interface
+import axios from 'axios';
+import { dubeFile } from '../types'; // Import the File interface
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 // type Props = {
 //   accessToken: string;
@@ -15,7 +15,7 @@ export async function createFile(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -34,7 +34,7 @@ export async function getFileById(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -49,7 +49,7 @@ export async function getAllFiles(accessToken: string): Promise<dubeFile[]> {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -68,7 +68,7 @@ export async function updateFile(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -87,7 +87,7 @@ export async function deleteFile(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -104,7 +104,7 @@ export async function appendToFileArray(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -133,7 +133,7 @@ export async function replaceLatestInFileArray(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 

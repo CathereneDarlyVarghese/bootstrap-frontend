@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Document, DocType } from "types";
-import { uploadFiletoS3 } from "utils";
-import { toast } from "react-toastify";
-import { createFile } from "services/fileServices";
-import { createDocument } from "services/documentServices";
-import { getAllDocumentTypes } from "services/documentTypeServices";
-import { AiOutlinePaperClip } from "react-icons/ai";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from 'react';
+import { Document, DocType } from 'types';
+import { uploadFiletoS3 } from 'utils';
+import { toast } from 'react-toastify';
+import { createFile } from 'services/fileServices';
+import { createDocument } from 'services/documentServices';
+import { getAllDocumentTypes } from 'services/documentTypeServices';
+import { AiOutlinePaperClip } from 'react-icons/ai';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -17,17 +17,17 @@ const AddDocumentsForm = ({
 }) => {
   // State Initialization
   const [file, setFile] = useState<File>();
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const queryClient = useQueryClient();
 
   const defaultFormData = {
-    documentName: "",
-    documentDescription: "",
-    documentTypeID: "",
-    startDate: "",
-    endDate: "",
-    documentNotes: "",
+    documentName: '',
+    documentDescription: '',
+    documentTypeID: '',
+    startDate: '',
+    endDate: '',
+    documentNotes: '',
   };
   const [formData, setFormData] = useState(defaultFormData);
   const {
@@ -46,14 +46,14 @@ const AddDocumentsForm = ({
   ) => {
     const { id, value } = e.target;
 
-    if (id === "startDate") {
-      setFormData((prevState) => ({
+    if (id === 'startDate') {
+      setFormData(prevState => ({
         ...prevState,
         startDate: value,
-        endDate: "", // Resetting the endDate here
+        endDate: '', // Resetting the endDate here
       }));
     } else {
-      setFormData((prevState) => ({
+      setFormData(prevState => ({
         ...prevState,
         [id]: value,
       }));
@@ -62,17 +62,18 @@ const AddDocumentsForm = ({
 
   // Mutation function to add a new document
   const documentAddMutation = useMutation({
-    mutationFn: (documentData: Document) => createDocument(authTokenObj.authToken, documentData),
+    mutationFn: (documentData: Document) =>
+      createDocument(authTokenObj.authToken, documentData),
     onSettled: () => {
-      toast.success("Document Added Successfully");
+      toast.success('Document Added Successfully');
       setAddDocumentsOpen(false);
     },
-    onSuccess: (res) => {
-      queryClient.invalidateQueries(["query-documentsByAssetId"]);
-      queryClient.invalidateQueries(["query-documentsByLocationId"]);
+    onSuccess: res => {
+      queryClient.invalidateQueries(['query-documentsByAssetId']);
+      queryClient.invalidateQueries(['query-documentsByLocationId']);
     },
     onError: () => {
-      toast.error("Failed to Add Document");
+      toast.error('Failed to Add Document');
     },
   });
 
@@ -85,7 +86,7 @@ const AddDocumentsForm = ({
     const modifiedDate = new Date().toISOString().substring(0, 10);
 
     // Step 1: Upload the document to S3 bucket
-    const documentLocation = await uploadFiletoS3(file, "document");
+    const documentLocation = await uploadFiletoS3(file, 'document');
 
     // Step 2: Register the uploaded file in the backend
     const createdFile = await createFile(authTokenObj.authToken, {
@@ -98,7 +99,7 @@ const AddDocumentsForm = ({
 
     // Step 3: Collect data for the new document
     const selectedDocumentTypeID = (
-      document.querySelector("#documentType") as HTMLSelectElement
+      document.querySelector('#documentType') as HTMLSelectElement
     ).value;
     const documentData: Document = {
       document_id: null,
@@ -121,23 +122,21 @@ const AddDocumentsForm = ({
     try {
       documentAddMutation.mutateAsync(documentData);
     } catch (error) {
-      toast.error("Failed to create document");
+      toast.error('Failed to create document');
     }
 
     setFormData(defaultFormData);
   };
 
   // Function to fetch available document types on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedDocumentTypes = await getAllDocumentTypes(
-        authTokenObj.authToken,
-      );
-      setDocumentTypes(fetchedDocumentTypes);
-    };
-
-    fetchData();
-  }, [authTokenObj.authToken]);
+  useQuery({
+    queryKey: ['query-docType'],
+    queryFn: async () => {
+      const types = await getAllDocumentTypes(authTokenObj.authToken);
+      setDocumentTypes(types);
+    },
+    enabled: !!authTokenObj.authToken,
+  });
 
   // Function to close the form modal
   const closeAddForm = () => {
@@ -155,7 +154,7 @@ const AddDocumentsForm = ({
       />
       <div className="rounded-2xl">
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-0 mb-5 w-full sm:mx-2">
-          <form method="post" onSubmit={(e) => handleSubmit(e)}>
+          <form method="post" onSubmit={e => handleSubmit(e)}>
             {/* Modal header */}
             <div className="p-5 rounded-2xl bg-white dark:bg-gray-800 flex flex-row">
               <h3 className="font-sans font-bold text-lg text-blue-800 dark:text-white">
@@ -187,7 +186,7 @@ const AddDocumentsForm = ({
                 id="documentName"
                 name="documentName"
                 value={documentName}
-                onChange={(e) => handleChange(e)}
+                onChange={e => handleChange(e)}
                 required
                 placeholder="Enter Document Name"
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
@@ -198,14 +197,14 @@ const AddDocumentsForm = ({
               <select
                 id="documentType"
                 name="documentType"
-                onChange={(e) => handleChange(e)}
+                onChange={e => handleChange(e)}
                 className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                 required
               >
                 <option value="" disabled selected>
                   Select Document Type
                 </option>
-                {documentTypes.map((documentType) => (
+                {documentTypes.map(documentType => (
                   <option
                     className="text-black bg-white dark:text-white dark:bg-gray-800"
                     key={documentType.document_type_id}
@@ -226,7 +225,7 @@ const AddDocumentsForm = ({
                     id="startDate"
                     name="startDate"
                     value={startDate}
-                    onChange={(e) => {
+                    onChange={e => {
                       handleChange(e);
                     }}
                     required
@@ -243,7 +242,7 @@ const AddDocumentsForm = ({
                     name="endDate"
                     value={endDate}
                     min={startDate}
-                    onChange={(e) => handleChange(e)}
+                    onChange={e => handleChange(e)}
                     required
                     className="font-sans font-semibold border text-sm text-black dark:text-white bg-white dark:sm:border-gray-500 dark:2xl:border-transparent dark:2xl:bg-transparent my-3"
                   />
@@ -258,7 +257,7 @@ const AddDocumentsForm = ({
                 id="documentDescription"
                 name="documentDescription"
                 value={documentDescription}
-                onChange={(e) => handleChange(e)}
+                onChange={e => handleChange(e)}
                 required
                 placeholder="Enter Description"
                 className="input input-bordered input-sm text-sm text-black dark:text-white bg-transparent dark:border-gray-500 w-full my-3 font-sans"
@@ -276,7 +275,7 @@ const AddDocumentsForm = ({
                 required
                 id="file"
                 name="file"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={e => setFile(e.target.files[0])}
                 className="w-full text-md text-black dark:text-white border border-gray-300 dark:border-gray-500 rounded-lg cursor-pointer bg-white dark:bg-transparent focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans my-3"
               />
               {/* <input
@@ -289,19 +288,19 @@ const AddDocumentsForm = ({
               <div className="flex flex-row rounded-lg border border-gray-300 dark:border-gray-500 p-2 my-2 hidden">
                 <input
                   type="text"
-                  value={`${file ? file.name : "No file chosen"}`}
+                  value={`${file ? file.name : 'No file chosen'}`}
                   className={`bg-transparent text-sm font-sans w-4/5 md:w-1/2 ${
                     file && file
-                      ? "text-black dark:text-white"
-                      : "text-gray-400"
+                      ? 'text-black dark:text-white'
+                      : 'text-gray-400'
                   }`}
                 />
                 <button
                   className="btn btn-xs bg-transparent border border-gray-400 hover:border-gray-400 hover:bg-transparent normal-case font-normal w-fit text-blue-600 dark:text-white font-sans text-xs md:text-[9px] p-0.5 rounded-xl ml-auto"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     const uploadButton = document.querySelector(
-                      "#file",
+                      '#file',
                     ) as HTMLElement;
                     uploadButton.click();
                   }}
@@ -319,7 +318,7 @@ const AddDocumentsForm = ({
                 id="documentNotes"
                 name="documentNotes"
                 value={documentNotes}
-                onChange={(e) => handleChange(e)}
+                onChange={e => handleChange(e)}
                 placeholder="Notes"
                 // onChange={(e) =>
                 //   setData((curr) => ({ ...curr, name: e.target.value }))

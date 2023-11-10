@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { appendToFileArray } from "services/fileServices";
-import { uploadFiletoS3 } from "utils";
-import { toast } from "react-toastify";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQueryClient } from "@tanstack/react-query";
+import React, { useState } from 'react';
+import { appendToFileArray } from 'services/fileServices';
+import { uploadFiletoS3 } from 'utils';
+import { toast } from 'react-toastify';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AddNewFileForm = ({ fileID, open, closeForm }) => {
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File>();
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFile = event.target.files[0];
@@ -23,7 +23,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
     event.preventDefault();
 
     // Step 1: Upload the file to S3 bucket
-    const documentLocation = await uploadFiletoS3(file, "document");
+    const documentLocation = await uploadFiletoS3(file, 'document');
 
     const newFileArrayEntry: string = documentLocation.location;
 
@@ -38,11 +38,11 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
         newModifiedByArrayEntry,
         newModifiedDateArrayEntry,
       );
-      queryClient.invalidateQueries(["query-documentsByLocationId"]);
-      queryClient.invalidateQueries(["query-documentsByAssetId"]);
-      toast.success("File Added Successfully");
+      queryClient.invalidateQueries(['query-documentsByLocationId']);
+      queryClient.invalidateQueries(['query-documentsByAssetId']);
+      toast.success('File Added Successfully');
     } catch (error) {
-      toast.error("Failed to add file");
+      toast.error('Failed to add file');
     }
   };
 
@@ -76,7 +76,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
             </svg>
           </div>
           <div className="my-5">
-            <form method="post" onSubmit={(e) => handleSubmit(e)}>
+            <form method="post" onSubmit={e => handleSubmit(e)}>
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="file_input"
@@ -89,7 +89,7 @@ const AddNewFileForm = ({ fileID, open, closeForm }) => {
                   required
                   id="file"
                   name="file"
-                  onChange={(e) => handleFileChange(e)}
+                  onChange={e => handleFileChange(e)}
                   className="text-black dark:text-white"
                 />
               </div>

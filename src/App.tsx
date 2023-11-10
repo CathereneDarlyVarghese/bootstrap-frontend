@@ -1,18 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Amplify } from "aws-amplify";
-import awsConfig from "aws-exports";
-import NavBar from "components/NavBar";
-import { ToastContainer } from "react-toastify";
-import ListsLayout from "components/LandingPage/ListsLayout";
-import LoginPage from "components/LoginPage/LoginPage";
-import WorkOrdersPage from "components/WorkOrdersPage/WorkOrdersPage";
-import StatusChecksPage from "components/StatusChecksPage/StatusChecksPage";
-import DocumentsPage from "components/DocumentsPage/DocumentsPage";
-
-import AdminPage from "components/AdminPage/AdminPage";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import QrLinkingPage from "components/QrLinking/QrLinkingPage";
-import ScanInventory from "components/ScanInventory/ScanInventory";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Amplify } from 'aws-amplify';
+import awsConfig from 'aws-exports';
+import NavBar from 'components/NavBar';
+import { ToastContainer } from 'react-toastify';
+import ListsLayout from 'components/LandingPage/ListsLayout';
+import LoginPage from 'components/LoginPage/LoginPage';
+import WorkOrdersPage from 'components/WorkOrdersPage/WorkOrdersPage';
+import StatusChecksPage from 'components/StatusChecksPage/StatusChecksPage';
+import DocumentsPage from 'components/DocumentsPage/DocumentsPage';
+import AdminPage from 'components/AdminPage/AdminPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import QrLinkingPage from 'components/QrLinking/QrLinkingPage';
+import ScanInventory from 'components/ScanInventory/ScanInventory';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,14 +24,15 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 Amplify.configure(awsConfig);
 
 function AppContent() {
   return (
     <div>
-      <NavBar></NavBar>
+      <NavBar />
 
-      <div className="h-screen" style={{ overflow: "scroll" }}>
+      <div className="h-screen" style={{ overflow: 'scroll' }}>
         <Routes>
           <Route path="/scan" element={<ScanInventory />} />
           <Route path="/home" element={<ListsLayout />} />

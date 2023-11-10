@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import validator from "@rjsf/validator-ajv8";
-import { toast } from "react-toastify";
-import { createAssetCheck } from "services/assetCheckServices";
-import { TfiClose } from "react-icons/tfi";
+import { useEffect, useState } from 'react';
+import validator from '@rjsf/validator-ajv8';
+import { toast } from 'react-toastify';
+import { createAssetCheck } from 'services/assetCheckServices';
+import { TfiClose } from 'react-icons/tfi';
 import {
   createAssetCheckForm,
   getAssetCheckFormById,
-} from "services/assetCheckFormServices";
-import Form from "@rjsf/core";
-import "./formstyles.css";
-import useStatusTypeNames from "hooks/useStatusTypes";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AssetCheck } from "types";
+} from 'services/assetCheckFormServices';
+import Form from '@rjsf/core';
+import './formstyles.css';
+import useStatusTypeNames from 'hooks/useStatusTypes';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AssetCheck } from 'types';
 
 interface AddStatusFormProps {
   addFormOpen: boolean;
@@ -38,26 +38,25 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
   const statusTypeNames = useStatusTypeNames();
 
   // Fetch authentication token
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Using the query client for server communication
   const queryClient = useQueryClient();
 
   // Mutation for adding an asset check
   const assetCheckAddMutation = useMutation({
-    mutationFn: (assetCheck: AssetCheck) => createAssetCheck(authTokenObj.authToken, assetCheck),
+    mutationFn: (assetCheck: AssetCheck) =>
+      createAssetCheck(authTokenObj.authToken, assetCheck),
 
     onSettled: () => {
-      // Actions to perform after the mutation is settled (whether success or failure)
-      toast.success("Asset Check Added Successfully");
+      toast.success('Asset Check Added Successfully');
       // Invalidate cache to ensure fresh data is fetched next time
-      queryClient.invalidateQueries(["query-asset"]);
-      queryClient.invalidateQueries(["query-assetChecks"]);
+      queryClient.invalidateQueries(['query-asset']);
+      queryClient.invalidateQueries(['query-assetChecks']);
     },
 
     onError: () => {
-      // Handle errors from the mutation
-      toast.error("Failed to Add Status Check");
+      toast.error('Failed to Add Status Check');
     },
   });
 
@@ -86,7 +85,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
   }, [assetType, assetTypeId, authTokenObj.authToken]);
 
   function getKeyByValue(object: Record<string, string>, value: string) {
-    return Object.keys(object).find((key) => object[key] === value);
+    return Object.keys(object).find(key => object[key] === value);
   }
 
   // eslint-disable-next-line
@@ -95,7 +94,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
     const statusUUID = getKeyByValue(statusTypeNames, formData.operational);
 
     const assetCheck = {
-      uptime_check_id: "",
+      uptime_check_id: '',
       asset_id: assetId,
       status_check: statusUUID,
       file_id: null,
@@ -109,7 +108,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
       // Add inventory using the API service
       assetCheckAddMutation.mutateAsync(assetCheck);
     } catch (error) {
-      toast.error("Failed to add asset");
+      toast.error('Failed to add asset');
     }
   };
 
@@ -131,7 +130,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
             </h3>
             <button
               className="ml-auto"
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 setAddFormOpen(false);
               }}

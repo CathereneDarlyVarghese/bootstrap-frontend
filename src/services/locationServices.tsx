@@ -1,5 +1,5 @@
-import axios from "axios";
-import { AssetLocation } from "../types"; // Import the Location interface
+import axios from 'axios';
+import { AssetLocation } from '../types'; // Import the Location interface
 
 export async function createAssetLocation(
   accessToken: string,
@@ -8,7 +8,7 @@ export async function createAssetLocation(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -27,7 +27,7 @@ export async function getAssetLocationById(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -44,7 +44,7 @@ export async function getAllAssetLocations(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -63,7 +63,7 @@ export async function updateAssetLocation(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -82,7 +82,7 @@ export async function deleteAssetLocation(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 

@@ -1,33 +1,33 @@
-import { useState, useEffect } from "react";
-import { useAtom } from "jotai";
-import { AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
-import { FiEdit3 } from "react-icons/fi";
-import { toast } from "react-toastify";
-import { AssetCondition } from "enums";
+import { useState, useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { AiOutlineDelete, AiOutlineCalendar } from 'react-icons/ai';
+import { FiEdit3 } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import { AssetCondition } from 'enums';
 import {
   IncomingAsset,
   AssetLocation,
   AssetType,
   AssetSection,
   AssetPlacement,
-} from "types";
-import { deleteAsset, toggleAssetCondition } from "services/assetServices";
+} from 'types';
+import { deleteAsset, toggleAssetCondition } from 'services/assetServices';
 
-import { TfiClose } from "react-icons/tfi";
-import AssetDocumentsPage from "components/DocumentsPage/AssetDocumentsPage";
-import AssetStatusChecksPage from "components/StatusChecksPage/AssetStatusChecksPage";
-import useAssetCondition from "hooks/useAssetCondition";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
+import { TfiClose } from 'react-icons/tfi';
+import AssetDocumentsPage from 'components/DocumentsPage/AssetDocumentsPage';
+import AssetStatusChecksPage from 'components/StatusChecksPage/AssetStatusChecksPage';
+import useAssetCondition from 'hooks/useAssetCondition';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import {
   getStatusColor,
   getStatusText,
-} from "components/StatusChecksPage/statusUtils";
-import { getAllAssetTypes } from "services/assetTypeServices";
-import { getAssetPlacements } from "services/assetPlacementServices";
-import { getAssetSections } from "services/assetSectionServices";
-import { searchTermAtom } from "./ListsLayout";
-import EditAssetForm from "./EditAssetForm";
+} from 'components/StatusChecksPage/statusUtils';
+import { getAllAssetTypes } from 'services/assetTypeServices';
+import { getAssetPlacements } from 'services/assetPlacementServices';
+import { getAssetSections } from 'services/assetSectionServices';
+import { searchTermAtom } from './ListsLayout';
+import EditAssetForm from './EditAssetForm';
 
 interface AssetDetailsProps {
   sessionToken: string | null;
@@ -49,7 +49,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   // State and Hooks
   const queryClient = useQueryClient();
   const assetConditions = useAssetCondition();
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [editFormOpen, setEditFormOpen] = useState(false);
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
   const [locations, setLocations] = useState<AssetLocation[]>([]);
@@ -64,7 +64,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        "query-locations",
+        'query-locations',
       ]);
       const types = await getAllAssetTypes(authTokenObj.authToken);
       setAssetTypes(types);
@@ -74,30 +74,27 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     fetchData();
   }, [authTokenObj.authToken, queryClient]);
 
-  const fetchAssetPlacements = async () => {
-    const res = await getAssetPlacements(authTokenObj.authToken);
-    setAssetPlacements(res);
-  };
-
   useQuery({
-    queryKey: ["query-assetPlacementsForm"],
-    queryFn: fetchAssetPlacements,
+    queryKey: ['query-assetPlacementsForm'],
+    queryFn: async () => {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      setAssetPlacements(res);
+    },
     enabled: !!selectedLocation,
   });
 
   // ====== Data Fetching using useQuery ======
-  const fetchAssetSections = async () => {
-    const res = await getAssetSections(authTokenObj.authToken);
-    setAssetSections(res);
-    const sections = res.filter(
-      (section) => section.location_id === selectedLocation,
-    );
-    setFilteredSections(sections);
-  };
 
   useQuery({
-    queryKey: ["query-assetSectionsForm"],
-    queryFn: fetchAssetSections,
+    queryKey: ['query-assetSectionsForm'],
+    queryFn: async () => {
+      const res = await getAssetSections(authTokenObj.authToken);
+      setAssetSections(res);
+      const sections = res.filter(
+        section => section.location_id === selectedLocation,
+      );
+      setFilteredSections(sections);
+    },
   });
 
   // Mutation for deleting an asset
@@ -106,11 +103,11 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     onSettled: () => {
       setAssetId(null);
       closeAsset();
-      toast.info("Asset Deleted Successfully");
-      queryClient.invalidateQueries(["query-asset"]);
+      toast.info('Asset Deleted Successfully');
+      queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
-      toast.error("Failed to Delete Asset");
+      toast.error('Failed to Delete Asset');
     },
   });
 
@@ -131,27 +128,12 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       );
     },
     onSettled: () => {
-      queryClient.invalidateQueries(["query-asset"]);
+      queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
-      toast.error("Failed to toggle asset condition");
+      toast.error('Failed to toggle asset condition');
     },
   });
-
-  // const [, setActiveTab] = useState(0);
-
-  // const handleToggleAssetCondition = async () => {
-  //     const toggledAssetCondition =
-  //       assetCondition === assetConditions[AssetCondition.ACTIVE]
-  //         ? assetConditions[AssetCondition.INACTIVE]
-  //         : assetConditions[AssetCondition.ACTIVE];
-
-  //     await toggleAssetCondition(
-  //       authTokenObj.authToken,
-  //       assetId,
-  //       toggledAssetCondition
-  //     );
-  // };
 
   return (
     <>
@@ -190,17 +172,15 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       }
                     }}
                   >
-                    <TfiClose
-                      className="font-bold text-black dark:text-white"
-
-                    />
+                    <TfiClose className="font-bold text-black dark:text-white" />
                   </button>
 
                   <div className="flex flex-row">
                     <button
-                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${tabIndex === 0
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-5 mx-2 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case sm:hidden ${
+                        tabIndex === 0
+                          ? 'text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold'
+                          : 'text-gray-400 font-normal'
                       }`}
                       onClick={() => {
                         setTabIndex(0);
@@ -209,9 +189,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       Info
                     </button>
                     <button
-                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${tabIndex === 1
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case  ${
+                        tabIndex === 1
+                          ? 'text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold'
+                          : 'text-gray-400 font-normal'
                       }`}
                       onClick={() => {
                         setTabIndex(1);
@@ -220,9 +201,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       Documents
                     </button>
                     <button
-                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${tabIndex === 2
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case mx-6 md:mx-0 ${
+                        tabIndex === 2
+                          ? 'text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold'
+                          : 'text-gray-400 font-normal'
                       }`}
                       onClick={() => {
                         setTabIndex(2);
@@ -231,9 +213,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       Status Checks
                     </button>
                     <button
-                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${tabIndex === 3
-                        ? "text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold"
-                        : "text-gray-400 font-normal"
+                      className={`btn md:btn-sm bg-transparent md:text-xs font-sans px-1 hover:bg-transparent border-2 border-transparent hover:border-transparent rounded-none normal-case ${
+                        tabIndex === 3
+                          ? 'text-blue-900 dark:text-white border-b-blue-900 dark:border-b-white hover:border-b-blue-900 font-bold'
+                          : 'text-gray-400 font-normal'
                       }`}
                       onClick={() => {
                         setTabIndex(3);
@@ -256,10 +239,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     }
                   }}
                 >
-                  <TfiClose
-
-                    className="font-bold text-black dark:text-white"
-                  />
+                  <TfiClose className="font-bold text-black dark:text-white" />
                 </button>
               </div>
 
@@ -333,32 +313,37 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     </div>
                     <div>
                       <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                        Section:{" "}
+                        Section:{' '}
                         {Asset.section_name
                           ? Asset.section_name
-                          : "Not Available"}
+                          : 'Not Available'}
                       </p>
                       <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                        Placement:{" "}
+                        Placement:{' '}
                         {Asset.placement_name
                           ? Asset.placement_name
-                          : "Not Available"}
+                          : 'Not Available'}
                       </p>
                       <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                        Purchase Value:{" "}
+                        Purchase Value:{' '}
                         {parseInt(Asset.asset_finance_purchase, 10)
                           ? `$${parseInt(Asset.asset_finance_purchase, 10)}`
-                          : "Not Available"}
+                          : 'Not Available'}
                       </p>
                       <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                        Current Value:{" "}
+                        Current Value:{' '}
                         {parseInt(Asset.asset_finance_current_value, 10)
-                          ? `$${parseInt(Asset.asset_finance_current_value, 10)}`
-                          : "Not Available"}
+                          ? `$${parseInt(
+                              Asset.asset_finance_current_value,
+                              10,
+                            )}`
+                          : 'Not Available'}
                       </p>
                       <p className="text-black dark:text-gray-300 font-sans my-1 text-sm">
-                        Notes:{" "}
-                        {Asset.asset_notes ? Asset.asset_notes : "Not Available"}
+                        Notes:{' '}
+                        {Asset.asset_notes
+                          ? Asset.asset_notes
+                          : 'Not Available'}
                       </p>
                     </div>
                   </div>
@@ -378,7 +363,9 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                     <button
                       className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
                       onClick={() => {
-                        handleToggleAssetCondition.mutate(Asset.asset_condition);
+                        handleToggleAssetCondition.mutate(
+                          Asset.asset_condition,
+                        );
                         setSearchTerm(Asset.asset_name);
                         setModalOpen(true);
 
@@ -387,10 +374,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                         // }, 1000);
                       }}
                     >
-                      {Asset.asset_condition
-                        === assetConditions[AssetCondition.ACTIVE]
-                        ? "Mark as Inactive"
-                        : "Mark as Active"}
+                      {Asset.asset_condition ===
+                      assetConditions[AssetCondition.ACTIVE]
+                        ? 'Mark as Inactive'
+                        : 'Mark as Active'}
                     </button>
                     <button
                       title="Edit Asset"
@@ -406,7 +393,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       onClick={async () => {
                         if (
                           window.confirm(
-                            "Are you sure you want to delete this asset?",
+                            'Are you sure you want to delete this asset?',
                           )
                         ) {
                           deleteAssetMutation.mutate();
@@ -434,10 +421,10 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       // }, 1000);
                     }}
                   >
-                    {Asset.asset_condition
-                      === assetConditions[AssetCondition.ACTIVE]
-                      ? "Mark as Inactive"
-                      : "Mark as Active"}
+                    {Asset.asset_condition ===
+                    assetConditions[AssetCondition.ACTIVE]
+                      ? 'Mark as Inactive'
+                      : 'Mark as Active'}
                   </button>
                   <button
                     title="Edit Asset"
@@ -454,7 +441,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                       if (
                         // eslint-disable-next-line
                         window.confirm(
-                          "Are you sure you want to delete this asset?",
+                          'Are you sure you want to delete this asset?',
                         )
                       ) {
                         deleteAssetMutation.mutate();
@@ -483,22 +470,33 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 </p>
               </div>
             )}
-
           </div>
 
           <div>
-            <input type="checkbox" id="my_modal_6" checked={modalOpen} className="modal-toggle" />
+            <input
+              type="checkbox"
+              id="my_modal_6"
+              checked={modalOpen}
+              className="modal-toggle"
+            />
             <div className="modal">
               <div className="modal-box">
                 <div className="flex flex-row items-center justify-center">
-                  <p className="py-4 font-bold text-lg">{`Asset marked as ${Asset.asset_condition === "ACTIVE" ? "Inactive" : "Active"}`}</p>
+                  <p className="py-4 font-bold text-lg">{`Asset marked as ${
+                    Asset.asset_condition === 'ACTIVE' ? 'Inactive' : 'Active'
+                  }`}</p>
                 </div>
                 <div className="flex flex-row items-center justify-center">
-                  <button className="btn bg-blue-900 hover:bg-blue-900" onClick={() => {
-                    setModalOpen(false);
-                    setAssetId(null);
-                    closeAsset();
-                  }}>Done</button>
+                  <button
+                    className="btn bg-blue-900 hover:bg-blue-900"
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAssetId(null);
+                      closeAsset();
+                    }}
+                  >
+                    Done
+                  </button>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 // assetPlacementService.ts
-import axios from "axios";
-import { AssetPlacement } from "../types";
+import axios from 'axios';
+import { AssetPlacement } from '../types';
 
 // type Props = {
 //   accessToken: string;
@@ -15,7 +15,7 @@ export const getAssetPlacements = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -31,7 +31,7 @@ export const getAssetPlacementById = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -48,7 +48,7 @@ export const createAssetPlacement = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -66,7 +66,7 @@ export const updateAssetPlacement = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -82,7 +82,7 @@ export const deleteAssetPlacement = async (
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     },
   );

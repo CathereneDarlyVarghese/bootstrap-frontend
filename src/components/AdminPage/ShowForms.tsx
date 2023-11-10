@@ -1,6 +1,6 @@
-import React from "react";
-import Form from "react-jsonschema-form";
-import { AssetType } from "types";
+import React from 'react';
+import Form from 'react-jsonschema-form';
+import { AssetType } from 'types';
 
 interface ShowFormsProps {
   assetTypes: AssetType[];
@@ -19,10 +19,10 @@ const ShowForms: React.FC<ShowFormsProps> = ({
     <div className="flex flex-col justify-center">
       <select
         value={selectedAssetType}
-        onChange={(e) => setSelectedAssetType(e.target.value)}
+        onChange={e => setSelectedAssetType(e.target.value)}
         className="select border border-slate-300 w-5/12 mx-auto my-5"
       >
-        {assetTypes.map((type) => (
+        {assetTypes.map(type => (
           <option
             key={type.asset_type_id}
             value={type.asset_type_id}

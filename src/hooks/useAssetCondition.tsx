@@ -1,8 +1,8 @@
-import { AssetCondition } from "enums";
+import { AssetCondition } from 'enums';
 
 const useAssetCondition = () => ({
-  [AssetCondition.ACTIVE]: "ACTIVE",
-  [AssetCondition.INACTIVE]: "INACTIVE",
+  [AssetCondition.ACTIVE]: 'ACTIVE',
+  [AssetCondition.INACTIVE]: 'INACTIVE',
 });
 
 export default useAssetCondition;

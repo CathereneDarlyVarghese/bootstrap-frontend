@@ -1,7 +1,7 @@
-import axios from "axios";
-import { AssetType } from "../types"; // Import the AssetType interface
+import axios from 'axios';
+import { AssetType } from '../types'; // Import the AssetType interface
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 export async function createAssetType(
   accessToken: string,
@@ -10,7 +10,7 @@ export async function createAssetType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -29,7 +29,7 @@ export async function getAssetTypeById(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -46,7 +46,7 @@ export async function getAllAssetTypes(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -65,7 +65,7 @@ export async function updateAssetType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -84,7 +84,7 @@ export async function deleteAssetType(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 

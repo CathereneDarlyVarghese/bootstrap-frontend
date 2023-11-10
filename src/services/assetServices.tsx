@@ -1,7 +1,7 @@
-import axios from "axios";
-import { AssetCondition } from "enums";
+import axios from 'axios';
+import { AssetCondition } from 'enums';
 // import useAssetCondition from "hooks/useAssetCondition";
-import { Asset, IncomingAsset } from "types"; // ensure the Asset type is defined
+import { Asset, IncomingAsset } from 'types'; // ensure the Asset type is defined
 
 // type Props = {
 //   accessToken: string;
@@ -14,7 +14,7 @@ export async function getAllAssets(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -30,7 +30,7 @@ export async function getAssets(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -45,10 +45,10 @@ export async function createAsset(
 ): Promise<Asset> {
   const config = {
     headers: {
-      method: "POST",
+      method: 'POST',
       maxBodyLength: Infinity,
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -68,10 +68,10 @@ export async function updateAsset(
 ): Promise<Asset> {
   const config = {
     headers: {
-      method: "PUT",
+      method: 'PUT',
       maxBodyLength: Infinity,
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -91,7 +91,7 @@ export async function deleteAsset(
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -105,17 +105,18 @@ export async function toggleAssetCondition(
   changedCondition: string,
 ): Promise<void> {
   const assetConditionMap: Record<string, string> = {
-    [AssetCondition.ACTIVE]: "ACTIVE",
-    [AssetCondition.INACTIVE]: "INACTIVE",
+    [AssetCondition.ACTIVE]: 'ACTIVE',
+    [AssetCondition.INACTIVE]: 'INACTIVE',
     // Add more condition mappings if needed
   };
 
-  const toggledConditionText = changedCondition === assetConditionMap[AssetCondition.ACTIVE]
-    ? assetConditionMap[AssetCondition.ACTIVE]
-    : assetConditionMap[AssetCondition.INACTIVE];
+  const toggledConditionText =
+    changedCondition === assetConditionMap[AssetCondition.ACTIVE]
+      ? assetConditionMap[AssetCondition.ACTIVE]
+      : assetConditionMap[AssetCondition.INACTIVE];
 
   const toggledConditionUUID = Object.keys(assetConditionMap).find(
-    (key) => assetConditionMap[key] === toggledConditionText,
+    key => assetConditionMap[key] === toggledConditionText,
   );
 
   if (!toggledConditionUUID) {

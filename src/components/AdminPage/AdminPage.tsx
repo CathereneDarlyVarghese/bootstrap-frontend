@@ -1,53 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import "./MyStyle.css";
-import AddAssetType from "./AssetType";
-import Locations from "./Locations";
-import Sections from "./Section";
-import Placements from "./Placement";
-import AddDocumentType from "./DocumentType";
+import './MyStyle.css';
+import AddAssetType from './AssetType';
+import Locations from './Locations';
+import Sections from './Section';
+import Placements from './Placement';
+import AddDocumentType from './DocumentType';
 
 const AdminPage = () => {
   // State declarations
   const [toggleContent, setToggleContent] = useState(1);
   const [openSidebar, setOpenSidebar] = useState(true);
-
-  // Effect to fetch all asset types on mount
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //       const assetTypes1 = await getAllAssetTypes(authTokenObj.authToken);
-  //       setAssetTypes(assetTypes1);
-  //   };
-
-  //   fetchToken();
-  // }, []);
-
-  // Effect to fetch or create form based on selected asset type
-  // useEffect(() => {
-  //   const fetchForm = async () => {
-  //     try {
-  //       const form = await getAssetCheckFormById(
-  //         authTokenObj.authToken,
-  //         selectedAssetType
-  //       );
-  //       setJsonForm(form.form_json); // Adjust according to your returned data structure
-  //       handleShow();
-  //     } catch (error) {
-  //       if (error.response?.status === 404) {
-  //           const newForm = await createAssetCheckForm(authTokenObj.authToken, {
-  //             form_json: {},
-  //             asset_type_id: selectedAssetType,
-  //           });
-  //           setJsonForm(newForm.form_json); // Adjust according to your returned data structure
-  //           handleShow();
-  //       }
-  //     }
-  //   };
-
-  //   if (selectedAssetType) {
-  //     fetchForm();
-  //   }
-  // }, [selectedAssetType, authTokenObj.authToken]);
 
   return (
     <div>

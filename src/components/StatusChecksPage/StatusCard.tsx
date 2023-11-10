@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { AiFillExclamationCircle } from "react-icons/ai";
-import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { AiFillExclamationCircle } from 'react-icons/ai';
+import { BsFillCheckCircleFill, BsFillXCircleFill } from 'react-icons/bs';
 
 interface StatusCardProps {
   status: string;
@@ -30,17 +30,25 @@ const StatusCard: React.FC<StatusCardProps> = ({
           >
             {formattedDate}
           </h1>
-          <h1 className={`text-gray-500 dark:text-gray-400 text-lg font-normal font-sans xl:text-sm`}>
-            {status === "WORKING" ? "Working" : status === "DOWN" ? "Not Working" : status === "UNDER MAINTENANCE" ? "Needs Attention" : "data unavailable"}
+          <h1
+            className={`text-gray-500 dark:text-gray-400 text-lg font-normal font-sans xl:text-sm`}
+          >
+            {status === 'WORKING'
+              ? 'Working'
+              : status === 'DOWN'
+              ? 'Not Working'
+              : status === 'UNDER MAINTENANCE'
+              ? 'Needs Attention'
+              : 'data unavailable'}
           </h1>
           <div className="flex items-center ml-auto">
-            {status === "DOWN" && (
+            {status === 'DOWN' && (
               <BsFillXCircleFill className="text-red-700 text-xl mr-2" />
             )}
-            {status === "WORKING" && (
+            {status === 'WORKING' && (
               <BsFillCheckCircleFill className="text-green-700 text-xl mr-2" />
             )}
-            {status === "UNDER MAINTENANCE" && (
+            {status === 'UNDER MAINTENANCE' && (
               <AiFillExclamationCircle className="text-yellow-600 text-xl mr-2" />
             )}
           </div>

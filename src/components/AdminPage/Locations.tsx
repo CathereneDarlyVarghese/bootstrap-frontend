@@ -1,41 +1,41 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   createAssetLocation,
   deleteAssetLocation,
   getAllAssetLocations,
-} from "services/locationServices";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { AssetLocation } from "types";
+} from 'services/locationServices';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { AssetLocation } from 'types';
 
 const Locations = () => {
   const queryClient = useQueryClient();
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const [newLocationName, setNewLocationName] = useState("");
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [newLocationName, setNewLocationName] = useState('');
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<AssetLocation[]>(null);
 
-  const fetchLocations = async () => {
-    const locationData = await getAllAssetLocations(authTokenObj.authToken);
-    setData(locationData);
-  };
-
   useQuery({
-    queryKey: ["query-locationsAdmin"],
-    queryFn: fetchLocations,
+    queryKey: ['query-locationsAdmin'],
+    queryFn: async () => {
+      const locationData = await getAllAssetLocations(authTokenObj.authToken);
+      setData(locationData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const locationAddMutation = useMutation(
-    (assetLocationObj: AssetLocation) => createAssetLocation(authTokenObj.authToken, assetLocationObj),
+    (assetLocationObj: AssetLocation) =>
+      createAssetLocation(authTokenObj.authToken, assetLocationObj),
     {
       onSuccess: async () => {
-        toast.success("Location Added Successfully");
-        queryClient.invalidateQueries(["query-locationsAdmin"]);
-        queryClient.invalidateQueries(["query-locations"]);
+        toast.success('Location Added Successfully');
+        queryClient.invalidateQueries(['query-locationsAdmin']);
+        queryClient.invalidateQueries(['query-locations']);
       },
       onError: () => {
-        toast.error("Failed to Add Asset");
+        toast.error('Failed to Add Asset');
       },
     },
   );
@@ -44,13 +44,13 @@ const Locations = () => {
     (id: string) => deleteAssetLocation(authTokenObj.authToken, id),
     {
       onSuccess: () => {
-        toast.success("Location deleted successfully");
-        setSelectedLocation("");
-        queryClient.invalidateQueries(["query-locationsAdmin"]);
-        queryClient.invalidateQueries(["query-locations"]);
+        toast.success('Location deleted successfully');
+        setSelectedLocation('');
+        queryClient.invalidateQueries(['query-locationsAdmin']);
+        queryClient.invalidateQueries(['query-locations']);
       },
       onError: () => {
-        toast.error("Failed to delete location");
+        toast.error('Failed to delete location');
       },
     },
   );
@@ -66,19 +66,19 @@ const Locations = () => {
             type="text"
             placeholder="Add new location"
             value={newLocationName}
-            onChange={(e) => setNewLocationName(e.target.value)}
+            onChange={e => setNewLocationName(e.target.value)}
             className="input input-sm w-full border border-slate-300 my-5"
           />
           <button
             onClick={() => {
               if (newLocationName.length !== 0) {
                 locationAddMutation.mutate({
-                  location_id: "",
+                  location_id: '',
                   location_name: newLocationName,
                 });
-                setNewLocationName("");
+                setNewLocationName('');
               } else {
-                toast.error("Location field must not be empty");
+                toast.error('Location field must not be empty');
               }
             }}
             className="btn btn-sm bg-blue-500 hover:bg-blue-700"
@@ -92,13 +92,13 @@ const Locations = () => {
           <div>
             <select
               value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              onChange={e => setSelectedLocation(e.target.value)}
               className="input input-sm w-full border border-slate-300 my-5"
             >
               <option value="" disabled>
                 Select a location
               </option>
-              {data.map((location) => (
+              {data.map(location => (
                 <option key={location.location_id} value={location.location_id}>
                   {location.location_name}
                 </option>

@@ -1,33 +1,32 @@
-import { 
-  useEffect, useMemo, useRef, useState, 
-} from "react";
-import { atom, useAtom } from "jotai";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Auth } from "aws-amplify";
-import { locationAtom, useSyncedAtom } from "store/locationStore";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AssetLocation } from "types";
-import SignInWithGoogle from "./GoogleSignIn/SignInWithGoogle";
-import { getAllAssetLocations } from "../services/locationServices";
-import { resetFilterOptions } from "./LandingPage/FilterOptions";
-import B from "../icons/B.svg";
-import ootstrap from "../icons/ootstrap.svg";
-import ScanButton from "./widgets/ScanButton";
-import AddLocationForm from "./AddLocationForm";
+import { useEffect, useMemo, useState } from 'react';
+import { atom, useAtom } from 'jotai';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
+import { locationAtom, useSyncedAtom } from 'store/locationStore';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { AssetLocation } from 'types';
+import SignInWithGoogle from './LoginPage/SignInWithGoogle';
+import { getAllAssetLocations } from '../services/locationServices';
+import { resetFilterOptions } from './LandingPage/FilterOptions';
+import Logo from '../icons/Logo(2).svg';
+import ScanButton from './widgets/ScanButton';
+import AddLocationForm from './AddLocationForm';
 
 export const LogoClickedAtom = atom(false);
 
 const NavBar = () => {
-  const mountCount = useRef(0);
   const routePage = useLocation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // States
   const [location, setLocation] = useSyncedAtom(locationAtom);
-  const [, setAuthToken] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authToken, setAuthToken] = useSyncedGenericAtom(
+    genericAtom,
+    'authToken',
+  );
   const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -37,7 +36,7 @@ const NavBar = () => {
 
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);
-  const urlLocationId = searchParams.get("location_id");
+  const urlLocationId = searchParams.get('location_id');
 
   // Toggle dropdown state
   const toggleDropDown = () => {
@@ -61,33 +60,34 @@ const NavBar = () => {
 
   const TABS = useMemo(
     () => ({
-      "/home": ".asset-tab",
-      "/work-orders": ".workorder-tab",
-      "/document/location": ".documents-tab",
-      "/status-checks": ".status-tab",
+      '/home': '.asset-tab',
+      '/work-orders': '.workorder-tab',
+      '/document/location': '.documents-tab',
+      '/status-checks': '.status-tab',
     }),
     [],
   );
 
   // Effect: Update class based on route
   useEffect(() => {
-    Object.keys(TABS).forEach((path) => {
+    Object.keys(TABS).forEach(path => {
       if (routePage.pathname === path) {
-        addClass(TABS[path], "border-b-white");
+        addClass(TABS[path], 'border-b-white');
       } else {
-        removeClass(TABS[path], "border-b-white");
+        removeClass(TABS[path], 'border-b-white');
       }
     });
   }, [routePage, TABS]);
 
-  // Effect: Check user authentication
-  useEffect(() => {
-    const checkUser = async () => {
+  // Authentication and Global Variable
+  useQuery({
+    queryKey: ['query-auth'],
+    queryFn: async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
         setUser(userData);
         window.localStorage.setItem(
-          "sessionToken",
+          'sessionToken',
           userData.signInUserSession.idToken.jwtToken,
         );
         setAuthToken({
@@ -99,67 +99,46 @@ const NavBar = () => {
       } catch {
         setIsLoading(false);
       }
-    };
-    checkUser();
-  }, [setAuthToken]);
-
-  // Fetch location data
-  const fetchLocations = async () => {
-    const userData = await Auth.currentAuthenticatedUser();
-    const locationData = await getAllAssetLocations(
-      userData.signInUserSession.idToken.jwtToken,
-    );
-    queryClient.setQueryData(["query-locations"], locationData);
-    setLocations(locationData);
-
-    if (urlLocationId) {
-      // Find the location with the specified ID from the URL.
-      const urlLocation = locationData.find(
-        (loc) => loc.location_id === urlLocationId,
-      );
-      if (urlLocation) {
-        setLocation({
-          locationName: urlLocation.location_name,
-          locationId: urlLocation.location_id,
-        });
-        return;
-      }
-    }
-
-    if (!location.locationId) {
-      if (locationData.length > 0) {
-        setLocation({
-          locationName: locationData[0].location_name,
-          locationId: locationData[0].location_id,
-        });
-      }
-    }
-  };
+    },
+    staleTime: 60000 * 10,
+  });
 
   // UseQuery to get locations
   useQuery({
-    queryKey: ["query-locations", urlLocationId],
-    queryFn: fetchLocations,
+    queryKey: ['query-locations', urlLocationId],
+    queryFn: async () => {
+      const userData = await Auth.currentAuthenticatedUser();
+      const locationData = await getAllAssetLocations(
+        userData.signInUserSession.idToken.jwtToken,
+      );
+      queryClient.setQueryData(['query-locations'], locationData);
+      setLocations(locationData);
+
+      if (urlLocationId) {
+        // Find the location with the specified ID from the URL.
+        const urlLocation = locationData.find(
+          loc => loc.location_id === urlLocationId,
+        );
+        if (urlLocation) {
+          setLocation({
+            locationName: urlLocation.location_name,
+            locationId: urlLocation.location_id,
+          });
+          return;
+        }
+      }
+
+      if (!location.locationId) {
+        if (locationData.length > 0) {
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
+        }
+      }
+    },
+    enabled: !!authToken,
   });
-
-  // Check for a new start
-  if (location.locationName === "" || location.locationId === "") {
-    fetchLocations();
-  }
-
-  // Effect: Store location in local storage when it changes
-  useEffect(() => {
-    mountCount.current += 1;
-    // Skip the effect for the first two renders
-    if (mountCount.current <= 2) {
-      return;
-    }
-
-    // Storing location to local storage when it changes (but not on the first two mounts)
-    if (location) {
-      window.localStorage.setItem("location", JSON.stringify(location));
-    }
-  }, [location]);
 
   return (
     <>
@@ -167,23 +146,19 @@ const NavBar = () => {
         <div className="flex-1">
           <button
             onClick={() => {
-              navigate("/home");
+              navigate('/home');
               resetFilterOptions();
               setLogoClicked(true);
             }}
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
-            <img src={B} alt="Logo I presume" />
-            <img src={ootstrap} alt="Logo I presume" />
-
-            {/* <h1>ootstrap</h1> */}
-            {/* Bootstrap */}
+            <img src={Logo} alt="Logo I presume" />
           </button>
           <div className="tabs ml-10 lg:hidden">
             <button
               className="tab text-white border border-transparent border-b-white font-sans mx-3 asset-tab"
               onClick={() => {
-                navigate("/home");
+                navigate('/home');
                 resetFilterOptions();
               }}
             >
@@ -193,7 +168,7 @@ const NavBar = () => {
             <button
               className="tab text-white border border-transparent font-sans workorder-tab"
               onClick={() => {
-                navigate("/work-orders");
+                navigate('/work-orders');
               }}
             >
               Maintenance
@@ -201,7 +176,7 @@ const NavBar = () => {
             <button
               className="tab text-white border border-transparent font-sans documents-tab"
               onClick={() => {
-                navigate("/document/location");
+                navigate('/document/location');
               }}
             >
               Documents
@@ -209,7 +184,7 @@ const NavBar = () => {
             <button
               className="tab text-white border border-transparent font-sans status-tab"
               onClick={() => {
-                navigate("/status-checks");
+                navigate('/status-checks');
               }}
             >
               Status
@@ -223,7 +198,7 @@ const NavBar = () => {
           {user && (
             <ScanButton
               onClick={() => {
-                navigate("/scan");
+                navigate('/scan');
               }}
             />
           )}
@@ -254,9 +229,9 @@ const NavBar = () => {
                 />
               </svg>
               <div className="md:hidden">
-                {location.locationName !== ""
+                {location.locationName !== ''
                   ? location.locationName
-                  : "Not Selected"}
+                  : 'Not Selected'}
               </div>
               <svg
                 className="fill-current"
@@ -273,7 +248,7 @@ const NavBar = () => {
                 tabIndex={0}
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 dark:bg-gray-700 rounded-box w-52"
               >
-                {locations.map((item) => (
+                {locations.map(item => (
                   <li
                     key={item.location_id}
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
@@ -282,6 +257,10 @@ const NavBar = () => {
                         locationName: item.location_name,
                         locationId: item.location_id,
                       });
+                      window.localStorage.setItem(
+                        'location',
+                        JSON.stringify(location),
+                      );
                       setOpen(!open);
                     }}
                   >

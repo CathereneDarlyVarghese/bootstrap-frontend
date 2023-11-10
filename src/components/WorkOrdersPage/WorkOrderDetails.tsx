@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import { WorkOrder } from "types";
-import closeIcon from "../../icons/closeIcon.svg";
+import { WorkOrder } from 'types';
+import closeIcon from '../../icons/closeIcon.svg';
 
 // sample image for ui testing
-import testImage from "../LandingPage/testImage.png";
+import testImage from '../LandingPage/testImage.png';
 
 interface WorkOrderDetailsProps {
   workOrder: WorkOrder;

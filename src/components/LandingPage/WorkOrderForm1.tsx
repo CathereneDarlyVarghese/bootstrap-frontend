@@ -1,55 +1,55 @@
-import { FC, useState, useEffect } from "react";
-import { uploadFiletoS3 } from "utils";
-import { WorkOrderTypes, WorkOrderStatuses } from "enums";
-import { Asset, WorkOrder } from "types";
-import { addWorkOrder } from "services/apiServices";
-import { toast } from "react-toastify";
-import { AiOutlineFileAdd } from "react-icons/ai";
+import { FC, useState, useEffect } from 'react';
+import { uploadFiletoS3 } from 'utils';
+import { WorkOrderTypes, WorkOrderStatuses } from 'enums';
+import { Asset, WorkOrder } from 'types';
+import { addWorkOrder } from 'services/apiServices';
+import { toast } from 'react-toastify';
+import { AiOutlineFileAdd } from 'react-icons/ai';
 
 interface AddWorkOrderProps {
-  assetId1: Asset["asset_id"];
+  assetId1: Asset['asset_id'];
   closeModal: () => void;
 }
 
 const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
-  const [token, settoken] = useState<string>("");
+  const [token, settoken] = useState<string>('');
   const [file, setFile] = useState<File>();
-  const [inventoryId, setInventoryId] = useState<string | undefined>("");
+  const [inventoryId, setInventoryId] = useState<string | undefined>('');
   const [data, setData] = useState<WorkOrder>({
-    Id: "",
-    name: "",
-    image: "",
-    description: "",
+    Id: '',
+    name: '',
+    image: '',
+    description: '',
     type: WorkOrderTypes.Appliances,
     status: WorkOrderStatuses.Open,
   });
 
   const handleSubmit = async () => {
-    const imageLocation = await uploadFiletoS3(file, "work-order");
+    const imageLocation = await uploadFiletoS3(file, 'work-order');
 
     data.image = imageLocation.location;
 
     closeModal();
     await addWorkOrder(token, inventoryId, data)
       .then(() => {
-        toast.success("Work Order added Successfuly", {
-          position: "bottom-left",
+        toast.success('Work Order added Successfuly', {
+          position: 'bottom-left',
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: 'light',
         });
       })
-      .catch((error) => {
+      .catch(error => {
         throw new Error(error);
       });
   };
 
   useEffect(() => {
-    const tokenData = window.localStorage.getItem("sessionToken");
+    const tokenData = window.localStorage.getItem('sessionToken');
     settoken(tokenData);
     setInventoryId(assetId1 as string); // set inventoryId from location state
   }, [assetId1]);
@@ -83,7 +83,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
           </div>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               handleSubmit();
             }}
@@ -94,7 +94,8 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             </label>
             <input
               required
-              onChange={(e) => setData((curr) => ({ ...curr, name: e.target.value }))
+              onChange={e =>
+                setData(curr => ({ ...curr, name: e.target.value }))
               }
               value={data.name}
               type="text"
@@ -106,7 +107,8 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             </label>
             <textarea
               required
-              onChange={(e) => setData((curr) => ({ ...curr, description: e.target.value }))
+              onChange={e =>
+                setData(curr => ({ ...curr, description: e.target.value }))
               }
               value={data.description}
               placeholder="Description"
@@ -117,10 +119,11 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             </label>
             <input
               required
-              onChange={(e) => setData((curr) => ({
-                ...curr,
-                type: e.target.value as WorkOrderTypes,
-              }))
+              onChange={e =>
+                setData(curr => ({
+                  ...curr,
+                  type: e.target.value as WorkOrderTypes,
+                }))
               }
               value={data.type}
               type="text"
@@ -132,7 +135,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
             </label>
             <input
               type="file"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={e => setFile(e.target.files[0])}
               className="block w-full text-sm text-black border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:placeholder-white file:bg-blue-900 file:text-white my-3"
             />
 

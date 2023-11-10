@@ -20,7 +20,7 @@ form.rjsf .field-string label {
   margin-bottom: 1em;
 }
 
-form.rjsf .field-string .field-title[for="root_operational"] {
+form.rjsf .field-string .field-title[for='root_operational'] {
   margin-bottom: 2em;
 }
 
@@ -29,6 +29,6 @@ form.rjsf .field-string .radio-group {
   flex-direction: row;
 }
 
-form.rjsf button[type="submit"] {
+form.rjsf button[type='submit'] {
   background-color: rgb(30 58 138); /* bg-blue-900 */
 }

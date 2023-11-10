@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { getAllDocumentTypes } from "services/documentTypeServices";
-import { Document, DocType, dubeFile } from "types";
-import { appendToFileArray, getFileById } from "services/fileServices";
-import { uploadFiletoS3 } from "utils";
-import { updateDocument } from "services/documentServices";
-import { toast } from "react-toastify";
-import { genericAtom, useSyncedGenericAtom } from "store/genericStore";
-import { useQueryClient } from "@tanstack/react-query";
+import React, { useState, useEffect } from 'react';
+import { getAllDocumentTypes } from 'services/documentTypeServices';
+import { Document, DocType, dubeFile } from 'types';
+import { appendToFileArray, getFileById } from 'services/fileServices';
+import { uploadFiletoS3 } from 'utils';
+import { updateDocument } from 'services/documentServices';
+import { toast } from 'react-toastify';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { useQueryClient } from '@tanstack/react-query';
 
 const EditDocumentsForm = ({
   open,
@@ -34,14 +34,15 @@ const EditDocumentsForm = ({
   const [selectedEndDate, setSelectedEndDate] = useState<string>(
     String(formData.end_date).substring(0, 10),
   );
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, "authToken");
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const defaultDocumentFile: dubeFile = {
-    file_id: "",
+    file_id: '',
     file_array: [],
     modified_by_array: [],
     modified_date_array: [],
   };
-  const [documentFile, setDocumentFile] = useState<dubeFile>(defaultDocumentFile);
+  const [documentFile, setDocumentFile] =
+    useState<dubeFile>(defaultDocumentFile);
 
   // useEffect: Fetch session token, document types, and document file when the component mounts
   useEffect(() => {
@@ -69,13 +70,13 @@ const EditDocumentsForm = ({
   ) => {
     const { id, value } = e.target;
 
-    setFormData((prevState) => {
-      if (id === "start_date") {
-        setSelectedEndDate(""); // Reset the selected end date
+    setFormData(prevState => {
+      if (id === 'start_date') {
+        setSelectedEndDate(''); // Reset the selected end date
         return {
           ...prevState,
           [id]: value,
-          end_date: "", // Reset the end date
+          end_date: '', // Reset the end date
         };
       }
       return {
@@ -94,7 +95,7 @@ const EditDocumentsForm = ({
 
     if (file) {
       // Upload the file to S3 and update the File object in the backend
-      const documentLocation = await uploadFiletoS3(file, "document");
+      const documentLocation = await uploadFiletoS3(file, 'document');
       const newFileArrayEntry: string = documentLocation.location;
 
       const newModifiedByArrayEntry = authTokenObj.attributes.given_name;
@@ -118,11 +119,11 @@ const EditDocumentsForm = ({
         formData.document_id,
         formData,
       );
-      queryClient.invalidateQueries(["query-documentsByLocationId"]);
-      queryClient.invalidateQueries(["query-documentsByAssetId"]);
-      toast.success("Document Updated Successfully");
+      queryClient.invalidateQueries(['query-documentsByLocationId']);
+      queryClient.invalidateQueries(['query-documentsByAssetId']);
+      toast.success('Document Updated Successfully');
     } catch (error) {
-      toast.error("Failed to update document");
+      toast.error('Failed to update document');
     }
   };
 
@@ -158,7 +159,7 @@ const EditDocumentsForm = ({
             </button>
           </div>
           <div className="my-3">
-            <form method="post" onSubmit={(e) => handleSubmit(e)}>
+            <form method="post" onSubmit={e => handleSubmit(e)}>
               <div className="flex flex-col p-5">
                 {/* Input field for asset name */}
                 <label className="font-sans font-semibold text-black dark:text-white text-sm">
@@ -169,7 +170,7 @@ const EditDocumentsForm = ({
                   id="document_name"
                   name="document_name"
                   value={formData.document_name}
-                  onChange={(e) => {
+                  onChange={e => {
                     handleFormDataChange(e);
                   }}
                   required
@@ -183,11 +184,11 @@ const EditDocumentsForm = ({
                   id="document_type_id"
                   name="document_type_id"
                   value={formData.document_type_id}
-                  onChange={(e) => handleFormDataChange(e)}
+                  onChange={e => handleFormDataChange(e)}
                   className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   required
                 >
-                  {documentTypes.map((documentTypesObj) => (
+                  {documentTypes.map(documentTypesObj => (
                     <option
                       className="text-black bg-white dark:text-white dark:bg-gray-800"
                       key={documentTypesObj.document_type}
@@ -211,7 +212,7 @@ const EditDocumentsForm = ({
                         0,
                         10,
                       )}
-                      onChange={(e) => {
+                      onChange={e => {
                         handleFormDataChange(e);
                         setSelectedStartDate(e.target.value);
                       }}
@@ -230,7 +231,7 @@ const EditDocumentsForm = ({
                       min={selectedStartDate}
                       // defaultValue={String(formData.end_date).substring(0, 10)}
                       value={selectedEndDate}
-                      onChange={(e) => {
+                      onChange={e => {
                         handleFormDataChange(e);
                         setSelectedEndDate(e.target.value);
                       }}
@@ -248,7 +249,7 @@ const EditDocumentsForm = ({
                   id="document_description"
                   name="document_description"
                   value={formData.document_description}
-                  onChange={(e) => {
+                  onChange={e => {
                     handleFormDataChange(e);
                   }}
                   placeholder="Enter Description"
@@ -263,22 +264,23 @@ const EditDocumentsForm = ({
                   Add a New File
                   <h1
                     className="text-xs text-blue-800 underline"
-                    onClick={() => window.open(
-                      documentFile.file_array[
-                        documentFile.file_array.length - 1
-                      ][0],
-                      "_blank",
-                    )
+                    onClick={() =>
+                      window.open(
+                        documentFile.file_array[
+                          documentFile.file_array.length - 1
+                        ][0],
+                        '_blank',
+                      )
                     }
                   >
                     {`(Latest File: ${
                       documentFile.file_array.length > 0
                         ? String(
-                          documentFile.file_array[
-                            documentFile.file_array.length - 1
-                          ][0],
-                        ).substring(66)
-                        : ""
+                            documentFile.file_array[
+                              documentFile.file_array.length - 1
+                            ][0],
+                          ).substring(66)
+                        : ''
                     })`}
                   </h1>
                 </label>
@@ -337,7 +339,7 @@ const EditDocumentsForm = ({
                   id="document_notes"
                   name="document_notes"
                   value={formData.document_notes}
-                  onChange={(e) => {
+                  onChange={e => {
                     handleFormDataChange(e);
                   }}
                   placeholder="Enter Description"
@@ -353,7 +355,7 @@ const EditDocumentsForm = ({
           <div className="flex flex-row justify-center">
             <button
               className="btn btn-sm bg-blue-900 hover:bg-blue-800"
-              onClick={(e) => {
+              onClick={e => {
                 handleSubmit(e);
                 close();
               }}
