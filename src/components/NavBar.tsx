@@ -80,6 +80,7 @@ const NavBar = () => {
     });
   }, [routePage, TABS]);
 
+  // Authentication and Global Variable
   useQuery({
     queryKey: ['query-auth'],
     queryFn: async () => {
@@ -140,20 +141,6 @@ const NavBar = () => {
     enabled: !!authToken,
   });
 
-  // Effect: Store location in local storage when it changes
-  useEffect(() => {
-    mountCount.current += 1;
-    // Skip the effect for the first two renders
-    if (mountCount.current <= 2) {
-      return;
-    }
-
-    // Storing location to local storage when it changes (but not on the first two mounts)
-    if (location) {
-      window.localStorage.setItem('location', JSON.stringify(location));
-    }
-  }, [location]);
-
   return (
     <>
       <div className="navbar bg-blue-900">
@@ -167,9 +154,6 @@ const NavBar = () => {
             className="btn btn-ghost normal-case text-xl text-slate-100"
           >
             <img src={Logo} alt="Logo I presume" />
-
-            {/* <h1>ootstrap</h1> */}
-            {/* Bootstrap */}
           </button>
           <div className="tabs ml-10 lg:hidden">
             <button
@@ -274,6 +258,10 @@ const NavBar = () => {
                         locationName: item.location_name,
                         locationId: item.location_id,
                       });
+                      window.localStorage.setItem(
+                        'location',
+                        JSON.stringify(location),
+                      );
                       setOpen(!open);
                     }}
                   >
