@@ -34,14 +34,15 @@ const AddDocumentType = () => {
     setNewDocumentType('');
   };
 
-  const fetchDocumentTypes = async () => {
-    const documentTypeData = await getAllDocumentTypes(authTokenObj.authToken);
-    setData(documentTypeData);
-  };
-
   useQuery({
     queryKey: ['query-documentTypesAdmin'],
-    queryFn: fetchDocumentTypes,
+    queryFn: async () => {
+      const documentTypeData = await getAllDocumentTypes(
+        authTokenObj.authToken,
+      );
+      setData(documentTypeData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const documentTypeDeleteMutation = useMutation(

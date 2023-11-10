@@ -20,21 +20,19 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
   const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
   const [fileOpen] = useState(false);
 
-  const fetchDocumentsById = async () => {
-    try {
-      const documents = await getDocumentsByAssetId(
-        authTokenObj.authToken,
-        selectedAssetID,
-      );
-      setIncomingDocuments(documents);
-    } catch (error) {
-      setGetResult(formatResponse(error.response?.data || error));
-    }
-  };
-
   useQuery({
     queryKey: ['query-documentsByAssetId', selectedAssetID],
-    queryFn: fetchDocumentsById,
+    queryFn: async () => {
+      try {
+        const documents = await getDocumentsByAssetId(
+          authTokenObj.authToken,
+          selectedAssetID,
+        );
+        setIncomingDocuments(documents);
+      } catch (error) {
+        setGetResult(formatResponse(error.response?.data || error));
+      }
+    },
     enabled: !!selectedAssetID,
   });
 

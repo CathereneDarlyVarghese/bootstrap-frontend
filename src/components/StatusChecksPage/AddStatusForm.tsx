@@ -49,7 +49,6 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
       createAssetCheck(authTokenObj.authToken, assetCheck),
 
     onSettled: () => {
-      // Actions to perform after the mutation is settled (whether success or failure)
       toast.success('Asset Check Added Successfully');
       // Invalidate cache to ensure fresh data is fetched next time
       queryClient.invalidateQueries(['query-asset']);
@@ -57,7 +56,6 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
     },
 
     onError: () => {
-      // Handle errors from the mutation
       toast.error('Failed to Add Status Check');
     },
   });

@@ -34,14 +34,13 @@ const AddAssetType = () => {
     setNewAssetType('');
   };
 
-  const fetchAssetTypes = async () => {
-    const assetTypeData = await getAllAssetTypes(authTokenObj.authToken);
-    setData(assetTypeData);
-  };
-
   useQuery({
     queryKey: ['query-assetTypesAdmin'],
-    queryFn: fetchAssetTypes,
+    queryFn: async () => {
+      const assetTypeData = await getAllAssetTypes(authTokenObj.authToken);
+      setData(assetTypeData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const assetTypeDeleteMutation = useMutation(

@@ -21,6 +21,7 @@ const AddLocationForm = ({ addLocationForm, setAddLocationForm }) => {
       toast.error('Failed to Add Location');
     },
   });
+
   const handleSubmit = async event => {
     event.preventDefault();
 

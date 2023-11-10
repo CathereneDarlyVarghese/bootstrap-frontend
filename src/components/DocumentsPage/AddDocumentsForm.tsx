@@ -7,7 +7,7 @@ import { createDocument } from 'services/documentServices';
 import { getAllDocumentTypes } from 'services/documentTypeServices';
 import { AiOutlinePaperClip } from 'react-icons/ai';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const AddDocumentsForm = ({
   addDocumentsOpen,
@@ -129,16 +129,14 @@ const AddDocumentsForm = ({
   };
 
   // Function to fetch available document types on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedDocumentTypes = await getAllDocumentTypes(
-        authTokenObj.authToken,
-      );
-      setDocumentTypes(fetchedDocumentTypes);
-    };
-
-    fetchData();
-  }, [authTokenObj.authToken]);
+  useQuery({
+    queryKey: ['query-docType'],
+    queryFn: async () => {
+      const types = await getAllDocumentTypes(authTokenObj.authToken);
+      setDocumentTypes(types);
+    },
+    enabled: !!authTokenObj.authToken,
+  });
 
   // Function to close the form modal
   const closeAddForm = () => {

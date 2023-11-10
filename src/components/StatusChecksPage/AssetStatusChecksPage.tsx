@@ -31,11 +31,9 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   const [, setStatusCheckId] = useState<string | null>(null);
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [, setGetResult] = useState<string | null>(null);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Helper function to format response
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
   // Function to handle status card click and show details
   const handleStatusCardClick = (selectedStatusCheckId: string) => {
@@ -48,24 +46,17 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
     setSelectedAssetCheck(selectedCheck);
   };
 
-  // Async function to fetch all asset checks based on assetId
-  const fetchAllAssetChecks = async assetIdObj => {
-    try {
+  // Fetching all asset checks using React Query's useQuery
+  useQuery({
+    queryKey: ['query-assetChecks', assetId, authTokenObj.authToken],
+    queryFn: async assetIdObj => {
       const res = await getAssetCheckById(
         authTokenObj.authToken,
         assetIdObj.queryKey[1],
       );
       setAssetChecks(res);
-    } catch (error) {
-      setGetResult(formatResponse(error.response?.data || error));
-    }
-  };
-
-  // Fetching all asset checks using React Query's useQuery
-  useQuery({
-    queryKey: ['query-assetChecks', assetId, authTokenObj.authToken],
-    queryFn: fetchAllAssetChecks,
-    enabled: !!selectedAsset, // only enabled if there's a selectedAsset
+    },
+    enabled: !!selectedAsset,
   });
 
   return (

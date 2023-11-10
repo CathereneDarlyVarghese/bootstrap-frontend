@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAtom } from 'jotai';
 import WorkOrderButton from 'components/widgets/WorkOrderButton';
 import {
@@ -70,14 +70,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [, setSearchTerm] = useAtom(searchTermAtom);
 
   // ====== Helpers & Handlers ======
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedStatus(event.target.value);
-  };
-
-  const handleConditionChange = event => {
-    setSelectedCondition(event.target.value);
-  };
-
   const handleSectionChange = async (sectionId: string) => {
     await queryClient.invalidateQueries(['query-assetPlacementsForm']);
     const placements = assetPlacements.filter(
@@ -86,21 +78,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     setFilteredPlacements(placements);
     setSelectedPlacement('');
   };
-
-  // Logic for fetching initial data
-  useEffect(() => {
-    const fetchData = async () => {
-      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        'query-locations',
-      ]);
-      setLocations(queryLocations);
-
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-      setAssetTypes(types);
-    };
-
-    fetchData();
-  }, [authTokenObj.authToken, queryClient]);
 
   // Form submission handler
   const handleSubmit = async event => {
@@ -194,35 +171,47 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   };
 
   // ====== Data Fetching using useQuery ======
-  const fetchAssetSections = async () => {
-    const res = await getAssetSections(authTokenObj.authToken);
-    setAssetSections(res);
-    const sections = res.filter(
-      section => section.location_id === location.locationId,
-    );
-    setFilteredSections(sections);
-  };
+
+  useQuery({
+    queryKey: ['query-assetTypeandLocation', location],
+    queryFn: async () => {
+      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
+        'query-locations',
+      ]);
+      setLocations(queryLocations);
+
+      const types = await getAllAssetTypes(authTokenObj.authToken);
+      setAssetTypes(types);
+    },
+    enabled: !!authTokenObj.authToken,
+  });
 
   useQuery({
     queryKey: ['query-assetSectionsForm', location],
-    queryFn: fetchAssetSections,
+    queryFn: async () => {
+      const res = await getAssetSections(authTokenObj.authToken);
+      setAssetSections(res);
+      const sections = res.filter(
+        section => section.location_id === location.locationId,
+      );
+      setFilteredSections(sections);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
-  const fetchAssetPlacements = async () => {
-    const res = await getAssetPlacements(authTokenObj.authToken);
-    if (!res || typeof res === 'undefined') {
-      throw new Error('No data received from API');
-    }
-    const placements = res.filter(
-      placement => placement.section_id === selectedSection,
-    );
-    await setFilteredPlacements(placements);
-    setAssetPlacements(res);
-  };
-
-  const { refetch } = useQuery({
+  useQuery({
     queryKey: ['query-assetPlacementsForm'],
-    queryFn: fetchAssetPlacements,
+    queryFn: async () => {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      if (!res || typeof res === 'undefined') {
+        throw new Error('No data received from API');
+      }
+      const placements = res.filter(
+        placement => placement.section_id === selectedSection,
+      );
+      await setFilteredPlacements(placements);
+      setAssetPlacements(res);
+    },
     enabled: !!location.locationId,
   });
 
@@ -261,25 +250,15 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     onSuccess: async data => {
       toast.success('Placement Added Successfully');
       await queryClient.invalidateQueries(['query-assetPlacementsForm']);
-      refetch();
     },
     onError: () => {
       toast.error('Failed to Add Placement');
     },
   });
 
-  // Function to close the add asset form
-  const closeAddForm = () => {
-    setAddAssetOpen(false);
-  };
-
   // Unfocus input fields for safari browser
   const handleUnfocus = () => {
     document.getElementById('nameOfAsset').focus();
-  };
-
-  const handleStatusCheckChange = event => {
-    setStatusCheckEnabled(event.target.checked);
   };
 
   return (
@@ -315,7 +294,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 fill="none"
                 strokeWidth="1.5"
                 className="w-6 h-6 text-blue-800 dark:text-white ml-auto cursor-pointer"
-                onClick={closeAddForm}
+                onClick={() => {
+                  setAddAssetOpen(false);
+                }}
               >
                 <path
                   d="M18 6L6 18M6 6l12 12"
@@ -431,7 +412,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     name="status"
                     className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
                     value={selectedStatus}
-                    onChange={handleStatusChange}
+                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                      setSelectedStatus(event.target.value);
+                    }}
                   >
                     <option value="" disabled hidden>
                       Select Asset Status
@@ -586,7 +569,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   name="condition"
                   className="select select-sm font-normal my-3 dark:text-white bg-transparent dark:border-gray-500 border border-slate-300 w-full"
                   value={selectedCondition}
-                  onChange={handleConditionChange}
+                  onChange={event => {
+                    setSelectedCondition(event.target.value);
+                  }}
                 >
                   <option value="" disabled hidden>
                     Select Asset Condition
@@ -616,7 +601,9 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 <input
                   type="checkbox"
                   checked={statusCheckEnabled}
-                  onChange={handleStatusCheckChange}
+                  onChange={event =>
+                    setStatusCheckEnabled(event.target.checked)
+                  }
                   id="status_check_enabled"
                   className="form-checkbox text-blue-600"
                 />

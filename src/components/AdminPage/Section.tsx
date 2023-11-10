@@ -21,14 +21,13 @@ const Sections = () => {
     'query-locations',
   ]);
 
-  const fetchSections = async () => {
-    const SectionData = await getAssetSections(authTokenObj.authToken);
-    setData(SectionData);
-  };
-
   useQuery({
     queryKey: ['query-SectionsAdmin'],
-    queryFn: fetchSections,
+    queryFn: async () => {
+      const SectionData = await getAssetSections(authTokenObj.authToken);
+      setData(SectionData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const SectionAddMutation = useMutation(

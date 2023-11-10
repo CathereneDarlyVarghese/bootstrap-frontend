@@ -15,6 +15,7 @@ import { TfiClose } from 'react-icons/tfi';
 import { Auth } from 'aws-amplify';
 import { AssetCondition } from 'enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import AddSectionModal from './AddSectionModal';
 
 const EditAssetForm = ({
@@ -31,8 +32,8 @@ const EditAssetForm = ({
   assetPlacements,
   assetPlacement,
 }) => {
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [, setLogoClicked] = useAtom(LogoClickedAtom);
-  const [token, setToken] = useState<string>('');
   const [file, setFile] = useState<File>();
   const queryClient = useQueryClient();
   // const [locations, setLocations] = useState<AssetLocation[]>([]);
@@ -182,7 +183,7 @@ const EditAssetForm = ({
       const modifiedDate = new Date().toISOString().substring(0, 10);
 
       // Step 2: Create a file in the backend
-      const createdFile = await createFile(token, {
+      const createdFile = await createFile(authTokenObj.authToken, {
         file_id: '',
         file_array: [imageLocation.location],
         modified_by_array: [modifiedBy],
@@ -209,7 +210,7 @@ const EditAssetForm = ({
 
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedData: Asset) =>
-      updateAsset(token, asset.asset_id, updatedData),
+      updateAsset(authTokenObj.authToken, asset.asset_id, updatedData),
     onSuccess: () => {
       toast.success('Asset Edited Successfully');
       setEditFormOpen(false);
@@ -220,26 +221,6 @@ const EditAssetForm = ({
       toast.error('Failed to update asset');
     },
   });
-
-  // useEffect hook to retrieve the session token from localStorage
-  useEffect(() => {
-    const data = window.localStorage.getItem('sessionToken');
-    setToken(data);
-  }, []);
-
-  // const handleStatusCheckDisabled = () => {
-  //   if (!formData.status_check_enabled) {
-  //     setFormData((prevState) => ({
-  //       ...prevState,
-  //       status_check_interval: null,
-  //       asset_finance_purchase: null,
-  //       asset_finance_current_value: null,
-  //     }));
-  //   }
-  // };
-
-  // handleStatusCheckDisabled();
-  // }, [formData.status_check_enabled]);
 
   // Function to handle adding a section
   const handleAddSection = async () => {
@@ -252,7 +233,10 @@ const EditAssetForm = ({
           location_id: selectedLocation,
         };
 
-        const createdSection = await createAssetSection(token, newSection);
+        const createdSection = await createAssetSection(
+          authTokenObj.authToken,
+          newSection,
+        );
         const updatedSections = [...assetSections, createdSection];
         // setAssetSections(updatedSections);
         setFilteredSections(updatedSections);
@@ -276,7 +260,7 @@ const EditAssetForm = ({
         };
 
         const createdPlacement = await createAssetPlacement(
-          token,
+          authTokenObj.authToken,
           newPlacement,
         );
         const updatedPlacements = [...assetPlacements, createdPlacement];
@@ -734,23 +718,6 @@ const EditAssetForm = ({
                         </button>
                       </div>
                     </form>
-                    // <form>
-                    //   <input
-                    //     type="text"
-                    //     name="section"
-                    //     required
-                    //     onChange={(e) => setSelectedSection(e.target.value)}
-                    //   />
-                    // <button
-                    //   onClick={() => {
-                    //     handleAddSection();
-                    //     setAddSection(false);
-                    //   }}
-                    //   type="button"
-                    // >
-                    //   Submit now
-                    // </button>
-                    // </form>
                   )}
                 </div>
               </div>

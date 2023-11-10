@@ -53,23 +53,22 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
   const queryClient = useQueryClient();
 
   // Fetch document details on component mount
-  const fetchDocumentDetails = async () => {
-    const fetchedDocumentType = await getDocumentTypeById(
-      authTokenObj.authToken,
-      document.document_type_id,
-    );
-
-    const fetchedDocumentFile = await getFileById(
-      authTokenObj.authToken,
-      document.file_id,
-    );
-
-    return { fetchedDocumentType, fetchedDocumentFile };
-  };
 
   const { data } = useQuery({
     queryKey: ['fetch-document-details', document],
-    queryFn: fetchDocumentDetails,
+    queryFn: async () => {
+      const fetchedDocumentType = await getDocumentTypeById(
+        authTokenObj.authToken,
+        document.document_type_id,
+      );
+
+      const fetchedDocumentFile = await getFileById(
+        authTokenObj.authToken,
+        document.file_id,
+      );
+
+      return { fetchedDocumentType, fetchedDocumentFile };
+    },
     enabled: !!authTokenObj,
   });
 

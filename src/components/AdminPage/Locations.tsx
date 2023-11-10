@@ -16,14 +16,13 @@ const Locations = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<AssetLocation[]>(null);
 
-  const fetchLocations = async () => {
-    const locationData = await getAllAssetLocations(authTokenObj.authToken);
-    setData(locationData);
-  };
-
   useQuery({
     queryKey: ['query-locationsAdmin'],
-    queryFn: fetchLocations,
+    queryFn: async () => {
+      const locationData = await getAllAssetLocations(authTokenObj.authToken);
+      setData(locationData);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const locationAddMutation = useMutation(

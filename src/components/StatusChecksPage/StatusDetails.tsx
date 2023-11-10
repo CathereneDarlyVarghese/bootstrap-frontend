@@ -25,25 +25,13 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
   // React Query's client
   const queryClient = useQueryClient();
 
-  /**
-   * Convert camel case strings to normal spaced strings.
-   * Example: "camelCaseExample" to "Camel Case Example"
-   *
-   * @param {string} text - The camel case string.
-   * @return {string} - The converted string.
-   */
   function camelCaseToNormal(text) {
     return text
-      .replace(/([A-Z])/g, ' $1') // Insert a space before each uppercase letter
-      .replace(/^./, str => str.toUpperCase()) // Uppercase the first character of the string
-      .trim(); // Remove any leading spaces
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
   }
 
-  /**
-   * Mutation to handle deleting an asset check.
-   * On successful deletion, it shows a toast and invalidates the relevant queries.
-   * On failure, it shows an error toast.
-   */
   const assetCheckMutation = useMutation({
     mutationFn: () =>
       deleteAssetCheck(

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
@@ -17,7 +17,6 @@ import AddLocationForm from './AddLocationForm';
 export const LogoClickedAtom = atom(false);
 
 const NavBar = () => {
-  const mountCount = useRef(0);
   const routePage = useLocation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

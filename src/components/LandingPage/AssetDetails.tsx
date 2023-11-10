@@ -74,30 +74,27 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
     fetchData();
   }, [authTokenObj.authToken, queryClient]);
 
-  const fetchAssetPlacements = async () => {
-    const res = await getAssetPlacements(authTokenObj.authToken);
-    setAssetPlacements(res);
-  };
-
   useQuery({
     queryKey: ['query-assetPlacementsForm'],
-    queryFn: fetchAssetPlacements,
+    queryFn: async () => {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      setAssetPlacements(res);
+    },
     enabled: !!selectedLocation,
   });
 
   // ====== Data Fetching using useQuery ======
-  const fetchAssetSections = async () => {
-    const res = await getAssetSections(authTokenObj.authToken);
-    setAssetSections(res);
-    const sections = res.filter(
-      section => section.location_id === selectedLocation,
-    );
-    setFilteredSections(sections);
-  };
 
   useQuery({
     queryKey: ['query-assetSectionsForm'],
-    queryFn: fetchAssetSections,
+    queryFn: async () => {
+      const res = await getAssetSections(authTokenObj.authToken);
+      setAssetSections(res);
+      const sections = res.filter(
+        section => section.location_id === selectedLocation,
+      );
+      setFilteredSections(sections);
+    },
   });
 
   // Mutation for deleting an asset
@@ -137,21 +134,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       toast.error('Failed to toggle asset condition');
     },
   });
-
-  // const [, setActiveTab] = useState(0);
-
-  // const handleToggleAssetCondition = async () => {
-  //     const toggledAssetCondition =
-  //       assetCondition === assetConditions[AssetCondition.ACTIVE]
-  //         ? assetConditions[AssetCondition.INACTIVE]
-  //         : assetConditions[AssetCondition.ACTIVE];
-
-  //     await toggleAssetCondition(
-  //       authTokenObj.authToken,
-  //       assetId,
-  //       toggledAssetCondition
-  //     );
-  // };
 
   return (
     <>

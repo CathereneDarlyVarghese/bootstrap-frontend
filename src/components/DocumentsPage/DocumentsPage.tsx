@@ -10,7 +10,6 @@ import DocumentsCard from './DocumentsCard';
 
 const DocumentsPage = () => {
   // --- STATE VARIABLES ---
-
   // State for document modal
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
 
@@ -50,27 +49,25 @@ const DocumentsPage = () => {
   const [location] = useSyncedAtom(locationAtom);
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
-  // --- HELPER FUNCTIONS ---
+  // --- HOOKS ---
 
-  // Format API response
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
-
-  // Fetch documents by location
-  const fetchDocumentsByLocation = async () => {
-    try {
+  // Query for fetching documents by location
+  useQuery({
+    queryKey: ['query-documentsByLocationId', location],
+    queryFn: async () => {
       const documents = await getDocumentsByLocationIdOnly(
         authTokenObj.authToken,
         location.locationId,
       );
       setIncomingDocuments(documents);
-    } catch (error) {
-      setGetResult(formatResponse(error.response?.data || error));
-    }
-  };
+    },
+    enabled: !!authTokenObj.authToken,
+  });
 
-  // Fetch file data
-  const fetchFile = async () => {
-    try {
+  // Query for fetching file by document
+  useQuery({
+    queryKey: ['query-files', selectedDocument],
+    queryFn: async () => {
       const fileData = await getFileById(
         authTokenObj.authToken,
         selectedDocument.file_id,
@@ -80,23 +77,8 @@ const DocumentsPage = () => {
           ? fileData.file_array[0]
           : '';
       setFileName(fileName);
-    } catch (error) {
-      setGetResult(formatResponse(error.response?.data || error));
-    }
-  };
-
-  // --- HOOKS ---
-
-  // Query for fetching documents by location
-  useQuery({
-    queryKey: ['query-documentsByLocationId', location],
-    queryFn: fetchDocumentsByLocation,
-  });
-
-  // Query for fetching file by document
-  useQuery({
-    queryKey: ['query-files', selectedDocument],
-    queryFn: fetchFile,
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   // Derived states or computations

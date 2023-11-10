@@ -89,12 +89,7 @@ const ListsLayout = () => {
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
   const [selectedButtonsPlacement, setSelectedButtonsPlacement] = useState([]);
 
-  // Miscellaneous states
-  const [, setGetResult] = useState<string | null>(null);
-
   // ----------------------- FUNCTION DECLARATIONS -----------------------
-
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2);
 
   // Functions for UI manipulation
   const addClass = (selectClass, addClassObj) => {
@@ -178,46 +173,6 @@ const ListsLayout = () => {
 
   const filteredAssets = incomingAssets.filter(assetFilter);
 
-  // Fetching assets data and handlers
-  // const fetchAllAssets = async () => {
-  //   try {
-  //     if (location.locationId !== '') {
-  //       const res = await getAssets(
-  //         authTokenObj.authToken,
-  //         location.locationId,
-  //       );
-  //       setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
-  //     }
-  //   } catch (err) {
-  //     setGetResult(formatResponse(err.response?.data || err));
-  //   }
-  // };
-
-  // const fetchAssetSections = async () => {
-  //   try {
-  //     const res = await getAssetSections(authTokenObj.authToken);
-  //     const filtered = res.filter(
-  //       (section: AssetSection) => section.location_id === location.locationId,
-  //     );
-  //     setAssetSections(filtered);
-  //   } catch (err) {
-  //     setGetResult(formatResponse(err.response?.data || err));
-  //   }
-  // };
-
-  // const fetchAssetPlacements = async () => {
-  //   try {
-  //     const res = await getAssetPlacements(authTokenObj.authToken);
-  //     const filtered = res.filter(
-  //       (placement: AssetPlacement) =>
-  //         placement.location_id === location.locationId,
-  //     );
-  //     setAssetPlacements(filtered);
-  //   } catch (err) {
-  //     setGetResult(formatResponse(err.response?.data || err));
-  //   }
-  // };
-
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
@@ -252,16 +207,12 @@ const ListsLayout = () => {
   useQuery({
     queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: async () => {
-      try {
-        if (location.locationId !== '') {
-          const res = await getAssets(
-            authTokenObj.authToken,
-            location.locationId,
-          );
-          setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
-        }
-      } catch (err) {
-        setGetResult(formatResponse(err.response?.data || err));
+      if (location.locationId !== '') {
+        const res = await getAssets(
+          authTokenObj.authToken,
+          location.locationId,
+        );
+        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
       }
     },
     enabled: !!authTokenObj,
@@ -270,16 +221,11 @@ const ListsLayout = () => {
   useQuery({
     queryKey: ['query-assetSections', location],
     queryFn: async () => {
-      try {
-        const res = await getAssetSections(authTokenObj.authToken);
-        const filtered = res.filter(
-          (section: AssetSection) =>
-            section.location_id === location.locationId,
-        );
-        setAssetSections(filtered);
-      } catch (err) {
-        setGetResult(formatResponse(err.response?.data || err));
-      }
+      const res = await getAssetSections(authTokenObj.authToken);
+      const filtered = res.filter(
+        (section: AssetSection) => section.location_id === location.locationId,
+      );
+      setAssetSections(filtered);
     },
     enabled: !!authTokenObj,
   });
@@ -292,16 +238,12 @@ const ListsLayout = () => {
       selectedAssetPlacementName,
     ],
     queryFn: async () => {
-      try {
-        const res = await getAssetPlacements(authTokenObj.authToken);
-        const filtered = res.filter(
-          (placement: AssetPlacement) =>
-            placement.location_id === location.locationId,
-        );
-        setAssetPlacements(filtered);
-      } catch (err) {
-        setGetResult(formatResponse(err.response?.data || err));
-      }
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      const filtered = res.filter(
+        (placement: AssetPlacement) =>
+          placement.location_id === location.locationId,
+      );
+      setAssetPlacements(filtered);
     },
     enabled: !!authTokenObj,
   });
