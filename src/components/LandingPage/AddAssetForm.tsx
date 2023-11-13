@@ -186,7 +186,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     enabled: !!authTokenObj.authToken,
   });
 
-  useQuery({
+  const { refetch: refetchSection } = useQuery({
     queryKey: ['query-assetSectionsForm', location],
     queryFn: async () => {
       const res = await getAssetSections(authTokenObj.authToken);
@@ -199,7 +199,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     enabled: !!authTokenObj.authToken,
   });
 
-  useQuery({
+  const { refetch: refetchPlacement } = useQuery({
     queryKey: ['query-assetPlacementsForm'],
     queryFn: async () => {
       const res = await getAssetPlacements(authTokenObj.authToken);
@@ -236,7 +236,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       toast.success('Section Added Successfully');
     },
     onSuccess: data => {
-      queryClient.invalidateQueries(['query-assetSectionsForm']);
+      refetchSection();
       setSelectedSection(null);
     },
     onError: () => {
@@ -249,7 +249,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       createAssetPlacement(authTokenObj.authToken, newPlacement),
     onSuccess: async data => {
       toast.success('Placement Added Successfully');
-      await queryClient.invalidateQueries(['query-assetPlacementsForm']);
+      refetchPlacement();
     },
     onError: () => {
       toast.error('Failed to Add Placement');
@@ -375,7 +375,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                 />
                 <input
                   type="text"
-                  className={`bg-transparent text-sm font-sans bg-transparent dark:border-gray-500 w-4/5 md:w-1/2 ${
+                  className={`bg-transparent text-sm font-sans dark:border-gray-500 w-4/5 md:w-1/2 ${
                     file && file
                       ? 'text-black dark:text-white'
                       : 'text-gray-400'
@@ -689,9 +689,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       className="ml-auto"
                       type="button"
                       onClick={() => {
-                        queryClient.invalidateQueries([
-                          'query-assetPlacementsForm',
-                        ]);
+                        refetchPlacement();
                         setAddPlacement(false);
                       }}
                     >
@@ -700,7 +698,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </div>
 
                   <div className="flex flex-col w-full">
-                    <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    <label className="font-sans font-semibold text-sm text-black">
                       New Placement Name
                     </label>
                     <input
@@ -708,7 +706,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       name="placement"
                       required
                       onChange={e => setSelectedPlacement(e.target.value)}
-                      className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                      className="block input input-sm w-full text-md text-black bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                     />
                   </div>
 
@@ -757,7 +755,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   </div>
 
                   <div className="flex flex-col w-full">
-                    <label className="font-sans font-semibold text-sm text-black dark:text-white">
+                    <label className="font-sans font-semibold text-sm text-black">
                       New Section Name
                     </label>
                     <input
@@ -765,7 +763,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                       name="section"
                       required
                       onChange={e => setSelectedSection(e.target.value)}
-                      className="block input input-sm w-full text-md text-black dark:text-white bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
+                      className="block input input-sm w-full text-md text-black bg-transparent border border-gray-300 dark:border-gray-500 rounded-lg dark:text-black focus:outline-none dark:placeholder-white file:bg-blue-900 file:text-white file:font-sans"
                     />
                   </div>
 
