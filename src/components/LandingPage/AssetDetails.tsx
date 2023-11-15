@@ -410,47 +410,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
                 <div>
                   <AssetDocumentsPage selectedAsset={Asset} />
                 </div>
-                <div className="flex flex-row md:justify-center justify-start items-center my-2">
-                  <button
-                    className="badge w-fit bg-gray-200 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-semibold font-sans cursor-pointer capitalize border-white border-none mx-1 p-4 text-md xl:text-xs sm:text-[9px] xs:text-[9px] xs:p-2"
-                    onClick={() => {
-                      handleToggleAssetCondition.mutate(Asset.asset_condition);
-                      closeAsset();
-                      // setTimeout(() => {
-                      //   window.location.reload();
-                      // }, 1000);
-                    }}
-                  >
-                    {Asset.asset_condition ===
-                    assetConditions[AssetCondition.ACTIVE]
-                      ? 'Mark as Inactive'
-                      : 'Mark as Active'}
-                  </button>
-                  <button
-                    title="Edit Asset"
-                    onClick={() => {
-                      setEditFormOpen(true);
-                    }}
-                    className="mx-3"
-                  >
-                    <FiEdit3 className="text-xl text-black dark:text-white" />
-                  </button>
-                  <button
-                    className="mx-3"
-                    onClick={async () => {
-                      if (
-                        // eslint-disable-next-line
-                        window.confirm(
-                          'Are you sure you want to delete this asset?',
-                        )
-                      ) {
-                        deleteAssetMutation.mutate();
-                      }
-                    }}
-                  >
-                    <AiOutlineDelete className="text-2xl mx-3 text-black dark:text-white" />
-                  </button>
-                </div>
               </div>
             ) : tabIndex === 2 ? (
               <div>

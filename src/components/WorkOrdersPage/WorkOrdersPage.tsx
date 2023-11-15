@@ -21,14 +21,6 @@ const WorkOrdersPage = () => {
     })();
   }, [assetId, asset]);
 
-  // function to add and remove class for UI
-  // const addClass = (selectClass, addClass) => {
-  //   document.querySelector(selectClass).classList.add(addClass);
-  // };
-  // const removeClass = (selectClass, removeClass) => {
-  //   document.querySelector(selectClass).classList.remove(removeClass);
-  // };
-
   return (
     <div className="flex flex-row justify-center h-screen items-center bg-white dark:bg-black">
       <h1 className="text-black dark:text-gray-300 text-3xl font-sans font-semibold mb-10">

@@ -111,7 +111,7 @@ const AddAssetType = () => {
                 onClick={() => {
                   assetTypeDeleteMutation.mutate(selectedAssetType);
                 }}
-                className="btn btn-sm bg-red-500 hover:bg-red-700"
+                className="btn btn-sm bg-red-600 border-0 hover:bg-red-700"
               >
                 Delete
               </button>

@@ -105,7 +105,7 @@ const Sections = () => {
               });
               setNewSectionName('');
             }}
-            className="btn btn-sm bg-blue-500 hover:bg-blue-700"
+            className="btn btn-sm bg-blue-900 hover:bg-blue-700"
           >
             Add
           </button>
@@ -134,7 +134,7 @@ const Sections = () => {
               onClick={() => {
                 SectionDeleteMutation.mutate(selectedSection);
               }}
-              className="btn btn-sm bg-red-500 hover:bg-red-700"
+              className="btn btn-sm bg-red-600 border-0 hover:bg-red-700"
             >
               Delete
             </button>

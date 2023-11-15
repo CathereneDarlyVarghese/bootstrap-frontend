@@ -91,11 +91,19 @@ const StatusDetails: React.FC<StatusDetailsProps> = ({
             <Link to={`/edit-asset/${assetId}`}>
               <FiEdit3 className="text-blue-500 text-xl" />
             </Link> */}
+
             <AiOutlineDelete
               className="text-red-500 text-xl ml-2 cursor-pointer"
               onClick={() => {
-                assetCheckMutation.mutate();
-                closeAsset();
+                if (
+                  // eslint-disable-next-line
+                  window.confirm(
+                    'Are you sure you want to delete this status check',
+                  )
+                ) {
+                  assetCheckMutation.mutate();
+                  closeAsset();
+                }
               }}
             />
           </div>
