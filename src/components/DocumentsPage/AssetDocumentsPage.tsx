@@ -48,7 +48,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
         <div
           className={`flex flex-grow items-center ${
             addDocumentsOpen && !fileOpen ? 'xl:hidden' : ''
-          } `}
+          }`}
         >
           <h1 className="text-blue-800 dark:text-blue-700 text-lg md:text-sm font-sans font-semibold">
             Documents - {assetName}

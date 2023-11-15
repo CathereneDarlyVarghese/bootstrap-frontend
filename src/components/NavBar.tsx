@@ -37,33 +37,19 @@ const NavBar = () => {
   // Extract locationId from the URL's search params.
   const searchParams = new URLSearchParams(routePage.search);
   const urlLocationId = searchParams.get('location_id');
+  const [activeTab, setActiveTab] = useState(0);
 
   // Toggle dropdown state
   const toggleDropDown = () => {
     setOpen(!open);
   };
 
-  // Utility functions to add/remove class
-  const addClass = (selectClass, addClassObj) => {
-    const element = document.querySelector(selectClass);
-    if (element) {
-      element.classList.add(addClassObj);
-    }
-  };
-
-  const removeClass = (selectClass, removeClassObj) => {
-    const element = document.querySelector(selectClass);
-    if (element) {
-      element.classList.remove(removeClassObj);
-    }
-  };
-
   const TABS = useMemo(
     () => ({
-      '/home': '.asset-tab',
-      '/work-orders': '.workorder-tab',
-      '/document/location': '.documents-tab',
-      '/status-checks': '.status-tab',
+      '/home': 1,
+      '/work-orders': 2,
+      '/document/location': 3,
+      '/status-checks': 4,
     }),
     [],
   );
@@ -72,9 +58,7 @@ const NavBar = () => {
   useEffect(() => {
     Object.keys(TABS).forEach(path => {
       if (routePage.pathname === path) {
-        addClass(TABS[path], 'border-b-white');
-      } else {
-        removeClass(TABS[path], 'border-b-white');
+        setActiveTab(TABS[path]);
       }
     });
   }, [routePage, TABS]);
@@ -156,35 +140,47 @@ const NavBar = () => {
           </button>
           <div className="tabs ml-10 lg:hidden">
             <button
-              className="tab text-white border border-transparent border-b-white font-sans mx-3 asset-tab"
+              className={`tab text-white border border-transparent ${
+                activeTab === 1 ? 'border-b-white' : ''
+              } font-sans mx-3 asset-tab`}
               onClick={() => {
                 navigate('/home');
                 resetFilterOptions();
+                setActiveTab(1);
               }}
             >
               Assets
             </button>
 
             <button
-              className="tab text-white border border-transparent font-sans workorder-tab"
+              className={`tab text-white border border-transparent ${
+                activeTab === 2 ? 'border-b-white' : ''
+              } font-sans workorder-tab`}
               onClick={() => {
                 navigate('/work-orders');
+                setActiveTab(2);
               }}
             >
               Maintenance
             </button>
             <button
-              className="tab text-white border border-transparent font-sans documents-tab"
+              className={`tab text-white border border-transparent ${
+                activeTab === 3 ? 'border-b-white' : ''
+              } font-sans documents-tab`}
               onClick={() => {
                 navigate('/document/location');
+                setActiveTab(3);
               }}
             >
               Documents
             </button>
             <button
-              className="tab text-white border border-transparent font-sans status-tab"
+              className={`tab text-white border border-transparent ${
+                activeTab === 4 ? 'border-b-white' : ''
+              } font-sans status-tab`}
               onClick={() => {
                 navigate('/status-checks');
+                setActiveTab(4);
               }}
             >
               Status

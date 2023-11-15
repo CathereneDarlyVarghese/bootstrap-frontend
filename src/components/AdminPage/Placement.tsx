@@ -132,7 +132,7 @@ const Placements = () => {
               });
               setNewPlacementName('');
             }}
-            className="btn btn-sm bg-blue-500 hover:bg-blue-700"
+            className="btn btn-sm bg-blue-900 hover:bg-blue-900"
           >
             Add
           </button>
@@ -162,7 +162,7 @@ const Placements = () => {
             </select>
             <button
               onClick={() => PlacementDeleteMutation.mutate(selectedPlacement)}
-              className="btn btn-sm bg-red-500 hover:bg-red-700"
+              className="btn btn-sm bg-red-600 border-0 hover:bg-red-700"
             >
               Delete
             </button>

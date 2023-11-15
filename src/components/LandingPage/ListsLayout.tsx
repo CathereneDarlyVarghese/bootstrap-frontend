@@ -91,21 +91,6 @@ const ListsLayout = () => {
 
   // ----------------------- FUNCTION DECLARATIONS -----------------------
 
-  // Functions for UI manipulation
-  const addClass = (selectClass, addClassObj) => {
-    const element = document.querySelector(selectClass);
-    if (element) {
-      element.classList.add(addClassObj);
-    }
-  };
-
-  const removeClass = (selectClass, removeClassObj) => {
-    const element = document.querySelector(selectClass);
-    if (element) {
-      element.classList.remove(removeClassObj);
-    }
-  };
-
   const handleAddAssetOpen = () => {
     setAddAssetOpen(true);
   };
@@ -285,7 +270,7 @@ const ListsLayout = () => {
             <div className={`flex flex-col absolute z-10 w-1/3 lg:w-full`}>
               <div
                 style={{ display: 'flex', flexDirection: 'row' }}
-                className=" justify-center bg-white dark:bg-gray-800 py-2"
+                className=" justify-center bg-white dark:bg-gray-800 py-2 px-2"
               >
                 {/* Search input field */}
                 <div className="flex flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-xl w-full h-12">
@@ -324,15 +309,6 @@ const ListsLayout = () => {
                   className="btn w-28 h-12 ml-3 mr-1 text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
                   onClick={() => {
                     handleAddAssetOpen();
-                    removeClass(
-                      '#parent-element .asset-details-card',
-                      'lg:hidden',
-                    );
-                    addClass(
-                      '#parent-element .asset-details-card',
-                      'lg:w-full',
-                    );
-                    addClass('#parent-element .asset-card', 'lg:hidden');
                   }}
                 >
                   + Add
@@ -490,9 +466,6 @@ const ListsLayout = () => {
               <AssetDetails
                 closeAsset={() => {
                   setAssetDetailsOpen(false);
-                  // addClass("#parent-element .asset-details-card", "lg:hidden");
-                  // removeClass("#parent-element .asset-details-card", "w-full");
-                  // removeClass("#parent-element .asset-card", "lg:hidden");
                 }}
                 sessionToken={authTokenObj.authToken}
                 setAssetId={setSelectedAsset}
@@ -507,9 +480,6 @@ const ListsLayout = () => {
             addAssetOpen={addAssetOpen}
             setAddAssetOpen={() => {
               setAddAssetOpen(prev => !prev);
-              addClass('#parent-element .asset-details-card', 'lg:hidden');
-              removeClass('#parent-element .asset-details-card', 'w-full');
-              removeClass('#parent-element .asset-card', 'lg:hidden');
             }}
           />
         ) : (
