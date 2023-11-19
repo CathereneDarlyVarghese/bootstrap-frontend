@@ -8,7 +8,8 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AssetLocation } from 'types';
 import SignInWithGoogle from './LoginPage/SignInWithGoogle';
-import { getAllAssetLocations } from '../services/locationServices';
+import { getAssetLocationByOrgId } from '../services/locationServices';
+import { getUserByEmail } from '../services/userServices';
 import { resetFilterOptions } from './LandingPage/FilterOptions';
 import Logo from '../icons/Logo(2).svg';
 import ScanButton from './widgets/ScanButton';
@@ -69,7 +70,6 @@ const NavBar = () => {
     queryFn: async () => {
       try {
         const userData = await Auth.currentAuthenticatedUser();
-        setUser(userData);
         window.localStorage.setItem(
           'sessionToken',
           userData.signInUserSession.idToken.jwtToken,
@@ -79,6 +79,14 @@ const NavBar = () => {
           attributes: userData.attributes,
         });
 
+        const userInfo = await getUserByEmail(
+          userData.signInUserSession.idToken.jwtToken,
+          userData.attributes.email,
+        );
+        queryClient.setQueryData(['query-user'], userInfo);
+        userData.attributes.org_id = userInfo.org_id;
+        setUser(userData);
+
         setIsLoading(false);
       } catch {
         setIsLoading(false);
@@ -87,13 +95,15 @@ const NavBar = () => {
     staleTime: 60000 * 10,
   });
 
+  // we can remove the sub id and use email as primary key
+
   // UseQuery to get locations
   useQuery({
     queryKey: ['query-locations', urlLocationId],
     queryFn: async () => {
-      const userData = await Auth.currentAuthenticatedUser();
-      const locationData = await getAllAssetLocations(
-        userData.signInUserSession.idToken.jwtToken,
+      const locationData = await getAssetLocationByOrgId(
+        user.signInUserSession.idToken.jwtToken,
+        user.attributes.org_id,
       );
       queryClient.setQueryData(['query-locations'], locationData);
       setLocations(locationData);
@@ -121,7 +131,8 @@ const NavBar = () => {
         }
       }
     },
-    enabled: !!authToken,
+    enabled:
+      !!authToken && !!user && !!user.attributes && !!user.attributes.org_id,
   });
 
   return (

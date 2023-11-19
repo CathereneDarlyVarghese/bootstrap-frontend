@@ -19,10 +19,14 @@ export interface Member {
 }
 
 export interface Organization {
-  id: string;
-  name: string;
-  members: Member[];
+  org_id: string;
+  org_name: string;
+  org_contact: string;
+  org_status: boolean;
+  modified_date: string;
+  modified_by: string;
 }
+
 
 export interface Audit {
   createdAt: string;
@@ -187,4 +191,11 @@ export interface IncomingAssetCheckForm
   form_json: JSON;
 }
 
-// Arbitarary Types
+export interface User {
+  id: number
+  email: string //currently this is the sub
+  role: number
+  org_id:string
+}
+
+// Arbitary Types

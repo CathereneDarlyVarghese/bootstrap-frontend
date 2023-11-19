@@ -8,7 +8,7 @@ export type AssetLocation = {
 
 const initialLocation: AssetLocation = JSON.parse(
   window.localStorage.getItem('location') ||
-    '{"locationName": "No Locations", "locationId": "4d064c86-9ba7-47fb-bdaa-ac84769dd2df"}',
+    '{"locationName": "No Locations", "locationId": "null"}',
 );
 
 export const locationAtom = atom<AssetLocation>(initialLocation);

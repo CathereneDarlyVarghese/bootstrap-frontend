@@ -6,6 +6,8 @@ import Locations from './Locations';
 import Sections from './Section';
 import Placements from './Placement';
 import AddDocumentType from './DocumentType';
+import Organizations from './Organization';
+import InviteUser from './InviteUser';
 
 const AdminPage = () => {
   // State declarations
@@ -37,6 +39,8 @@ const AdminPage = () => {
             {toggleContent === 3 && <Locations />}
             {toggleContent === 4 && <Sections />}
             {toggleContent === 5 && <Placements />}
+            {toggleContent === 6 && <Organizations />}
+            {toggleContent === 7 && <InviteUser />}
           </div>
         </div>
         <div className="drawer-side">
@@ -95,6 +99,28 @@ const AdminPage = () => {
             >
               <button className="focus:bg-blue-900 focus:text-white">
                 Placements
+              </button>
+            </li>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(6);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Organizations
+              </button>
+            </li>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(7);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Invite Users
               </button>
             </li>
           </ul>

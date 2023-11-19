@@ -38,6 +38,25 @@ export async function getAssetLocationById(
   return response.data;
 }
 
+export async function getAssetLocationByOrgId(
+  accessToken: string,
+  orgId: string,
+): Promise<AssetLocation[]> {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.get<AssetLocation[]>(
+    `${process.env.REACT_APP_BASE_URL}/protected/location/org/${orgId}`,
+    config,
+  );
+
+  return Array.isArray(res.data) ? res.data : res.data ? [res.data] : [];
+}
+
 export async function getAllAssetLocations(
   accessToken: string,
 ): Promise<AssetLocation[]> {

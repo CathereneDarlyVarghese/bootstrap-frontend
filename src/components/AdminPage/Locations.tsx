@@ -14,6 +14,7 @@ const Locations = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [newLocationName, setNewLocationName] = useState('');
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
+  const [user] = useSyncedGenericAtom(genericAtom, 'user');
   const [data, setData] = useState<AssetLocation[]>(null);
 
   useQuery({
@@ -75,6 +76,7 @@ const Locations = () => {
                 locationAddMutation.mutate({
                   location_id: '',
                   location_name: newLocationName,
+                  org_id: authTokenObj.attributes.org_id,
                 });
                 setNewLocationName('');
               } else {
