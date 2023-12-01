@@ -21,7 +21,7 @@ const AssetCard: React.FC<AssetCardProps> = props => {
   const [showQr, setShowQr] = useState(false);
 
   // const redirectURL = process.env.REACT_APP_REDIRECT_URL;
-  const QRLink = props.asset.asset_uuid
+  const assetUUID = props.asset.asset_uuid
     ? `${encodeURIComponent(props.asset.asset_uuid)}`
     : null;
 
@@ -130,7 +130,7 @@ const AssetCard: React.FC<AssetCardProps> = props => {
 
           <DisplayQR
             asset={props.asset}
-            link={QRLink}
+            qrData={assetUUID}
             closeQr={() => {
               setShowQr(false);
             }}

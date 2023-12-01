@@ -9,7 +9,7 @@ import { Asset } from 'types';
 import { TfiClose } from 'react-icons/tfi';
 import { AssetCondition } from '../../enums';
 
-const DisplayQR = ({ showQr, closeQr, asset, link }) => {
+const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
   const qrCodeRef = useRef(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -87,12 +87,12 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
               <TfiClose className="font-bold text-black" />
             </button>
           </div>
-          {link ? (
+          {qrData ? (
             <div className="flex flex-col gap-5 mx-auto p-8" ref={qrCodeRef}>
               <h3 className="font-bold text-lg place-self-center p-2">
                 QR Code: {asset.asset_name}
               </h3>
-              <QRCode value={link} level="H" className="place-self-center" />
+              <QRCode value={qrData} level="H" className="place-self-center" />
             </div>
           ) : (
             <div className="flex flex-col gap-5 text-center p-8 text-xl text-slate-400">
@@ -100,7 +100,7 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
             </div>
           )}
           <div className="flex flex-row justify-center gap-3 md:gap-1">
-            {link && (
+            {qrData && (
               <>
                 <button
                   className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
@@ -116,7 +116,7 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
                   onClick={e => {
                     e.stopPropagation();
                     closeQr();
-                    navigate('/scan');
+                    navigate(`/scan?asset_id=${asset.asset_id}`);
                   }}
                 >
                   Update QR
@@ -146,7 +146,7 @@ const DisplayQR = ({ showQr, closeQr, asset, link }) => {
                 onClick={e => {
                   e.stopPropagation();
                   closeQr();
-                  navigate('/scan');
+                  navigate(`/scan?asset_id=${asset.asset_id}`);
                 }}
               >
                 Link QR

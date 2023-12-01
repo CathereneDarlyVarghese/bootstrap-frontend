@@ -1,38 +1,42 @@
-import React, { useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useRef, useState } from 'react';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
-import { getAllAssets } from 'services/assetServices';
-import { IncomingAsset } from 'types';
+import { getAllAssets, getAssets, updateAsset } from 'services/assetServices';
+import { IncomingAsset, Asset } from 'types';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { locationAtom, useSyncedAtom } from '../../store/locationStore';
+import { AssetCondition } from '../../enums';
 
 const QRCodeReader = () => {
   const resultRef = useRef(null);
   const qrRef = useRef(null);
   const html5QrcodeScannerRef = useRef(null);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  // Location states
   const [location] = useSyncedAtom(locationAtom);
 
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
+  const assets = queryClient.getQueryData<IncomingAsset[]>(['query-asset']);
 
-  const fetchAllAssets = async () => {
-    if (location.locationId !== '') {
-      const res = await getAllAssets(authTokenObj.authToken);
-      return Array.isArray(res) ? res : res ? [res] : [];
-    }
-    return [];
-  };
-
-  const { data: assets } = useQuery<IncomingAsset[], Error>(
-    ['query-asset', location, authTokenObj.authToken],
-    fetchAllAssets,
-    {
-      enabled: !!authTokenObj.authToken,
+  const assetUpdateMutation = useMutation({
+    mutationFn: (updatedAssetObj: Asset) =>
+      updateAsset(
+        authTokenObj.authToken,
+        updatedAssetObj.asset_id,
+        updatedAssetObj,
+      ),
+    onSuccess: () => {
+      toast.success("Asset's QR Updated Successfully");
+      queryClient.invalidateQueries(['query-asset']);
     },
-  );
+    onError: () => {
+      toast.error("Failed to Update Asset's QR Code");
+    },
+  });
 
   useEffect(() => {
     let lastResult;
@@ -49,23 +53,88 @@ const QRCodeReader = () => {
     );
 
     html5QrcodeScannerRef.current.render(
-      (decodedText, decodedResult) => {
+      async (decodedText, decodedResult) => {
         // This will be called when a QR code is successfully scanned
         if (decodedText !== lastResult) {
           countResults += 1;
           lastResult = decodedText;
 
           // Check if the scanned asset_uuid exists in the assets data
-          const scannedAsset = assets.find(
+          const scannedQRAsset = assets.find(
             asset => asset.asset_uuid === decodedText,
           );
 
-          if (scannedAsset) {
-            // Redirect to /home if it's a match
-            window.location.href = `/home?asset_uuid=${decodedText}&location_id=${scannedAsset.asset_location}&linked_asset_id=${scannedAsset.asset_id}`;
+          // Extract asset_id and location_id from the URL query string
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          const assetID = urlSearchParams.get('asset_id');
+          // const assetUUID = urlSearchParams.get("asset_uuid");
+
+          const toBeLinkedAsset = assets.find(
+            asset => asset.asset_id === assetID,
+          );
+
+          if (!assetID) {
+            if (scannedQRAsset) {
+              // Redirect to /home if it's a match
+              navigate(
+                `/home?asset_uuid=${decodedText}&location_id=${scannedQRAsset.asset_location}&linked_asset_id=${scannedQRAsset.asset_id}`,
+              );
+            } else {
+              // Redirect to /linkqr if it's not a match
+              navigate(`/linkqr?asset_uuid=${decodedText}`);
+            }
           } else {
-            // Redirect to /linkqr if it's not a match
-            window.location.href = `/linkqr?asset_uuid=${decodedText}`;
+            let formattedScannedQRAsset: Asset | undefined;
+            if (scannedQRAsset) {
+              delete scannedQRAsset.asset_type;
+              delete scannedQRAsset.location_name;
+              delete scannedQRAsset.placement_name;
+              delete scannedQRAsset.section_name;
+              delete scannedQRAsset.images_array;
+              formattedScannedQRAsset = {
+                ...scannedQRAsset,
+                asset_finance_purchase: parseFloat(
+                  scannedQRAsset.asset_finance_purchase,
+                ),
+                asset_finance_current_value: parseFloat(
+                  scannedQRAsset.asset_finance_current_value,
+                ),
+                modified_date: new Date(scannedQRAsset.modified_date),
+                asset_condition:
+                  scannedQRAsset.asset_condition === 'ACTIVE'
+                    ? AssetCondition.ACTIVE
+                    : AssetCondition.INACTIVE,
+              };
+
+              formattedScannedQRAsset.asset_uuid = null;
+
+              await assetUpdateMutation.mutateAsync(formattedScannedQRAsset);
+            }
+
+            delete toBeLinkedAsset.asset_type;
+            delete toBeLinkedAsset.location_name;
+            delete toBeLinkedAsset.placement_name;
+            delete toBeLinkedAsset.section_name;
+            delete toBeLinkedAsset.images_array;
+            const formattedToBeLinkedAsset: Asset = {
+              ...toBeLinkedAsset,
+              asset_finance_purchase: parseFloat(
+                toBeLinkedAsset.asset_finance_purchase,
+              ),
+              asset_finance_current_value: parseFloat(
+                toBeLinkedAsset.asset_finance_current_value,
+              ),
+              modified_date: new Date(toBeLinkedAsset.modified_date),
+              asset_condition:
+                toBeLinkedAsset.asset_condition === 'ACTIVE'
+                  ? AssetCondition.ACTIVE
+                  : AssetCondition.INACTIVE,
+            };
+
+            formattedToBeLinkedAsset.asset_uuid = decodedText;
+            await assetUpdateMutation.mutateAsync(formattedToBeLinkedAsset);
+
+            navigate('/home');
           }
         }
       },
