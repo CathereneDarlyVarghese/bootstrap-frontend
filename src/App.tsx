@@ -12,7 +12,6 @@ import AdminPage from 'components/AdminPage/AdminPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import QrLinkingPage from 'components/QrLinking/QrLinkingPage';
 import ScanInventory from 'components/ScanInventory/ScanInventory';
-import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 
 const queryClient = new QueryClient({
   defaultOptions: {
