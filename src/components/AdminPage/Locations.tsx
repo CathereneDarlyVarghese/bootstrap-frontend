@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import {
   createAssetLocation,
   deleteAssetLocation,
-  getAllAssetLocations,
+  getAssetLocationByOrgId,
 } from 'services/locationServices';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import { AssetLocation } from 'types';
@@ -20,7 +20,7 @@ const Locations = () => {
   useQuery({
     queryKey: ['query-locationsAdmin'],
     queryFn: async () => {
-      const locationData = await getAllAssetLocations(authTokenObj.authToken);
+      const locationData = await getAssetLocationByOrgId(authTokenObj.authToken, authTokenObj.attributes.org_id);
       setData(locationData);
     },
     enabled: !!authTokenObj.authToken,
