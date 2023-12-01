@@ -27,7 +27,6 @@ export interface Organization {
   modified_by: string;
 }
 
-
 export interface Audit {
   createdAt: string;
   createdBy: string;
@@ -192,10 +191,10 @@ export interface IncomingAssetCheckForm
 }
 
 export interface User {
-  id: number
-  email: string //currently this is the sub
-  role: number
-  org_id:string
+  id: number;
+  email: string; //currently this is the sub
+  role: number;
+  org_id: string;
 }
 
 // Arbitary Types

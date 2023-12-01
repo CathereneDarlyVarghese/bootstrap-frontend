@@ -20,7 +20,10 @@ const Locations = () => {
   useQuery({
     queryKey: ['query-locationsAdmin'],
     queryFn: async () => {
-      const locationData = await getAssetLocationByOrgId(authTokenObj.authToken, authTokenObj.attributes.org_id);
+      const locationData = await getAssetLocationByOrgId(
+        authTokenObj.authToken,
+        authTokenObj.attributes.org_id,
+      );
       setData(locationData);
     },
     enabled: !!authTokenObj.authToken,

@@ -19,15 +19,17 @@ const Organizations = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<Organization[]>(null);
 
-  const queryLocations = queryClient.getQueryData<Organization[]>([
-    'query-locations',
-  ]);
-
   useQuery({
     queryKey: ['query-OrganizationsAdmin'],
     queryFn: async () => {
       const OrganizationData = await getOrganizations(authTokenObj.authToken);
       setData(OrganizationData);
+      console.log(
+        'Current ORG ==>>',
+        OrganizationData.find(
+          org => org.org_id === authTokenObj.attributes.org_id,
+        ).org_name,
+      );
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -64,6 +66,12 @@ const Organizations = () => {
     <div className="flex flex-col items-center mt-10 ">
       <div className="2xl:w-1/2 md:w-3/4 p-5 border border-slate-200 rounded-lg">
         <h3 className="font-bold text-lg">Manage Organizations </h3>
+        <h2 className="font-semibold text-base">
+          Current Organization:{' '}
+          {data &&
+            data.find(org => org.org_id === authTokenObj.attributes.org_id)
+              .org_name}{' '}
+        </h2>
         {/* Add New Organization: TODO cleanup and set correct data */}
         <div className="mt-5">
           <input
