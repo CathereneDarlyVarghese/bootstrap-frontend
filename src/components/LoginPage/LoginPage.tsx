@@ -20,6 +20,7 @@ const LoginPage = () => {
           break;
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
+          console.error('Sign in failure', data);
           break;
       }
     });
@@ -28,14 +29,21 @@ const LoginPage = () => {
   }, []);
 
   async function getUser() {
-    const userData = await Auth.currentAuthenticatedUser();
-    return userData;
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      return userData;
+    } catch (error) {
+      console.error('Not authenticated', error);
+      return null; // Return null if no authenticated user is found
+    }
   }
 
   // Redirect to Home page if user is signed in
-  if (user) {
-    navigate('/home');
-  }
+  useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
 
   // Render SignInWithGoogle component
   return (

@@ -13,7 +13,6 @@ import { getUserByEmail } from '../services/userServices';
 import { resetFilterOptions } from './LandingPage/FilterOptions';
 import Logo from '../icons/Logo(2).svg';
 import ScanButton from './widgets/ScanButton';
-import AddLocationForm from './AddLocationForm';
 
 export const LogoClickedAtom = atom(false);
 
@@ -32,7 +31,7 @@ const NavBar = () => {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
-  const [addLocationForm, setAddLocationForm] = useState(false);
+  // const [addLocationForm, setAddLocationForm] = useState(false);
   const [, setLogoClicked] = useAtom(LogoClickedAtom);
 
   // Extract locationId from the URL's search params.
@@ -339,16 +338,6 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
-                    onClick={() => {
-                      setAddLocationForm(true);
-                    }}
-                  >
-                    Add Location
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="/"
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white flex-row justify-between hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
                     onClick={() => {
@@ -366,12 +355,6 @@ const NavBar = () => {
             </div>
           )}
         </div>
-      </div>
-      <div>
-        <AddLocationForm
-          addLocationForm={addLocationForm}
-          setAddLocationForm={setAddLocationForm}
-        />
       </div>
     </>
   );
