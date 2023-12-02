@@ -20,7 +20,21 @@ const QRCodeReader = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [location] = useSyncedAtom(locationAtom);
 
-  const assets = queryClient.getQueryData<IncomingAsset[]>(['query-asset']);
+  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
+
+  useQuery({
+    queryKey: ['query-asset', location, authTokenObj.authToken],
+    queryFn: async () => {
+      if (location.locationId !== '') {
+        const res = await getAssets(
+          authTokenObj.authToken,
+          location.locationId,
+        );
+        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+      }
+    },
+    enabled: !!authTokenObj,
+  });
 
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedAssetObj: Asset) =>
@@ -31,7 +45,7 @@ const QRCodeReader = () => {
       ),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
-      queryClient.invalidateQueries(['query-asset']);
+      // queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
       toast.error("Failed to Update Asset's QR Code");
@@ -60,7 +74,7 @@ const QRCodeReader = () => {
           lastResult = decodedText;
 
           // Check if the scanned asset_uuid exists in the assets data
-          const scannedQRAsset = assets.find(
+          const scannedQRAsset = incomingAssets.find(
             asset => asset.asset_uuid === decodedText,
           );
 
@@ -69,7 +83,7 @@ const QRCodeReader = () => {
           const assetID = urlSearchParams.get('asset_id');
           // const assetUUID = urlSearchParams.get("asset_uuid");
 
-          const toBeLinkedAsset = assets.find(
+          const toBeLinkedAsset = incomingAssets.find(
             asset => asset.asset_id === assetID,
           );
 
@@ -149,7 +163,7 @@ const QRCodeReader = () => {
         html5QrcodeScannerRef.current = null;
       }
     };
-  }, [assets]);
+  }, [incomingAssets]);
 
   return (
     <div className="flex flex-col items-center mt-5">
