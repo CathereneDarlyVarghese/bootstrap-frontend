@@ -31,7 +31,6 @@ const QrLinkingPage = () => {
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   // Miscellaneous states
-  const [, setGetResult] = useState<string | null>(null);
   const [, setDetailsTab] = useState(0); // Active tabs in asset details card
   const [message, setMessage] = useState(true);
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
@@ -79,7 +78,7 @@ const QrLinkingPage = () => {
     queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: async () => {
       if (location.locationId !== '') {
-        return await getAssets(authTokenObj.authToken, location.locationId);
+        return getAssets(authTokenObj.authToken, location.locationId);
       }
       return [];
     },
