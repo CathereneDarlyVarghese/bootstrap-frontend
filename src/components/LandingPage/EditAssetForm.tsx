@@ -5,8 +5,14 @@ import { LogoClickedAtom } from 'components/NavBar';
 import { Asset, AssetPlacement, AssetSection } from 'types';
 import { uploadFiletoS3 } from 'utils';
 import { toast } from 'react-toastify';
-import { createAssetPlacement } from 'services/assetPlacementServices';
-import { createAssetSection } from 'services/assetSectionServices';
+import {
+  createAssetPlacement,
+  getAssetPlacements,
+} from 'services/assetPlacementServices';
+import {
+  createAssetSection,
+  getAssetSections,
+} from 'services/assetSectionServices';
 import { createFile } from 'services/fileServices';
 import { updateAsset } from 'services/assetServices';
 import useStatusTypeNames from 'hooks/useStatusTypes';
@@ -14,8 +20,9 @@ import { AiOutlinePaperClip } from 'react-icons/ai';
 import { TfiClose } from 'react-icons/tfi';
 import { Auth } from 'aws-amplify';
 import { AssetCondition } from 'enums';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
+import { locationAtom, useSyncedAtom } from 'store/locationStore';
 import AddSectionModal from './AddSectionModal';
 
 const EditAssetForm = ({
@@ -28,15 +35,11 @@ const EditAssetForm = ({
   assetLocations,
   assetLocation,
   assetSections,
-  assetSection,
-  assetPlacements,
-  assetPlacement,
 }) => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [, setLogoClicked] = useAtom(LogoClickedAtom);
   const [file, setFile] = useState<File>();
   const queryClient = useQueryClient();
-  // const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>(
     assetLocation.locationId,
   );
@@ -53,6 +56,9 @@ const EditAssetForm = ({
   const [addSection, setAddSection] = useState(false);
   const [addPlacement, setAddPlacement] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  const [location] = useSyncedAtom(locationAtom);
+  const [, setAssetSections] = useState<AssetSection[]>([]);
+  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
 
   const assetConditionOptionsReverse = {
     ACTIVE: AssetCondition.ACTIVE,
@@ -78,10 +84,8 @@ const EditAssetForm = ({
     modified_date: asset.modified_date,
     modified_by: asset.modified_by,
     org_id: null,
-    // status_check_enabled: asset.status_check_enabled, CORRECT VERSION
     status_check_enabled: asset.status_check_enabled,
     images_id: asset.images_id,
-    // status_check_interval: asset.status_check_interval, CORRECT VERSION
     status_check_interval: asset.status_check_interval,
     asset_condition:
       asset.asset_condition === 'ACTIVE'
@@ -122,13 +126,7 @@ const EditAssetForm = ({
     };
 
     handleLocationChange();
-  }, [
-    formData.asset_location,
-    assetSections,
-    defaultFormData.asset_location,
-    defaultFormData.asset_section,
-    formData.asset_section,
-  ]);
+  }, [formData.asset_location]);
 
   useEffect(() => {
     const handleSectionChange = async () => {
@@ -158,13 +156,7 @@ const EditAssetForm = ({
     };
 
     handleSectionChange();
-  }, [
-    formData.asset_section,
-    assetPlacements,
-    defaultFormData.asset_placement,
-    defaultFormData.asset_section,
-    formData.asset_placement,
-  ]);
+  }, [formData.asset_section, assetPlacements]);
 
   const handleSubmitForm = async event => {
     handleUnfocus();
@@ -223,34 +215,52 @@ const EditAssetForm = ({
   });
 
   // Function to handle adding a section
-  const handleAddSection = async () => {
-    // event.preventDefault();
+  const handleAddSection = async e => {
+    e.preventDefault();
     if (selectedLocation) {
-      if (selectedSection) {
-        const newSection: AssetSection = {
-          section_id: '',
-          section_name: selectedSection,
-          location_id: selectedLocation,
-        };
+      const newSection: AssetSection = {
+        section_id: '',
+        section_name: selectedSection,
+        location_id: selectedLocation,
+      };
 
-        const createdSection = await createAssetSection(
-          authTokenObj.authToken,
-          newSection,
-        );
-        const updatedSections = [...assetSections, createdSection];
-        // setAssetSections(updatedSections);
-        setFilteredSections(updatedSections);
-
-        // Fetch updated data and call handleLocationChanges
-        // handleLocationChange(selectedLocation);
-      }
+      sectionAddMutation.mutateAsync(newSection);
     } else {
       alert('Please select a location first.'); // eslint-disable-line
     }
   };
 
-  const handleAddPlacement = async () => {
-    if (selectedLocation && selectedSection) {
+  const sectionAddMutation = useMutation({
+    mutationFn: (newSection: AssetSection) =>
+      createAssetSection(authTokenObj.authToken, newSection),
+    onSettled: () => {
+      toast.success('Section Added Successfully');
+    },
+    onSuccess: data => {
+      refetchSection();
+      setSelectedSection(null);
+    },
+    onError: () => {
+      toast.error('Failed to Add Section');
+    },
+  });
+
+  const { refetch: refetchSection } = useQuery({
+    queryKey: ['query-assetSectionsForm', location],
+    queryFn: async () => {
+      const res = await getAssetSections(authTokenObj.authToken);
+      setAssetSections(res);
+      const sections = res.filter(
+        section => section.location_id === formData.asset_location,
+      );
+      setFilteredSections(sections);
+    },
+    enabled: !!authTokenObj.authToken,
+  });
+
+  const handleAddPlacement = async e => {
+    e.preventDefault();
+    if (location && selectedSection) {
       if (selectedPlacement) {
         const newPlacement: AssetPlacement = {
           placement_id: '',
@@ -259,27 +269,40 @@ const EditAssetForm = ({
           location_id: selectedLocation,
         };
 
-        const createdPlacement = await createAssetPlacement(
-          authTokenObj.authToken,
-          newPlacement,
-        );
-        const updatedPlacements = [...assetPlacements, createdPlacement];
-        // setAssetPlacements(updatedPlacements);
-
-        // Update filtered placements
-        const Placements = updatedPlacements.filter(
-          placement => placement.section_id === selectedSection,
-        );
-        setFilteredPlacements(Placements);
-
-        // Fetch updated data and call handleSectionChange
-        // fetchData();
-        // handleSectionChange(selectedSection);
+        placementAddMutation.mutate(newPlacement);
       }
     } else {
       alert('Please select a location and section first.'); // eslint-disable-line
     }
   };
+
+  const placementAddMutation = useMutation({
+    mutationFn: (newPlacement: AssetPlacement) =>
+      createAssetPlacement(authTokenObj.authToken, newPlacement),
+    onSuccess: async data => {
+      toast.success('Placement Added Successfully');
+      refetchPlacement();
+    },
+    onError: () => {
+      toast.error('Failed to Add Placement');
+    },
+  });
+
+  const { refetch: refetchPlacement } = useQuery({
+    queryKey: ['query-assetPlacementsForm'],
+    queryFn: async () => {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      if (!res || typeof res === 'undefined') {
+        throw new Error('No data received from API');
+      }
+      const placements = res.filter(
+        placement => placement.section_id === selectedSection,
+      );
+      await setFilteredPlacements(placements);
+      setAssetPlacements(res);
+    },
+    enabled: !!selectedLocation,
+  });
 
   // Function to close the edit asset form
   const closeEditForm = () => {
@@ -707,8 +730,8 @@ const EditAssetForm = ({
 
                       <div className="w-full mt-4 flex justify-center">
                         <button
-                          onClick={() => {
-                            handleAddSection();
+                          onClick={e => {
+                            handleAddSection(e);
                             setAddSection(false);
                           }}
                           type="button"
@@ -763,8 +786,8 @@ const EditAssetForm = ({
 
                       <div className="w-full mt-4 flex justify-center">
                         <button
-                          onClick={() => {
-                            handleAddPlacement();
+                          onClick={e => {
+                            handleAddPlacement(e);
                             setAddPlacement(false);
                           }}
                           type="button"

@@ -148,9 +148,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
           assetLocations={locations}
           assetLocation={Asset.asset_type_id}
           assetSections={assetSections}
-          assetSection={Asset.section_name}
-          assetPlacements={assetPlacements}
-          assetPlacement={Asset.placement_name}
         />
       ) : (
         <>
