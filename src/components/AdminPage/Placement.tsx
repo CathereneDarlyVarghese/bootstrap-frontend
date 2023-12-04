@@ -20,12 +20,17 @@ const Placements = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Fetching sections and placements using react-query
-  const { data: AssetSections } = useQuery(['query-assetSectionsAdmin'], () =>
-    getAssetSections(authTokenObj.authToken),
-  );
-  const { data: PlacementsData } = useQuery(['query-PlacementsAdmin'], () =>
-    getAssetPlacements(authTokenObj.authToken),
-  );
+  const { data: AssetSections } = useQuery({
+    queryKey: ['query-assetSectionsAdmin'],
+    queryFn: () => getAssetSections(authTokenObj.authToken),
+    enabled: !!authTokenObj.authToken,
+  });
+
+  const { data: PlacementsData } = useQuery({
+    queryKey: ['query-PlacementsAdmin'],
+    queryFn: () => getAssetPlacements(authTokenObj.authToken),
+    enabled: !!authTokenObj.authToken,
+  });
 
   // Local cached data for locations
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([

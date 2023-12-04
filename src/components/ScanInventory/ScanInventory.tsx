@@ -29,10 +29,14 @@ const QRCodeReader = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+        return (Array.isArray(res) ? res : res ? [res] : []);
       }
+      return [];
     },
-    enabled: !!authTokenObj,
+    onSuccess: (Assets) => {
+      setIncomingAssets(Assets);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   const assetUpdateMutation = useMutation({

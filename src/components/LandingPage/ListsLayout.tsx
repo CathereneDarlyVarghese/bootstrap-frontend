@@ -197,22 +197,26 @@ const ListsLayout = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+        return Array.isArray(res) ? res : res ? [res] : [];
       }
+      return [];
     },
-    enabled: !!authTokenObj,
+    onSuccess: assets => {
+      setIncomingAssets(assets);
+    },
+    enabled: !!authTokenObj.authToken,
   });
 
   useQuery({
     queryKey: ['query-assetSections', location],
     queryFn: async () => {
       const res = await getAssetSections(authTokenObj.authToken);
-      const filtered = res.filter(
-        (section: AssetSection) => section.location_id === location.locationId,
-      );
-      setAssetSections(filtered);
+      return res.filter(section => section.location_id === location.locationId);
     },
-    enabled: !!authTokenObj,
+    onSuccess: filteredSections => {
+      setAssetSections(filteredSections);
+    },
+    enabled: !!authTokenObj.authToken && !!location.locationId,
   });
 
   useQuery({
@@ -224,13 +228,15 @@ const ListsLayout = () => {
     ],
     queryFn: async () => {
       const res = await getAssetPlacements(authTokenObj.authToken);
-      const filtered = res.filter(
-        (placement: AssetPlacement) =>
-          placement.location_id === location.locationId,
+      return res.filter(
+        placement => placement.location_id === location.locationId,
       );
-      setAssetPlacements(filtered);
     },
-    enabled: !!authTokenObj,
+    onSuccess: filteredPlacements => {
+      // Handle setting asset placements here
+      setAssetPlacements(filteredPlacements);
+    },
+    enabled: !!authTokenObj.authToken && !!location.locationId,
   });
 
   useEffect(() => {
@@ -340,6 +346,7 @@ const ListsLayout = () => {
                     .slice(0, 5)
                     .map(asset => (
                       <div
+                        key={asset.asset_id}
                         className="bg-gray-100 hover:bg-gray-300"
                         onClick={() => {
                           setSearchTerm(asset.asset_name);
@@ -406,23 +413,33 @@ const ListsLayout = () => {
           ) : (
             <div className={`${assetDetailsOpen ? 'lg:hidden' : ''}`}>
               {/* Render asset cards */}
-              {filteredAssets.map(asset => (
-                <div
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setSelectedAsset(asset);
-                    setAssetId(asset.asset_id);
-                    setAddAssetOpen(false);
-                    setAssetDetailsOpen(true);
-                  }}
-                >
-                  <AssetCard
-                    asset={asset}
-                    imagePlaceholder="img"
-                    updatedDetailsTabIndex={detailsTabIndexRefresh}
-                  />
+              {location.locationId ? (
+                filteredAssets.map(asset => (
+                  <div
+                    key={asset.asset_id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setSelectedAsset(asset);
+                      setAssetId(asset.asset_id);
+                      setAddAssetOpen(false);
+                      setAssetDetailsOpen(true);
+                    }}
+                  >
+                    <AssetCard
+                      asset={asset}
+                      imagePlaceholder="img"
+                      updatedDetailsTabIndex={detailsTabIndexRefresh}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div>
+                  <p>
+                    No Locations Added. Please add one from
+                    <a href="/admin">here</a>
+                  </p>
                 </div>
-              ))}
+              )}
               {currentAssetUuid && (
                 <button
                   className="btn bt-sm mx-auto text-center text-sm font-sans font-medium capitalize bg-blue-900 hover:bg-gradient-to-r from-blue-600 to-blue-400 border-none"
