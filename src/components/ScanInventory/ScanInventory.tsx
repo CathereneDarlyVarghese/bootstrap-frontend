@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
-import { getAllAssets, getAssets, updateAsset } from 'services/assetServices';
+import { getAssets, updateAsset } from 'services/assetServices';
 import { IncomingAsset, Asset } from 'types';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,6 @@ const QRCodeReader = () => {
   const resultRef = useRef(null);
   const qrRef = useRef(null);
   const html5QrcodeScannerRef = useRef(null);
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // Authentication
@@ -45,12 +44,18 @@ const QRCodeReader = () => {
       ),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
-      // queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
       toast.error("Failed to Update Asset's QR Code");
     },
   });
+
+  const closeScanner = () => {
+    if (html5QrcodeScannerRef.current) {
+      html5QrcodeScannerRef.current.clear();
+      html5QrcodeScannerRef.current = null;
+    }
+  };
 
   useEffect(() => {
     let lastResult;
@@ -90,11 +95,13 @@ const QRCodeReader = () => {
           if (!assetID) {
             if (scannedQRAsset) {
               // Redirect to /home if it's a match
+              closeScanner();
               navigate(
                 `/home?asset_uuid=${decodedText}&location_id=${scannedQRAsset.asset_location}&linked_asset_id=${scannedQRAsset.asset_id}`,
               );
             } else {
               // Redirect to /linkqr if it's not a match
+              closeScanner();
               navigate(`/linkqr?asset_uuid=${decodedText}`);
             }
           } else {
@@ -148,6 +155,7 @@ const QRCodeReader = () => {
             formattedToBeLinkedAsset.asset_uuid = decodedText;
             await assetUpdateMutation.mutateAsync(formattedToBeLinkedAsset);
 
+            closeScanner();
             navigate('/home');
           }
         }
@@ -158,10 +166,7 @@ const QRCodeReader = () => {
     );
 
     return () => {
-      if (html5QrcodeScannerRef.current) {
-        html5QrcodeScannerRef.current.clear();
-        html5QrcodeScannerRef.current = null;
-      }
+      closeScanner();
     };
   }, [incomingAssets]);
 
