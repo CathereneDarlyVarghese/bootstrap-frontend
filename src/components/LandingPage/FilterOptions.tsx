@@ -1,10 +1,6 @@
-import React, { useEffect, useRef } from 'react';
 import { TfiClose } from 'react-icons/tfi';
-import { getAssetPlacements } from 'services/assetPlacementServices';
-import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 
 export let selectedStatusIds: string[] = []; // eslint-disable-line
-// export var selectedSectionNames: string[] = [];
 export let selectedPlacementNames: string[] = []; // eslint-disable-line
 
 export const resetFilterOptions = () => {
@@ -14,16 +10,13 @@ export const resetFilterOptions = () => {
 
 export const FilterOptions = ({
   filterClose,
-  /* sections, */ placements,
-  /* selectedButtonsSection, */ /* setSelectedButtonsSection, */ selectedButtonsPlacement,
+  placements,
+  selectedButtonsPlacement,
   setSelectedButtonsPlacement,
   selectedButtonsStatus,
   setSelectedButtonsStatus,
   handleSectionReset,
 }) => {
-  // const statuses = ["Working", "DOWN", "Maintenance"];
-  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-
   const statuses = [
     {
       status_name: 'Working',
@@ -39,9 +32,7 @@ export const FilterOptions = ({
   const handleReset = () => {
     setSelectedButtonsStatus([]);
     setSelectedButtonsPlacement([]);
-    // setSelectedButtonsSection([]);
 
-    // selectedSectionNames = [];
     selectedPlacementNames = [];
     selectedStatusIds = [];
 
@@ -79,42 +70,6 @@ export const FilterOptions = ({
     }
   };
 
-  /* Section Select Moved to ListsLayout.tsx */
-  /* const handleSectionClick = (buttonIndex) => {
-    if (buttonIndex === -1) {
-      if (selectedButtonsSection.includes(-1)) {
-        // If "All" button is already selected, unselect it and all other buttons
-        setSelectedButtonsSection([]);
-        selectedSectionNames = [];
-      } else {
-        // If "All" button is not selected, select it and all other buttons
-        const allIndices = [];
-        for (let i = 0; i < sections.length; i++) {
-          allIndices.push(i);
-        }
-        setSelectedButtonsSection([-1, ...allIndices]);
-        selectedSectionNames = (sections.map((section) => section.section_name));
-      }
-    } else {
-      if (selectedButtonsSection.includes(buttonIndex)) {
-        setSelectedButtonsSection(
-          selectedButtonsSection.filter((index) => index !== buttonIndex)
-        );
-        selectedSectionNames = (
-          selectedSectionNames.filter(
-            (sectionName) => sectionName !== sections[buttonIndex].section_name
-          )
-        );
-      } else {
-        setSelectedButtonsSection([...selectedButtonsSection, buttonIndex]);
-        selectedSectionNames = ([
-          ...selectedSectionNames,
-          sections[buttonIndex].section_name,
-        ]);
-      }
-    }
-  }; */
-
   const handlePlacementClick = buttonIndex => {
     if (buttonIndex === -1) {
       if (selectedButtonsPlacement.includes(-1)) {
@@ -148,23 +103,6 @@ export const FilterOptions = ({
       ];
     }
   };
-
-  const placementsRef = useRef([]);
-
-  useEffect(() => {
-    const getPlacements = async () => {
-      if (selectedButtonsPlacement.length === 0) {
-        const fetchedPlacements = await getAssetPlacements(
-          authTokenObj.authToken,
-        );
-
-        if (placementsRef.current.length === 0) {
-          placementsRef.current = fetchedPlacements;
-        }
-      }
-    };
-    getPlacements();
-  }, [authTokenObj.authToken, selectedButtonsPlacement.length]);
 
   return (
     <div className="p-2">
@@ -215,34 +153,6 @@ export const FilterOptions = ({
           </button>
         ))}
       </div>
-      {/* <div className="my-3">
-        <h1 className="font-sans">Section</h1>
-        <button
-          className={`btn btn-sm text-blue-700 font-normal
-          capitalize font-sans ${selectedButtonsSection.includes(-1)
-            ? "bg-blue-200 hover:bg-blue-200"
-            : "bg-white hover:bg-white"
-            } border-blue-500 hover:border-blue-500 rounded-full m-1`}
-          onClick={() => handleSectionClick(-1)}
-        >
-          All
-        </button>
-        {sections
-          .sort((a, b) => a.section_name.localeCompare(b.section_name))
-          .map((section, index) => (
-            <button
-              key={index}
-              className={`btn btn-sm text-blue-700 font-normal
-              capitalize font-sans ${selectedButtonsSection.includes(index)
-                ? "bg-blue-200 hover:bg-blue-200"
-                : "bg-white hover:bg-white"
-                } border-blue-500 hover:border-blue-500 rounded-full m-1`}
-              onClick={() => handleSectionClick(index)}
-            >
-              {section.section_name}
-            </button>
-          ))}
-      </div> */}
       <div>
         <h1 className="font-sans">Placement</h1>
         <button
