@@ -212,7 +212,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       await setFilteredPlacements(placements);
       setAssetPlacements(res);
     },
-    enabled: !!location.locationId && !!authTokenObj.authToken,
+    enabled: !!location.locationId,
   });
 
   // ====== Mutations ======
@@ -783,6 +783,10 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               )}
             </div>
           </div>
+
+          {/* <div>
+            <AddSectionModal />
+          </div> */}
         </div>
       </div>
     </>

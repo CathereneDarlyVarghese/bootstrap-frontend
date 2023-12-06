@@ -67,46 +67,31 @@ const NavBar = () => {
   useQuery({
     queryKey: ['query-auth'],
     queryFn: async () => {
-      const userData = await Auth.currentAuthenticatedUser();
-      return userData;
+      try {
+        const userData = await Auth.currentAuthenticatedUser();
+        window.localStorage.setItem(
+          'sessionToken',
+          userData.signInUserSession.idToken.jwtToken,
+        );
+        setAuthToken({
+          authToken: userData.signInUserSession.idToken.jwtToken,
+          attributes: userData.attributes,
+        });
+
+        const userInfo = await getUserByEmail(
+          userData.signInUserSession.idToken.jwtToken,
+          userData.attributes.email,
+        );
+        queryClient.setQueryData(['query-user'], userInfo);
+        userData.attributes.org_id = userInfo.org_id;
+        setUser(userData);
+
+        setIsLoading(false);
+      } catch {
+        setIsLoading(false);
+      }
     },
-    onSuccess: async userData => {
-      // Store the session token in local storage
-      window.localStorage.setItem(
-        'sessionToken',
-        userData.signInUserSession.idToken.jwtToken,
-      );
-
-      // Set the auth token
-      setAuthToken({
-        authToken: userData.signInUserSession.idToken.jwtToken,
-        attributes: userData.attributes,
-      });
-
-      // Fetch user info by email
-      const userInfo = await getUserByEmail(
-        userData.signInUserSession.idToken.jwtToken,
-        userData.attributes.email,
-      );
-
-      // Update query data for user
-      queryClient.setQueryData(['query-user'], userInfo);
-
-      // Update user data with organization ID
-      // eslint-disable-next-line no-param-reassign
-      userData.attributes.org_id = userInfo.org_id;
-
-      // Set the user data
-      setUser(userData);
-    },
-    onError: () => {
-      setIsLoading(false);
-    },
-    onSettled: () => {
-      // This is called whether the query succeeds or fails
-      setIsLoading(false);
-    },
-    staleTime: 60000 * 10, // 10 minutes
+    staleTime: 60000 * 10,
   });
 
   // we can remove the sub id and use email as primary key
@@ -119,17 +104,11 @@ const NavBar = () => {
         user.signInUserSession.idToken.jwtToken,
         user.attributes.org_id,
       );
-      return locationData;
-    },
-    onSuccess: locationData => {
-      // Update the query client's data
       queryClient.setQueryData(['query-locations'], locationData);
-
-      // Set locations
       setLocations(locationData);
 
       if (urlLocationId) {
-        // Find the location with the specified ID from the URL
+        // Find the location with the specified ID from the URL.
         const urlLocation = locationData.find(
           loc => loc.location_id === urlLocationId,
         );
@@ -138,13 +117,17 @@ const NavBar = () => {
             locationName: urlLocation.location_name,
             locationId: urlLocation.location_id,
           });
+          return;
         }
-      } else if (!location.locationId && locationData.length > 0) {
-        // Set the first location if no location ID is provided
-        setLocation({
-          locationName: locationData[0].location_name,
-          locationId: locationData[0].location_id,
-        });
+      }
+
+      if (!location.locationId) {
+        if (locationData.length > 0) {
+          setLocation({
+            locationName: locationData[0].location_name,
+            locationId: locationData[0].location_id,
+          });
+        }
       }
     },
     enabled:

@@ -31,6 +31,7 @@ const QrLinkingPage = () => {
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   // Miscellaneous states
+  const [, setGetResult] = useState<string | null>(null);
   const [, setDetailsTab] = useState(0); // Active tabs in asset details card
   const [message, setMessage] = useState(true);
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
@@ -73,34 +74,42 @@ const QrLinkingPage = () => {
 
   const navigate = useNavigate();
 
+  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
+
   // Fetching assets data and handlers
+  const fetchAllFilteredAssets = async () => {
+    try {
+      if (location.locationId !== '') {
+        const res = await getAssets(
+          authTokenObj.authToken,
+          location.locationId,
+        );
+
+        setIncomingAssets(res);
+
+        const linkedAssetId = new URLSearchParams(window.location.search).get(
+          'linked_asset_id',
+        );
+        const matchedAsset = res.find(
+          asset => asset.asset_id === linkedAssetId,
+        );
+        if (matchedAsset) {
+          setLinkedAsset(matchedAsset);
+          setMessage(false);
+        } else {
+          setLinkedAsset(null);
+        }
+      }
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
+
   useQuery({
     queryKey: ['query-asset', location, authTokenObj.authToken],
-    queryFn: async () => {
-      if (location.locationId !== '') {
-        return getAssets(authTokenObj.authToken, location.locationId);
-      }
-      return [];
-    },
-    onSuccess: res => {
-      // Set incoming assets
-      setIncomingAssets(res);
-
-      // Process for linking assets
-      const linkedAssetId = new URLSearchParams(window.location.search).get(
-        'linked_asset_id',
-      );
-      const matchedAsset = res.find(asset => asset.asset_id === linkedAssetId);
-      if (matchedAsset) {
-        setLinkedAsset(matchedAsset);
-        setMessage(false);
-      } else {
-        setLinkedAsset(null);
-      }
-    },
+    queryFn: fetchAllFilteredAssets,
     enabled: !!authTokenObj.authToken,
   });
-
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
@@ -141,19 +150,35 @@ const QrLinkingPage = () => {
       setSelectedSectionNames([]);
     }
   };
-
-  useQuery({
-    queryKey: ['query-assetSections', location],
-    queryFn: async () => {
+  const fetchAssetSections = async () => {
+    try {
       const res = await getAssetSections(authTokenObj.authToken);
       const filtered = res.filter(
         (section: AssetSection) => section.location_id === location.locationId,
       );
       setAssetSections(filtered);
-    },
-    enabled: !!authTokenObj.authToken && !!location.locationId,
-  });
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
+  const fetchAssetPlacements = async () => {
+    try {
+      const res = await getAssetPlacements(authTokenObj.authToken);
+      const filtered = res.filter(
+        (placement: AssetPlacement) =>
+          placement.location_id === location.locationId,
+      );
+      setAssetPlacements(filtered);
+    } catch (err) {
+      setGetResult(formatResponse(err.response?.data || err));
+    }
+  };
 
+  useQuery({
+    queryKey: ['query-assetSections', location],
+    queryFn: fetchAssetSections,
+    enabled: !!authTokenObj.authToken,
+  });
   useQuery({
     queryKey: [
       'query-assetPlacement',
@@ -161,14 +186,7 @@ const QrLinkingPage = () => {
       selectedAssetSection.section_id,
       selectedAssetPlacementName,
     ],
-    queryFn: async () => {
-      const res = await getAssetPlacements(authTokenObj.authToken);
-      const filtered = res.filter(
-        (placement: AssetPlacement) =>
-          placement.location_id === location.locationId,
-      );
-      setAssetPlacements(filtered);
-    },
+    queryFn: fetchAssetPlacements,
     enabled: !!authTokenObj.authToken,
   });
 

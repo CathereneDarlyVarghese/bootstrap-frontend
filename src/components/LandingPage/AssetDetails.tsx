@@ -80,7 +80,7 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       const res = await getAssetPlacements(authTokenObj.authToken);
       setAssetPlacements(res);
     },
-    enabled: !!selectedLocation && !!authTokenObj.authToken,
+    enabled: !!selectedLocation,
   });
 
   // ====== Data Fetching using useQuery ======
@@ -95,7 +95,6 @@ const AssetDetails: React.FC<AssetDetailsProps> = ({
       );
       setFilteredSections(sections);
     },
-    enabled: !!selectedLocation && !!authTokenObj.authToken,
   });
 
   // Mutation for deleting an asset

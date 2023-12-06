@@ -29,14 +29,10 @@ const QRCodeReader = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        return Array.isArray(res) ? res : res ? [res] : [];
+        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
       }
-      return [];
     },
-    onSuccess: Assets => {
-      setIncomingAssets(Assets);
-    },
-    enabled: !!authTokenObj.authToken,
+    enabled: !!authTokenObj,
   });
 
   const assetUpdateMutation = useMutation({
@@ -172,7 +168,7 @@ const QRCodeReader = () => {
     return () => {
       closeScanner();
     };
-  }, [incomingAssets, assetUpdateMutation, navigate]);
+  }, [incomingAssets]);
 
   return (
     <div className="flex flex-col items-center mt-5">

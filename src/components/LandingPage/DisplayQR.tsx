@@ -152,6 +152,15 @@ const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
                 Link QR
               </button>
             )}
+            {/* <button
+              className="btn btn-sm md:btn-xs bg-blue-900 hover:bg-blue-900 border-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeQr();
+              }}
+            >
+              Close
+            </button> */}
           </div>
         </div>
       </div>

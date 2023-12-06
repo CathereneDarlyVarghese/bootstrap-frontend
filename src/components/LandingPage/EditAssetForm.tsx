@@ -301,7 +301,7 @@ const EditAssetForm = ({
       await setFilteredPlacements(placements);
       setAssetPlacements(res);
     },
-    enabled: !!selectedLocation && !!authTokenObj.authToken,
+    enabled: !!selectedLocation,
   });
 
   // Function to close the edit asset form
