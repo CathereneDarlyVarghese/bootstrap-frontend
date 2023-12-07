@@ -5,6 +5,7 @@ import { Asset, WorkOrder } from 'types';
 import { addWorkOrder } from 'services/apiServices';
 import { toast } from 'react-toastify';
 import { AiOutlineFileAdd } from 'react-icons/ai';
+import { useSyncedGenericAtom, genericAtom } from 'store/genericStore';
 
 interface AddWorkOrderProps {
   assetId1: Asset['asset_id'];
@@ -12,7 +13,7 @@ interface AddWorkOrderProps {
 }
 
 const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
-  const [token, settoken] = useState<string>('');
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [file, setFile] = useState<File>();
   const [inventoryId, setInventoryId] = useState<string | undefined>('');
   const [data, setData] = useState<WorkOrder>({
@@ -30,7 +31,7 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
     data.image = imageLocation.location;
 
     closeModal();
-    await addWorkOrder(token, inventoryId, data)
+    await addWorkOrder(authTokenObj.authToken, inventoryId, data)
       .then(() => {
         toast.success('Work Order added Successfuly', {
           position: 'bottom-left',
@@ -49,8 +50,6 @@ const WorkOrderForm: FC<AddWorkOrderProps> = ({ assetId1, closeModal }) => {
   };
 
   useEffect(() => {
-    const tokenData = window.localStorage.getItem('sessionToken');
-    settoken(tokenData);
     setInventoryId(assetId1 as string); // set inventoryId from location state
   }, [assetId1]);
 

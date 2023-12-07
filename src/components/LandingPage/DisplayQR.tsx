@@ -7,13 +7,14 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Asset } from 'types';
 import { TfiClose } from 'react-icons/tfi';
+import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import { AssetCondition } from '../../enums';
 
 const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
   const qrCodeRef = useRef(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [token, setToken] = useState<string>('');
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   const handleDownload = () => {
     const qrCodeElement = qrCodeRef.current;
@@ -28,11 +29,6 @@ const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
     });
   };
 
-  useEffect(() => {
-    const data = window.localStorage.getItem('sessionToken');
-    setToken(data);
-  }, []);
-
   const {
     asset_type,
     location_name,
@@ -45,7 +41,11 @@ const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
 
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedAssetObj: Asset) =>
-      updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
+      updateAsset(
+        authTokenObj.authToken,
+        updatedAssetObj.asset_id,
+        updatedAssetObj,
+      ),
     onSuccess: () => {
       toast.success("Asset's QR Code Unlinked Successfully!");
       queryClient.invalidateQueries(['query-asset']);

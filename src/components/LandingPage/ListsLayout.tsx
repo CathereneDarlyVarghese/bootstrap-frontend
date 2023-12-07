@@ -189,48 +189,58 @@ const ListsLayout = () => {
 
   // ----------------------- QUERY HOOKS -----------------------
 
-  useQuery({
+  const { refetch: refetchAssets } = useQuery({
     queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: async () => {
       if (location.locationId !== '') {
-        const res = await getAssets(
-          authTokenObj.authToken,
-          location.locationId,
-        );
-        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+        return getAssets(authTokenObj.authToken, location.locationId);
       }
+      return [];
     },
-    enabled: !!authTokenObj,
+    onSuccess: res => {
+      const assets = Array.isArray(res) ? res : res ? [res] : [];
+      setIncomingAssets(assets);
+    },
+    onError: err => {
+      console.error('Error fetching assets:', err);
+    },
+    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
-  useQuery({
+  const { refetch: refetchSections } = useQuery({
     queryKey: ['query-assetSections', location],
-    queryFn: async () => {
-      const res = await getAssetSections(authTokenObj.authToken);
+    queryFn: () => getAssetSections(authTokenObj.authToken),
+    onSuccess: res => {
       const filtered = res.filter(
         (section: AssetSection) => section.location_id === location.locationId,
       );
       setAssetSections(filtered);
     },
-    enabled: !!authTokenObj,
+    onError: err => {
+      console.error('Error fetching asset sections:', err);
+    },
+    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
-  useQuery({
+  const { refetch: refetchPlacements } = useQuery({
     queryKey: [
       'query-assetPlacement',
       location,
-      selectedAssetSection.section_id,
+      selectedAssetSection?.section_id,
       selectedAssetPlacementName,
     ],
-    queryFn: async () => {
-      const res = await getAssetPlacements(authTokenObj.authToken);
+    queryFn: () => getAssetPlacements(authTokenObj.authToken),
+    onSuccess: res => {
       const filtered = res.filter(
         (placement: AssetPlacement) =>
           placement.location_id === location.locationId,
       );
       setAssetPlacements(filtered);
     },
-    enabled: !!authTokenObj,
+    onError: err => {
+      console.error('Error fetching asset placements:', err);
+    },
+    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
   useEffect(() => {
@@ -238,6 +248,9 @@ const ListsLayout = () => {
       setAssetDetailsOpen(false);
       setLogoClicked(false);
       setSelectedAsset(null);
+      refetchAssets();
+      refetchSections();
+      refetchPlacements();
     }
   }, [logoClicked, setLogoClicked]);
 

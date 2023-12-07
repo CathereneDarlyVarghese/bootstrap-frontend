@@ -5,6 +5,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { updateAsset } from 'services/assetServices';
 import { toast } from 'react-toastify';
 import { Asset } from 'types';
+import { useSyncedGenericAtom, genericAtom } from 'store/genericStore';
 import { AssetCondition } from '../../enums';
 
 const ConfirmModal = ({
@@ -43,8 +44,8 @@ const ConfirmModal = ({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [linkedMessage, setLinkedMessage] = useState(false);
-  const [token, setToken] = useState<string>('');
 
   const handleSubmitForm = async event => {
     event.preventDefault();
@@ -67,7 +68,11 @@ const ConfirmModal = ({
 
   const assetUpdateMutation = useMutation({
     mutationFn: (updatedAssetObj: Asset) =>
-      updateAsset(token, updatedAssetObj.asset_id, updatedAssetObj),
+      updateAsset(
+        authTokenObj.authToken,
+        updatedAssetObj.asset_id,
+        updatedAssetObj,
+      ),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
       queryClient.invalidateQueries(['query-asset']);
@@ -76,11 +81,6 @@ const ConfirmModal = ({
       toast.error("Failed to Update Asset's QR Code");
     },
   });
-
-  useEffect(() => {
-    const data = window.localStorage.getItem('sessionToken');
-    setToken(data);
-  }, []);
 
   return (
     <>

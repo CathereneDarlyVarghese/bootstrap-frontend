@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getAsset } from 'services/apiServices';
+import { useSyncedGenericAtom, genericAtom } from 'store/genericStore';
 
 const WorkOrdersPage = () => {
   const [asset, setAsset] = useState(null);
+  const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   // const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId');
@@ -12,9 +14,8 @@ const WorkOrdersPage = () => {
   useEffect(() => {
     (async () => {
       if (assetId) {
-        const sessionToken = window.localStorage.getItem('sessionToken');
-        if (sessionToken) {
-          const fetchedAsset = await getAsset(sessionToken, assetId);
+        if (authTokenObj.authToken) {
+          const fetchedAsset = await getAsset(authTokenObj.authToken, assetId);
           setAsset(fetchedAsset);
         }
       }

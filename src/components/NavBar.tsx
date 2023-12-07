@@ -66,30 +66,29 @@ const NavBar = () => {
   // Authentication and Global Variable
   useQuery({
     queryKey: ['query-auth'],
-    queryFn: async () => {
-      try {
-        const userData = await Auth.currentAuthenticatedUser();
-        window.localStorage.setItem(
-          'sessionToken',
-          userData.signInUserSession.idToken.jwtToken,
-        );
-        setAuthToken({
-          authToken: userData.signInUserSession.idToken.jwtToken,
-          attributes: userData.attributes,
-        });
+    queryFn: () => Auth.currentAuthenticatedUser(),
+    onSuccess: async userData => {
+      setAuthToken({
+        authToken: userData.signInUserSession.idToken.jwtToken,
+        attributes: userData.attributes,
+      });
 
+      try {
         const userInfo = await getUserByEmail(
           userData.signInUserSession.idToken.jwtToken,
           userData.attributes.email,
         );
         queryClient.setQueryData(['query-user'], userInfo);
-        userData.attributes.org_id = userInfo.org_id;
+        userData.attributes.org_id = userInfo.org_id; // eslint-disable-line
         setUser(userData);
-
-        setIsLoading(false);
-      } catch {
-        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
       }
+
+      setIsLoading(false);
+    },
+    onError: () => {
+      setIsLoading(false);
     },
     staleTime: 60000 * 10,
   });
@@ -99,16 +98,16 @@ const NavBar = () => {
   // UseQuery to get locations
   useQuery({
     queryKey: ['query-locations', urlLocationId],
-    queryFn: async () => {
-      const locationData = await getAssetLocationByOrgId(
+    queryFn: () =>
+      getAssetLocationByOrgId(
         user.signInUserSession.idToken.jwtToken,
         user.attributes.org_id,
-      );
+      ),
+    onSuccess: locationData => {
       queryClient.setQueryData(['query-locations'], locationData);
       setLocations(locationData);
 
       if (urlLocationId) {
-        // Find the location with the specified ID from the URL.
         const urlLocation = locationData.find(
           loc => loc.location_id === urlLocationId,
         );
@@ -117,17 +116,12 @@ const NavBar = () => {
             locationName: urlLocation.location_name,
             locationId: urlLocation.location_id,
           });
-          return;
         }
-      }
-
-      if (!location.locationId) {
-        if (locationData.length > 0) {
-          setLocation({
-            locationName: locationData[0].location_name,
-            locationId: locationData[0].location_id,
-          });
-        }
+      } else if (!location.locationId && locationData.length > 0) {
+        setLocation({
+          locationName: locationData[0].location_name,
+          locationId: locationData[0].location_id,
+        });
       }
     },
     enabled:
