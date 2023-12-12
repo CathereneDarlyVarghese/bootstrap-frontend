@@ -119,7 +119,7 @@ const DocumentsPage = () => {
                 : 'w-full'
             }`}
           >
-            {IncomingDocuments.map(document => (
+            {IncomingDocuments?.map(document => (
               <div
                 className="mb-5"
                 onClick={() => {

@@ -104,7 +104,7 @@ const Organizations = () => {
               <option value="" disabled>
                 Select a Organization
               </option>
-              {OrganizationData.map(OrganizationObj => (
+              {OrganizationData?.map(OrganizationObj => (
                 <option
                   key={OrganizationObj.org_id}
                   value={OrganizationObj.org_id}

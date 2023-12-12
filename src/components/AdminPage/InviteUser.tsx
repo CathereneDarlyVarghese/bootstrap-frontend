@@ -66,7 +66,7 @@ const InviteUser = () => {
               <option value="" disabled>
                 Select a Organization
               </option>
-              {orgData.map(OrganizationObj => (
+              {orgData?.map(OrganizationObj => (
                 <option
                   key={OrganizationObj.org_id}
                   value={OrganizationObj.org_id}

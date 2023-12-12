@@ -96,7 +96,7 @@ const AddAssetType = () => {
               <option value="" disabled>
                 Select a Asset Type
               </option>
-              {assetTypesData.map(assetTypeObj => (
+              {assetTypesData?.map(assetTypeObj => (
                 <option
                   key={assetTypeObj.asset_type_id}
                   value={assetTypeObj.asset_type_id}

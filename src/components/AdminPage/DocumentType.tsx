@@ -99,7 +99,7 @@ const AddDocumentType = () => {
               <option value="" disabled>
                 Select a Document Type
               </option>
-              {data.map(documentTypeObj => (
+              {data?.map(documentTypeObj => (
                 <option
                   key={documentTypeObj.document_type_id}
                   value={documentTypeObj.document_type_id}

@@ -22,7 +22,7 @@ const ShowForms: React.FC<ShowFormsProps> = ({
         onChange={e => setSelectedAssetType(e.target.value)}
         className="select border border-slate-300 w-5/12 mx-auto my-5"
       >
-        {assetTypes.map(type => (
+        {assetTypes?.map(type => (
           <option
             key={type.asset_type_id}
             value={type.asset_type_id}

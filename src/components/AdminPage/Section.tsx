@@ -74,7 +74,7 @@ const Sections = () => {
               <option value="" disabled>
                 Select a Location
               </option>
-              {queryLocations.map(Location => (
+              {queryLocations?.map(Location => (
                 <option key={Location.location_id} value={Location.location_id}>
                   {Location.location_name}
                 </option>
@@ -123,7 +123,7 @@ const Sections = () => {
                 Select a Section
               </option>
               {data
-                .filter(Section => Section.location_id === selectedLocation)
+                ?.filter(Section => Section.location_id === selectedLocation)
                 .map(Section => (
                   <option key={Section.section_id} value={Section.section_id}>
                     {Section.section_name}

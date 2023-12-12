@@ -101,7 +101,7 @@ const Locations = () => {
               <option value="" disabled>
                 Select a location
               </option>
-              {locationData.map(location => (
+              {locationData?.map(location => (
                 <option key={location.location_id} value={location.location_id}>
                   {location.location_name}
                 </option>

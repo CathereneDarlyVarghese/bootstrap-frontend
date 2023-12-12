@@ -188,7 +188,7 @@ const EditDocumentsForm = ({
                   className="select select-sm my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   required
                 >
-                  {documentTypes.map(documentTypesObj => (
+                  {documentTypes?.map(documentTypesObj => (
                     <option
                       className="text-black bg-white dark:text-white dark:bg-gray-800"
                       key={documentTypesObj.document_type}

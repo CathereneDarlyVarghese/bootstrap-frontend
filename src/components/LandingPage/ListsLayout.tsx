@@ -241,9 +241,6 @@ const ListsLayout = () => {
       setAssetDetailsOpen(false);
       setLogoClicked(false);
       setSelectedAsset(null);
-      refetchAssets();
-      refetchSections();
-      refetchPlacements();
     }
   }, [logoClicked, setLogoClicked]);
 
