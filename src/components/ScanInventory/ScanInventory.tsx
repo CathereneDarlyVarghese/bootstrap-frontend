@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import { getAssets, updateAsset } from 'services/assetServices';
@@ -18,21 +18,21 @@ const QRCodeReader = () => {
   // Authentication
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [location] = useSyncedAtom(locationAtom);
+  const queryClient = useQueryClient();
 
-  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
-
-  useQuery({
-    queryKey: ['query-asset', location, authTokenObj.authToken],
+  const { data: assets } = useQuery({
+    queryKey: ['query-assetScan', location, authTokenObj.authToken],
     queryFn: async () => {
       if (location.locationId !== '') {
         const res = await getAssets(
           authTokenObj.authToken,
           location.locationId,
         );
-        setIncomingAssets(Array.isArray(res) ? res : res ? [res] : []);
+        return res;
       }
+      return [];
     },
-    enabled: !!authTokenObj,
+    enabled: !!authTokenObj.authToken && !!location.locationId,
   });
 
   const assetUpdateMutation = useMutation({
@@ -44,6 +44,7 @@ const QRCodeReader = () => {
       ),
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
+      queryClient.invalidateQueries(['query-asset']);
     },
     onError: () => {
       toast.error("Failed to Update Asset's QR Code");
@@ -58,6 +59,7 @@ const QRCodeReader = () => {
   };
 
   useEffect(() => {
+    closeScanner();
     let lastResult;
     let countResults = 0; // eslint-disable-line
 
@@ -79,7 +81,7 @@ const QRCodeReader = () => {
           lastResult = decodedText;
 
           // Check if the scanned asset_uuid exists in the assets data
-          const scannedQRAsset = incomingAssets.find(
+          const scannedQRAsset = assets.find(
             asset => asset.asset_uuid === decodedText,
           );
 
@@ -88,7 +90,7 @@ const QRCodeReader = () => {
           const assetID = urlSearchParams.get('asset_id');
           // const assetUUID = urlSearchParams.get("asset_uuid");
 
-          const toBeLinkedAsset = incomingAssets.find(
+          const toBeLinkedAsset = assets.find(
             asset => asset.asset_id === assetID,
           );
 
@@ -168,7 +170,7 @@ const QRCodeReader = () => {
     return () => {
       closeScanner();
     };
-  }, [incomingAssets]);
+  }, [assets]);
 
   return (
     <div className="flex flex-col items-center mt-5">

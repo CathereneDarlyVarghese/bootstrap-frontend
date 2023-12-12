@@ -45,7 +45,6 @@ const ListsLayout = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Assets management
-  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
   const [, setAssetId] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [currentAssetUuid, setCurrentAssetUuid] = useState(null);
@@ -72,13 +71,9 @@ const ListsLayout = () => {
       location_id: '',
     },
   ];
-  const [assetSections, setAssetSections] =
-    useState<AssetSection[]>(defaultAssetSections);
+
   const [selectedAssetSection] = useState<AssetSection>(
     defaultAssetSections[0],
-  );
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
-    defaultAssetPlacements,
   );
   const [selectedAssetPlacementName] = useState<string>('');
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
@@ -156,8 +151,6 @@ const ListsLayout = () => {
     );
   }
 
-  const filteredAssets = incomingAssets.filter(assetFilter);
-
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
@@ -189,7 +182,7 @@ const ListsLayout = () => {
 
   // ----------------------- QUERY HOOKS -----------------------
 
-  const { refetch: refetchAssets } = useQuery({
+  const { data: Assets } = useQuery({
     queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: async () => {
       if (location.locationId !== '') {
@@ -197,50 +190,50 @@ const ListsLayout = () => {
       }
       return [];
     },
-    onSuccess: res => {
-      const assets = Array.isArray(res) ? res : res ? [res] : [];
-      setIncomingAssets(assets);
+    enabled: !!authTokenObj.authToken,
+    onError: error => {
+      console.error('Error fetching assets:', error);
     },
-    onError: err => {
-      console.error('Error fetching assets:', err);
-    },
-    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
-  const { refetch: refetchSections } = useQuery({
+  const filteredAssets = Assets?.filter(assetFilter) || [];
+
+  const { data: AssetSections } = useQuery({
     queryKey: ['query-assetSections', location],
-    queryFn: () => getAssetSections(authTokenObj.authToken),
-    onSuccess: res => {
-      const filtered = res.filter(
-        (section: AssetSection) => section.location_id === location.locationId,
-      );
-      setAssetSections(filtered);
+    queryFn: async () => {
+      if (location.locationId) {
+        const res = await getAssetSections(authTokenObj.authToken);
+        return res.filter(
+          (section: AssetSection) =>
+            section.location_id === location.locationId,
+        );
+      }
+      return [];
     },
-    onError: err => {
-      console.error('Error fetching asset sections:', err);
+    enabled: !!authTokenObj.authToken,
+    onError: error => {
+      console.log(error);
     },
-    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
-  const { refetch: refetchPlacements } = useQuery({
+  const { data: AssetPlacements } = useQuery({
     queryKey: [
       'query-assetPlacement',
       location,
       selectedAssetSection?.section_id,
       selectedAssetPlacementName,
     ],
-    queryFn: () => getAssetPlacements(authTokenObj.authToken),
-    onSuccess: res => {
-      const filtered = res.filter(
+    queryFn: async () => {
+      const allPlacements = await getAssetPlacements(authTokenObj.authToken);
+      return allPlacements.filter(
         (placement: AssetPlacement) =>
           placement.location_id === location.locationId,
       );
-      setAssetPlacements(filtered);
     },
-    onError: err => {
-      console.error('Error fetching asset placements:', err);
+    enabled: !!authTokenObj.authToken && !!location.locationId,
+    onError: error => {
+      console.log(error);
     },
-    enabled: !!authTokenObj.authToken && !!location && !!location.locationId,
   });
 
   useEffect(() => {
@@ -339,17 +332,16 @@ const ListsLayout = () => {
               <div
                 className={`bg-gray-100 mt-1 ${showOptions ? '' : 'hidden'} `}
               >
-                {incomingAssets &&
-                  incomingAssets
-                    .filter(a => {
-                      const SearchTermMatch =
-                        a.asset_name
-                          .toLowerCase()
-                          .startsWith(searchTerm.toLowerCase()) &&
-                        searchTerm !== '';
+                {Assets &&
+                  Assets.filter(a => {
+                    const SearchTermMatch =
+                      a.asset_name
+                        .toLowerCase()
+                        .startsWith(searchTerm.toLowerCase()) &&
+                      searchTerm !== '';
 
-                      return SearchTermMatch;
-                    })
+                    return SearchTermMatch;
+                  })
                     .slice(0, 5)
                     .map(asset => (
                       <div
@@ -382,16 +374,14 @@ const ListsLayout = () => {
               >
                 <option value="">All Sections</option>
 
-                {assetSections &&
-                  assetSections
-                    .sort((a, b) =>
-                      a.section_name.localeCompare(b.section_name),
-                    )
-                    .map((section: AssetSection, index: number) => (
-                      <option key={index} value={section.section_name}>
-                        {section.section_name}
-                      </option>
-                    ))}
+                {AssetSections &&
+                  AssetSections.sort((a, b) =>
+                    a.section_name.localeCompare(b.section_name),
+                  ).map((section: AssetSection, index: number) => (
+                    <option key={index} value={section.section_name}>
+                      {section.section_name}
+                    </option>
+                  ))}
               </select>
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize"
@@ -408,7 +398,7 @@ const ListsLayout = () => {
             <div>
               <FilterOptions
                 filterClose={() => setFiltersOpen(false)}
-                placements={assetPlacements}
+                placements={AssetPlacements}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
                 selectedButtonsStatus={selectedButtonsStatus}

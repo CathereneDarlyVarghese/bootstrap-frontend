@@ -62,6 +62,7 @@ const DisplayQR = ({ showQr, closeQr, asset, qrData }) => {
     updatedAsset.asset_uuid = null;
 
     assetUpdateMutation.mutateAsync(updatedAsset);
+    queryClient.invalidateQueries(['query-assetScan']);
   };
 
   return (

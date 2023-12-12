@@ -15,17 +15,17 @@ const Sections = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [newSectionName, setNewSectionName] = useState('');
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [data, setData] = useState<AssetSection[]>(null);
+  // const [data, setData] = useState<AssetSection[]>(null);
 
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([
     'query-locations',
   ]);
 
-  useQuery({
+  const { data } = useQuery({
     queryKey: ['query-SectionsAdmin'],
     queryFn: async () => {
       const SectionData = await getAssetSections(authTokenObj.authToken);
-      setData(SectionData);
+      return SectionData;
     },
     enabled: !!authTokenObj.authToken,
   });

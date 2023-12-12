@@ -69,7 +69,7 @@ const DocumentsCard: React.FC<DocumentsCardProps> = ({
 
       return { fetchedDocumentType, fetchedDocumentFile };
     },
-    enabled: !!authTokenObj,
+    enabled: !!authTokenObj.authToken,
   });
 
   useEffect(() => {

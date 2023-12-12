@@ -17,19 +17,13 @@ const Organizations = () => {
     {},
   );
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [data, setData] = useState<Organization[]>(null);
+  // const [data, setData] = useState<Organization[]>(null);
 
-  useQuery({
+  const { data: OrganizationData } = useQuery({
     queryKey: ['query-OrganizationsAdmin'],
     queryFn: async () => {
-      const OrganizationData = await getOrganizations(authTokenObj.authToken);
-      setData(OrganizationData);
-      console.log(
-        'Current ORG ==>>',
-        OrganizationData.find(
-          org => org.org_id === authTokenObj.attributes.org_id,
-        ).org_name,
-      );
+      const Data = await getOrganizations(authTokenObj.authToken);
+      return Data;
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -68,9 +62,10 @@ const Organizations = () => {
         <h3 className="font-bold text-lg">Manage Organizations </h3>
         <h2 className="font-semibold text-base">
           Current Organization:{' '}
-          {data &&
-            data.find(org => org.org_id === authTokenObj.attributes.org_id)
-              .org_name}{' '}
+          {OrganizationData &&
+            OrganizationData.find(
+              org => org.org_id === authTokenObj.attributes.org_id,
+            ).org_name}{' '}
         </h2>
         {/* Add New Organization: TODO cleanup and set correct data */}
         <div className="mt-5">
@@ -99,7 +94,7 @@ const Organizations = () => {
         </div>
 
         {/* Select and Delete Organization */}
-        {data && data.length > 0 && (
+        {OrganizationData && OrganizationData.length > 0 && (
           <div>
             <select
               value={selectedOrganization}
@@ -109,7 +104,7 @@ const Organizations = () => {
               <option value="" disabled>
                 Select a Organization
               </option>
-              {data.map(OrganizationObj => (
+              {OrganizationData.map(OrganizationObj => (
                 <option
                   key={OrganizationObj.org_id}
                   value={OrganizationObj.org_id}

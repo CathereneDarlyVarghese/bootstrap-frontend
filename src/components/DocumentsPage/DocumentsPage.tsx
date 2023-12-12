@@ -13,14 +13,6 @@ const DocumentsPage = () => {
   // State for document modal
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
 
-  // State for incoming documents
-  const [incomingDocuments, setIncomingDocuments] = useState<
-    IncomingDocument[]
-  >([]);
-
-  // State for error/result messages
-  const [, setGetResult] = useState<string | null>(null);
-
   // Default document state
   const defaultDocument = {
     document_id: '',
@@ -52,14 +44,14 @@ const DocumentsPage = () => {
   // --- HOOKS ---
 
   // Query for fetching documents by location
-  useQuery({
+  const { data: IncomingDocuments } = useQuery({
     queryKey: ['query-documentsByLocationId', location],
     queryFn: async () => {
       const documents = await getDocumentsByLocationIdOnly(
         authTokenObj.authToken,
         location.locationId,
       );
-      setIncomingDocuments(documents);
+      return documents;
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -127,7 +119,7 @@ const DocumentsPage = () => {
                 : 'w-full'
             }`}
           >
-            {incomingDocuments.map(document => (
+            {IncomingDocuments.map(document => (
               <div
                 className="mb-5"
                 onClick={() => {

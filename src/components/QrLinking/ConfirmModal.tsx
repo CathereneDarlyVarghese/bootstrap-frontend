@@ -76,6 +76,7 @@ const ConfirmModal = ({
     onSuccess: () => {
       toast.success("Asset's QR Updated Successfully");
       queryClient.invalidateQueries(['query-asset']);
+      queryClient.invalidateQueries(['query-assetScan']);
     },
     onError: () => {
       toast.error("Failed to Update Asset's QR Code");

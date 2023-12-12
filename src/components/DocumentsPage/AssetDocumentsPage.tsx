@@ -7,31 +7,21 @@ import AddDocumentsForm from './AddDocumentsForm';
 import DocumentsCard from './DocumentsCard';
 
 const AssetDocumentsPage = ({ selectedAsset }) => {
-  // const searchParams = new URLSearchParams(location.search);
   const selectedAssetID = selectedAsset.asset_id;
   const assetName = selectedAsset.asset_name;
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
-  const [incomingDocuments, setIncomingDocuments] = useState<
-    IncomingDocument[]
-  >([]);
   const [, setDocumentID] = useState(null);
-  const [, setGetResult] = useState<string | null>(null);
-  const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
   const [fileOpen] = useState(false);
 
-  useQuery({
+  const { data: IncomingDocuments } = useQuery({
     queryKey: ['query-documentsByAssetId', selectedAssetID],
     queryFn: async () => {
-      try {
-        const documents = await getDocumentsByAssetId(
-          authTokenObj.authToken,
-          selectedAssetID,
-        );
-        setIncomingDocuments(documents);
-      } catch (error) {
-        setGetResult(formatResponse(error.response?.data || error));
-      }
+      const documents = await getDocumentsByAssetId(
+        authTokenObj.authToken,
+        selectedAssetID,
+      );
+      return documents;
     },
     enabled: !!selectedAssetID,
   });
@@ -78,7 +68,7 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
                 : 'w-full'
             }`}
           >
-            {incomingDocuments.map(document => (
+            {IncomingDocuments?.map(document => (
               <div
                 className="border border-gray-300 dark:border-gray-600 rounded-xl my-3"
                 style={{ cursor: 'pointer' }}

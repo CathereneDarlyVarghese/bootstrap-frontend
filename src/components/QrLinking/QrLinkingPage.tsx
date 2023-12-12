@@ -25,7 +25,6 @@ import ConfirmModal from './ConfirmModal';
 
 const QrLinkingPage = () => {
   const selectRef = useRef<HTMLSelectElement>(null); // For resetting the section selector
-  const [incomingAssets, setIncomingAssets] = useState<IncomingAsset[]>([]);
   // Location states
   const [location] = useSyncedAtom(locationAtom);
   // Authentication
@@ -53,15 +52,11 @@ const QrLinkingPage = () => {
       location_id: '',
     },
   ];
-  const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>(
-    defaultAssetPlacements,
-  );
+
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedSectionNames, setSelectedSectionNames] = useState<string[]>(
     [],
   );
-  const [assetSections, setAssetSections] =
-    useState<AssetSection[]>(defaultAssetSections);
 
   // Buttons and filters
   const [selectedButtonsStatus, setSelectedButtonsStatus] = useState([]);
@@ -76,40 +71,34 @@ const QrLinkingPage = () => {
 
   const formatResponse = (res: any) => JSON.stringify(res, null, 2); // eslint-disable-line
 
-  // Fetching assets data and handlers
-  const fetchAllFilteredAssets = async () => {
-    try {
+  const { data: IncomingAssets } = useQuery({
+    queryKey: ['query-assetScan', location, authTokenObj.authToken],
+    queryFn: async () => {
       if (location.locationId !== '') {
-        const res = await getAssets(
-          authTokenObj.authToken,
-          location.locationId,
-        );
-
-        setIncomingAssets(res);
-
-        const linkedAssetId = new URLSearchParams(window.location.search).get(
-          'linked_asset_id',
-        );
-        const matchedAsset = res.find(
-          asset => asset.asset_id === linkedAssetId,
-        );
-        if (matchedAsset) {
-          setLinkedAsset(matchedAsset);
-          setMessage(false);
-        } else {
-          setLinkedAsset(null);
-        }
+        return getAssets(authTokenObj.authToken, location.locationId);
       }
-    } catch (err) {
-      setGetResult(formatResponse(err.response?.data || err));
-    }
-  };
+      return [];
+    },
+    onSuccess: data => {
+      const linkedAssetId = new URLSearchParams(window.location.search).get(
+        'linked_asset_id',
+      );
+      const matchedAsset = data.find(asset => asset.asset_id === linkedAssetId);
 
-  useQuery({
-    queryKey: ['query-asset', location, authTokenObj.authToken],
-    queryFn: fetchAllFilteredAssets,
-    enabled: !!authTokenObj.authToken,
+      if (matchedAsset) {
+        setLinkedAsset(matchedAsset);
+        setMessage(false);
+      } else {
+        setLinkedAsset(null);
+      }
+    },
+    refetchOnMount: true,
+    onError: error => {
+      console.error('Error fetching assets:', error);
+    },
+    enabled: !!authTokenObj.authToken && !!location.locationId,
   });
+
   const detailsTabIndexRefresh = () => {
     setDetailsTab(0);
   };
@@ -150,44 +139,46 @@ const QrLinkingPage = () => {
       setSelectedSectionNames([]);
     }
   };
-  const fetchAssetSections = async () => {
-    try {
-      const res = await getAssetSections(authTokenObj.authToken);
-      const filtered = res.filter(
-        (section: AssetSection) => section.location_id === location.locationId,
-      );
-      setAssetSections(filtered);
-    } catch (err) {
-      setGetResult(formatResponse(err.response?.data || err));
-    }
-  };
-  const fetchAssetPlacements = async () => {
-    try {
-      const res = await getAssetPlacements(authTokenObj.authToken);
-      const filtered = res.filter(
-        (placement: AssetPlacement) =>
-          placement.location_id === location.locationId,
-      );
-      setAssetPlacements(filtered);
-    } catch (err) {
-      setGetResult(formatResponse(err.response?.data || err));
-    }
-  };
 
-  useQuery({
+  const { data: AssetSections } = useQuery({
     queryKey: ['query-assetSections', location],
-    queryFn: fetchAssetSections,
+    queryFn: async () => {
+      if (location.locationId) {
+        const res = await getAssetSections(authTokenObj.authToken);
+        return res.filter(
+          (section: AssetSection) =>
+            section.location_id === location.locationId,
+        );
+      }
+      return [];
+    },
     enabled: !!authTokenObj.authToken,
+    onError: error => {
+      setGetResult(formatResponse(error));
+    },
   });
-  useQuery({
+
+  const { data: AssetPlacements } = useQuery({
     queryKey: [
       'query-assetPlacement',
       location,
       selectedAssetSection.section_id,
       selectedAssetPlacementName,
     ],
-    queryFn: fetchAssetPlacements,
+    queryFn: async () => {
+      if (location.locationId) {
+        const res = await getAssetPlacements(authTokenObj.authToken);
+        return res.filter(
+          (placement: AssetPlacement) =>
+            placement.location_id === location.locationId,
+        );
+      }
+      return [];
+    },
     enabled: !!authTokenObj.authToken,
+    onError: error => {
+      setGetResult(formatResponse(error));
+    },
   });
 
   return (
@@ -277,16 +268,14 @@ const QrLinkingPage = () => {
               >
                 <option value="">All Sections</option>
 
-                {assetSections &&
-                  assetSections
-                    .sort((a, b) =>
-                      a.section_name.localeCompare(b.section_name),
-                    )
-                    .map((section: AssetSection, index: number) => (
-                      <option key={index} value={section.section_name}>
-                        {section.section_name}
-                      </option>
-                    ))}
+                {AssetSections &&
+                  AssetSections.sort((a, b) =>
+                    a.section_name.localeCompare(b.section_name),
+                  ).map((section: AssetSection, index: number) => (
+                    <option key={index} value={section.section_name}>
+                      {section.section_name}
+                    </option>
+                  ))}
               </select>
               <button
                 className="btn btn-sm bg-blue-900 hover:bg-blue-900 text-white border-gray-400 hover:border-gray-400 dark:border-gray-600 rounded-3xl font-sans font-semibold capitalize text-black"
@@ -304,7 +293,7 @@ const QrLinkingPage = () => {
             <div>
               <FilterOptions
                 filterClose={() => setFiltersOpen(false)}
-                placements={assetPlacements}
+                placements={AssetPlacements}
                 selectedButtonsPlacement={selectedButtonsPlacement}
                 setSelectedButtonsPlacement={setSelectedButtonsPlacement}
                 selectedButtonsStatus={selectedButtonsStatus}
@@ -317,12 +306,12 @@ const QrLinkingPage = () => {
           )}
           <div className={`flex flex-wrap ${filtersOpen ? 'hidden' : ''}`}>
             {/* Render asset cards */}
-            {incomingAssets &&
+            {IncomingAssets &&
               (() => {
-                const assetsArray = Array.isArray(incomingAssets)
-                  ? incomingAssets
-                  : incomingAssets
-                  ? [incomingAssets]
+                const assetsArray = Array.isArray(IncomingAssets)
+                  ? IncomingAssets
+                  : IncomingAssets
+                  ? [IncomingAssets]
                   : [];
                 const activeAssets = assetsArray.filter(
                   item => item.asset_condition === 'ACTIVE',

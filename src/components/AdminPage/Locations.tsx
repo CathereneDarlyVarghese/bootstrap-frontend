@@ -14,17 +14,15 @@ const Locations = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [newLocationName, setNewLocationName] = useState('');
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [user] = useSyncedGenericAtom(genericAtom, 'user');
-  const [data, setData] = useState<AssetLocation[]>(null);
 
-  useQuery({
+  const { data: locationData } = useQuery({
     queryKey: ['query-locationsAdmin'],
     queryFn: async () => {
-      const locationData = await getAssetLocationByOrgId(
+      const Data = await getAssetLocationByOrgId(
         authTokenObj.authToken,
         authTokenObj.attributes.org_id,
       );
-      setData(locationData);
+      return Data;
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -93,7 +91,7 @@ const Locations = () => {
         </div>
 
         {/* Select and Delete Location */}
-        {data && data.length > 0 && (
+        {locationData && locationData.length > 0 && (
           <div>
             <select
               value={selectedLocation}
@@ -103,7 +101,7 @@ const Locations = () => {
               <option value="" disabled>
                 Select a location
               </option>
-              {data.map(location => (
+              {locationData.map(location => (
                 <option key={location.location_id} value={location.location_id}>
                   {location.location_name}
                 </option>

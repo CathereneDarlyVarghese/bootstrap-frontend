@@ -11,7 +11,6 @@ import { AssetType } from 'types';
 
 const AddAssetType = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [data, setData] = useState<AssetType[]>(null);
   const [selectedAssetType, setSelectedAssetType] = useState<string>('');
   const queryClient = useQueryClient();
   const [newAssetType, setNewAssetType] = useState<string>('');
@@ -34,11 +33,11 @@ const AddAssetType = () => {
     setNewAssetType('');
   };
 
-  useQuery({
+  const { data: assetTypesData } = useQuery({
     queryKey: ['query-assetTypesAdmin'],
     queryFn: async () => {
       const assetTypeData = await getAllAssetTypes(authTokenObj.authToken);
-      setData(assetTypeData);
+      return assetTypeData;
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -84,7 +83,7 @@ const AddAssetType = () => {
 
         <br />
         {/* Select and Delete assetType */}
-        {data && data.length > 0 && (
+        {assetTypesData && assetTypesData.length > 0 && (
           <div>
             <div className="flex flex-row items-center">
               <h3 className="font-bold text-lg">Delete Asset Type</h3>
@@ -97,7 +96,7 @@ const AddAssetType = () => {
               <option value="" disabled>
                 Select a Asset Type
               </option>
-              {data.map(assetTypeObj => (
+              {assetTypesData.map(assetTypeObj => (
                 <option
                   key={assetTypeObj.asset_type_id}
                   value={assetTypeObj.asset_type_id}

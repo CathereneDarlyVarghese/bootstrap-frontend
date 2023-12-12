@@ -212,7 +212,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
       await setFilteredPlacements(placements);
       setAssetPlacements(res);
     },
-    enabled: !!location.locationId,
+    enabled: !!location.locationId && !!authTokenObj.authToken,
   });
 
   // ====== Mutations ======
@@ -238,6 +238,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     onSuccess: data => {
       refetchSection();
       setSelectedSection(null);
+      queryClient.invalidateQueries(['query-assetSections']);
     },
     onError: () => {
       toast.error('Failed to Add Section');
@@ -250,6 +251,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
     onSuccess: async data => {
       toast.success('Placement Added Successfully');
       refetchPlacement();
+      queryClient.invalidateQueries(['query-assetPlacement']);
     },
     onError: () => {
       toast.error('Failed to Add Placement');
@@ -332,7 +334,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     className="select select-sm font-normal my-3 text-black dark:text-white bg-transparent dark:border-gray-500 w-full border border-slate-300"
                   >
                     {/* Map through the asset types */}
-                    {assetTypes.map(type => (
+                    {assetTypes?.map(type => (
                       <option
                         key={type.asset_type_id}
                         value={type.asset_type_id}
@@ -419,7 +421,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     <option value="" disabled hidden>
                       Select Asset Status
                     </option>
-                    {Object.entries(statusTypeNames).map(
+                    {Object.entries(statusTypeNames)?.map(
                       ([statusId, statusName]) => (
                         <option
                           key={statusId}
@@ -447,7 +449,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     <option value="" disabled hidden>
                       Select Location
                     </option>
-                    {locations.map(locationItem => (
+                    {locations?.map(locationItem => (
                       <option
                         key={locationItem.location_id}
                         value={locationItem.location_id}
@@ -480,7 +482,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         <option value="" disabled hidden>
                           Select Section
                         </option>
-                        {filteredSections.map(section => (
+                        {filteredSections?.map(section => (
                           <option
                             key={section.section_id}
                             value={section.section_id}
@@ -526,7 +528,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         <option value="" disabled hidden>
                           Select Placement
                         </option>
-                        {filteredPlacements.map(placement => (
+                        {filteredPlacements?.map(placement => (
                           <option
                             key={placement.placement_id}
                             value={placement.placement_id}
@@ -576,7 +578,7 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                   <option value="" disabled hidden>
                     Select Asset Condition
                   </option>
-                  {Object.entries(AssetCondition).map(
+                  {Object.entries(AssetCondition)?.map(
                     ([conditionKey, conditionValue]) => (
                       <option
                         key={conditionKey}
@@ -783,10 +785,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
               )}
             </div>
           </div>
-
-          {/* <div>
-            <AddSectionModal />
-          </div> */}
         </div>
       </div>
     </>

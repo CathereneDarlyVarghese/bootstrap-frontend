@@ -27,7 +27,6 @@ const NavBar = () => {
     genericAtom,
     'authToken',
   );
-  const [locations, setLocations] = useState<AssetLocation[]>([]);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [, setIsLoading] = useState(true);
@@ -66,63 +65,72 @@ const NavBar = () => {
   // Authentication and Global Variable
   useQuery({
     queryKey: ['query-auth'],
-    queryFn: () => Auth.currentAuthenticatedUser(),
-    onSuccess: async userData => {
+    queryFn: async () => {
+      const userData = await Auth.currentAuthenticatedUser();
+      const userInfo = await getUserByEmail(
+        userData.signInUserSession.idToken.jwtToken,
+        userData.attributes.email,
+      );
+      return { userData, userInfo };
+    },
+    onSuccess: ({ userData, userInfo }) => {
+      window.localStorage.setItem(
+        'sessionToken',
+        userData.signInUserSession.idToken.jwtToken,
+      );
       setAuthToken({
         authToken: userData.signInUserSession.idToken.jwtToken,
         attributes: userData.attributes,
       });
 
-      try {
-        const userInfo = await getUserByEmail(
-          userData.signInUserSession.idToken.jwtToken,
-          userData.attributes.email,
-        );
-        queryClient.setQueryData(['query-user'], userInfo);
-        userData.attributes.org_id = userInfo.org_id; // eslint-disable-line
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-
+      queryClient.setQueryData(['query-user'], userInfo);
+      userData.attributes.org_id = userInfo.org_id; // eslint-disable-line
+      setUser(userData);
       setIsLoading(false);
     },
     onError: () => {
       setIsLoading(false);
     },
-    staleTime: 60000 * 10,
+    staleTime: 60000 * 10, // 10 minutes
   });
 
   // we can remove the sub id and use email as primary key
 
   // UseQuery to get locations
-  useQuery({
+  const { data: Locations } = useQuery({
     queryKey: ['query-locations', urlLocationId],
-    queryFn: () =>
+    queryFn: async () =>
       getAssetLocationByOrgId(
         user.signInUserSession.idToken.jwtToken,
         user.attributes.org_id,
       ),
     onSuccess: locationData => {
       queryClient.setQueryData(['query-locations'], locationData);
-      setLocations(locationData);
 
+      let selectedLocation;
       if (urlLocationId) {
-        const urlLocation = locationData.find(
+        selectedLocation = locationData.find(
           loc => loc.location_id === urlLocationId,
         );
-        if (urlLocation) {
-          setLocation({
-            locationName: urlLocation.location_name,
-            locationId: urlLocation.location_id,
-          });
-        }
-      } else if (!location.locationId && locationData.length > 0) {
+      }
+
+      if (
+        !selectedLocation &&
+        !location.locationId &&
+        locationData.length > 0
+      ) {
+        [selectedLocation] = locationData;
+      }
+
+      if (selectedLocation) {
         setLocation({
-          locationName: locationData[0].location_name,
-          locationId: locationData[0].location_id,
+          locationName: selectedLocation.location_name,
+          locationId: selectedLocation.location_id,
         });
       }
+    },
+    onError: error => {
+      console.error('Error fetching locations:', error);
     },
     enabled:
       !!authToken && !!user && !!user.attributes && !!user.attributes.org_id,
@@ -243,12 +251,12 @@ const NavBar = () => {
                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
               </svg>
             </label>
-            {open && locations && locations.length > 0 && (
+            {open && Locations && Locations.length > 0 && (
               <ul
                 tabIndex={0}
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 dark:bg-gray-700 rounded-box w-52"
               >
-                {locations.map(item => (
+                {Locations.map(item => (
                   <li
                     key={item.location_id}
                     className="btn bg-primary-content dark:bg-gray-700 border-0 text-slate-400 dark:text-white hover:bg-primary-content flex-row justify-start hover:bg-gradient-to-r from-blue-800 to-blue-400 hover:text-slate-100"
