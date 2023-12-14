@@ -186,7 +186,11 @@ const ListsLayout = () => {
     queryKey: ['query-asset', location, authTokenObj.authToken],
     queryFn: async () => {
       if (location.locationId !== '') {
-        return getAssets(authTokenObj.authToken, location.locationId);
+        const response = await getAssets(
+          authTokenObj.authToken,
+          location.locationId,
+        );
+        return Array.isArray(response) ? response : [response];
       }
       return [];
     },
