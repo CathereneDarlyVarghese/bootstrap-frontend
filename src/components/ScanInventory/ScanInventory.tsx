@@ -28,7 +28,7 @@ const QRCodeReader = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        return res;
+        return Array.isArray(res) ? res : [res];
       }
       return [];
     },
