@@ -103,11 +103,7 @@ const AssetCard: React.FC<AssetCardProps> = props => {
                 : 'text-gray-500 dark:text-gray-300'
             }  font-sans font-light tracking-wider xl:text-xs /*truncate*/`}
           >
-            {props.asset.location_name === 'tsd'
-              ? 'The Spiffy Dapper'
-              : props.asset.location_name === 'mdb'
-              ? 'MadDog Bistro & Bar'
-              : props.asset.location_name}
+            {props.asset.location_name}
           </p>
           <button
             onClick={e => {
