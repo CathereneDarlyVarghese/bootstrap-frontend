@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
@@ -28,7 +28,7 @@ const QRCodeReader = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        return Array.isArray(res) ? res : [res];
+        return res;
       }
       return [];
     },

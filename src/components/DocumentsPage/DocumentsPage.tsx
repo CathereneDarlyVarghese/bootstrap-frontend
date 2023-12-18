@@ -46,13 +46,8 @@ const DocumentsPage = () => {
   // Query for fetching documents by location
   const { data: IncomingDocuments } = useQuery({
     queryKey: ['query-documentsByLocationId', location],
-    queryFn: async () => {
-      const documents = await getDocumentsByLocationIdOnly(
-        authTokenObj.authToken,
-        location.locationId,
-      );
-      return documents;
-    },
+    queryFn: async () =>
+      getDocumentsByLocationIdOnly(authTokenObj.authToken, location.locationId),
     enabled: !!authTokenObj.authToken,
   });
 
@@ -119,20 +114,21 @@ const DocumentsPage = () => {
                 : 'w-full'
             }`}
           >
-            {IncomingDocuments?.map(document => (
-              <div
-                className="mb-5"
-                onClick={() => {
-                  setSelectedDocument(document);
-                }}
-              >
-                <DocumentsCard
-                  document={document}
-                  fileStatus="File Uploaded"
-                  documentStatus="active"
-                />
-              </div>
-            ))}
+            {IncomingDocuments &&
+              IncomingDocuments?.map(document => (
+                <div
+                  className="mb-5"
+                  onClick={() => {
+                    setSelectedDocument(document);
+                  }}
+                >
+                  <DocumentsCard
+                    document={document}
+                    fileStatus="File Uploaded"
+                    documentStatus="active"
+                  />
+                </div>
+              ))}
           </div>
           <div
             className={`${

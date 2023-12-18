@@ -18,7 +18,6 @@ const AddDocumentsForm = ({
   // State Initialization
   const [file, setFile] = useState<File>();
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [documentTypes, setDocumentTypes] = useState<DocType[]>([]);
   const queryClient = useQueryClient();
 
   const defaultFormData = {
@@ -129,12 +128,9 @@ const AddDocumentsForm = ({
   };
 
   // Function to fetch available document types on component mount
-  useQuery({
+  const { data: documentTypes } = useQuery({
     queryKey: ['query-docType'],
-    queryFn: async () => {
-      const types = await getAllDocumentTypes(authTokenObj.authToken);
-      setDocumentTypes(types);
-    },
+    queryFn: async () => getAllDocumentTypes(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 
@@ -204,15 +200,16 @@ const AddDocumentsForm = ({
                 <option value="" disabled selected>
                   Select Document Type
                 </option>
-                {documentTypes.map(documentType => (
-                  <option
-                    className="text-black bg-white dark:text-white dark:bg-gray-800"
-                    key={documentType.document_type_id}
-                    value={documentType.document_type_id}
-                  >
-                    {documentType.document_type}
-                  </option>
-                ))}
+                {documentTypes &&
+                  documentTypes.map(documentType => (
+                    <option
+                      className="text-black bg-white dark:text-white dark:bg-gray-800"
+                      key={documentType.document_type_id}
+                      value={documentType.document_type_id}
+                    >
+                      {documentType.document_type}
+                    </option>
+                  ))}
               </select>
 
               <div className="flex flex-row gap-2 my-3">

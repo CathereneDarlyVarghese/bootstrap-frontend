@@ -20,7 +20,7 @@ export async function getAllAssets(
 
   const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/`;
   const response = await axios.get<IncomingAsset[]>(url, config);
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function getAssets(
@@ -36,7 +36,7 @@ export async function getAssets(
 
   const url = `${process.env.REACT_APP_BASE_URL}/protected/asset/${id}`;
   const response = await axios.get<IncomingAsset[]>(url, config);
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function createAsset(

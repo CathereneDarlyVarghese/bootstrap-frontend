@@ -20,12 +20,16 @@ const Placements = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
 
   // Fetching sections and placements using react-query
-  const { data: AssetSections } = useQuery(['query-assetSectionsAdmin'], () =>
-    getAssetSections(authTokenObj.authToken),
-  );
-  const { data: PlacementsData } = useQuery(['query-PlacementsAdmin'], () =>
-    getAssetPlacements(authTokenObj.authToken),
-  );
+  const { data: AssetSections } = useQuery({
+    queryKey: ['query-assetSectionsAdmin'],
+    queryFn: async () => getAssetSections(authTokenObj.authToken),
+    enabled: !!authTokenObj.authToken,
+  });
+  const { data: PlacementsData } = useQuery({
+    queryKey: ['query-PlacementsAdmin'],
+    queryFn: async () => getAssetPlacements(authTokenObj.authToken),
+    enabled: !!authTokenObj.authToken,
+  });
 
   // Local cached data for locations
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([
@@ -88,7 +92,7 @@ const Placements = () => {
         )}
 
         {/* Section Selector */}
-        {AssetSections?.length > 0 && selectedLocation && (
+        {AssetSections && AssetSections?.length > 0 && selectedLocation && (
           <div>
             <select
               value={selectedSection}
@@ -98,13 +102,14 @@ const Placements = () => {
               <option value="" disabled>
                 Select a Section
               </option>
-              {AssetSections.filter(
-                Section => Section.location_id === selectedLocation,
-              )?.map(Section => (
-                <option key={Section.section_id} value={Section.section_id}>
-                  {Section.section_name}
-                </option>
-              ))}
+              {AssetSections &&
+                AssetSections.filter(
+                  Section => Section.location_id === selectedLocation,
+                )?.map(Section => (
+                  <option key={Section.section_id} value={Section.section_id}>
+                    {Section.section_name}
+                  </option>
+                ))}
             </select>
           </div>
         )}
@@ -139,7 +144,7 @@ const Placements = () => {
         </div>
 
         {/* Placement Selector for Deletion */}
-        {PlacementsData?.length > 0 && (
+        {PlacementsData && PlacementsData?.length > 0 && (
           <div>
             <select
               value={selectedPlacement}
@@ -149,16 +154,17 @@ const Placements = () => {
               <option value="" disabled>
                 Select a Placement
               </option>
-              {PlacementsData.filter(
-                Placement => Placement.section_id === selectedSection,
-              )?.map(Placement => (
-                <option
-                  key={Placement.placement_id}
-                  value={Placement.placement_id}
-                >
-                  {Placement.placement_name}
-                </option>
-              ))}
+              {PlacementsData &&
+                PlacementsData.filter(
+                  Placement => Placement.section_id === selectedSection,
+                )?.map(Placement => (
+                  <option
+                    key={Placement.placement_id}
+                    value={Placement.placement_id}
+                  >
+                    {Placement.placement_name}
+                  </option>
+                ))}
             </select>
             <button
               onClick={() => PlacementDeleteMutation.mutate(selectedPlacement)}

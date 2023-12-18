@@ -6,7 +6,6 @@ import { locationAtom, useSyncedAtom } from 'store/locationStore';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AssetLocation } from 'types';
 import SignInWithGoogle from './LoginPage/SignInWithGoogle';
 import { getAssetLocationByOrgId } from '../services/locationServices';
 import { getUserByEmail } from '../services/userServices';
@@ -128,9 +127,6 @@ const NavBar = () => {
           locationId: selectedLocation.location_id,
         });
       }
-    },
-    onError: error => {
-      console.error('Error fetching locations:', error);
     },
     enabled:
       !!authToken && !!user && !!user.attributes && !!user.attributes.org_id,

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AssetType } from '../types'; // Import the AssetType interface
+import { AssetType } from '../types';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
@@ -54,7 +54,7 @@ export async function getAllAssetTypes(
     `${BASE_URL}/protected/asset-type/`,
     config,
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function updateAssetType(

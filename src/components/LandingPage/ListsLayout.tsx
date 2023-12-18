@@ -190,7 +190,7 @@ const ListsLayout = () => {
           authTokenObj.authToken,
           location.locationId,
         );
-        return Array.isArray(response) ? response : [response];
+        return response;
       }
       return [];
     },

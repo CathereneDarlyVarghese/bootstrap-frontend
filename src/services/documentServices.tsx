@@ -40,7 +40,7 @@ export async function getDocumentsByLocationIdOnly(
     `${process.env.REACT_APP_BASE_URL}/protected/document/location/${id}`,
     config,
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function getDocumentsByAssetId(
@@ -58,7 +58,7 @@ export async function getDocumentsByAssetId(
     `${process.env.REACT_APP_BASE_URL}/protected/document/asset/${id}`,
     config,
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function getAllDocuments(

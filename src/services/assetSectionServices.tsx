@@ -19,7 +19,7 @@ export const getAssetSections = async (
       },
     },
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 };
 
 export const getAssetSectionById = async (

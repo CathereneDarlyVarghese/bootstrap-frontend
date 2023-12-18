@@ -36,7 +36,7 @@ export async function getAllDocumentTypes(
     `${BASE_URL}/protected/document-type/`,
     config,
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
 export async function getDocumentTypeById(

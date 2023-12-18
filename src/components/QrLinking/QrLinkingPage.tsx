@@ -308,16 +308,11 @@ const QrLinkingPage = () => {
             {/* Render asset cards */}
             {IncomingAssets &&
               (() => {
-                const assetsArray = Array.isArray(IncomingAssets)
-                  ? IncomingAssets
-                  : IncomingAssets
-                  ? [IncomingAssets]
-                  : [];
-                const activeAssets = assetsArray.filter(
+                const activeAssets = IncomingAssets.filter(
                   item => item.asset_condition === 'ACTIVE',
                 );
 
-                const inactiveAssets = assetsArray.filter(
+                const inactiveAssets = IncomingAssets.filter(
                   item => item.asset_condition === 'INACTIVE',
                 );
 

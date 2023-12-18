@@ -31,6 +31,7 @@ import { locationAtom, useSyncedAtom } from 'store/locationStore';
 import { searchTermAtom } from './ListsLayout';
 
 const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
+  const queryClient = useQueryClient();
   // ====== State Declarations ======
   // Asset Attributes
   const [file, setFile] = useState<File>();
@@ -42,14 +43,13 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const [addPlacement, setAddPlacement] = useState(false);
 
   // Asset Collections
-  const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
-  const [locations, setLocations] = useState<AssetLocation[]>([]);
-  const [, setAssetSections] = useState<AssetSection[]>([]);
   const [assetPlacements, setAssetPlacements] = useState<AssetPlacement[]>([]);
-  const [filteredSections, setFilteredSections] = useState<AssetSection[]>([]);
   const [filteredPlacements, setFilteredPlacements] = useState<
     AssetPlacement[]
   >([]);
+  const locations = queryClient.getQueryData<AssetLocation[]>([
+    'query-locations',
+  ]);
 
   const [statusCheckEnabled, setStatusCheckEnabled] = useState(false);
   // disable submit button after submission
@@ -62,9 +62,6 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
   const statusTypeNames = useStatusTypeNames();
   const AssetCondition = useAssetCondition();
   const [location] = useSyncedAtom(locationAtom);
-
-  // Hooks & External Services
-  const queryClient = useQueryClient();
 
   // edit search term when adding asset
   const [, setSearchTerm] = useAtom(searchTermAtom);
@@ -172,29 +169,20 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
 
   // ====== Data Fetching using useQuery ======
 
-  useQuery({
+  const { data: assetTypes } = useQuery({
     queryKey: ['query-assetTypeandLocation', location],
-    queryFn: async () => {
-      const queryLocations = queryClient.getQueryData<AssetLocation[]>([
-        'query-locations',
-      ]);
-      setLocations(queryLocations);
-
-      const types = await getAllAssetTypes(authTokenObj.authToken);
-      setAssetTypes(types);
-    },
+    queryFn: async () => getAllAssetTypes(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 
-  const { refetch: refetchSection } = useQuery({
+  const { data: filteredSections, refetch: refetchSection } = useQuery({
     queryKey: ['query-assetSectionsForm', location],
     queryFn: async () => {
       const res = await getAssetSections(authTokenObj.authToken);
-      setAssetSections(res);
       const sections = res.filter(
         section => section.location_id === location.locationId,
       );
-      setFilteredSections(sections);
+      return sections;
     },
     enabled: !!authTokenObj.authToken,
   });
@@ -449,15 +437,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                     <option value="" disabled hidden>
                       Select Location
                     </option>
-                    {locations?.map(locationItem => (
-                      <option
-                        key={locationItem.location_id}
-                        value={locationItem.location_id}
-                        className="text-black bg-white dark:text-white dark:bg-gray-800"
-                      >
-                        {locationItem.location_name}
-                      </option>
-                    ))}
+                    {locations &&
+                      locations?.map(locationItem => (
+                        <option
+                          key={locationItem.location_id}
+                          value={locationItem.location_id}
+                          className="text-black bg-white dark:text-white dark:bg-gray-800"
+                        >
+                          {locationItem.location_name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -482,15 +471,16 @@ const AddAssetForm = ({ addAssetOpen, setAddAssetOpen }) => {
                         <option value="" disabled hidden>
                           Select Section
                         </option>
-                        {filteredSections?.map(section => (
-                          <option
-                            key={section.section_id}
-                            value={section.section_id}
-                            className="text-black bg-white dark:text-white dark:bg-gray-800"
-                          >
-                            {section.section_name}
-                          </option>
-                        ))}
+                        {filteredSections &&
+                          filteredSections?.map(section => (
+                            <option
+                              key={section.section_id}
+                              value={section.section_id}
+                              className="text-black bg-white dark:text-white dark:bg-gray-800"
+                            >
+                              {section.section_name}
+                            </option>
+                          ))}
                       </select>
                     </div>
 

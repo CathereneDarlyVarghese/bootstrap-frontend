@@ -21,10 +21,7 @@ const Organizations = () => {
 
   const { data: OrganizationData } = useQuery({
     queryKey: ['query-OrganizationsAdmin'],
-    queryFn: async () => {
-      const Data = await getOrganizations(authTokenObj.authToken);
-      return Data;
-    },
+    queryFn: async () => getOrganizations(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 

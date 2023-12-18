@@ -13,7 +13,6 @@ const InviteUser = () => {
   const [newUser, setNewUser] = useState<Partial<User>>({});
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
   const [data, setData] = useState<User[]>(null); // later use this to get a list of invited users
-  const [orgData, setOrgData] = useState<Organization[]>(null);
   const queryLocations = queryClient.getQueryData<User[]>(['query-locations']);
 
   useQuery({
@@ -25,12 +24,9 @@ const InviteUser = () => {
     enabled: !!authTokenObj.authToken,
   });
 
-  useQuery({
+  const { data: orgData } = useQuery({
     queryKey: ['query-OrganizationsAdmin'],
-    queryFn: async () => {
-      const OrganizationData = await getOrganizations(authTokenObj.authToken);
-      setOrgData(OrganizationData);
-    },
+    queryFn: async () => getOrganizations(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 
@@ -66,14 +62,15 @@ const InviteUser = () => {
               <option value="" disabled>
                 Select a Organization
               </option>
-              {orgData?.map(OrganizationObj => (
-                <option
-                  key={OrganizationObj.org_id}
-                  value={OrganizationObj.org_id}
-                >
-                  {OrganizationObj.org_name}
-                </option>
-              ))}
+              {orgData &&
+                orgData?.map(OrganizationObj => (
+                  <option
+                    key={OrganizationObj.org_id}
+                    value={OrganizationObj.org_id}
+                  >
+                    {OrganizationObj.org_name}
+                  </option>
+                ))}
             </select>
           </div>
         )}

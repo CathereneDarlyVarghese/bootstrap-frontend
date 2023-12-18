@@ -11,7 +11,6 @@ import { DocType } from 'types';
 
 const AddDocumentType = () => {
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  const [data, setData] = useState<DocType[]>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>('');
   const queryClient = useQueryClient();
   const [newDocumentType, setNewDocumentType] = useState<string>('');
@@ -34,14 +33,9 @@ const AddDocumentType = () => {
     setNewDocumentType('');
   };
 
-  useQuery({
+  const { data } = useQuery({
     queryKey: ['query-documentTypesAdmin'],
-    queryFn: async () => {
-      const documentTypeData = await getAllDocumentTypes(
-        authTokenObj.authToken,
-      );
-      setData(documentTypeData);
-    },
+    queryFn: async () => getAllDocumentTypes(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 
@@ -99,14 +93,15 @@ const AddDocumentType = () => {
               <option value="" disabled>
                 Select a Document Type
               </option>
-              {data?.map(documentTypeObj => (
-                <option
-                  key={documentTypeObj.document_type_id}
-                  value={documentTypeObj.document_type_id}
-                >
-                  {documentTypeObj.document_type}
-                </option>
-              ))}
+              {data &&
+                data?.map(documentTypeObj => (
+                  <option
+                    key={documentTypeObj.document_type_id}
+                    value={documentTypeObj.document_type_id}
+                  >
+                    {documentTypeObj.document_type}
+                  </option>
+                ))}
             </select>
             <div className="flex flex-row justify-left">
               <button

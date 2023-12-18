@@ -25,7 +25,6 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   selectedAsset,
 }) => {
   // State Initialization
-  const [assetChecks, setAssetChecks] = useState<IncomingAssetCheck[]>([]);
   const [selectedAssetCheck, setSelectedAssetCheck] =
     useState<IncomingAssetCheck>();
   const [, setStatusCheckId] = useState<string | null>(null);
@@ -47,15 +46,10 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
   };
 
   // Fetching all asset checks using React Query's useQuery
-  useQuery({
+  const { data: assetChecks } = useQuery({
     queryKey: ['query-assetChecks', assetId, authTokenObj.authToken],
-    queryFn: async assetIdObj => {
-      const res = await getAssetCheckById(
-        authTokenObj.authToken,
-        assetIdObj.queryKey[1],
-      );
-      setAssetChecks(res);
-    },
+    queryFn: async assetIdObj =>
+      getAssetCheckById(authTokenObj.authToken, assetIdObj.queryKey[1]),
     enabled: !!selectedAsset,
   });
 
@@ -90,22 +84,23 @@ const AssetStatusChecksPage: React.FC<AssetStatusChecksPageProps> = ({
             </h1>
           </div>
           <div className={`${detailsOpen ? 'hidden' : ''}`}>
-            {assetChecks
-              .sort(
-                (a, b) =>
-                  new Date(b.modified_date).getTime() -
-                  new Date(a.modified_date).getTime(),
-              )
-              .map(assetCheck => (
-                <StatusCard
-                  status={assetCheck.status_check}
-                  date={new Date(assetCheck.modified_date)}
-                  onClick={() =>
-                    handleStatusCardClick(assetCheck.uptime_check_id)
-                  }
-                  uptime_notes={assetCheck.uptime_notes}
-                />
-              ))}
+            {assetChecks &&
+              assetChecks
+                .sort(
+                  (a, b) =>
+                    new Date(b.modified_date).getTime() -
+                    new Date(a.modified_date).getTime(),
+                )
+                .map(assetCheck => (
+                  <StatusCard
+                    status={assetCheck.status_check}
+                    date={new Date(assetCheck.modified_date)}
+                    onClick={() =>
+                      handleStatusCardClick(assetCheck.uptime_check_id)
+                    }
+                    uptime_notes={assetCheck.uptime_notes}
+                  />
+                ))}
           </div>
         </div>
       ) : (

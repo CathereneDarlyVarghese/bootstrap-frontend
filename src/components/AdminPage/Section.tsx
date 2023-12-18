@@ -15,7 +15,6 @@ const Sections = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [newSectionName, setNewSectionName] = useState('');
   const [authTokenObj] = useSyncedGenericAtom(genericAtom, 'authToken');
-  // const [data, setData] = useState<AssetSection[]>(null);
 
   const queryLocations = queryClient.getQueryData<AssetLocation[]>([
     'query-locations',
@@ -23,10 +22,7 @@ const Sections = () => {
 
   const { data } = useQuery({
     queryKey: ['query-SectionsAdmin'],
-    queryFn: async () => {
-      const SectionData = await getAssetSections(authTokenObj.authToken);
-      return SectionData;
-    },
+    queryFn: async () => getAssetSections(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
 
@@ -122,13 +118,14 @@ const Sections = () => {
               <option value="" disabled>
                 Select a Section
               </option>
-              {data
-                ?.filter(Section => Section.location_id === selectedLocation)
-                .map(Section => (
-                  <option key={Section.section_id} value={Section.section_id}>
-                    {Section.section_name}
-                  </option>
-                ))}
+              {data &&
+                data
+                  ?.filter(Section => Section.location_id === selectedLocation)
+                  .map(Section => (
+                    <option key={Section.section_id} value={Section.section_id}>
+                      {Section.section_name}
+                    </option>
+                  ))}
             </select>
             <button
               onClick={() => {

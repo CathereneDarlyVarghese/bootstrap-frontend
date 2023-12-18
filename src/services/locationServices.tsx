@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AssetLocation } from '../types'; // Import the Location interface
+import { AssetLocation } from '../types';
 
 export async function createAssetLocation(
   accessToken: string,

@@ -16,13 +16,8 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
 
   const { data: IncomingDocuments } = useQuery({
     queryKey: ['query-documentsByAssetId', selectedAssetID],
-    queryFn: async () => {
-      const documents = await getDocumentsByAssetId(
-        authTokenObj.authToken,
-        selectedAssetID,
-      );
-      return documents;
-    },
+    queryFn: async () =>
+      getDocumentsByAssetId(authTokenObj.authToken, selectedAssetID),
     enabled: !!selectedAssetID,
   });
 
@@ -68,21 +63,22 @@ const AssetDocumentsPage = ({ selectedAsset }) => {
                 : 'w-full'
             }`}
           >
-            {IncomingDocuments?.map(document => (
-              <div
-                className="border border-gray-300 dark:border-gray-600 rounded-xl my-3"
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  setDocumentID(document.document_id);
-                }}
-              >
-                <DocumentsCard
-                  document={document}
-                  fileStatus="File Uploaded"
-                  documentStatus="active"
-                />
-              </div>
-            ))}
+            {IncomingDocuments &&
+              IncomingDocuments?.map(document => (
+                <div
+                  className="border border-gray-300 dark:border-gray-600 rounded-xl my-3"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setDocumentID(document.document_id);
+                  }}
+                >
+                  <DocumentsCard
+                    document={document}
+                    fileStatus="File Uploaded"
+                    documentStatus="active"
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div

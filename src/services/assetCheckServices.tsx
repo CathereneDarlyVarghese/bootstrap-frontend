@@ -19,7 +19,7 @@ export const getAssetChecks = async (
       },
     },
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 };
 
 export const getAssetCheckById = async (
@@ -35,7 +35,7 @@ export const getAssetCheckById = async (
       },
     },
   );
-  return response.data;
+  return Array.isArray(response.data) ? response.data : [response.data];
 };
 
 export const createAssetCheck = async (
