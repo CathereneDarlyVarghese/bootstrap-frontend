@@ -8,7 +8,7 @@ import Placements from './Placement';
 import AddDocumentType from './DocumentType';
 import Organizations from './Organization';
 import InviteUser from './InviteUser';
-
+import FormBuilder from 'components/StatusChecksPage/FormBuilder';
 const AdminPage = () => {
   // State declarations
   const [toggleContent, setToggleContent] = useState(1);
@@ -41,6 +41,7 @@ const AdminPage = () => {
             {toggleContent === 5 && <Placements />}
             {toggleContent === 6 && <Organizations />}
             {toggleContent === 7 && <InviteUser />}
+            {toggleContent === 8 && <FormBuilder />}
           </div>
         </div>
         <div className="drawer-side">
@@ -121,6 +122,17 @@ const AdminPage = () => {
             >
               <button className="focus:bg-blue-900 focus:text-white">
                 Invite Users
+              </button>
+            </li>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(8);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Form Builder
               </button>
             </li>
           </ul>
