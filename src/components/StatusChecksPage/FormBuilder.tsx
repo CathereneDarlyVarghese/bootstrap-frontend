@@ -1,54 +1,31 @@
+import {
+  ltrCssLoader,
+  rsErrorMessage,
+  RsLocalizationWrapper,
+  rsTooltip,
+  rSuiteComponents,
+  rtlCssLoader,
+} from '@react-form-builder/components-rsuite';
+import { BiDi } from '@react-form-builder/core';
+import { BuilderView, FormBuilder } from '@react-form-builder/designer';
 import React, { useState } from 'react';
+import * as SampleForm from './SampleForm.json';
 
-interface FormElement {
-  type: string;
-  id: number;
-}
+const builderComponents = rSuiteComponents.map(c => c.build());
+const builderView = new BuilderView(builderComponents)
+  .withErrorMeta(rsErrorMessage.build())
+  .withTooltipMeta(rsTooltip.build())
+  .withViewerWrapper(RsLocalizationWrapper)
+  .withCssLoader(BiDi.LTR, ltrCssLoader)
+  .withCssLoader(BiDi.RTL, rtlCssLoader);
 
-const DraggableElement: React.FC<{ label: string; elementType: string }> = ({
-  label,
-  elementType,
-}) => {
-  const dragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData('text/plain', elementType);
-  };
+const getForm = (_?: string) => JSON.stringify(SampleForm);
 
-  return (
-    <div draggable onDragStart={dragStart}>
-      {label}
-    </div>
-  );
-};
-
-const FormBuilder: React.FC = () => {
-  const [formElements, setFormElements] = useState<FormElement[]>([]);
-
-  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
-  const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const elementType = event.dataTransfer.getData('text/plain');
-    const newElement = { type: elementType, id: Date.now() };
-    setFormElements([...formElements, newElement]);
-  };
+const FormBuilderExample = () => {
+  const [formElements, setFormElements] = useState<[]>([]);
 
   return (
-    <div>
-      <div id="toolbox">
-        <DraggableElement label="Text Input" elementType="text" />
-        <DraggableElement label="Textarea" elementType="textarea" />
-        <DraggableElement label="Checkbox" elementType="checkbox" />
-        <DraggableElement label="Radio Button" elementType="radio" />
-      </div>
-      <div id="formArea" onDragOver={onDragOver} onDrop={onDrop}>
-        {formElements.map(element => (
-          <div key={element.id}>{element.type}</div>
-        ))}
-      </div>
-    </div>
+    <FormBuilder view={builderView} formName="SampleForm" getForm={getForm} />
   );
 };
-
-export default FormBuilder;
+export default FormBuilderExample;
