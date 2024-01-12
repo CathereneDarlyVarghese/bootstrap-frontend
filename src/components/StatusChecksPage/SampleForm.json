@@ -1,0 +1,66 @@
+{
+  "version": "1",
+  "form": {
+    "key": "Screen",
+    "type": "Screen",
+    "props": {},
+    "children": [
+      {
+        "key": "RsHeader 1",
+        "type": "RsHeader",
+        "props": {
+          "content": {
+            "value": "[Asset Check]"
+          }
+        }
+      },
+      {
+        "key": "RsLabel 1",
+        "type": "RsLabel",
+        "props": {
+          "text": {
+            "value": "Operational?"
+          }
+        }
+      },
+      {
+        "key": "RsDropdown 1",
+        "type": "RsDropdown",
+        "props": {
+          "data": {
+            "value": [
+              {
+                "value": "a",
+                "label": "Yes"
+              },
+              {
+                "value": "b",
+                "label": "No"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "RsButton 1",
+        "type": "RsButton",
+        "props": {
+          "children": {
+            "value": "Save"
+          }
+        }
+      }
+    ]
+  },
+  "localization": {},
+  "languages": [
+    {
+      "code": "en",
+      "dialect": "US",
+      "name": "English",
+      "description": "American English",
+      "bidi": "ltr"
+    }
+  ],
+  "defaultLanguage": "en-US"
+}

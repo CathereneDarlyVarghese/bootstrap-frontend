@@ -3,6 +3,8 @@ import validator from '@rjsf/validator-ajv8';
 import { toast } from 'react-toastify';
 import { createAssetCheck } from 'services/assetCheckServices';
 import { TfiClose } from 'react-icons/tfi';
+import { view } from '@react-form-builder/components-rsuite';
+import { FormViewer } from '@react-form-builder/core';
 import {
   createAssetCheckForm,
   getAssetCheckFormById,
@@ -31,7 +33,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
 }) => {
   // State initialization
   const [, setFormDataState] = useState<any>({}); // eslint-disable-line
-  const [jsonForm, setJsonForm] = useState(null); // Form in JSON format
+  const [jsonForm, setJsonForm] = useState(null);
 
   const now = new Date(); // Current date and time
 
@@ -141,7 +143,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
 
           <div className="px-5 bg-white dark:bg-transparent text-black dark:text-white">
             {/* The form generated from the JSON Schema */}
-            {jsonForm && (
+            {/* {jsonForm && (
               <Form
                 schema={jsonForm}
                 validator={validator}
@@ -151,7 +153,8 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
                   setAddFormOpen(false);
                 }}
               />
-            )}
+            )} */}
+            <FormViewer view={view} getForm={() => JSON.stringify(jsonForm)} />
           </div>
         </div>
       </div>

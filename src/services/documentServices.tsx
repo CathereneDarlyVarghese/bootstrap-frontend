@@ -17,6 +17,7 @@ export async function createDocument(
     },
   };
 
+  console.log('Documents sent=>', documentData);
   const response = await axios.post<Document>(
     `${process.env.REACT_APP_BASE_URL}/protected/document/`,
     JSON.stringify(documentData),

@@ -14,6 +14,7 @@ export const getAssetCheckForms = async (
       },
     },
   );
+  console.log('Value fetched from getAssetCheckForms=>', response.data);
   return response.data;
 };
 
@@ -30,6 +31,7 @@ export const getAssetCheckFormById = async (
       },
     },
   );
+  console.log('Value fetched from getAssetCheckFormById=>', response.data);
   return response.data;
 };
 

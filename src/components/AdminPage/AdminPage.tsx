@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import './MyStyle.css';
+import FormBuilderExample from 'components/StatusChecksPage/FormBuilder';
 import AddAssetType from './AssetType';
 import Locations from './Locations';
 import Sections from './Section';
@@ -41,6 +42,7 @@ const AdminPage = () => {
             {toggleContent === 5 && <Placements />}
             {toggleContent === 6 && <Organizations />}
             {toggleContent === 7 && <InviteUser />}
+            {toggleContent === 8 && <FormBuilderExample />}
           </div>
         </div>
         <div className="drawer-side">
@@ -121,6 +123,17 @@ const AdminPage = () => {
             >
               <button className="focus:bg-blue-900 focus:text-white">
                 Invite Users
+              </button>
+            </li>
+            <li
+              className=""
+              onClick={() => {
+                setOpenSidebar(false);
+                setToggleContent(8);
+              }}
+            >
+              <button className="focus:bg-blue-900 focus:text-white">
+                Form Builder
               </button>
             </li>
           </ul>
