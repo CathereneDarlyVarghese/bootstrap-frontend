@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react';
 import validator from '@rjsf/validator-ajv8';
 import { toast } from 'react-toastify';
-import { createAssetCheck } from 'services/assetCheckServices';
 import { TfiClose } from 'react-icons/tfi';
-import { view } from '@react-form-builder/components-rsuite';
-import { FormViewer } from '@react-form-builder/core';
 import {
   createAssetCheckForm,
   getAssetCheckFormById,
 } from 'services/assetCheckFormServices';
-import Form from '@rjsf/core';
+import {
+  ltrCssLoader,
+  RsLocalizationWrapper,
+  rSuiteComponents,
+  rtlCssLoader,
+} from '@react-form-builder/components-rsuite';
 import './formstyles.css';
 import useStatusTypeNames from 'hooks/useStatusTypes';
 import { genericAtom, useSyncedGenericAtom } from 'store/genericStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AssetCheck } from 'types';
+import {
+  ActionDefinition,
+  BiDi,
+  ComponentLocalizer,
+  createView,
+  FormViewer,
+  IFormViewer,
+  Validators,
+} from '@react-form-builder/core';
+import { createAssetCheck } from 'services/assetCheckServices';
 
 interface AddStatusFormProps {
   addFormOpen: boolean;
@@ -34,6 +46,14 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
   // State initialization
   const [, setFormDataState] = useState<any>({}); // eslint-disable-line
   const [jsonForm, setJsonForm] = useState(null);
+  const componentsMetadata = rSuiteComponents.map(
+    definer => definer.build().model,
+  );
+
+  const view = createView(componentsMetadata)
+    .withViewerWrapper(RsLocalizationWrapper)
+    .withCssLoader(BiDi.LTR, ltrCssLoader)
+    .withCssLoader(BiDi.RTL, rtlCssLoader);
 
   const now = new Date(); // Current date and time
 
@@ -153,7 +173,7 @@ const AddStatusForm: React.FC<AddStatusFormProps> = ({
                   setAddFormOpen(false);
                 }}
               />
-            )} */}
+              )} */}
             <FormViewer view={view} getForm={() => JSON.stringify(jsonForm)} />
           </div>
         </div>

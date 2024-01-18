@@ -16,6 +16,10 @@ import {
 } from 'services/assetCheckFormServices';
 import { getAllAssetTypes } from 'services/assetTypeServices';
 import { useQuery } from '@tanstack/react-query';
+import './formstyles.css';
+import { AssetCheckForm } from 'types';
+import axios from 'axios';
+import { createAssetCheck } from 'services/assetCheckServices';
 import * as SampleForm from './SampleForm.json';
 
 interface AssetType {
@@ -43,6 +47,22 @@ const FormBuilderExample = () => {
     queryFn: () => getAllAssetTypes(authTokenObj.authToken),
     enabled: !!authTokenObj.authToken,
   });
+  /* const createAssetCheckForm = async (
+    accessToken: string,
+    assetCheckForm: e.data,
+  ): Promise<AssetCheckForm> => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/protected/asset-check-form/`,
+      assetCheckForm,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  }; */
 
   useEffect(() => {
     const fetchForm = async () => {
@@ -51,14 +71,16 @@ const FormBuilderExample = () => {
           authTokenObj.authToken,
           selectedAssetType,
         );
+        // form.form_json is likely already a JavaScript object
         setJsonForm(form.form_json);
-        console.log('form fetched', form);
+        console.log('Parsed form', form.form_json);
       } catch (error) {
         if (error.response?.status === 404) {
           const newForm = await createAssetCheckForm(authTokenObj.authToken, {
             form_json: { getForm },
             asset_type_id: selectedAssetType,
           });
+          // newForm.form_json is likely already a JavaScript object
           setJsonForm(newForm.form_json);
         }
       }

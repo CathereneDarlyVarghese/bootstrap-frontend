@@ -32,3 +32,8 @@ form.rjsf .field-string .radio-group {
 form.rjsf button[type='submit'] {
   background-color: rgb(30 58 138); /* bg-blue-900 */
 }
+.btn-primary {
+  background-color: rgb(30 58 138);
+  color: white;
+  border-radius: 0.25rem;
+}
